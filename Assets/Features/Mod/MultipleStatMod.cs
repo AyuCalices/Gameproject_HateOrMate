@@ -14,6 +14,30 @@ namespace Features.Mod
         {
             _multipleStatModTargets = multipleStatModTargets;
         }
+        
+        protected override void InternalAddMod(UnitBehaviour moddedUnit)
+        {
+            foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
+            {
+                switch (multipleStatModTarget.unitOwnerType)
+                {
+                    case UnitOwnerType.LocalPlayer:
+                        foreach (UnitBehaviour manipulatedUnit in moddedUnit.LocalPlayerUnits.GetItems())
+                        {
+                            Add(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                        }
+                        break;
+                    case UnitOwnerType.ExternPlayer:
+                        foreach (UnitBehaviour manipulatedUnit in moddedUnit.ExternPlayerUnits.GetItems())
+                        {
+                            Add(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                        }
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+        }
     
         protected override void InternalRemoveMod(UnitBehaviour moddedUnit)
         {
@@ -24,30 +48,6 @@ namespace Features.Mod
                     case UnitOwnerType.LocalPlayer:
                         foreach (UnitBehaviour manipulatedUnit in moddedUnit.LocalPlayerUnits.GetItems())
                         {
-                            Apply(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
-                        }
-                        break;
-                    case UnitOwnerType.ExternPlayer:
-                        foreach (UnitBehaviour manipulatedUnit in moddedUnit.ExternPlayerUnits.GetItems())
-                        {
-                            Apply(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
-                        }
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
-
-        protected override void InternalAddMod(UnitBehaviour moddedUnit)
-        {
-            foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
-            {
-                switch (multipleStatModTarget.unitOwnerType)
-                {
-                    case UnitOwnerType.LocalPlayer:
-                        foreach (UnitBehaviour manipulatedUnit in moddedUnit.LocalPlayerUnits.GetItems())
-                        {
                             Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                         }
                         break;
@@ -63,7 +63,7 @@ namespace Features.Mod
             }
         }
 
-        private void Apply(UnitBehaviour unit, StatType statType, float baseValue, float scaleValue)
+        private void Add(UnitBehaviour unit, StatType statType, float baseValue, float scaleValue)
         {
             bool result = unit.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, baseValue);
             if (!result)

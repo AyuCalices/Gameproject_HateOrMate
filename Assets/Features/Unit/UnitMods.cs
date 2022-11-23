@@ -30,6 +30,11 @@ namespace Features.Unit
             this.unit = unit;
         }
 
+        public bool ContainsMod()
+        {
+            return baseMod != null;
+        }
+
         public void AddMod(BaseMod baseMod)
         {
             this.baseMod = baseMod;

@@ -98,6 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd20aae1a692f8f4f9d22574fd04281b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitModHUD: {fileID: 4062771033807849782, guid: 996efb91ff4361449811357b1dde89ca, type: 3}
+  localPlayerUnits: {fileID: 11400000, guid: 08ca6324594c007468f1f8c3bff83295, type: 2}
+  externPlayerUnits: {fileID: 11400000, guid: fd04b36b20be0a144ae83c321dfe3282, type: 2}
+  modCount: 5
 --- !u!114 &2691383368057905019
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,12 +1,17 @@
+using System;
 using Features.Unit.Stat;
+using JetBrains.Annotations;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEditor;
 using UnityEngine;
 
 namespace Features.Unit
 {
     public class UnitBehaviour : MonoBehaviour
     {
+        [SerializeField] private Canvas unitModHUD;
+        
         [SerializeField] private UnitRuntimeSet_SO localPlayerUnits;
         [SerializeField] private UnitRuntimeSet_SO externPlayerUnits;
         [SerializeField] private int modCount;
@@ -29,14 +34,36 @@ namespace Features.Unit
             _isOwner = Equals((Player)_photonView.InstantiationData[1], PhotonNetwork.LocalPlayer);
 
             UnitMods = new UnitMods(modCount, this);
-            NetworkedStatServiceLocator = new NetworkedStatServiceLocator(_photonView);
+            NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
+            foreach (object value in Enum.GetValues(typeof(StatType)))
+            {
+                string scalingStatIdentity = GUID.Generate().ToString();
+                string statIdentity = GUID.Generate().ToString();
+                NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
+                _photonView.RPC("SynchNetworkStat", RpcTarget.All, (StatType)value, scalingStatIdentity, statIdentity, PhotonNetwork.LocalPlayer);
+            }
+
+            UnitModHud unitModHud = Instantiate(unitModHUD).GetComponentInChildren<UnitModHud>();
+            unitModHud.Unit = this;
             
             AddToRuntimeSet();
         }
         
+        [PunRPC, UsedImplicitly]
+        private void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity, Player sender)
+        {
+            if (Equals(sender, PhotonNetwork.LocalPlayer)) return;
+            NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
+        }
+
         private void OnDestroy()
         {
             RemoveFromRuntimeSet();
+        }
+
+        private void Update()
+        {
+            Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
         }
 
         private void AddToRuntimeSet()

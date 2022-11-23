@@ -18,11 +18,11 @@ namespace Features.Unit.Stat
     
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
-            statValues = new List<float>();
+            statValues = new List<float>() {10};
             UpdateStat(statIdentity, statValues.ToArray());
         
-            scalingStatValues = new List<float>();
-            UpdateStat(statIdentity, scalingStatValues.ToArray());
+            scalingStatValues = new List<float>() {1};
+            UpdateStat(scalingStatIdentity, scalingStatValues.ToArray());
         }
     
         private void UpdateStat(string identity, float[] value)

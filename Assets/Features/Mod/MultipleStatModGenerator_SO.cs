@@ -9,7 +9,7 @@ namespace Features.Mod
     public enum UnitOwnerType { LocalPlayer, ExternPlayer }
 
     [CreateAssetMenu(fileName = "new MultipleStatMod", menuName = "Unit/Mod/MultipleStat")]
-    public class MultipleStatModGeneratorGeneratorSo : BaseModGenerator_SO
+    public class MultipleStatModGenerator_SO : BaseModGenerator_SO
     {
         [SerializeField] private List<MultipleStatModTarget> multipleStatModTargets;
 

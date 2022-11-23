@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Features.Mod
 {
     [CreateAssetMenu(fileName = "new SingleStatMod", menuName = "Unit/Mod/SingleStat")]
-    public class SingleStatModGeneratorGeneratorSo : BaseModGenerator_SO
+    public class SingleStatModGenerator_SO : BaseModGenerator_SO
     {
         [SerializeField] private StatType statType;
         [SerializeField] private float baseValue;

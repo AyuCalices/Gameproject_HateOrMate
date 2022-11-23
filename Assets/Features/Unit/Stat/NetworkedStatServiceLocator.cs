@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using JetBrains.Annotations;
-using Photon.Pun;
-using UnityEditor;
 using UnityEngine;
 
 namespace Features.Unit.Stat
@@ -12,26 +9,9 @@ namespace Features.Unit.Stat
 
     public class NetworkedStatServiceLocator
     {
-        private readonly Dictionary<string, IUnitStat> _services;
+        private readonly Dictionary<string, IUnitStat> _services = new Dictionary<string, IUnitStat>();
 
-        public NetworkedStatServiceLocator(PhotonView photonView)
-        {
-            _services = new Dictionary<string, IUnitStat>();
-            
-            foreach (object value in Enum.GetValues(typeof(StatType)))
-            {
-                string scalingStatIdentity = GUID.Generate().ToString();
-                string statIdentity = GUID.Generate().ToString();
-                Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
-                photonView.RPC("SynchNetworkStat", RpcTarget.All, (StatType)value, GUID.Generate().ToString(), GUID.Generate().ToString());
-            }
-        }
-        
-        [PunRPC, UsedImplicitly]
-        private void SynchNetworkStat(StatType statType, string statIdentity, string scalingStatIdentity)
-        {
-            Register(new NetworkStat(statType, statIdentity, scalingStatIdentity));
-        }
+        public NetworkedStatServiceLocator() { }
 
         public bool TryAddLocalValue(StatType statType, StatValueType statValueType, float value)
         {
@@ -65,6 +45,7 @@ namespace Features.Unit.Stat
             if (TryGetService(out NetworkStat networkStat, statType))
             {
                 finalValue += networkStat.GetTotalValue();
+                Debug.Log(finalValue);
             }
             if (TryGetService(out LocalStat localStat, statType))
             {
@@ -80,6 +61,7 @@ namespace Features.Unit.Stat
     
             if (!_services.ContainsKey(key))
             {
+                Debug.LogWarning($"{key} not registered with {GetType().Name}");
                 service = default;
                 return false;
             }
@@ -93,7 +75,7 @@ namespace Features.Unit.Stat
             string key = typeof(T).Name + statType;
             if (!_services.ContainsKey(key))
             {
-                Debug.LogError($"{key} not registered with {GetType().Name}");
+                Debug.LogWarning($"{key} not registered with {GetType().Name}");
                 throw new InvalidOperationException();
             }
 
@@ -103,9 +85,10 @@ namespace Features.Unit.Stat
         public void Register<T>(T service) where T : IUnitStat
         {
             string key = typeof(T).Name + service.StatType;
+            Debug.Log(key);
             if (_services.ContainsKey(key))
             {
-                Debug.LogError($"Attempted to register service of type {key} which is already registered with the {GetType().Name}.");
+                Debug.LogWarning($"Attempted to register service of type {key} which is already registered with the {GetType().Name}.");
                 return;
             }
 
@@ -117,7 +100,7 @@ namespace Features.Unit.Stat
             string key = typeof(T).Name + statType;
             if (!_services.ContainsKey(key))
             {
-                Debug.LogError($"Attempted to unregister service of type {key} which is not registered with the {GetType().Name}.");
+                Debug.LogWarning($"Attempted to unregister service of type {key} which is not registered with the {GetType().Name}.");
                 return;
             }
 

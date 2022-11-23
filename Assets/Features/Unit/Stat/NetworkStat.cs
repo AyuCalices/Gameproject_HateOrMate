@@ -1,3 +1,4 @@
+using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 
@@ -12,8 +13,8 @@ namespace Features.Unit.Stat
         public NetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
             StatType = statType;
-            StatIdentity = scalingStatIdentity;
-            ScalingStatIdentity = statIdentity;
+            StatIdentity = statIdentity;
+            ScalingStatIdentity = scalingStatIdentity;
         }
 
         public virtual float GetTotalValue()
@@ -24,17 +25,21 @@ namespace Features.Unit.Stat
         protected virtual float GetScalingStat()
         {
             float finalValue = 0;
-
+            
+            bool found = false;
             foreach (var player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties.ContainsKey(ScalingStatIdentity))
                 {
-                    finalValue *= (float)PhotonNetwork.LocalPlayer.CustomProperties[ScalingStatIdentity];
+                    float[] value = (float[])player.CustomProperties[ScalingStatIdentity];
+                    finalValue = value.Sum();
+                    found = true;
                 }
-                else
-                {
-                    Debug.LogWarning("Stat not stored at server");
-                }
+            }
+            
+            if (!found)
+            {
+                Debug.LogWarning("Stat not stored at server");
             }
 
             return finalValue;
@@ -44,16 +49,20 @@ namespace Features.Unit.Stat
         {
             float finalValue = 0;
 
+            bool found = false;
             foreach (var player in PhotonNetwork.PlayerList)
             {
                 if (player.CustomProperties.ContainsKey(StatIdentity))
                 {
-                    finalValue = (float) PhotonNetwork.LocalPlayer.CustomProperties[StatIdentity];
+                    float[] value = (float[])player.CustomProperties[StatIdentity];
+                    finalValue = value.Sum();
+                    found = true;
                 }
-                else
-                {
-                    Debug.LogWarning("Stat not stored at server");
-                }
+            }
+
+            if (!found)
+            {
+                Debug.LogWarning("Stat not stored at server");
             }
 
             return finalValue;
