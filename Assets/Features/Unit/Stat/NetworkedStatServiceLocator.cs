@@ -45,12 +45,13 @@ namespace Features.Unit.Stat
             if (TryGetService(out NetworkStat networkStat, statType))
             {
                 finalValue += networkStat.GetTotalValue();
-                Debug.Log(finalValue);
             }
             if (TryGetService(out LocalStat localStat, statType))
             {
                 finalValue += localStat.GetTotalValue();
             }
+            
+            Debug.Log(finalValue);
 
             return finalValue;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Features.Unit.Stat;
 using JetBrains.Annotations;
 using Photon.Pun;
@@ -33,7 +34,8 @@ namespace Features.Unit
             Identity = (string) _photonView.InstantiationData[0];
             _isOwner = Equals((Player)_photonView.InstantiationData[1], PhotonNetwork.LocalPlayer);
 
-            UnitMods = new UnitMods(modCount, this);
+            List<ModSlotBehaviour> modDropBehaviours = Instantiate(unitModHUD).GetComponentInChildren<UnitModHud>().GetAllChildren();
+            UnitMods = new UnitMods(modCount, this, modDropBehaviours);
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
@@ -43,9 +45,6 @@ namespace Features.Unit
                 _photonView.RPC("SynchNetworkStat", RpcTarget.All, (StatType)value, scalingStatIdentity, statIdentity, PhotonNetwork.LocalPlayer);
             }
 
-            UnitModHud unitModHud = Instantiate(unitModHUD).GetComponentInChildren<UnitModHud>();
-            unitModHud.Unit = this;
-            
             AddToRuntimeSet();
         }
         

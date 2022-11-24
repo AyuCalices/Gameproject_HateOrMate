@@ -6,31 +6,31 @@ namespace Features.Mod
     {
         public string ModName { get; }
         public string Description { get; }
-    
-
+        
+        //make sure a mod can't be added twice
+        private bool _isEnabled;
+        
         public BaseMod(string modName, string description)
         {
             ModName = modName;
             Description = description;
+            _isEnabled = false;
         }
-
-        //make sure a mod can't be added twice
-        public bool IsEquipped { get; private set; }
 
         public void EnableMod(UnitBehaviour moddedUnit)
         {
-            if (IsEquipped) return;
+            if (_isEnabled) return;
             
             InternalAddMod(moddedUnit);
-            IsEquipped = true;
+            _isEnabled = true;
         }
         
         public void DisableMod(UnitBehaviour moddedUnit)
         {
-            if (!IsEquipped) return;
+            if (!_isEnabled) return;
             
             InternalRemoveMod(moddedUnit);
-            IsEquipped = false;
+            _isEnabled = false;
         }
 
         protected abstract void InternalAddMod(UnitBehaviour moddedUnit);

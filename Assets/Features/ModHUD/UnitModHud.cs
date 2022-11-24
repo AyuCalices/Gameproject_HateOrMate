@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class UnitModHud : MonoBehaviour
 {
-    public UnitBehaviour Unit { get; set; }
-
-    private List<DropHandler> modSlots;
-
-    private void Start()
+    public List<ModSlotBehaviour> GetAllChildren()
     {
+        List<ModSlotBehaviour> modSlots = new List<ModSlotBehaviour>();
+        
         for (int i = 0; i < transform.childCount; i++)
         {
-            transform.GetChild(i).GetComponent<DropHandler>().Init(Unit, i);
+            modSlots.Add(transform.GetChild(i).GetComponent<ModSlotBehaviour>());
         }
+
+        return modSlots;
     }
 }

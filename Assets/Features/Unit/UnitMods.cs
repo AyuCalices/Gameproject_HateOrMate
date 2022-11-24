@@ -1,33 +1,50 @@
 using System.Collections.Generic;
 using Features.Mod;
+using Features.ModHUD;
+using UnityEngine;
 
 namespace Features.Unit
 {
     public class UnitMods
     {
-        public ModSlot[] modSlots;
+        public readonly ModSlotContainer[] modSlotsContainers;
+        public readonly List<ModSlotBehaviour> modSlotBehaviours;
 
-        public UnitMods(int size, UnitBehaviour unit)
+        public UnitMods(int size, UnitBehaviour unit, List<ModSlotBehaviour> modSlotBehaviours)
         {
-            modSlots = new ModSlot[size];
-
+            this.modSlotBehaviours = modSlotBehaviours;
+            
+            modSlotsContainers = new ModSlotContainer[size];
             for (int i = 0; i < size; i++)
             {
-                modSlots[i] = new ModSlot(unit);
+                modSlotsContainers[i] = new ModSlotContainer(unit);
+                modSlotBehaviours[i].Init(modSlotsContainers[i]);
+
+                if (i > 2)
+                {
+                    modSlotsContainers[i].DisableSlot();
+                }
             }
+        }
+        
+        public void ToggleSlot(int index)
+        {
+            modSlotsContainers[index].ToggleSlot();
+            modSlotBehaviours[index].UpdateSlot();
         }
     }
 
-    public class ModSlot
+    public class ModSlotContainer
     {
         public BaseMod baseMod;
         public bool isActive;
-
+        
         private UnitBehaviour unit;
 
-        public ModSlot(UnitBehaviour unit)
+        public ModSlotContainer(UnitBehaviour unit)
         {
             this.unit = unit;
+            isActive = true;
         }
 
         public bool ContainsMod()
@@ -35,15 +52,40 @@ namespace Features.Unit
             return baseMod != null;
         }
 
-        public void AddMod(BaseMod baseMod)
+        public void AddOrExchangeMod(BaseMod newMod, ModSlotContainer origin)
         {
-            this.baseMod = baseMod;
-            baseMod.EnableMod(unit);
+            BaseMod removedMod = baseMod;
+            
+            if (ContainsMod())
+            {
+                RemoveMod();
+            }
+            
+            if (origin != null && origin.ContainsMod())
+            {
+                origin.RemoveMod();
+
+                if (removedMod != null)
+                {
+                    origin.AddMod(removedMod);
+                }
+            }
+
+            AddMod(newMod);
+        }
+
+        public void AddMod(BaseMod newMod)
+        {
+            baseMod = newMod;
+            Debug.Log(isActive);
+
+            if (isActive) newMod.EnableMod(unit);
         }
 
         public void RemoveMod()
         {
-            baseMod.DisableMod(unit);
+            if (isActive) baseMod.DisableMod(unit);
+            
             baseMod = null;
         }
 
@@ -56,6 +98,18 @@ namespace Features.Unit
             else
             {
                 baseMod.DisableMod(unit);
+            }
+        }
+        
+        public void ToggleSlot()
+        {
+            if (isActive)
+            {
+                DisableSlot();
+            }
+            else
+            {
+                EnableSlot();
             }
         }
 

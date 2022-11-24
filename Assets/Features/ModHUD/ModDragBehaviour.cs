@@ -1,27 +1,44 @@
 using Features.Mod;
+using Features.Unit;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Features.ModHUD
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class DragHandler : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class ModDragBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
+        [SerializeField] private DragControllerFocus_SO dragControllerFocus;
         [SerializeField] private BaseModGenerator_SO baseModGenerator;
         [SerializeField] private Canvas canvas;
         
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
-        private Vector3 _startPosition;
 
-        public BaseMod BaseMod { get; private set; }
+        private BaseMod _baseMod;
+        private ModSlotContainer _modSlotContainer;
+        private ModSlotBehaviour _modSlotBehaviour;
+
+        public void SetNewOrigin(ModSlotContainer originSlotContainer, ModSlotBehaviour newOrigin)
+        {
+            _modSlotContainer = originSlotContainer;
+            _modSlotBehaviour = newOrigin;
+            newOrigin.ContainedModDragBehaviour = this;
+
+            Transform bufferTransform = newOrigin.transform;
+            transform.position = bufferTransform.position;
+            transform.SetParent(bufferTransform);
+        }
 
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
 
-            BaseMod = baseModGenerator.Generate();
+            _baseMod = baseModGenerator.Generate();
+            
+            _modSlotContainer = null;
+            _modSlotBehaviour = null;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -30,7 +47,8 @@ namespace Features.ModHUD
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            _startPosition = transform.position;
+            dragControllerFocus.Set(new DragController(this, _baseMod, _modSlotContainer, _modSlotBehaviour));
+            
             _canvasGroup.alpha = 0.5f;
             _canvasGroup.blocksRaycasts = false;
         }
@@ -46,6 +64,7 @@ namespace Features.ModHUD
         {
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
+            dragControllerFocus.Restore();
         }
     }
 }
