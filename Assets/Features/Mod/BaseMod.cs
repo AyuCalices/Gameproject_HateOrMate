@@ -17,23 +17,23 @@ namespace Features.Mod
             _isEnabled = false;
         }
 
-        public void EnableMod(UnitBehaviour moddedUnit)
+        public void EnableMod(LocalUnitBehaviour moddedLocalUnit)
         {
             if (_isEnabled) return;
             
-            InternalAddMod(moddedUnit);
+            InternalAddMod(moddedLocalUnit);
             _isEnabled = true;
         }
         
-        public void DisableMod(UnitBehaviour moddedUnit)
+        public void DisableMod(LocalUnitBehaviour moddedLocalUnit)
         {
             if (!_isEnabled) return;
             
-            InternalRemoveMod(moddedUnit);
+            InternalRemoveMod(moddedLocalUnit);
             _isEnabled = false;
         }
 
-        protected abstract void InternalAddMod(UnitBehaviour moddedUnit);
-        protected abstract void InternalRemoveMod(UnitBehaviour moddedUnit);
+        protected abstract void InternalAddMod(LocalUnitBehaviour moddedLocalUnit);
+        protected abstract void InternalRemoveMod(LocalUnitBehaviour moddedLocalUnit);
     }
 }

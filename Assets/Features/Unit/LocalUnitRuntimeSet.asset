@@ -10,6 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2a88b859c25092e40849fa2a7a3e4893, type: 3}
-  m_Name: LocalPlayerUnitsRuntimeSet
+  m_Name: LocalUnitRuntimeSet
   m_EditorClassIdentifier: 
   items: []

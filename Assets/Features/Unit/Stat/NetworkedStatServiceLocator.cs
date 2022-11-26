@@ -50,8 +50,6 @@ namespace Features.Unit.Stat
             {
                 finalValue += localStat.GetTotalValue();
             }
-            
-            Debug.Log(finalValue);
 
             return finalValue;
         }
@@ -86,7 +84,6 @@ namespace Features.Unit.Stat
         public void Register<T>(T service) where T : IUnitStat
         {
             string key = typeof(T).Name + service.StatType;
-            Debug.Log(key);
             if (_services.ContainsKey(key))
             {
                 Debug.LogWarning($"Attempted to register service of type {key} which is already registered with the {GetType().Name}.");

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 5732381884757865169}
   - component: {fileID: 2691383368057905019}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: LocalUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -98,9 +98,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd20aae1a692f8f4f9d22574fd04281b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  networkedPlayerUnits: {fileID: 11400000, guid: 74d727fd9b420344b83a83190ca4ef67, type: 2}
   unitModHUD: {fileID: 4062771033807849782, guid: 996efb91ff4361449811357b1dde89ca, type: 3}
-  localPlayerUnits: {fileID: 11400000, guid: 08ca6324594c007468f1f8c3bff83295, type: 2}
-  externPlayerUnits: {fileID: 11400000, guid: fd04b36b20be0a144ae83c321dfe3282, type: 2}
+  localPlayerLocalUnits: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
   modCount: 5
 --- !u!114 &2691383368057905019
 MonoBehaviour:

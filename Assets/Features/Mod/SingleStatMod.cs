@@ -17,30 +17,30 @@ namespace Features.Mod
             _scaleValue = scaleValue;
         }
         
-        protected override void InternalAddMod(UnitBehaviour moddedUnit)
+        protected override void InternalAddMod(LocalUnitBehaviour moddedLocalUnit)
         {
-            bool result = moddedUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
+            bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
             
-            result = moddedUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         }
     
-        protected override void InternalRemoveMod(UnitBehaviour moddedUnit)
+        protected override void InternalRemoveMod(LocalUnitBehaviour moddedLocalUnit)
         {
-            bool result = moddedUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
+            bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
             
-            result = moddedUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");

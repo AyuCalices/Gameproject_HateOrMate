@@ -10,14 +10,14 @@ namespace Features.Unit
         public readonly ModSlotContainer[] modSlotsContainers;
         public readonly List<ModSlotBehaviour> modSlotBehaviours;
 
-        public UnitMods(int size, UnitBehaviour unit, List<ModSlotBehaviour> modSlotBehaviours)
+        public UnitMods(int size, LocalUnitBehaviour localUnit, List<ModSlotBehaviour> modSlotBehaviours)
         {
             this.modSlotBehaviours = modSlotBehaviours;
             
             modSlotsContainers = new ModSlotContainer[size];
             for (int i = 0; i < size; i++)
             {
-                modSlotsContainers[i] = new ModSlotContainer(unit);
+                modSlotsContainers[i] = new ModSlotContainer(localUnit);
                 modSlotBehaviours[i].Init(modSlotsContainers[i]);
 
                 if (i > 2)
@@ -39,11 +39,11 @@ namespace Features.Unit
         public BaseMod baseMod;
         public bool isActive;
         
-        private UnitBehaviour unit;
+        private LocalUnitBehaviour _localUnit;
 
-        public ModSlotContainer(UnitBehaviour unit)
+        public ModSlotContainer(LocalUnitBehaviour localUnit)
         {
-            this.unit = unit;
+            this._localUnit = localUnit;
             isActive = true;
         }
 
@@ -79,12 +79,12 @@ namespace Features.Unit
             baseMod = newMod;
             Debug.Log(isActive);
 
-            if (isActive) newMod.EnableMod(unit);
+            if (isActive) newMod.EnableMod(_localUnit);
         }
 
         public void RemoveMod()
         {
-            if (isActive) baseMod.DisableMod(unit);
+            if (isActive) baseMod.DisableMod(_localUnit);
             
             baseMod = null;
         }
@@ -93,11 +93,11 @@ namespace Features.Unit
         {
             if (isActive)
             {
-                baseMod.EnableMod(unit);
+                baseMod.EnableMod(_localUnit);
             }
             else
             {
-                baseMod.DisableMod(unit);
+                baseMod.DisableMod(_localUnit);
             }
         }
         
@@ -119,7 +119,7 @@ namespace Features.Unit
 
             if (baseMod != null)
             {
-                baseMod.DisableMod(unit);
+                baseMod.DisableMod(_localUnit);
             }
         }
         
@@ -129,7 +129,7 @@ namespace Features.Unit
             
             if (baseMod != null)
             {
-                baseMod.EnableMod(unit);
+                baseMod.EnableMod(_localUnit);
             }
         }
     }

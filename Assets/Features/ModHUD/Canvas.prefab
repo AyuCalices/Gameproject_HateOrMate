@@ -303,10 +303,10 @@ RectTransform:
   m_Father: {fileID: 2528536836646706268}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 264, y: -0.000015258789}
-  m_SizeDelta: {x: -879.2982, y: -46.385}
+  m_SizeDelta: {x: 102.70178, y: 99.615005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2528536836489338562
 CanvasRenderer:
@@ -359,7 +359,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
-  containedModDragBehaviour: {fileID: 0}
 --- !u!1 &2528536836534337328
 GameObject:
   m_ObjectHideFlags: 0
@@ -394,10 +393,10 @@ RectTransform:
   m_Father: {fileID: 2528536836646706268}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -101, y: -0.000015258789}
-  m_SizeDelta: {x: -879.2982, y: -46.385}
+  m_SizeDelta: {x: 102.70178, y: 99.615005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2528536836534337331
 CanvasRenderer:
@@ -450,7 +449,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
-  containedModDragBehaviour: {fileID: 0}
 --- !u!1 &2528536836646706267
 GameObject:
   m_ObjectHideFlags: 0
@@ -579,10 +577,10 @@ RectTransform:
   m_Father: {fileID: 2528536836646706268}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 383, y: -0.000015258789}
-  m_SizeDelta: {x: -879.2982, y: -46.385}
+  m_SizeDelta: {x: 102.70178, y: 99.615005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2528536836667079376
 CanvasRenderer:
@@ -635,7 +633,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
-  containedModDragBehaviour: {fileID: 0}
 --- !u!1 &2528536836906952573
 GameObject:
   m_ObjectHideFlags: 0
@@ -670,10 +667,10 @@ RectTransform:
   m_Father: {fileID: 2528536836646706268}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 17, y: -0.000015258789}
-  m_SizeDelta: {x: -879.2982, y: -46.385}
+  m_SizeDelta: {x: 102.70178, y: 99.615005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2528536836906952560
 CanvasRenderer:
@@ -726,7 +723,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
-  containedModDragBehaviour: {fileID: 0}
 --- !u!1 &2528536837069797738
 GameObject:
   m_ObjectHideFlags: 0
@@ -761,10 +757,10 @@ RectTransform:
   m_Father: {fileID: 2528536836646706268}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 134, y: -0.000015258789}
-  m_SizeDelta: {x: -879.2982, y: -46.385}
+  m_SizeDelta: {x: 102.70178, y: 99.615005}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2528536837069797741
 CanvasRenderer:
@@ -817,7 +813,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
-  containedModDragBehaviour: {fileID: 0}
 --- !u!1 &4062771033807849781
 GameObject:
   m_ObjectHideFlags: 0
