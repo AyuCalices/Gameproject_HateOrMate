@@ -73,7 +73,6 @@ namespace Features.Unit
         {
             if (photonEvent.Code == customManualInstantiationEventCode)
             {
-                Debug.Log("o/");
                 object[] data = (object[]) photonEvent.CustomData;
 
                 GameObject player = Instantiate(networkedPlayerPrefab.gameObject, (Vector3) data[0], (Quaternion) data[1]);

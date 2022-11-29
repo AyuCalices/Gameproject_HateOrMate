@@ -10,31 +10,38 @@ using UnityEngine.EventSystems;
 namespace Features.Grid
 {
     //https://docs.unity3d.com/ScriptReference/Vector3.Lerp.html
+    [RequireComponent(typeof(Tile))]
     public class UnitDropBehaviour : MonoBehaviour, IDropHandler
     {
         [SerializeField] private GameObjectFocus_SO gameObjectFocus;
-        
+
         private float _speed = 1.5f;
 
         private bool _lerpToThisTransform;
         private float _startTime;
         private float _journeyLength;
 
+        private Tile _tile;
+
+        private void Awake()
+        {
+            _tile = GetComponent<Tile>();
+        }
 
         public void OnDrop(PointerEventData eventData)
         {
             if (eventData.pointerDrag == null || !eventData.pointerDrag.TryGetComponent(out NetworkedUnitDragBehaviour unitDragBehaviour)) return;
+
+            if (!unitDragBehaviour.TryGetComponent(out NetworkedUnitBehaviour networkedUnitBehaviour)) return;
             
             if (PhotonNetwork.IsMasterClient)
             {
-                unitDragBehaviour.NetworkMove(eventData.pointerDrag.GetComponent<PhotonView>().ViewID, transform.position);
+                unitDragBehaviour.NetworkMove(eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _tile.GridPosition, networkedUnitBehaviour.GridPosition);
             }
             else
             {
-                unitDragBehaviour.RequestMove(eventData.pointerDrag.GetComponent<PhotonView>().ViewID, transform.position);
+                unitDragBehaviour.RequestMove(eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _tile.GridPosition, networkedUnitBehaviour.GridPosition);
             }
-            
-            Debug.Log("called");
         }
 
         private void Update()

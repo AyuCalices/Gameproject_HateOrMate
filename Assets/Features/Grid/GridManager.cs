@@ -8,6 +8,7 @@ namespace Features.Grid
     public class GridManager : MonoBehaviour
     {
         [SerializeField] private int _width, _height;
+        [SerializeField] private GridRuntimeDictionary_SO gridRuntimeDictionary;
 
         [SerializeField] private Tile _tilePrefab;
 
@@ -30,10 +31,11 @@ namespace Features.Grid
                 spawnedTile.name = $"Tile {x} {y}";
 
                 bool isOffset = x % 2 == 0 && y % 2 != 0 || x % 2 != 0 && y % 2 == 0;
-                spawnedTile.Init(isOffset);
-
-
-                _tiles[new Vector2(x, y)] = spawnedTile;
+                Vector2 gridPosition = new Vector2(x, y);
+                spawnedTile.Init(isOffset, gridPosition);
+                
+                gridRuntimeDictionary.Add(gridPosition, spawnedTile);
+                _tiles[gridPosition] = spawnedTile;
             }
 
             _cam.transform.position = new Vector3((float) _width / 2 - 0.5f, (float) _height / 2 - 0.5f, -10);
@@ -45,14 +47,15 @@ namespace Features.Grid
             return null;
         }
 
-        public void AddUnitToRandom(LocalUnitBehaviour localUnitBehaviour)
+        public void AddUnitToRandom(NetworkedUnitBehaviour networkedUnitBehaviour)
         {
             int randomElement = Random.Range(0, _tiles.Count);
             KeyValuePair<Vector2, Tile> keyValuePair = _tiles.ElementAt(randomElement);
-            if (keyValuePair.Value.HasUnit)
+            if (keyValuePair.Value.ContainsUnit)
             {
-                keyValuePair.Value.AddUnit(localUnitBehaviour);
-                localUnitBehaviour.transform.position = keyValuePair.Value.transform.position;
+                keyValuePair.Value.AddUnit(networkedUnitBehaviour);
+                networkedUnitBehaviour.transform.position = keyValuePair.Value.transform.position;
+                networkedUnitBehaviour.GridPosition = keyValuePair.Key;
             }
         }
     }

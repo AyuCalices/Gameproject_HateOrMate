@@ -18,6 +18,8 @@ namespace Features.Unit
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public int ViewID { get; private set; }
         public bool NetworkingInitialized { get; private set; }
+        
+        public Vector3 GridPosition { get; set; }
 
         protected void Awake()
         {

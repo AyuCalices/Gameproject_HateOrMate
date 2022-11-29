@@ -63,6 +63,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3671fede119bf3e4cb71457d08f4567a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridRuntimeDictionary: {fileID: 11400000, guid: 7923640a434f8c044aa98476d2b09c97, type: 2}
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
   visualObject: {fileID: 7663717459320071761, guid: f1e24e004dccc114eb7c9f4265b6e279, type: 3}
   gameObjectFocus: {fileID: 11400000, guid: c8de5a89f7522064a8e4bbf0115f2857, type: 2}

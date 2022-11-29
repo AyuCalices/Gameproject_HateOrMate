@@ -9,13 +9,14 @@ namespace Features.Grid
         [SerializeField] private SpriteRenderer _renderer;
         [SerializeField] private GameObject _highlight;
 
-        private LocalUnitBehaviour _localUnitBehaviour;
+        private NetworkedUnitBehaviour _localUnitBehaviour;
 
-        public bool HasUnit => _localUnitBehaviour != null;
+        public Vector3 GridPosition { get; private set; }
+        public bool ContainsUnit => _localUnitBehaviour != null;
 
-        public void AddUnit(LocalUnitBehaviour localUnitBehaviour)
+        public void AddUnit(NetworkedUnitBehaviour localUnitBehaviour)
         {
-            if (HasUnit)
+            if (ContainsUnit)
             {
                 Debug.LogWarning("Unit Has been overwritten!");
             }
@@ -25,7 +26,7 @@ namespace Features.Grid
 
         public void RemoveUnit()
         {
-            if (!HasUnit)
+            if (!ContainsUnit)
             {
                 Debug.LogWarning("No Unit to be Removed!");
                 return;
@@ -34,8 +35,9 @@ namespace Features.Grid
             _localUnitBehaviour = null;
         }
 
-        public void Init(bool isOffset)
+        public void Init(bool isOffset, Vector3 gridPosition)
         {
+            GridPosition = gridPosition;
             _renderer.color = isOffset ? _offsetColor : _baseColor;
         }
 

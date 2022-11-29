@@ -984,6 +984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _width: 10
   _height: 6
+  gridRuntimeDictionary: {fileID: 11400000, guid: 7923640a434f8c044aa98476d2b09c97, type: 2}
   _tilePrefab: {fileID: 8204258064758695579, guid: e75a4554f8ee3484ba1b220ca06a2f85, type: 3}
   _cam: {fileID: 519420032}
 --- !u!1 &969196821
@@ -1189,7 +1190,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localPlayerPrefab: {fileID: 5732381884757865169, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
   networkedPlayerPrefab: {fileID: 7321846215635961088, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
-  customManualInstantiationEventCode: 1
 --- !u!1 &1221129561
 GameObject:
   m_ObjectHideFlags: 0
