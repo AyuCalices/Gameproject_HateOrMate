@@ -3,7 +3,7 @@ using Features.Mod;
 using Features.Unit;
 using UnityEngine;
 
-namespace Features.ModHUD
+namespace Features.ModView
 {
     [CreateAssetMenu]
     public class DragControllerFocus_SO : Focus_SO<DragController>

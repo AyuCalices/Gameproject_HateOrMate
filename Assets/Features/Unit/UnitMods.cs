@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Features.Mod;
-using Features.ModHUD;
+using Features.ModView;
 using UnityEngine;
 
 namespace Features.Unit
@@ -25,6 +25,23 @@ namespace Features.Unit
                     modSlotsContainers[i].DisableSlot();
                 }
             }
+        }
+
+        public bool TryAddMod(ModDragBehaviour modDragBehaviour)
+        {
+            for (int index = 0; index < modSlotsContainers.Length; index++)
+            {
+                ModSlotContainer modSlotsContainer = modSlotsContainers[index];
+                if (!modSlotsContainer.ContainsMod())
+                {
+                    modSlotsContainer.AddMod(modDragBehaviour.BaseMod);
+                    modDragBehaviour.SetNewOrigin(modSlotsContainer, modSlotBehaviours[index]);
+
+                    return true;
+                }
+            }
+
+            return false;
         }
         
         public void ToggleSlot(int index)
@@ -77,7 +94,6 @@ namespace Features.Unit
         public void AddMod(BaseMod newMod)
         {
             baseMod = newMod;
-            Debug.Log(isActive);
 
             if (isActive) newMod.EnableMod(_localUnit);
         }

@@ -1,12 +1,16 @@
+using System;
 using System.Collections.Generic;
+using Features.ModView;
 using Features.Unit.Stat;
 using UnityEngine;
 
 namespace Features.Unit
 {
+    //TODO: implement base stat values
     public class LocalUnitBehaviour : NetworkedUnitBehaviour
     {
-        [SerializeField] private Canvas unitModHUD;
+        public static Func<UnitModHud> onInstantiateModSlot;
+        
         [SerializeField] private LocalUnitRuntimeSet_SO localPlayerLocalUnits;
         [SerializeField] private int modCount;
 
@@ -16,7 +20,8 @@ namespace Features.Unit
 
         protected override void InternalAwake()
         {
-            List<ModSlotBehaviour> modDropBehaviours = Instantiate(unitModHUD).GetComponentInChildren<UnitModHud>().GetAllChildren();
+            UnitModHud unitModView = onInstantiateModSlot.Invoke();
+            List<ModSlotBehaviour> modDropBehaviours = unitModView.GetAllChildren();
             UnitMods = new UnitMods(modCount, this, modDropBehaviours);
         }
 
@@ -27,7 +32,7 @@ namespace Features.Unit
 
         protected void Update()
         {
-            Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
+            //Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
         }
 
         protected override void AddToRuntimeSet()

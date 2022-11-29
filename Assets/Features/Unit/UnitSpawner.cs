@@ -1,8 +1,10 @@
+using System;
 using ExitGames.Client.Photon;
+using Features.Experimental;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEditor;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Features.Unit
 {
@@ -10,25 +12,37 @@ namespace Features.Unit
     {
         [SerializeField] private LocalUnitBehaviour localPlayerPrefab;
         [SerializeField] private NetworkedUnitBehaviour networkedPlayerPrefab;
-        [SerializeField] private byte customManualInstantiationEventCode;
+        
+        private byte customManualInstantiationEventCode = 100;
         
         public void Spawn()
         {
             SpawnPlayer();
-            //PhotonNetwork.Instantiate("Unit", new Vector3(Random.Range(0, 5), Random.Range(0, 5), 0), Quaternion.identity, 0);
         }
-        
-        public void SpawnPlayer()
-        {
-            GameObject player = Instantiate(localPlayerPrefab.gameObject);
-            player.transform.position = new Vector3(Random.Range(0, 5), Random.Range(0, 5), 0);
-            PhotonView photonView = player.GetComponent<PhotonView>();
 
-            if (PhotonNetwork.AllocateViewID(photonView))
+        public override void OnEnable()
+        {
+            base.OnEnable();
+            TestingGenerator.onSpawnUnit += SpawnPlayer;
+        }
+
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            TestingGenerator.onSpawnUnit -= SpawnPlayer;
+        }
+
+        private LocalUnitBehaviour SpawnPlayer()
+        {
+            GameObject player = Instantiate(localPlayerPrefab.gameObject, transform);
+            player.transform.position = new Vector3(Random.Range(0, 5), Random.Range(0, 5), 0);
+            PhotonView instantiationPhotonView = player.GetComponent<PhotonView>();
+
+            if (PhotonNetwork.AllocateViewID(instantiationPhotonView))
             {
                 object[] data = new object[]
                 {
-                    player.transform.position, player.transform.rotation, photonView.ViewID
+                    player.transform.position, player.transform.rotation, instantiationPhotonView.ViewID
                 };
 
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -42,6 +56,7 @@ namespace Features.Unit
                     Reliability = true
                 };
 
+                Debug.Log(customManualInstantiationEventCode);
                 PhotonNetwork.RaiseEvent(customManualInstantiationEventCode, data, raiseEventOptions, sendOptions);
             }
             else
@@ -50,17 +65,20 @@ namespace Features.Unit
 
                 Destroy(player);
             }
+
+            return player.GetComponent<LocalUnitBehaviour>();
         }
         
         public void OnEvent(EventData photonEvent)
         {
             if (photonEvent.Code == customManualInstantiationEventCode)
             {
+                Debug.Log("o/");
                 object[] data = (object[]) photonEvent.CustomData;
 
                 GameObject player = Instantiate(networkedPlayerPrefab.gameObject, (Vector3) data[0], (Quaternion) data[1]);
-                PhotonView photonView = player.GetComponent<PhotonView>();
-                photonView.ViewID = (int) data[2];
+                PhotonView instantiationPhotonView = player.GetComponent<PhotonView>();
+                instantiationPhotonView.ViewID = (int) data[2];
             }
         }
     }

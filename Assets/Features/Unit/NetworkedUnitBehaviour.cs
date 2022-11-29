@@ -62,7 +62,7 @@ namespace Features.Unit
 
         protected void Update()
         {
-            Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
+            //Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
         }
 
         protected virtual void AddToRuntimeSet()

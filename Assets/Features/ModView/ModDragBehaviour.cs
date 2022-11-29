@@ -3,29 +3,30 @@ using Features.Unit;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Features.ModHUD
+namespace Features.ModView
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class ModDragBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
         [SerializeField] private BaseModGenerator_SO baseModGenerator;
-        [SerializeField] private Canvas canvas;
+        [SerializeField] private CanvasFocus_SO canvasFocus;
         
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
 
+        public BaseMod BaseMod => _baseMod;
         private BaseMod _baseMod;
         private ModSlotContainer _modSlotContainer;
         private ModSlotBehaviour _modSlotBehaviour;
 
-        public void SetNewOrigin(ModSlotContainer originSlotContainer, ModSlotBehaviour newOrigin)
+        public void SetNewOrigin(ModSlotContainer targetSlotContainer, ModSlotBehaviour targetOrigin)
         {
-            _modSlotContainer = originSlotContainer;
-            _modSlotBehaviour = newOrigin;
-            newOrigin.ContainedModDragBehaviour = this;
+            _modSlotContainer = targetSlotContainer;
+            _modSlotBehaviour = targetOrigin;
+            targetOrigin.ContainedModDragBehaviour = this;
 
-            Transform bufferTransform = newOrigin.transform;
+            Transform bufferTransform = targetOrigin.transform;
             transform.position = bufferTransform.position;
             transform.SetParent(bufferTransform);
         }
@@ -55,7 +56,9 @@ namespace Features.ModHUD
     
         public void OnDrag(PointerEventData eventData)
         {
-            _rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+            if (canvasFocus.Get() == null) return;
+            
+            _rectTransform.anchoredPosition += eventData.delta / canvasFocus.Get().scaleFactor;
 
             Physics.Raycast(Input.mousePosition, new Vector3(0, 0, 1));
         }

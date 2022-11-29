@@ -14,6 +14,11 @@ namespace DataStructures.Focus
             Focus = default;
             if(onFocusChanged != null) onFocusChanged.Raise();
         }
+
+        public bool NotNull()
+        {
+            return Focus != null;
+        }
         
         public T Get()
         {
