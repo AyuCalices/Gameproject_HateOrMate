@@ -1,5 +1,6 @@
+using DataStructures.StateLogic;
+using Features.Battle;
 using Features.Unit.Modding;
-using Features.Unit.Modding.Stat;
 using UnityEngine;
 
 namespace Features.Unit.Battle
@@ -7,30 +8,48 @@ namespace Features.Unit.Battle
     [RequireComponent(typeof(NetworkedUnitBehaviour))]
     public class BattleBehaviour : MonoBehaviour
     {
+        [SerializeField] private BattleManager_SO battleManager;
         [SerializeField] private BattleActions_SO battleActions;
-
-        private float _attackDeltaTime;
+        [SerializeField] private float range;
+        
         private NetworkedUnitBehaviour _networkedUnitBehaviour;
-    
-        //TODO: implement State Machine for Movement, Attack & Idle
+        private StateMachine _stateMachine;
 
         private void Awake()
         {
+            _stateMachine = new StateMachine();
+            _stateMachine.Initialize(new IdleState());
             _networkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
         }
 
         private void Update()
         {
-            //TODO: implement cast speed. When attack -> target, caster inside Attack stat
-            //TODO: implement moving to enemy, if no enemy in reach -> if enemy in reach swap to attackState
-            //TODO: send event for attackTime UI updated
-        
-            _attackDeltaTime -= Time.deltaTime;
+            switch (_stateMachine.CurrentState)
+            {
+                case MovementState when battleManager.EnemyUnitRuntimeSet.IsInRangeByWorldPosition(range, transform.position):
+                    EnterAttackState();
+                    break;
+                case AttackState when !battleManager.EnemyUnitRuntimeSet.IsInRangeByWorldPosition(range, transform.position):
+                    EnterMovementState();
+                    break;
+            }
 
-            if (_attackDeltaTime > 0) return;
+            _stateMachine.Update();
+        }
 
-            //Attack(unit);
-            _attackDeltaTime = _networkedUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+        public void EnterIdleState()
+        {
+            _stateMachine.ChangeState(new IdleState());
+        }
+
+        public void EnterAttackState()
+        {
+            _stateMachine.ChangeState(new AttackState(_networkedUnitBehaviour, battleManager.EnemyUnitRuntimeSet, battleActions));
+        }
+
+        public void EnterMovementState()
+        {
+            _stateMachine.ChangeState(new MovementState(_networkedUnitBehaviour, battleManager.EnemyUnitRuntimeSet, battleActions));
         }
     }
 }

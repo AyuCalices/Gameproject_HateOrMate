@@ -12,7 +12,7 @@ namespace DataStructures.StateLogic
 
         public virtual void Enter()
         {
-            Data.OnEnterEventEvent.Raise(this);
+            Data.OnEnterEvent.Raise(this);
             Data.IsStateActive.SetTrue();
         }
 
@@ -24,7 +24,7 @@ namespace DataStructures.StateLogic
         public virtual void Exit()
         {
             Data.IsStateActive.SetFalse();
-            Data.OnExitEventEvent.Raise(this);
+            Data.OnExitEvent.Raise(this);
         }
     }
 }

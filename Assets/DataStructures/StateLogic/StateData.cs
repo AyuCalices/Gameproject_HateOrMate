@@ -9,12 +9,12 @@ namespace DataStructures.StateLogic
         [SerializeField] private BoolVariable isStateActive;
         
         // Enter-/Exit-Events of states
-        [SerializeField] private OnStateEnterEvent onEnterEventEvent;
-        [SerializeField] private OnStateExitEvent onExitEventEvent;
+        [SerializeField] private OnStateEnterEvent onEnterEvent;
+        [SerializeField] private OnStateExitEvent onExitEvent;
 
         public BoolVariable IsStateActive => isStateActive;
 
-        public OnStateEnterEvent OnEnterEventEvent => onEnterEventEvent;
-        public OnStateExitEvent OnExitEventEvent => onExitEventEvent;
+        public OnStateEnterEvent OnEnterEvent => onEnterEvent;
+        public OnStateExitEvent OnExitEvent => onExitEvent;
     }
 }

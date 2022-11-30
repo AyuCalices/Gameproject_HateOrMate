@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataStructures.RuntimeSet;
 using Features.Unit;
 using Features.Unit.Modding;
@@ -18,6 +19,41 @@ namespace Features.GlobalReferences
             
             localUnit = null;
             return result;
+        }
+
+        public KeyValuePair<NetworkedUnitBehaviour, float> GetClosestByWorldPosition(Vector3 worldPosition)
+        {
+            var list = GetItems();
+            
+            int closestUnitIndex = 0;
+            float closestDistance = Vector3.Distance(worldPosition, list[0].transform.position);
+            
+            for (int index = 1; index < list.Count; index++)
+            {
+                float distanceNext = Vector3.Distance(worldPosition, list[index].transform.position);
+                if (distanceNext < closestDistance)
+                {
+                    closestUnitIndex = index;
+                    closestDistance = distanceNext;
+                }
+            }
+
+            return new KeyValuePair<NetworkedUnitBehaviour, float>(list[closestUnitIndex], closestDistance);
+        }
+
+        public bool IsInRangeByWorldPosition(float range, Vector3 worldPosition)
+        {
+            var list = GetItems();
+            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in list)
+            {
+                float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviour.transform.position);
+                if (distanceNext < range)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }
