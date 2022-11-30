@@ -1,4 +1,4 @@
-namespace Features.Unit.Stat
+namespace Features.Unit.Modding.Stat
 {
     public interface IUnitStat
     {

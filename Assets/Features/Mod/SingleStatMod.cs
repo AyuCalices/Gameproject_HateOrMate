@@ -1,5 +1,6 @@
 using Features.Unit;
-using Features.Unit.Stat;
+using Features.Unit.Modding;
+using Features.Unit.Modding.Stat;
 using UnityEngine;
 
 namespace Features.Mod

@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Features.Mod;
 using Features.ModView;
-using UnityEngine;
 
-namespace Features.Unit
+namespace Features.Unit.Modding
 {
     public class UnitMods
     {

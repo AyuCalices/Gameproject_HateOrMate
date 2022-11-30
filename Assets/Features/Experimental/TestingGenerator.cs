@@ -1,7 +1,9 @@
 using System;
-using Features.Grid;
+using Features.GlobalReferences;
 using Features.ModView;
 using Features.Unit;
+using Features.Unit.GridMovement;
+using Features.Unit.Modding;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -29,7 +31,9 @@ namespace Features.Experimental
             if (Input.GetKeyDown(KeyCode.U))
             {
                 LocalUnitBehaviour localUnitBehaviour = onSpawnUnit.Invoke();
-                gridManager.AddUnitToRandom(localUnitBehaviour);
+
+                if (!localUnitBehaviour.TryGetComponent(out LocalUnitTilePlacementBehaviour localUnitDragBehaviour)) return;
+                gridManager.AddUnitToRandom(localUnitDragBehaviour);
             }
         }
     }

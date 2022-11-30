@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Features.Unit.Stat
+namespace Features.Unit.Modding.Stat
 {
     public enum StatType { Damage, Health, Speed }
     public enum StatValueType { Stat, ScalingStat }

@@ -120,7 +120,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8749017320662206193}
-  - component: {fileID: 8204258064758695579}
   - component: {fileID: 143549982621620388}
   - component: {fileID: 4680195752594377425}
   - component: {fileID: 489004181919312880}
@@ -147,22 +146,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8204258064758695579
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8749017320662206192}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bd0ee395f9311d245b80f229ab5734e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _baseColor: {r: 1, g: 0, b: 0, a: 1}
-  _offsetColor: {r: 1, g: 0.43867922, b: 0.43867922, a: 1}
-  _renderer: {fileID: 4680195752594377425}
-  _highlight: {fileID: 7850936907253048648}
 --- !u!114 &143549982621620388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -175,8 +158,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b9631e9f51cd5418306790c94f428c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _speed: 1.5
+  _baseColor: {r: 0, g: 0.23359418, b: 1, a: 1}
+  _offsetColor: {r: 0.36320752, g: 0.4147287, b: 1, a: 1}
+  _renderer: {fileID: 4680195752594377425}
+  _highlight: {fileID: 7850936907253048648}
   gameObjectFocus: {fileID: 11400000, guid: c8de5a89f7522064a8e4bbf0115f2857, type: 2}
-  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
 --- !u!212 &4680195752594377425
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Stat
+namespace Features.Unit.Modding.Stat
 {
     /// <summary>
     /// Edge Case Speed:

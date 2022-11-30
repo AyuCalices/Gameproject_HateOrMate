@@ -1,6 +1,6 @@
-using System;
 using ExitGames.Client.Photon;
 using Features.Experimental;
+using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -12,9 +12,7 @@ namespace Features.Unit
     {
         [SerializeField] private LocalUnitBehaviour localPlayerPrefab;
         [SerializeField] private NetworkedUnitBehaviour networkedPlayerPrefab;
-        
-        private byte customManualInstantiationEventCode = 100;
-        
+
         public void Spawn()
         {
             SpawnPlayer();
@@ -56,8 +54,7 @@ namespace Features.Unit
                     Reliability = true
                 };
 
-                Debug.Log(customManualInstantiationEventCode);
-                PhotonNetwork.RaiseEvent(customManualInstantiationEventCode, data, raiseEventOptions, sendOptions);
+                PhotonNetwork.RaiseEvent(RaiseEventCode.UnitManualInstantiation, data, raiseEventOptions, sendOptions);
             }
             else
             {
@@ -71,7 +68,7 @@ namespace Features.Unit
         
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == customManualInstantiationEventCode)
+            if (photonEvent.Code == RaiseEventCode.UnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
 

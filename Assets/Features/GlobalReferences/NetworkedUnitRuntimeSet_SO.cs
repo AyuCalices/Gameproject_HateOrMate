@@ -1,7 +1,9 @@
 using DataStructures.RuntimeSet;
+using Features.Unit;
+using Features.Unit.Modding;
 using UnityEngine;
 
-namespace Features.Unit
+namespace Features.GlobalReferences
 {
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
     public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedUnitBehaviour>

@@ -1,4 +1,5 @@
 using Features.Unit;
+using Features.Unit.Modding;
 
 namespace Features.Mod
 {

@@ -1,15 +1,15 @@
-using Features.ModView;
-using Features.Unit;
+using Features.GlobalReferences;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Features.Grid
+namespace Features.Unit.GridMovement
 {
-    public class LocalUnitDragBehaviour : NetworkedUnitDragBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class LocalUnitTilePlacementBehaviour : NetworkedUnitTilePlacementBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
+        [SerializeField] private CameraFocus_SO cameraFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private GameObject visualObject;
-        [SerializeField] private GameObjectFocus_SO gameObjectFocus;
+        [SerializeField] private GridFocus_SO gridFocus;
 
         public void OnPointerDown(PointerEventData eventData)
         {
@@ -17,26 +17,25 @@ namespace Features.Grid
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            gameObjectFocus.Set(Instantiate(visualObject));
+            gridFocus.Set(Instantiate(visualObject));
         }
 
         public void OnDrag(PointerEventData eventData)
         {
             if (canvasFocus.Get() == null) return;
 
-            Camera mainCamera = Camera.main;
-            if (mainCamera != null && gameObjectFocus.isFixedToMousePosition)
+            if (cameraFocus.NotNull() && gridFocus.isFixedToMousePosition)
             {
                 Vector3 screenPoint = Input.mousePosition;
                 screenPoint.z = 10f;
-                gameObjectFocus.Get().transform.position = mainCamera.ScreenToWorldPoint(screenPoint);
+                gridFocus.Get().transform.position = cameraFocus.Get().ScreenToWorldPoint(screenPoint);
             }
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            Destroy(gameObjectFocus.Get());
-            gameObjectFocus.Restore();
+            Destroy(gridFocus.Get());
+            gridFocus.Restore();
         }
     }
 }

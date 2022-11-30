@@ -2,7 +2,7 @@ using System.Linq;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Stat
+namespace Features.Unit.Modding.Stat
 {
     public class NetworkStat : IUnitStat
     {

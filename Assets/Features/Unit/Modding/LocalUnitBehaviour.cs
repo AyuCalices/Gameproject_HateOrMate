@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Features.GlobalReferences;
 using Features.ModView;
-using Features.Unit.Stat;
 using UnityEngine;
 
-namespace Features.Unit
+namespace Features.Unit.Modding
 {
     //TODO: implement base stat values
     public class LocalUnitBehaviour : NetworkedUnitBehaviour

@@ -1,11 +1,12 @@
 using System;
-using Features.Unit.Stat;
+using Features.GlobalReferences;
+using Features.Unit.Modding.Stat;
 using JetBrains.Annotations;
 using Photon.Pun;
 using UnityEditor;
 using UnityEngine;
 
-namespace Features.Unit
+namespace Features.Unit.Modding
 {
     public class NetworkedUnitBehaviour : MonoBehaviour
     {
@@ -18,8 +19,6 @@ namespace Features.Unit
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public int ViewID { get; private set; }
         public bool NetworkingInitialized { get; private set; }
-        
-        public Vector3 GridPosition { get; set; }
 
         protected void Awake()
         {

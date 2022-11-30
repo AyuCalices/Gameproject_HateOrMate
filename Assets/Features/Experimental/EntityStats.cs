@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Unit;
-using Features.Unit.Stat;
+using Features.Unit.Modding.Stat;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;

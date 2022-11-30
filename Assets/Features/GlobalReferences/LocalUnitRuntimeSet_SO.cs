@@ -1,9 +1,10 @@
 using DataStructures.RuntimeSet;
-using Features.Mod;
 using Features.ModView;
+using Features.Unit;
+using Features.Unit.Modding;
 using UnityEngine;
 
-namespace Features.Unit
+namespace Features.GlobalReferences
 {
     [CreateAssetMenu(fileName = "new LocalUnitRuntimeSet", menuName = "Unit/Local RuntimeSet")]
     public class LocalUnitRuntimeSet_SO : RuntimeSet_SO<LocalUnitBehaviour>
