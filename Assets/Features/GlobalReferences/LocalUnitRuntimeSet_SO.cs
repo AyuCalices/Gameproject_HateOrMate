@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using DataStructures.RuntimeSet;
 using Features.ModView;
 using Features.Unit;
+using Features.Unit.Battle;
 using Features.Unit.Modding;
 using UnityEngine;
 
@@ -32,6 +34,23 @@ namespace Features.GlobalReferences
             
             localUnit = null;
             return result;
+        }
+
+        public List<T> GetAllUnitsByBattleAction<T>() where T : BattleActions
+        {
+            List<T> foundUnits = new List<T>();
+
+            List<LocalUnitBehaviour> list = GetItems();
+
+            foreach (LocalUnitBehaviour item in list)
+            {
+                if (item.GetComponent<BattleBehaviour>().BattleActions is T action)
+                {
+                    foundUnits.Add(action);
+                }
+            }
+
+            return foundUnits;
         }
     }
 }

@@ -25,7 +25,7 @@ namespace Features.Unit.GridMovement
     
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == RaiseEventCode.MasterChangeUnitGridPosition)
+            if (photonEvent.Code == RaiseEventCode.OnMasterChangeUnitGridPosition)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
@@ -33,7 +33,7 @@ namespace Features.Unit.GridMovement
                 
                 MoveGameObjectToTarget(gameObject, (Vector3) data[1], (Vector3) data[2]);
             }
-            else if (photonEvent.Code == RaiseEventCode.RequestChangeUnitGridPosition)
+            else if (photonEvent.Code == RaiseEventCode.OnRequestChangeUnitGridPosition)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
@@ -42,7 +42,7 @@ namespace Features.Unit.GridMovement
                 gridRuntimeDictionary.TryGetValue((Vector3) data[1], out TileBehaviour targetTileBehaviour);
                 if (targetTileBehaviour.ContainsUnit) return;
                 
-                NetworkMove(RaiseEventCode.MasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, (Vector3) data[1], (Vector3) data[2]);
+                NetworkMove(RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, (Vector3) data[1], (Vector3) data[2]);
             }
         }
     

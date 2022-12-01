@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DataStructures.RuntimeSet;
 using Features.Unit;
 using Features.Unit.Modding;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.GlobalReferences
@@ -43,7 +44,7 @@ namespace Features.GlobalReferences
 
         public bool IsInRangeByWorldPosition(float range, Vector3 worldPosition)
         {
-            var list = GetItems();
+            List<NetworkedUnitBehaviour> list = GetItems();
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in list)
             {
                 float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviour.transform.position);
@@ -54,6 +55,21 @@ namespace Features.GlobalReferences
             }
 
             return false;
+        }
+
+        public int[] GetIDs()
+        {
+            List<NetworkedUnitBehaviour> list = GetItems();
+
+            int[] ids = new int[list.Count];
+
+            for (int index = 0; index < list.Count; index++)
+            {
+                NetworkedUnitBehaviour item = list[index];
+                ids[index] = item.GetComponent<PhotonView>().ViewID;
+            }
+
+            return ids;
         }
     }
 }

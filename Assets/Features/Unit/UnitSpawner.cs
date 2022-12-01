@@ -54,7 +54,7 @@ namespace Features.Unit
                     Reliability = true
                 };
 
-                PhotonNetwork.RaiseEvent(RaiseEventCode.UnitManualInstantiation, data, raiseEventOptions, sendOptions);
+                PhotonNetwork.RaiseEvent(RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
             }
             else
             {
@@ -68,7 +68,7 @@ namespace Features.Unit
         
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == RaiseEventCode.UnitManualInstantiation)
+            if (photonEvent.Code == RaiseEventCode.OnUnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
 

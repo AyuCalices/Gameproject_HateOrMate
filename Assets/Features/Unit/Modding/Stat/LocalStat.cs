@@ -18,10 +18,10 @@ namespace Features.Unit.Modding.Stat
     
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
-            statValues = new List<float>() {10};
+            statValues = new List<float>() {};
             UpdateStat(statIdentity, statValues.ToArray());
         
-            scalingStatValues = new List<float>() {1};
+            scalingStatValues = new List<float>() {};
             UpdateStat(scalingStatIdentity, scalingStatValues.ToArray());
         }
     

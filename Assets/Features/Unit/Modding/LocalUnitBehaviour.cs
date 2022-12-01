@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Features.GlobalReferences;
 using Features.ModView;
+using Features.Unit.Modding.Stat;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -27,7 +28,14 @@ namespace Features.Unit.Modding
 
         protected override void InternalStart()
         {
-            //implement stuff
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.Stat, 10);
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.ScalingStat, 1);
+            
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Health, StatValueType.Stat, 50);
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Health, StatValueType.ScalingStat, 1);
+            
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Speed, StatValueType.Stat, 3);
+            NetworkedStatServiceLocator.TryAddLocalValue(StatType.Speed, StatValueType.ScalingStat, 1);
         }
 
         protected void Update()

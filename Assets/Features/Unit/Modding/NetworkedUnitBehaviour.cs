@@ -20,6 +20,8 @@ namespace Features.Unit.Modding
         public int ViewID { get; private set; }
         public bool NetworkingInitialized { get; private set; }
 
+        public PhotonView PhotonView => _photonView;
+
         protected void Awake()
         {
             _photonView = GetComponent<PhotonView>();

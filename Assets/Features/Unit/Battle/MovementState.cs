@@ -6,14 +6,10 @@ namespace Features.Unit.Battle
 {
     public class MovementState : IState
     {
-        private readonly NetworkedUnitBehaviour _ownerNetworkedUnitBehaviour;
-        private readonly NetworkedUnitRuntimeSet_SO _opponentNetworkedUnitRuntimeSet;
-        private readonly BattleActions_SO _battleActions;
+        private readonly BattleActions _battleActions;
         
-        public MovementState(NetworkedUnitBehaviour ownerNetworkedUnitBehaviour, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet, BattleActions_SO battleActions)
+        public MovementState(BattleActions battleActions)
         {
-            _ownerNetworkedUnitBehaviour = ownerNetworkedUnitBehaviour;
-            _opponentNetworkedUnitRuntimeSet = opponentNetworkedUnitRuntimeSet;
             _battleActions = battleActions;
         }
     
@@ -23,7 +19,7 @@ namespace Features.Unit.Battle
 
         public void Execute()
         {
-            _battleActions.Move(_ownerNetworkedUnitBehaviour, _opponentNetworkedUnitRuntimeSet);
+            _battleActions.Move();
         }
 
         public void Exit()

@@ -163,7 +163,7 @@ MonoBehaviour:
   _offsetColor: {r: 0.36320752, g: 0.4147287, b: 1, a: 1}
   _renderer: {fileID: 4680195752594377425}
   _highlight: {fileID: 7850936907253048648}
-  gameObjectFocus: {fileID: 11400000, guid: c8de5a89f7522064a8e4bbf0115f2857, type: 2}
+  gridFocus: {fileID: 11400000, guid: c8de5a89f7522064a8e4bbf0115f2857, type: 2}
 --- !u!212 &4680195752594377425
 SpriteRenderer:
   m_ObjectHideFlags: 0
