@@ -4,9 +4,10 @@ using UnityEngine;
 
 namespace Features.Unit.Battle
 {
-    public class ClickerBehaviour : MonoBehaviour
+    [CreateAssetMenu]
+    public class ClickerManager_SO : ScriptableObject
     {
-        [SerializeField] private LocalUnitRuntimeSet_SO localUnitRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
 
         public void OnClick()
         {

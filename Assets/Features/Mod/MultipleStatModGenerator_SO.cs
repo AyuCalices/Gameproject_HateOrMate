@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Features.GlobalReferences;
 using Features.Unit;
 using Features.Unit.Modding.Stat;
 using UnityEngine;
@@ -23,7 +24,7 @@ namespace Features.Mod
     [Serializable]
     public class MultipleStatModTarget
     {
-        public UnitOwnerType unitOwnerType;
+        public NetworkedUnitRuntimeSet_SO networkedUnitRuntimeSet;
         public StatType statType;
         public float baseValue;
         public float scaleValue;

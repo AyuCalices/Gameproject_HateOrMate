@@ -14,7 +14,7 @@ namespace Features.Experimental
     {
         public static Func<LocalUnitBehaviour> onSpawnUnit;
         
-        [SerializeField] private LocalUnitRuntimeSet_SO localUnitRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
         [SerializeField] private GridManager gridManager;
 

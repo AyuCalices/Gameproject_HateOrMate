@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: AIUnitRuntimeSet
   m_EditorClassIdentifier: 
   items: []
+  unitControlType: 1

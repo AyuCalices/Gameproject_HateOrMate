@@ -51,7 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b5af6e1786ddd94593111fc2e023da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  networkedPlayerUnits: {fileID: 11400000, guid: 74d727fd9b420344b83a83190ca4ef67, type: 2}
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  ownerNetworkedPlayerUnits: {fileID: 11400000, guid: 74d727fd9b420344b83a83190ca4ef67, type: 2}
 --- !u!114 &3756660778862827644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,7 +78,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleManager: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  battleActionsGenerator: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
+  isTargetable: 1
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   range: 100
 --- !u!114 &3695171276840931626
 MonoBehaviour:

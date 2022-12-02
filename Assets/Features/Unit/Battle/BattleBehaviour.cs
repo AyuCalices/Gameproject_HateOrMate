@@ -1,6 +1,9 @@
+using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Battle;
+using Features.GlobalReferences;
+using Features.Mod.Action;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
 using Photon.Pun;
@@ -12,20 +15,19 @@ namespace Features.Unit.Battle
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private BattleManager_SO battleManager;
+        [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
+        [SerializeField] private bool isTargetable;
+        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private float range;
         
         private NetworkedUnitBehaviour _networkedUnitBehaviour;
         private StateMachine _stateMachine;
         private BattleActions _battleActions;
-        private PhotonView _photonView;
         private UnitView _unitView;
 
+        public bool IsTargetable => isTargetable;
         public BattleActions BattleActions => _battleActions;
 
-        //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
-        //2nd step: raise event to update health on all clients on attacked instance
-        //AI events gets called by masterClient: If Client Attack on AI -> Send Attack To Master
         private float _removedHealth;
 
         public float RemovedHealth
@@ -44,13 +46,16 @@ namespace Features.Unit.Battle
             _stateMachine.Initialize(new IdleState());
             _networkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
             
-            _photonView = GetComponent<PhotonView>();
             _unitView = GetComponent<UnitView>();
 
             _removedHealth = 0;
-            _battleActions = new TowerBattleActions(_networkedUnitBehaviour, battleManager.EnemyUnitRuntimeSet, _unitView,10, 10);
-            //_battleActions = new TroopBattleActions(_networkedUnitBehaviour, battleManager.EnemyUnitRuntimeSet);
-            
+        }
+
+        private void Start()
+        {
+            _battleActions = battleActionsGenerator.Generate(_networkedUnitBehaviour, this, _unitView,
+                battleData.EnemyUnitRuntimeSet);
+
             EnterAttackState();
         }
 
@@ -70,24 +75,47 @@ namespace Features.Unit.Battle
             _stateMachine.Update();
         }
         
+        
+        
+        //AI events gets called by masterClient: If Client Attack on AI -> Send Attack To Master
+        //If Client attacks AI -> send attack to master -> update health by RaiseEvent
+        //If AI attacks Client -> master sends attack to client -> update health by RaiseEvent
+        
+        //If Master attacks AI -> calculate attack locally -> update health by RaiseEvent
+        //If AI attacks Master -> master calculated locally -> update health by RaiseEvent
+
+        //more precise:
+        //if isMaster: send own attacks and ai attacks to others | if client attacks -> master updates health for ai & own
+        //if isClient: send attack always to master
+        //update health by raise event always the same
+        
+        //this means: ai is networkedUnitBehaviour of master client
+        //both player have networkedUnitBehaviour for ai if the host changes (only the host manages attacks)
+        //enemy towers are idle towers - not clicker (maybe implement AI Actions acting - there also can be differentiated between Master and Client)
+        //exchanging behaviours is a no go!
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
+            //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
             if (photonEvent.Code == RaiseEventCode.OnPerformUnitAttack)
             {
-                Debug.Log(photonEvent.Code);
                 object[] data = (object[]) photonEvent.CustomData;
                 if (photonView.ViewID == (int) data[0])
                 {
-                    _battleActions.OnSendAttackActionCallback(this, (float) data[1]);
+                    _battleActions.OnSendAttackActionCallback((float) data[1]);
                 }
             }
+            //2nd step: raise event to update health on all clients on attacked instance
             else if (photonEvent.Code == RaiseEventCode.OnPerformUpdateUnitHealth)
             {
-                Debug.Log(photonEvent.Code);
                 object[] data = (object[]) photonEvent.CustomData;
                 if (photonView.ViewID == (int) data[0])
                 {
-                    _battleActions.OnSendHealthActionCallback(this, (float) data[1], _networkedUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
+                    _battleActions.OnSendHealthActionCallback((float) data[1], (float) data[2]);
                 }
             }
         }
@@ -99,7 +127,10 @@ namespace Features.Unit.Battle
 
         public void EnterAttackState()
         {
-            _stateMachine.ChangeState(new AttackState(_battleActions));
+            if (isTargetable)
+            {
+                _stateMachine.ChangeState(new AttackState(_battleActions));
+            }
         }
 
         public void EnterMovementState()

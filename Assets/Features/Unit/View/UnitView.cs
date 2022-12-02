@@ -9,6 +9,7 @@ public class UnitView : MonoBehaviour
 
     public void SetHealthSlider(float removedHealth, float totalHealth)
     {
+        Debug.Log(removedHealth + " " + totalHealth);
         float sliderValue = Mathf.Clamp((totalHealth - removedHealth) / totalHealth, 0, 1);
         Vector3 localScale = healthTransform.localScale;
         Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);

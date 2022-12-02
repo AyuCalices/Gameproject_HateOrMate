@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using Features.GlobalReferences;
-using Features.ModView;
 using Features.Unit.Modding.Stat;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -10,23 +8,24 @@ namespace Features.Unit.Modding
     //TODO: implement base stat values
     public class LocalUnitBehaviour : NetworkedUnitBehaviour
     {
-        public static Func<UnitModHud> onInstantiateModSlot;
-        
-        [SerializeField] private LocalUnitRuntimeSet_SO localPlayerLocalUnits;
-        [SerializeField] private int modCount;
-
-        public LocalUnitRuntimeSet_SO LocalPlayerLocalUnits => localPlayerLocalUnits;
-        
-        public UnitMods UnitMods { get; private set; }
-
         protected override void InternalAwake()
         {
-            UnitModHud unitModView = onInstantiateModSlot.Invoke();
-            List<ModSlotBehaviour> modDropBehaviours = unitModView.GetAllChildren();
-            UnitMods = new UnitMods(modCount, this, modDropBehaviours);
+            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
+            
+            OwnerNetworkedPlayerUnits.Add(this);
+            battleData.PlayerTeamUnitRuntimeSet.Add(this);
+            
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ControlType = UnitControlType.Master;
+            }
+            else
+            {
+                ControlType = UnitControlType.Client;
+            }
         }
 
-        protected override void InternalStart()
+        protected override void InternalOnNetworkingEnabled()
         {
             NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.Stat, 10);
             NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.ScalingStat, 1);
@@ -38,19 +37,10 @@ namespace Features.Unit.Modding
             NetworkedStatServiceLocator.TryAddLocalValue(StatType.Speed, StatValueType.ScalingStat, 1);
         }
 
-        protected void Update()
+        protected override void InternalOnDestroy()
         {
-            //Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
-        }
-
-        protected override void AddToRuntimeSet()
-        {
-            localPlayerLocalUnits.Add(this);
-        }
-        
-        protected override void RemoveFromRuntimeSet()
-        {
-            localPlayerLocalUnits.Remove(this);
+            OwnerNetworkedPlayerUnits.Remove(this);
+            battleData.PlayerTeamUnitRuntimeSet.Remove(this);
         }
     }
 }

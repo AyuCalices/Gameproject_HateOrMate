@@ -1,4 +1,5 @@
 using System;
+using Features.Battle;
 using Features.GlobalReferences;
 using Features.Unit.Modding.Stat;
 using JetBrains.Annotations;
@@ -10,48 +11,77 @@ namespace Features.Unit.Modding
 {
     public class NetworkedUnitBehaviour : MonoBehaviour
     {
-        [SerializeField] private NetworkedUnitRuntimeSet_SO networkedPlayerUnits;
-    
-        private PhotonView _photonView;
-
-        public NetworkedUnitRuntimeSet_SO NetworkedPlayerUnits => networkedPlayerUnits;
-    
+        [SerializeField] protected BattleData_SO battleData;
+        public NetworkedUnitRuntimeSet_SO OwnerNetworkedPlayerUnits => ownerNetworkedPlayerUnits;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
+        
+        
+        public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet { get; protected set; }
+        public UnitControlType ControlType { get; protected set; }
+        
+        
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
-        public int ViewID { get; private set; }
-        public bool NetworkingInitialized { get; private set; }
+        public PhotonView PhotonView { get; private set; }
 
-        public PhotonView PhotonView => _photonView;
-
+        
         protected void Awake()
         {
-            _photonView = GetComponent<PhotonView>();
-        
+            PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
 
             InternalAwake();
         }
-        
-        protected virtual void InternalAwake() {}
 
-        protected void Start()
+        /// <summary>
+        /// When instantiating a Unit, call this after a PhotonView ViewId was allocated and the RaiseEvent Instantiation was done. (photon uses a queue)
+        /// If the Unit is already placed inside a scene it must be called in Awake
+        /// </summary>
+        public void OnPhotonViewIdAllocated()
         {
-            //Networking only possible post Awake with the used Architecture: The UnitSpawner Instatiates the Unit and gives it a ViewID. Applying the ViewID happens after the Awake of this Script and gets synchronized between all Clients, resulting that networking must be used in Start(). This has the reason, that we want to differentiate between a Networked Unit and a Local Unit (e.g. for instantiating the ModUI only for the Local Unit)
-            ViewID = _photonView.ViewID;
+            Debug.Log("Init Networking");
+            
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
                 string scalingStatIdentity = GUID.Generate().ToString();
                 string statIdentity = GUID.Generate().ToString();
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
-                _photonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
+                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }
-            NetworkingInitialized = true;
 
-            AddToRuntimeSet();
+            InternalOnNetworkingEnabled();
+        }
+
+        protected virtual void InternalOnNetworkingEnabled() { }
+
+        protected virtual void InternalAwake()
+        {
+            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
+            
+            ownerNetworkedPlayerUnits.Add(this);
+            battleData.PlayerTeamUnitRuntimeSet.Add(this);
+            
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ControlType = UnitControlType.Master;
+            }
+            else
+            {
+                ControlType = UnitControlType.Client;
+            }
+        }
+
+        protected void Start()
+        {
             InternalStart();
         }
-        
-        protected virtual void InternalStart() {}
-    
+
+        private void Update()
+        {
+            //Debug.Log(gameObject.name + " " + NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
+        }
+
+        protected virtual void InternalStart() { }
+
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
@@ -60,22 +90,13 @@ namespace Features.Unit.Modding
 
         private void OnDestroy()
         {
-            RemoveFromRuntimeSet();
+            InternalOnDestroy();
         }
 
-        protected void Update()
+        protected virtual void InternalOnDestroy()
         {
-            //Debug.Log(NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
-        }
-
-        protected virtual void AddToRuntimeSet()
-        {
-            networkedPlayerUnits.Add(this);
-        }
-    
-        protected virtual void RemoveFromRuntimeSet()
-        {
-            networkedPlayerUnits.Remove(this);
+            ownerNetworkedPlayerUnits.Remove(this);
+            battleData.PlayerTeamUnitRuntimeSet.Remove(this);
         }
     }
 }

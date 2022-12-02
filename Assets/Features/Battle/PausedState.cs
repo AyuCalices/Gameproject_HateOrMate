@@ -4,9 +4,9 @@ namespace Features.Battle
 {
     public class PausedState : IState
     {
-        private BattleManager_SO _battleManager;
+        private BattleManager _battleManager;
         
-        public PausedState(BattleManager_SO battleManager)
+        public PausedState(BattleManager battleManager)
         {
             _battleManager = battleManager;
         }

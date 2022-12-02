@@ -17,12 +17,12 @@ namespace Features.ModView
 
         private void OnEnable()
         {
-            LocalUnitBehaviour.onInstantiateModSlot += InstantiateModView;
+            ModUnitBehaviour.onInstantiateModSlot += InstantiateModView;
         }
 
         private void OnDisable()
         {
-            LocalUnitBehaviour.onInstantiateModSlot -= InstantiateModView;
+            ModUnitBehaviour.onInstantiateModSlot -= InstantiateModView;
         }
 
         private UnitModHud InstantiateModView()

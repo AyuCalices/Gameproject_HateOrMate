@@ -1,12 +1,13 @@
 using DataStructures.StateLogic;
+using Photon.Pun;
 
 namespace Features.Battle
 {
     public class RunningState : IState
     {
-        private BattleManager_SO _battleManager;
+        private readonly BattleManager _battleManager;
         
-        public RunningState(BattleManager_SO battleManager)
+        public RunningState(BattleManager battleManager)
         {
             _battleManager = battleManager;
         }

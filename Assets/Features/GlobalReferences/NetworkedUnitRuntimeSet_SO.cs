@@ -1,21 +1,55 @@
 using System.Collections.Generic;
 using DataStructures.RuntimeSet;
-using Features.Unit;
+using Features.ModView;
+using Features.Unit.Battle;
 using Features.Unit.Modding;
 using Photon.Pun;
 using UnityEngine;
 
 namespace Features.GlobalReferences
 {
+    public enum UnitControlType { Master, Client, AI }
+    
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
     public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedUnitBehaviour>
     {
+        public bool TryAddModToAny(ModDragBehaviour modDragBehaviour)
+        {
+            foreach (NetworkedUnitBehaviour localUnitBehaviour in GetItems())
+            {
+                if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
+                if (modUnitBehaviour.UnitMods.TryAddMod(modDragBehaviour))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public List<T> GetAllUnitsByBattleAction<T>() where T : BattleActions
+        {
+            List<T> foundUnits = new List<T>();
+
+            List<NetworkedUnitBehaviour> list = GetItems();
+
+            foreach (NetworkedUnitBehaviour item in list)
+            {
+                if (item.GetComponent<BattleBehaviour>().BattleActions is T action)
+                {
+                    foundUnits.Add(action);
+                }
+            }
+
+            return foundUnits;
+        }
+        
         public bool TryGetByIdentity(int identity, out NetworkedUnitBehaviour localUnit)
         {
-            bool result = GetItems().Exists(x => x.ViewID == identity);
+            bool result = GetItems().Exists(x => x.PhotonView.ViewID == identity);
             if (result)
             {
-                localUnit = GetItems().Find(x => x.ViewID == identity);
+                localUnit = GetItems().Find(x => x.PhotonView.ViewID == identity);
             }
             
             localUnit = null;
