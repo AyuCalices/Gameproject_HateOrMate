@@ -81,6 +81,15 @@ namespace Features.Unit.Modding.Stat
                 _ => throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null)
             };
         }
+
+        public void RemoveAll()
+        {
+            statValues.Clear();
+            scalingStatValues.Clear();
+            
+            UpdateStat(StatIdentity, statValues.ToArray());
+            UpdateStat(ScalingStatIdentity, scalingStatValues.ToArray());
+        }
     
         private bool TryRemoveStatValueInternal(float value)
         {

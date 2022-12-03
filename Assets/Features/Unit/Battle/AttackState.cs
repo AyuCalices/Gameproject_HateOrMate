@@ -19,7 +19,7 @@ namespace Features.Unit.Battle
     
         public void Enter()
         {
-            
+            _battleActions.InitializeBattleActions();
         }
 
         public void Execute()

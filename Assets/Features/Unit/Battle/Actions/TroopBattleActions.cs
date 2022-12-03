@@ -18,7 +18,13 @@ namespace Features.Unit.Battle.Actions
         {
             _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
         }
-        
+
+        protected override void InternalInitializeBattleActions()
+        {
+            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+        }
+
         protected override void InternalUpdateBattleActions()
         {
             _attackSpeedDeltaTime -= Time.deltaTime;

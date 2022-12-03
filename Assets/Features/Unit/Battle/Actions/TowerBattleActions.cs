@@ -4,7 +4,6 @@ using Features.Battle;
 using Features.GlobalReferences;
 using Features.Unit.Modding;
 using Features.Unit.View;
-using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Battle.Actions
@@ -28,7 +27,13 @@ namespace Features.Unit.Battle.Actions
             _staminaRefreshTime = staminaRefreshTime;
             _staminaRefreshTimeDelta = staminaRefreshTime;
         }
-    
+
+        protected override void InternalInitializeBattleActions()
+        {
+            _currentStamina = _totalStamina;
+            ownerUnitView.SetStaminaSlider(_currentStamina, _totalStamina);
+        }
+
         protected override void InternalUpdateBattleActions()
         {
             _staminaRefreshTimeDelta -= Time.deltaTime;
@@ -45,6 +50,8 @@ namespace Features.Unit.Battle.Actions
 
         protected override void InternalOnPerformAction()
         {
+            if (ownerBattleBehaviour.CurrentState is not AttackState) return;
+            
             if (_currentStamina <= 0) return;
 
             _currentStamina--;

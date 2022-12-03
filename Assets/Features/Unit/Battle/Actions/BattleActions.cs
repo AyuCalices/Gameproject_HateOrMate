@@ -106,13 +106,21 @@ namespace Features.Unit.Battle.Actions
         public void OnSendHealthActionCallback(float newRemovedHealth,
             float totalHealth)
         {
+            //TODO: gets casted double on the client that send this
             ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth = newRemovedHealth;
         
             if (ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth >= totalHealth)
             {
                 ownerBattleBehaviour.RequestDeathState();
+                ownerBattleBehaviour.NetworkedUnitBehaviour.StageCheck();
             }
         }
+
+        public void InitializeBattleActions()
+        {
+            InternalInitializeBattleActions();
+        }
+        protected abstract void InternalInitializeBattleActions();
         
         
         public void UpdateBattleActions()

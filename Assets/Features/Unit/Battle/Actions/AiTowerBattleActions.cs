@@ -25,6 +25,12 @@ namespace Features.Unit.Battle.Actions
             _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
         }
 
+        protected override void InternalInitializeBattleActions()
+        {
+            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+        }
+
         protected override void InternalUpdateBattleActions()
         {
             if (!PhotonNetwork.IsMasterClient) return;
@@ -37,7 +43,7 @@ namespace Features.Unit.Battle.Actions
                 InternalOnPerformAction();
             }
             
-            //ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
         }
 
         protected override void InternalOnPerformAction()

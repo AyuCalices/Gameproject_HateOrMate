@@ -10,6 +10,10 @@ namespace Features.Unit.Battle.Actions
         {
         }
 
+        protected override void InternalInitializeBattleActions()
+        {
+        }
+
         protected override void InternalUpdateBattleActions()
         {
         }

@@ -23,8 +23,8 @@ namespace Features.Unit.Modding
         
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
-        
-        
+        public bool NetworkingInitialized { get; private set; }
+
         private float _removedHealth;
         public float RemovedHealth
         {
@@ -34,17 +34,20 @@ namespace Features.Unit.Modding
                 _removedHealth = value;
                 if (TryGetComponent(out UnitView unitView))
                 {
-                    unitView.SetHealthSlider(_removedHealth, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
+                    unitView.SetHealthSlider(RemovedHealth, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
                 }
             }
         }
 
-        
+        public void StageCheck()
+        {
+            battleData.BattleManager.StageCheck();
+        }
+
         protected void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
-            _removedHealth = 0;
             
             InternalAwake();
         }
@@ -65,6 +68,7 @@ namespace Features.Unit.Modding
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }
 
+            NetworkingInitialized = true;
             InternalOnNetworkingEnabled();
         }
         

@@ -144,5 +144,22 @@ namespace Features.GlobalReferences
 
             return ids;
         }
+
+        public bool HasUnitAlive()
+        {
+            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in GetItems())
+            {
+                if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                {
+                    if (battleBehaviour.CurrentState is not DeathState && battleBehaviour.IsTargetable)
+                    {
+                        return true;
+                    }
+                    
+                }
+            }
+
+            return false;
+        }
     }
 }

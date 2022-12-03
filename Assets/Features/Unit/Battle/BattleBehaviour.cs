@@ -115,7 +115,7 @@ namespace Features.Unit.Battle
 
         public bool HasTarget() => _hasTargetableEnemy;
 
-        private void RequestIdleState()
+        public void RequestIdleState()
         {
             _stateMachine.ChangeState(new IdleState());
         }

@@ -38,6 +38,17 @@ namespace Features.Unit.Modding.Stat
             return ((LocalStat)_services[key]).TryRemoveStatValue(statValueType, value);
         }
 
+        public void RemoveAllValues()
+        {
+            foreach (KeyValuePair<string, IUnitStat> service in _services)
+            {
+                if (service.Value is LocalStat localStat)
+                {
+                    localStat.RemoveAll();
+                }
+            }
+        }
+
         public float GetTotalValue(StatType statType)
         {
             float finalValue = 0;

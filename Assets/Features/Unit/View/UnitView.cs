@@ -32,6 +32,8 @@ namespace Features.Unit.View
 
         public void SetStaminaSlider(float currentStamina, float totalStamina)
         {
+            if (totalStamina == 0) return;
+            
             float sliderValue = Mathf.Clamp(currentStamina / totalStamina, 0, 1);
             Vector3 localScale = staminaTransform.localScale;
             Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);

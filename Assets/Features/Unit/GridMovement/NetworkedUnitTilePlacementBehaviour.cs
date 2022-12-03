@@ -18,6 +18,7 @@ namespace Features.Unit.GridMovement
         private float _movementSpeed = 3f;
         private PhotonView _photonView;
 
+        //TODO: implement instantiating
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
