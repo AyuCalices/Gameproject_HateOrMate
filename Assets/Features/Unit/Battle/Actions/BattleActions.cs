@@ -1,13 +1,12 @@
-using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.GlobalReferences;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
+using Features.Unit.View;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
-namespace Features.Unit.Battle
+namespace Features.Unit.Battle.Actions
 {
     public abstract class BattleActions
     {
@@ -61,10 +60,10 @@ namespace Features.Unit.Battle
         /// <param name="value"></param>
         public void OnSendAttackActionCallback(float value)
         {
-            ownerBattleBehaviour.RemovedHealth += value;
+            ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth += value;
             RaiseSendHealthEvent(
                 ownerBattleBehaviour.GetComponent<PhotonView>().ViewID,
-                ownerBattleBehaviour.RemovedHealth,
+                ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth,
                 ownerBattleBehaviour.GetComponent<NetworkedUnitBehaviour>().NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
             );
         }
@@ -107,17 +106,19 @@ namespace Features.Unit.Battle
         public void OnSendHealthActionCallback(float newRemovedHealth,
             float totalHealth)
         {
-            ownerBattleBehaviour.RemovedHealth = newRemovedHealth;
+            ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth = newRemovedHealth;
         
-            if (ownerBattleBehaviour.RemovedHealth >= totalHealth)
+            if (ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth >= totalHealth)
             {
-                Debug.LogWarning("DEAD!");
+                ownerBattleBehaviour.RequestDeathState();
             }
         }
         
         
         public void UpdateBattleActions()
         {
+            if (!ownerBattleBehaviour.HasTarget()) return;
+            
             InternalUpdateBattleActions();
         }
         protected abstract void InternalUpdateBattleActions();
@@ -135,38 +136,30 @@ namespace Features.Unit.Battle
         
         public void OnPerformAction()
         {
+            if (!ownerBattleBehaviour.HasTarget()) return;
+            
             InternalOnPerformAction();
         }
         protected abstract void InternalOnPerformAction();
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="casterControlType"></param>
-        protected void PerformAttack(UnitControlType casterControlType)
+        protected void SendAttack(UnitControlType casterControlType, NetworkedUnitBehaviour closestUnit)
         {
-            KeyValuePair<NetworkedUnitBehaviour, float> closestUnit = ownerNetworkingUnitBehaviour.EnemyRuntimeSet
-                .GetClosestByWorldPosition(ownerNetworkingUnitBehaviour.transform.position);
-            
-            BattleBehaviour targetBattleBehaviour = closestUnit.Key.GetComponent<BattleBehaviour>();
-            if (!targetBattleBehaviour.IsTargetable) return;
-            
-            if ((casterControlType == UnitControlType.Master && closestUnit.Key.ControlType is UnitControlType.AI) 
-                || (casterControlType == UnitControlType.AI && closestUnit.Key.ControlType is UnitControlType.Master))
+            BattleBehaviour targetBattleBehaviour = closestUnit.GetComponent<BattleBehaviour>();
+            if ((casterControlType == UnitControlType.Master && closestUnit.ControlType is UnitControlType.AI) 
+                || (casterControlType == UnitControlType.AI && closestUnit.ControlType is UnitControlType.Master))
             {
                 
-                targetBattleBehaviour.RemovedHealth += ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
+                targetBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth += ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
                 RaiseSendHealthEvent(
-                    closestUnit.Key.GetComponent<PhotonView>().ViewID,
-                    targetBattleBehaviour.RemovedHealth,
-                    closestUnit.Key.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
+                    closestUnit.GetComponent<PhotonView>().ViewID,
+                    targetBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth,
+                    closestUnit.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
                 );
             }
             else
             {
                 SendAttackRaiseEvent(
-                    closestUnit.Key.PhotonView.ViewID,
+                    closestUnit.PhotonView.ViewID,
                     ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage)
                 );
             }

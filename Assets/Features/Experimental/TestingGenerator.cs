@@ -16,7 +16,6 @@ namespace Features.Experimental
         
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
-        [SerializeField] private GridManager gridManager;
 
         
         private void Update()
@@ -30,10 +29,7 @@ namespace Features.Experimental
         
             if (Input.GetKeyDown(KeyCode.U))
             {
-                LocalUnitBehaviour localUnitBehaviour = onSpawnUnit.Invoke();
-
-                if (!localUnitBehaviour.TryGetComponent(out LocalUnitTilePlacementBehaviour localUnitDragBehaviour)) return;
-                gridManager.AddUnitToRandom(localUnitDragBehaviour);
+                onSpawnUnit.Invoke();
             }
         }
     }

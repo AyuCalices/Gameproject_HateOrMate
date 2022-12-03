@@ -1,9 +1,10 @@
 using Features.GlobalReferences;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
+using Features.Unit.View;
 using UnityEngine;
 
-namespace Features.Unit.Battle
+namespace Features.Unit.Battle.Actions
 {
     public class TroopBattleActions : BattleActions
     {
@@ -33,7 +34,9 @@ namespace Features.Unit.Battle
 
         protected override void InternalOnPerformAction()
         {
-            PerformAttack(ownerNetworkingUnitBehaviour.ControlType);
+            if (!ownerBattleBehaviour.GetTarget(out NetworkedUnitBehaviour closestUnit)) return;
+            
+            SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
         }
     }
 }

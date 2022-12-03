@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Battle;
-using Features.GlobalReferences;
 using Features.Mod.Action;
+using Features.Unit.Battle.Actions;
 using Features.Unit.Modding;
-using Features.Unit.Modding.Stat;
+using Features.Unit.View;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -15,28 +15,29 @@ namespace Features.Unit.Battle
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        public DamageProjectileBehaviour damageProjectilePrefab;
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
-        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private float range;
         
-        private NetworkedUnitBehaviour _networkedUnitBehaviour;
+        public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
         private StateMachine _stateMachine;
         private BattleActions _battleActions;
         private UnitView _unitView;
 
-        public bool IsTargetable => isTargetable;
         public BattleActions BattleActions => _battleActions;
+        public IState CurrentState => _stateMachine.CurrentState;
 
-        private float _removedHealth;
+        private bool _hasTargetableEnemy;
+        private NetworkedUnitBehaviour _closestUnit;
 
-        public float RemovedHealth
+        public bool IsTargetable
         {
-            get => _removedHealth;
+            get => isTargetable;
             set
             {
-                _removedHealth = value;
-                _unitView.SetHealthSlider(_removedHealth, _networkedUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
+                isTargetable = value;
+                _unitView.SetHealthActive(value);
             }
         }
 
@@ -44,55 +45,41 @@ namespace Features.Unit.Battle
         {
             _stateMachine = new StateMachine();
             _stateMachine.Initialize(new IdleState());
-            _networkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
+            NetworkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
             
             _unitView = GetComponent<UnitView>();
 
-            _removedHealth = 0;
+            IsTargetable = isTargetable;
         }
 
         private void Start()
         {
-            _battleActions = battleActionsGenerator.Generate(_networkedUnitBehaviour, this, _unitView,
-                battleData.EnemyUnitRuntimeSet);
+            _battleActions = battleActionsGenerator.Generate(NetworkedUnitBehaviour, this, _unitView);
 
-            EnterAttackState();
+            RequestAttackState();
         }
 
         private void Update()
         {
-            /*
-            switch (_stateMachine.CurrentState)
+            _hasTargetableEnemy = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
+                    out KeyValuePair<NetworkedUnitBehaviour, float> closestUnit);
+            _closestUnit = closestUnit.Key;
+
+            switch (CurrentState)
             {
-                case MovementState when battleManager.EnemyUnitRuntimeSet.IsInRangeByWorldPosition(range, transform.position):
-                    EnterAttackState();
+                case AttackState when !_hasTargetableEnemy:
+                    RequestIdleState();
                     break;
-                case AttackState when !battleManager.EnemyUnitRuntimeSet.IsInRangeByWorldPosition(range, transform.position):
-                    EnterMovementState();
+                case AttackState or IdleState when _hasTargetableEnemy && closestUnit.Value > range:
+                    RequestMovementState();
                     break;
-            }*/
+                case MovementState or IdleState when _hasTargetableEnemy && closestUnit.Value < range:
+                    RequestAttackState();
+                    break;
+            }
 
             _stateMachine.Update();
         }
-        
-        
-        
-        //AI events gets called by masterClient: If Client Attack on AI -> Send Attack To Master
-        //If Client attacks AI -> send attack to master -> update health by RaiseEvent
-        //If AI attacks Client -> master sends attack to client -> update health by RaiseEvent
-        
-        //If Master attacks AI -> calculate attack locally -> update health by RaiseEvent
-        //If AI attacks Master -> master calculated locally -> update health by RaiseEvent
-
-        //more precise:
-        //if isMaster: send own attacks and ai attacks to others | if client attacks -> master updates health for ai & own
-        //if isClient: send attack always to master
-        //update health by raise event always the same
-        
-        //this means: ai is networkedUnitBehaviour of master client
-        //both player have networkedUnitBehaviour for ai if the host changes (only the host manages attacks)
-        //enemy towers are idle towers - not clicker (maybe implement AI Actions acting - there also can be differentiated between Master and Client)
-        //exchanging behaviours is a no go!
 
         /// <summary>
         /// 
@@ -119,23 +106,33 @@ namespace Features.Unit.Battle
                 }
             }
         }
+        
+        public bool GetTarget(out NetworkedUnitBehaviour closestUnit)
+        {
+            closestUnit = _closestUnit;
+            return _hasTargetableEnemy;
+        }
 
-        public void EnterIdleState()
+        public bool HasTarget() => _hasTargetableEnemy;
+
+        private void RequestIdleState()
         {
             _stateMachine.ChangeState(new IdleState());
         }
 
-        public void EnterAttackState()
+        private void RequestAttackState()
         {
-            if (isTargetable)
-            {
-                _stateMachine.ChangeState(new AttackState(_battleActions));
-            }
+            _stateMachine.ChangeState(new AttackState(_battleActions));
         }
 
-        public void EnterMovementState()
+        private void RequestMovementState()
         {
             _stateMachine.ChangeState(new MovementState(_battleActions));
+        }
+        
+        public void RequestDeathState()
+        {
+            _stateMachine.ChangeState(new DeathState(this));
         }
     }
 }

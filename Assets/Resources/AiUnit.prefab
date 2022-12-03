@@ -63,9 +63,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageProjectilePrefab: {fileID: 6686323569435117239, guid: cf6a01ed6b3b4db43aa89b8214ed8d77, type: 3}
   battleActionsGenerator: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
   isTargetable: 0
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   range: 100
 --- !u!114 &1119605207248732696
 MonoBehaviour:
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthTransform: {fileID: 1640782756869855968}
-  staminaAndSpeedTransform: {fileID: 8891390493115809262}
+  staminaTransform: {fileID: 8891390493115809262}
 --- !u!212 &6238822348637795684
 SpriteRenderer:
   m_ObjectHideFlags: 0

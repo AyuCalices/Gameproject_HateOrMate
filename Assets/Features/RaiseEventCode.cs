@@ -7,5 +7,6 @@ namespace Features
         public const byte OnRequestChangeUnitGridPosition = 3;
         public const byte OnPerformUnitAttack = 4;
         public const byte OnPerformUpdateUnitHealth = 5;
+        public const byte OnProjectileInstantiation = 5;
     }
 }

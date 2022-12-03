@@ -1,7 +1,8 @@
 using Features.GlobalReferences;
 using Features.Unit.Modding;
+using Features.Unit.View;
 
-namespace Features.Unit.Battle
+namespace Features.Unit.Battle.Actions
 {
     public class EmptyBattleActions : BattleActions
     {

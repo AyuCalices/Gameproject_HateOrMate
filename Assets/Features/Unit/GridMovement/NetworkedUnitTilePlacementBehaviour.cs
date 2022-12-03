@@ -79,7 +79,8 @@ namespace Features.Unit.GridMovement
             LeanTween.move(movable, targetPosition, time);
 
             targetTileBehaviour.AddUnit(this);
-            gridRuntimeDictionary.TryGetValue(previousGridPosition, out TileBehaviour previousTileBehaviour);
+
+            if (!gridRuntimeDictionary.TryGetValue(previousGridPosition, out TileBehaviour previousTileBehaviour)) return;
             if (previousTileBehaviour.ContainsUnit)
             {
                 previousTileBehaviour.RemoveUnit();

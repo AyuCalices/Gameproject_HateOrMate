@@ -1,11 +1,9 @@
 using Features.GlobalReferences;
 using Features.Unit.Modding.Stat;
 using Photon.Pun;
-using UnityEngine;
 
 namespace Features.Unit.Modding
 {
-    //TODO: implement base stat values
     public class LocalUnitBehaviour : NetworkedUnitBehaviour
     {
         protected override void InternalAwake()

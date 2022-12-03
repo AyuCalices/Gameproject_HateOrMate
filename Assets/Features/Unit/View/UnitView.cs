@@ -1,34 +1,41 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitView : MonoBehaviour
+namespace Features.Unit.View
 {
-    [SerializeField] private Transform healthTransform;
-    [SerializeField] private Transform staminaAndSpeedTransform;
-
-    public void SetHealthSlider(float removedHealth, float totalHealth)
+    public class UnitView : MonoBehaviour
     {
-        Debug.Log(removedHealth + " " + totalHealth);
-        float sliderValue = Mathf.Clamp((totalHealth - removedHealth) / totalHealth, 0, 1);
-        Vector3 localScale = healthTransform.localScale;
-        Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
-        healthTransform.localScale = newScale;
-    }
+        [SerializeField] private Transform healthTransform;
+        [SerializeField] private Transform staminaTransform;
 
-    public void SetStaminaSlider(float currentStamina, float totalStamina)
-    {
-        float sliderValue = Mathf.Clamp(currentStamina / totalStamina, 0, 1);
-        Vector3 localScale = staminaAndSpeedTransform.localScale;
-        Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
-        staminaAndSpeedTransform.localScale = newScale;
-    }
+        private void Awake()
+        {
+            //SetStaminaActive(GetComponent<LocalUnitBehaviour>() != null);
+        }
 
-    public void SetSpeedSlider(float currentSpeed, float totalSpeed)
-    {
-        float sliderValue = Mathf.Clamp(currentSpeed / totalSpeed, 0, 1);
-        Vector3 localScale = staminaAndSpeedTransform.localScale;
-        Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
-        staminaAndSpeedTransform.localScale = newScale;
+        public void SetHealthActive(bool value)
+        {
+            healthTransform.gameObject.SetActive(value);
+        }
+
+        private void SetStaminaActive(bool value)
+        {
+            staminaTransform.gameObject.SetActive(value);
+        }
+    
+        public void SetHealthSlider(float removedHealth, float totalHealth)
+        {
+            float sliderValue = Mathf.Clamp((totalHealth - removedHealth) / totalHealth, 0, 1);
+            Vector3 localScale = healthTransform.localScale;
+            Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
+            healthTransform.localScale = newScale;
+        }
+
+        public void SetStaminaSlider(float currentStamina, float totalStamina)
+        {
+            float sliderValue = Mathf.Clamp(currentStamina / totalStamina, 0, 1);
+            Vector3 localScale = staminaTransform.localScale;
+            Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
+            staminaTransform.localScale = newScale;
+        }
     }
 }

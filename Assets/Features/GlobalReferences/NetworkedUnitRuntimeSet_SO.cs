@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using DataStructures.RuntimeSet;
 using Features.ModView;
 using Features.Unit.Battle;
+using Features.Unit.Battle.Actions;
 using Features.Unit.Modding;
 using Photon.Pun;
 using UnityEngine;
@@ -56,16 +57,53 @@ namespace Features.GlobalReferences
             return result;
         }
 
-        public KeyValuePair<NetworkedUnitBehaviour, float> GetClosestByWorldPosition(Vector3 worldPosition)
+        public bool ContainsTargetable()
         {
+            //parse for targetable
             var list = GetItems();
-            
-            int closestUnitIndex = 0;
-            float closestDistance = Vector3.Distance(worldPosition, list[0].transform.position);
-            
-            for (int index = 1; index < list.Count; index++)
+            for (int i = list.Count - 1; i >= 0; i--)
             {
-                float distanceNext = Vector3.Distance(worldPosition, list[index].transform.position);
+                if (list[i].TryGetComponent(out BattleBehaviour battleBehaviour) && battleBehaviour.IsTargetable && battleBehaviour.CurrentState is not DeathState)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool ContainsTargetable(out List<NetworkedUnitBehaviour> networkedUnitBehaviours)
+        {
+            networkedUnitBehaviours = new List<NetworkedUnitBehaviour>();
+            
+            //parse for targetable
+            var list = GetItems();
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                if (list[i].TryGetComponent(out BattleBehaviour battleBehaviour) && battleBehaviour.IsTargetable && battleBehaviour.CurrentState is not DeathState)
+                {
+                    networkedUnitBehaviours.Add(list[i]);
+                }
+            }
+
+            return networkedUnitBehaviours.Count > 0;
+        }
+
+        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedUnitBehaviour, float> closestUnit)
+        {
+            if (!ContainsTargetable(out List<NetworkedUnitBehaviour> networkedUnitBehaviours))
+            {
+                closestUnit = default;
+                return false;
+            }
+
+            //get closest
+            int closestUnitIndex = 0;
+            float closestDistance = Vector3.Distance(worldPosition, networkedUnitBehaviours[0].transform.position);
+            
+            for (int index = 1; index < networkedUnitBehaviours.Count; index++)
+            {
+                float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviours[index].transform.position);
                 if (distanceNext < closestDistance)
                 {
                     closestUnitIndex = index;
@@ -73,7 +111,8 @@ namespace Features.GlobalReferences
                 }
             }
 
-            return new KeyValuePair<NetworkedUnitBehaviour, float>(list[closestUnitIndex], closestDistance);
+            closestUnit = new KeyValuePair<NetworkedUnitBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+            return true;
         }
 
         public bool IsInRangeByWorldPosition(float range, Vector3 worldPosition)

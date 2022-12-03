@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c76986b6a08b6b544b4903d14f8e8a62, type: 3}
   m_Name: TowerBattleActions
   m_EditorClassIdentifier: 
+  damageProjectileBehaviour: {fileID: 6686323569435117239, guid: cf6a01ed6b3b4db43aa89b8214ed8d77, type: 3}

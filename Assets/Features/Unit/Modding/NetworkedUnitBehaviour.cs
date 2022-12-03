@@ -2,6 +2,7 @@ using System;
 using Features.Battle;
 using Features.GlobalReferences;
 using Features.Unit.Modding.Stat;
+using Features.Unit.View;
 using JetBrains.Annotations;
 using Photon.Pun;
 using UnityEditor;
@@ -22,13 +23,29 @@ namespace Features.Unit.Modding
         
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
+        
+        
+        private float _removedHealth;
+        public float RemovedHealth
+        {
+            get => _removedHealth;
+            set
+            {
+                _removedHealth = value;
+                if (TryGetComponent(out UnitView unitView))
+                {
+                    unitView.SetHealthSlider(_removedHealth, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
+                }
+            }
+        }
 
         
         protected void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
-
+            _removedHealth = 0;
+            
             InternalAwake();
         }
 
@@ -49,6 +66,12 @@ namespace Features.Unit.Modding
             }
 
             InternalOnNetworkingEnabled();
+        }
+        
+        [PunRPC, UsedImplicitly]
+        protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
+        {
+            NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
 
         protected virtual void InternalOnNetworkingEnabled() { }
@@ -74,18 +97,12 @@ namespace Features.Unit.Modding
         {
             InternalStart();
         }
+        
+        protected virtual void InternalStart() { }
 
         private void Update()
         {
             //Debug.Log(gameObject.name + " " + NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
-        }
-
-        protected virtual void InternalStart() { }
-
-        [PunRPC, UsedImplicitly]
-        protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
-        {
-            NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
 
         private void OnDestroy()
