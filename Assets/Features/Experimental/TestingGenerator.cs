@@ -12,7 +12,7 @@ namespace Features.Experimental
 {
     public class TestingGenerator : MonoBehaviour
     {
-        public static Func<LocalUnitBehaviour> onSpawnUnit;
+        public static Action onSpawnUnit;
         
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;

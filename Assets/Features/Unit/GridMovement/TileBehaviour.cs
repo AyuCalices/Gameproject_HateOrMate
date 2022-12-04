@@ -1,3 +1,4 @@
+using System;
 using Features.GlobalReferences;
 using Photon.Pun;
 using Photon.Realtime;
@@ -9,10 +10,10 @@ namespace Features.Unit.GridMovement
     //https://docs.unity3d.com/ScriptReference/Vector3.Lerp.html
     public class TileBehaviour : MonoBehaviour, IDropHandler
     {
-        [SerializeField] private float _speed = 1.5f;
-        [SerializeField] private Color _baseColor, _offsetColor;
+        [SerializeField] private float speed = 1.5f;
+        [SerializeField] private Color baseColor, offsetColor;
         [SerializeField] private SpriteRenderer _renderer;
-        [SerializeField] private GameObject _highlight;
+        [SerializeField] private SpriteRenderer highlight;
         [SerializeField] private GridFocus_SO gridFocus;
 
         private Vector3 _gridPosition;
@@ -22,6 +23,11 @@ namespace Features.Unit.GridMovement
         private NetworkedUnitTilePlacementBehaviour _containedUnitTilePlacementBehaviour;
 
         public bool ContainsUnit => _containedUnitTilePlacementBehaviour != null;
+
+        private void Awake()
+        {
+            gridFocus.Restore();
+        }
 
         public void AddUnit(NetworkedUnitTilePlacementBehaviour localUnitTilePlacementBehaviour)
         {
@@ -44,10 +50,16 @@ namespace Features.Unit.GridMovement
             _containedUnitTilePlacementBehaviour = null;
         }
 
+        public void SetOrderInLayer(int tileOrder, int highlightOrder)
+        {
+            _renderer.sortingOrder = tileOrder;
+            highlight.sortingOrder = highlightOrder;
+        }
+
         public void Init(bool isOffset, Vector3 gridPosition)
         {
             _gridPosition = gridPosition;
-            _renderer.color = isOffset ? _offsetColor : _baseColor;
+            _renderer.color = isOffset ? offsetColor : baseColor;
         }
 
         public void OnDrop(PointerEventData eventData)
@@ -68,7 +80,7 @@ namespace Features.Unit.GridMovement
         {
             if (!_lerpToThisTransform || !gridFocus.NotNull()) return;
 
-            float distCovered = (Time.time - _startTime) * _speed;
+            float distCovered = (Time.time - _startTime) * speed;
             float fractionOfJourney = distCovered / _journeyLength;
             gridFocus.Get().transform.position = Vector3.Lerp(gridFocus.Get().transform.position,
                 transform.position, fractionOfJourney);
@@ -76,7 +88,7 @@ namespace Features.Unit.GridMovement
 
         private void OnMouseEnter()
         {
-            _highlight.SetActive(true);
+            highlight.gameObject.SetActive(true);
             
             if (gridFocus.NotNull())
             {
@@ -90,7 +102,7 @@ namespace Features.Unit.GridMovement
 
         private void OnMouseExit()
         {
-            _highlight.SetActive(false);
+            highlight.gameObject.SetActive(false);
             
             _lerpToThisTransform = false;
             gridFocus.isFixedToMousePosition = true;

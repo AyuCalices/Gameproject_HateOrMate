@@ -11,7 +11,7 @@ namespace Features.Unit.GridMovement
     [RequireComponent(typeof(PhotonView), typeof(NetworkedUnitBehaviour))]
     public class NetworkedUnitTilePlacementBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private GridRuntimeDictionary_SO gridRuntimeDictionary;
+        [SerializeField] protected GridRuntimeDictionary_SO gridRuntimeDictionary;
         
         public Vector3 GridPosition { get; set; }
 

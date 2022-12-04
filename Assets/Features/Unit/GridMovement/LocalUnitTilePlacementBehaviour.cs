@@ -17,11 +17,13 @@ namespace Features.Unit.GridMovement
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            gridRuntimeDictionary.SetAllOrderInLayer(1, 2);
             gridFocus.Set(Instantiate(visualObject));
         }
 
         public void OnDrag(PointerEventData eventData)
         {
+            //TODO: when a unit dies while dragging these events get lost => dont make player be able to drag while battle
             if (canvasFocus.Get() == null) return;
 
             if (cameraFocus.NotNull() && gridFocus.isFixedToMousePosition)
@@ -35,6 +37,7 @@ namespace Features.Unit.GridMovement
         public void OnEndDrag(PointerEventData eventData)
         {
             Destroy(gridFocus.Get());
+            gridRuntimeDictionary.SetAllOrderInLayer(-2, -1);
             gridFocus.Restore();
         }
     }

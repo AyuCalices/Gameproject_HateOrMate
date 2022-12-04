@@ -73,7 +73,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 0.75, b: 0.75, a: 0.39607844}
   m_FlipX: 0
@@ -158,11 +158,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16b9631e9f51cd5418306790c94f428c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 1.5
-  _baseColor: {r: 0, g: 0.23359418, b: 1, a: 1}
-  _offsetColor: {r: 0.36320752, g: 0.4147287, b: 1, a: 1}
+  speed: 1.5
+  baseColor: {r: 0.2117647, g: 0.76178414, b: 1, a: 1}
+  offsetColor: {r: 0.48627448, g: 0.61645174, b: 1, a: 1}
   _renderer: {fileID: 4680195752594377425}
-  _highlight: {fileID: 7850936907253048648}
+  highlight: {fileID: 6898470699391880215}
   gridFocus: {fileID: 11400000, guid: c8de5a89f7522064a8e4bbf0115f2857, type: 2}
 --- !u!212 &4680195752594377425
 SpriteRenderer:
@@ -204,7 +204,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0

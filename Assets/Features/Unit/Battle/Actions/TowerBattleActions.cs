@@ -62,7 +62,7 @@ namespace Features.Unit.Battle.Actions
 
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,
-                closestUnit.transform.position);
+                closestUnit.transform.position, closestUnit.PhotonView.ViewID);
             
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>

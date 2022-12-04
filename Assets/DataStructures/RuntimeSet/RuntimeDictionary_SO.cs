@@ -5,7 +5,7 @@ namespace DataStructures.RuntimeSet
 {
     public class RuntimeDictionary_SO<Key, Value> : ScriptableObject
     {
-        [SerializeField] private Dictionary<Key, Value> items = new Dictionary<Key, Value>();
+        [SerializeField] protected readonly Dictionary<Key, Value> items = new Dictionary<Key, Value>();
 
         public Dictionary<Key, Value> GetItems()
         {

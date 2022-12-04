@@ -13,9 +13,9 @@ namespace Features.Battle
         private bool _onCompleteActionCanceled;
         
         
-        public DamageProjectileBehaviour FireProjectile(Vector3 startPosition, Vector3 targetPosition)
+        public DamageProjectileBehaviour FireProjectile(Vector3 startPosition, Vector3 targetPosition, int targetID)
         {
-            return InstantiateProjectile(startPosition, targetPosition).GetComponent<DamageProjectileBehaviour>();
+            return InstantiateProjectile(startPosition, targetPosition, targetID).GetComponent<DamageProjectileBehaviour>();
         }
 
         public void RegisterOnCompleteAction(Action onCompleteAction)
@@ -29,9 +29,9 @@ namespace Features.Battle
             LeanTween.cancel(gameObject, true);
         }
         
-        private GameObject InstantiateProjectile(Vector3 startPosition, Vector3 targetPosition)
+        private GameObject InstantiateProjectile(Vector3 startPosition, Vector3 targetPosition, int targetID)
         {
-            object[] data = new object[] {targetPosition};
+            object[] data = new object[] {targetPosition, targetID};
             return PhotonNetwork.Instantiate("Projectile", startPosition, Quaternion.identity, 0, data);
         }
 
@@ -41,7 +41,7 @@ namespace Features.Battle
             Vector3 targetPosition = (Vector3) instantiationData[0];
             
             float time = Vector3.Distance(transform.position, targetPosition) / speed;
-            LeanTween.move(gameObject, targetPosition, time).setOnComplete(() =>
+            LeanTween.move(gameObject, PhotonView.Find((int)instantiationData[1]).transform, time).setFollow().setOnComplete(() =>
             {
                 if (!info.photonView.IsMine) return;
                 
