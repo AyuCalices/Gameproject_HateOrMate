@@ -1,12 +1,12 @@
 namespace Features
 {
-    public static class RaiseEventCode
+    public enum RaiseEventCode
     {
-        public const byte OnUnitManualInstantiation = 1;
-        public const byte OnMasterChangeUnitGridPosition = 2;
-        public const byte OnRequestChangeUnitGridPosition = 3;
-        public const byte OnPerformUnitAttack = 4;
-        public const byte OnPerformUpdateUnitHealth = 5;
-        public const byte OnProjectileInstantiation = 5;
+        OnUnitManualInstantiation = 1,
+        OnMasterChangeUnitGridPosition = 2,
+        OnRequestChangeUnitGridPosition = 3,
+        OnPerformUnitAttack = 4,
+        OnPerformUpdateUnitHealth = 5,
+        OnStartBattle = 6
     }
 }

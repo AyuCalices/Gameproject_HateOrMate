@@ -14,7 +14,6 @@ namespace Features.Unit.Battle
 
         public void Enter()
         {
-            Debug.Log("enter");
             _battleBehaviour.gameObject.SetActive(false);
         }
 
@@ -24,7 +23,6 @@ namespace Features.Unit.Battle
 
         public void Exit()
         {
-            Debug.Log("exit");
             _battleBehaviour.gameObject.SetActive(true);
         }
     }

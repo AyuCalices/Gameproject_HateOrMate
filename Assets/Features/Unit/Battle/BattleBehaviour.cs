@@ -15,7 +15,7 @@ namespace Features.Unit.Battle
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public DamageProjectileBehaviour damageProjectilePrefab;
+        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
         [SerializeField] private float range;
@@ -59,8 +59,15 @@ namespace Features.Unit.Battle
             RequestAttackState();
         }
 
+        public void OnStageEnd()
+        {
+            _battleActions.OnStageEnd();
+        }
+
         private void Update()
         {
+            if (battleData.CurrentState is not RunningState) return;
+            
             _hasTargetableEnemy = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out KeyValuePair<NetworkedUnitBehaviour, float> closestUnit);
             _closestUnit = closestUnit.Key;
@@ -87,8 +94,10 @@ namespace Features.Unit.Battle
         /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
+            if (battleData.CurrentState is not RunningState) return;
+            
             //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
-            if (photonEvent.Code == RaiseEventCode.OnPerformUnitAttack)
+            if (photonEvent.Code == (int)RaiseEventCode.OnPerformUnitAttack)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 if (photonView.ViewID == (int) data[0])
@@ -97,7 +106,7 @@ namespace Features.Unit.Battle
                 }
             }
             //2nd step: raise event to update health on all clients on attacked instance
-            else if (photonEvent.Code == RaiseEventCode.OnPerformUpdateUnitHealth)
+            else if (photonEvent.Code == (int)RaiseEventCode.OnPerformUpdateUnitHealth)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 if (photonView.ViewID == (int) data[0])

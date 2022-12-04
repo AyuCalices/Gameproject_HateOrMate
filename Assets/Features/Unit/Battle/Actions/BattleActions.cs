@@ -50,7 +50,7 @@ namespace Features.Unit.Battle.Actions
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent(RaiseEventCode.OnPerformUnitAttack, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformUnitAttack, data, raiseEventOptions, sendOptions);
         }
         
         /// <summary>
@@ -94,7 +94,7 @@ namespace Features.Unit.Battle.Actions
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent(RaiseEventCode.OnPerformUpdateUnitHealth, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformUpdateUnitHealth, data, raiseEventOptions, sendOptions);
         }
         
         /// <summary>
@@ -139,8 +139,8 @@ namespace Features.Unit.Battle.Actions
             InternalMove();
         }
         protected virtual void InternalMove() {}
-        
-        
+
+        public abstract void OnStageEnd();
         
         public void OnPerformAction()
         {

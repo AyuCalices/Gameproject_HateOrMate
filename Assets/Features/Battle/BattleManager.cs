@@ -1,24 +1,27 @@
-using System;
 using DataStructures.StateLogic;
+using ExitGames.Client.Photon;
 using Features.Unit.Battle;
 using Features.Unit.Modding;
 using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 
 namespace Features.Battle
 {
-    public class BattleManager : MonoBehaviourPunCallbacks
+    public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private TMP_Text stageText;
     
         private StateMachine _stageStateMachine;
+
+        public IState CurrentState => _stageStateMachine.CurrentState;
     
         private void Awake()
         {
             _stageStateMachine = new StateMachine();
-            _stageStateMachine.Initialize(new PausedState(this));
+            _stageStateMachine.Initialize(new RunningState(this));
 
             battleData.Stage = 0;
             stageText.text = "Stage: " + battleData.Stage;
@@ -37,22 +40,24 @@ namespace Features.Battle
 
         public void StageCheck()
         {
+            Debug.Log(CurrentState);
+            if (CurrentState is not RunningState) return;
+            
             if (!battleData.PlayerTeamUnitRuntimeSet.HasUnitAlive())
             {
-                Debug.Log("restart stage");
                 RestartStage();
                 return;
             }
 
             if (!battleData.EnemyUnitRuntimeSet.HasUnitAlive())
             {
-                Debug.Log("next stage");
                 NextStage();
             }
         }
 
         private void NextStage()
         {
+            EnterPausedState();
             battleData.Stage += 1;
             stageText.text = "Stage: " + battleData.Stage;
             
@@ -62,6 +67,7 @@ namespace Features.Battle
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.RequestIdleState();
+                    battleBehaviour.OnStageEnd();
                 }
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
@@ -73,6 +79,7 @@ namespace Features.Battle
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.RequestIdleState();
+                    battleBehaviour.OnStageEnd();
                 }
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
@@ -82,10 +89,31 @@ namespace Features.Battle
                     battleData.SetAiStats(aiUntBehaviour);
                 }
             }
+
+            EnterBattleByRaiseEvent();
+        }
+
+        private void EnterBattleByRaiseEvent()
+        {
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            object[] data = new object[] {};
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnStartBattle, data, raiseEventOptions, sendOptions);
         }
 
         private void RestartStage()
         {
+            EnterPausedState();
             stageText.text = "Stage: " + battleData.Stage;
             
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in battleData.PlayerTeamUnitRuntimeSet.GetItems())
@@ -93,6 +121,7 @@ namespace Features.Battle
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.RequestIdleState();
+                    battleBehaviour.OnStageEnd();
                 }
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
@@ -103,6 +132,7 @@ namespace Features.Battle
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.RequestIdleState();
+                    battleBehaviour.OnStageEnd();
                 }
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
@@ -111,6 +141,16 @@ namespace Features.Battle
                 {
                     battleData.SetAiStats(aiUntBehaviour);
                 }
+            }
+            
+            EnterBattleByRaiseEvent();
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            if (photonEvent.Code == (int)RaiseEventCode.OnStartBattle)
+            {
+                EnterRunningState();
             }
         }
     }

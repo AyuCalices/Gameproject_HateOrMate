@@ -62,8 +62,8 @@ namespace Features.Unit.Modding
             
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
-                string scalingStatIdentity = GUID.Generate().ToString();
-                string statIdentity = GUID.Generate().ToString();
+                string scalingStatIdentity = Guid.NewGuid().ToString();
+                string statIdentity = Guid.NewGuid().ToString();
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }

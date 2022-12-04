@@ -18,6 +18,10 @@ namespace Features.Unit.Battle.Actions
         {
         }
 
+        public override void OnStageEnd()
+        {
+        }
+
         protected override void InternalOnPerformAction()
         {
         }

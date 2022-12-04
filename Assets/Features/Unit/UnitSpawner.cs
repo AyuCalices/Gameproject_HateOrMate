@@ -64,7 +64,7 @@ namespace Features.Unit
                     Reliability = true
                 };
 
-                PhotonNetwork.RaiseEvent(RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
+                PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
                 player.OnPhotonViewIdAllocated();
             }
             else
@@ -79,7 +79,7 @@ namespace Features.Unit
         
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == RaiseEventCode.OnUnitManualInstantiation)
+            if (photonEvent.Code == (int)RaiseEventCode.OnUnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
 

@@ -24,6 +24,7 @@ namespace Features.Battle
         public int Stage { get; set; }
         
         public BattleManager BattleManager { get; private set; }
+        public IState CurrentState => BattleManager.CurrentState;
 
         public void RegisterBattleManager(BattleManager battleManager)
         {

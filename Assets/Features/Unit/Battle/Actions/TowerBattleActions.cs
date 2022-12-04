@@ -1,5 +1,4 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 using Features.Battle;
 using Features.GlobalReferences;
 using Features.Unit.Modding;
@@ -10,18 +9,20 @@ namespace Features.Unit.Battle.Actions
 {
     public class TowerBattleActions : BattleActions
     {
-        private readonly DamageProjectileBehaviour _damageProjectileBehaviour;
+        private readonly DamageProjectileBehaviour _damageProjectilePrefab;
+        private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
         private readonly int _totalStamina;
         private int _currentStamina;
         private readonly float _staminaRefreshTime;
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet, DamageProjectileBehaviour damageProjectileBehaviour, int totalStamina,
+            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet, DamageProjectileBehaviour damageProjectilePrefab, int totalStamina,
             float staminaRefreshTime) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
             opponentNetworkedUnitRuntimeSet)
         {
-            _damageProjectileBehaviour = damageProjectileBehaviour;
+            _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
+            _damageProjectilePrefab = damageProjectilePrefab;
             _totalStamina = totalStamina;
             _currentStamina = totalStamina;
             _staminaRefreshTime = staminaRefreshTime;
@@ -59,17 +60,26 @@ namespace Features.Unit.Battle.Actions
         
             if (!ownerBattleBehaviour.GetTarget(out NetworkedUnitBehaviour closestUnit)) return;
 
-            ownerBattleBehaviour.StartCoroutine(
-                FireProjectile(ownerBattleBehaviour.transform.position, closestUnit.transform.position,
-                    () => SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit))
-            );
+            DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
+                ownerBattleBehaviour.transform.position,
+                closestUnit.transform.position);
+            
+            _instantiatedProjectiles.Add(instantiatedProjectile);
+            instantiatedProjectile.RegisterOnCompleteAction(() =>
+            {
+                SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
+                _instantiatedProjectiles.Remove(instantiatedProjectile);
+            });
         }
-    
-        private IEnumerator FireProjectile(Vector3 origin, Vector3 target, Action onComplete)
+        
+        public override void OnStageEnd()
         {
-            _damageProjectileBehaviour.PhotonInstantiate(origin, target);
-            yield return new WaitForSeconds(ownerBattleBehaviour.damageProjectilePrefab.GetTime(origin, target));
-            onComplete.Invoke();
+            foreach (DamageProjectileBehaviour instantiatedProjectile in _instantiatedProjectiles)
+            {
+                instantiatedProjectile.CancelProjectile();
+            }
+                
+            _instantiatedProjectiles.Clear();
         }
     }
 }

@@ -38,7 +38,7 @@ namespace Features.Experimental
         {
             PhotonView photonView = GetComponent<PhotonView>();
         
-            photonView.RPC("ChatMessage", RpcTarget.All, StatType.Damage, 10f, GUID.Generate().ToString());
+            photonView.RPC("ChatMessage", RpcTarget.All, StatType.Damage, 10f, Guid.NewGuid().ToString());
         }
 
         public void ChangeValue()

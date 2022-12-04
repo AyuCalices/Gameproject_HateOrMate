@@ -44,5 +44,10 @@ namespace Features.Unit.Battle.Actions
             
             SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
         }
+        
+        public override void OnStageEnd()
+        {
+            
+        }
     }
 }

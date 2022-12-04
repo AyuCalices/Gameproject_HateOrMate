@@ -56,11 +56,11 @@ namespace Features.Unit.GridMovement
 
             if (PhotonNetwork.IsMasterClient)
             {
-                unitDragBehaviour.NetworkMove(RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _gridPosition, unitDragBehaviour.GridPosition);
+                unitDragBehaviour.NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _gridPosition, unitDragBehaviour.GridPosition);
             }
             else
             {
-                unitDragBehaviour.NetworkMove(RaiseEventCode.OnRequestChangeUnitGridPosition, ReceiverGroup.MasterClient, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _gridPosition, unitDragBehaviour.GridPosition);
+                unitDragBehaviour.NetworkMove((int)RaiseEventCode.OnRequestChangeUnitGridPosition, ReceiverGroup.MasterClient, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _gridPosition, unitDragBehaviour.GridPosition);
             }
         }
 
