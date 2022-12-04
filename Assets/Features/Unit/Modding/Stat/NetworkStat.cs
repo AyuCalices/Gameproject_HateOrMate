@@ -17,7 +17,7 @@ namespace Features.Unit.Modding.Stat
             ScalingStatIdentity = scalingStatIdentity;
         }
 
-        public virtual float GetTotalValue()
+        public float GetTotalValue()
         {
             return GetStat() * GetScalingStat();
         }

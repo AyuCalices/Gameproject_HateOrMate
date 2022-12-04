@@ -1,11 +1,11 @@
 using System;
 using Features.Battle;
 using Features.GlobalReferences;
+using Features.Unit.Battle;
 using Features.Unit.Modding.Stat;
 using Features.Unit.View;
 using JetBrains.Annotations;
 using Photon.Pun;
-using UnityEditor;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -70,6 +70,18 @@ namespace Features.Unit.Modding
 
             NetworkingInitialized = true;
             InternalOnNetworkingEnabled();
+
+            if (TryGetComponent(out BattleBehaviour battleBehaviour))
+            {
+                battleBehaviour.OnNetworkingEnabled();
+            }
+        }
+        
+        protected virtual void InternalOnNetworkingEnabled()
+        { 
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
         
         [PunRPC, UsedImplicitly]
@@ -77,8 +89,6 @@ namespace Features.Unit.Modding
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
-
-        protected virtual void InternalOnNetworkingEnabled() { }
 
         protected virtual void InternalAwake()
         {

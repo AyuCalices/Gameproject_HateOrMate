@@ -13,16 +13,26 @@ namespace Features.Unit.Modding.Stat
     /// </summary>
     public class LocalStat : NetworkStat
     {
-        private readonly List<float> statValues;
-        private readonly List<float> scalingStatValues;
+        private float _baseStatValue;
+        private readonly float _baseScalingStatValue;
+        
+        private readonly List<float> _statModificationValues;
+        private readonly List<float> _scalingStatModificationValues;
     
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
-            statValues = new List<float>() {};
-            UpdateStat(statIdentity, statValues.ToArray());
+            _baseScalingStatValue = 1;
+            
+            _statModificationValues = new List<float>() {};
+            UpdateStat(statIdentity, _statModificationValues.ToArray());
         
-            scalingStatValues = new List<float>() {};
-            UpdateStat(scalingStatIdentity, scalingStatValues.ToArray());
+            _scalingStatModificationValues = new List<float>() {};
+            UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
+        }
+
+        public void SetBaseStatValue(float newBaseValue)
+        {
+            _baseStatValue = newBaseValue;
         }
     
         private void UpdateStat(string identity, float[] value)
@@ -33,9 +43,9 @@ namespace Features.Unit.Modding.Stat
     
         protected override float GetScalingStat()
         {
-            float finalValue = 0;
+            float finalValue = _baseScalingStatValue;
 
-            foreach (var statValue in statValues)
+            foreach (var statValue in _statModificationValues)
             {
                 finalValue += statValue;
             }
@@ -45,9 +55,9 @@ namespace Features.Unit.Modding.Stat
 
         protected override float GetStat()
         {
-            float finalValue = 0;
+            float finalValue = _baseStatValue;
         
-            foreach (var scalingStatValue in scalingStatValues)
+            foreach (var scalingStatValue in _scalingStatModificationValues)
             {
                 finalValue += scalingStatValue;
             }
@@ -55,24 +65,24 @@ namespace Features.Unit.Modding.Stat
             return finalValue;
         }
 
-        public void AddStatValue(StatValueType statValueType, float value)
+        public void AddStatModificationValue(StatValueType statValueType, float value)
         {
             switch (statValueType)
             {
                 case StatValueType.Stat:
-                    statValues.Add(value);
-                    UpdateStat(StatIdentity, statValues.ToArray());
+                    _statModificationValues.Add(value);
+                    UpdateStat(StatIdentity, _statModificationValues.ToArray());
                     break;
                 case StatValueType.ScalingStat:
-                    scalingStatValues.Add(value);
-                    UpdateStat(ScalingStatIdentity, scalingStatValues.ToArray());
+                    _scalingStatModificationValues.Add(value);
+                    UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
             }
         }
 
-        public bool TryRemoveStatValue(StatValueType statValueType, float value)
+        public bool TryRemoveStatModificationValue(StatValueType statValueType, float value)
         {
             return statValueType switch
             {
@@ -84,16 +94,16 @@ namespace Features.Unit.Modding.Stat
 
         public void RemoveAll()
         {
-            statValues.Clear();
-            scalingStatValues.Clear();
+            _statModificationValues.Clear();
+            _scalingStatModificationValues.Clear();
             
-            UpdateStat(StatIdentity, statValues.ToArray());
-            UpdateStat(ScalingStatIdentity, scalingStatValues.ToArray());
+            UpdateStat(StatIdentity, _statModificationValues.ToArray());
+            UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
         }
     
         private bool TryRemoveStatValueInternal(float value)
         {
-            bool result = this.statValues.Remove(value);
+            bool result = this._statModificationValues.Remove(value);
 
             if (!result)
             {
@@ -101,7 +111,7 @@ namespace Features.Unit.Modding.Stat
             }
             else
             {
-                UpdateStat(StatIdentity, statValues.ToArray());
+                UpdateStat(StatIdentity, _statModificationValues.ToArray());
             }
 
             return result;
@@ -109,7 +119,7 @@ namespace Features.Unit.Modding.Stat
     
         private bool TryRemoveScalingStatValueInternal(float value)
         {
-            bool result = this.scalingStatValues.Remove(value);
+            bool result = this._scalingStatModificationValues.Remove(value);
 
             if (!result)
             {
@@ -117,7 +127,7 @@ namespace Features.Unit.Modding.Stat
             }
             else
             {
-                UpdateStat(ScalingStatIdentity, scalingStatValues.ToArray());
+                UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
             }
 
             return result;

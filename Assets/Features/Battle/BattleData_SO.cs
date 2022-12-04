@@ -33,18 +33,11 @@ namespace Features.Battle
 
         public void SetAiStats(AIUnitBehaviour aiUnitBehaviour)
         {
-            if (PhotonNetwork.IsMasterClient && aiUnitBehaviour.NetworkingInitialized)
+            if (aiUnitBehaviour.NetworkingInitialized)
             {
-                aiUnitBehaviour.NetworkedStatServiceLocator.RemoveAllValues();
-                
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.Stat,10 * (Stage + 1));
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Damage, StatValueType.ScalingStat, 1);
-            
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Health, StatValueType.Stat, 50 * (Stage + 1));
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Health, StatValueType.ScalingStat, 1);
-            
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Speed, StatValueType.Stat, 3);
-                aiUnitBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(StatType.Speed, StatValueType.ScalingStat, 1);
+                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10 * (Stage + 1));
+                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50 * (Stage + 1));
+                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
             }
         }
     }

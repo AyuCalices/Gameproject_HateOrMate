@@ -1,6 +1,4 @@
 using Features.GlobalReferences;
-using Features.Unit.Modding.Stat;
-using Photon.Pun;
 
 namespace Features.Unit.Modding
 {

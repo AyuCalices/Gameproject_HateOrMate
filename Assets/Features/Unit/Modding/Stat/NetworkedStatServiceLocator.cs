@@ -13,6 +13,19 @@ namespace Features.Unit.Modding.Stat
 
         public NetworkedStatServiceLocator() { }
 
+        public bool SetBaseValue(StatType statType, float value)
+        {
+            string key = nameof(LocalStat) + statType;
+    
+            if (!_services.ContainsKey(key))
+            {
+                return false;
+            }
+
+            ((LocalStat)_services[key]).SetBaseStatValue(value);
+            return true;
+        }
+        
         public bool TryAddLocalValue(StatType statType, StatValueType statValueType, float value)
         {
             string key = nameof(LocalStat) + statType;
@@ -22,7 +35,7 @@ namespace Features.Unit.Modding.Stat
                 return false;
             }
 
-            ((LocalStat)_services[key]).AddStatValue(statValueType, value);
+            ((LocalStat)_services[key]).AddStatModificationValue(statValueType, value);
             return true;
         }
         
@@ -35,7 +48,7 @@ namespace Features.Unit.Modding.Stat
                 return false;
             }
 
-            return ((LocalStat)_services[key]).TryRemoveStatValue(statValueType, value);
+            return ((LocalStat)_services[key]).TryRemoveStatModificationValue(statValueType, value);
         }
 
         public void RemoveAllValues()

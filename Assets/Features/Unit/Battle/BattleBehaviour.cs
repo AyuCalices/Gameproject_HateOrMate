@@ -52,7 +52,7 @@ namespace Features.Unit.Battle
             IsTargetable = isTargetable;
         }
 
-        private void Start()
+        public void OnNetworkingEnabled()
         {
             _battleActions = battleActionsGenerator.Generate(NetworkedUnitBehaviour, this, _unitView);
 
