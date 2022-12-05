@@ -38,7 +38,7 @@ namespace Features
 
         private static object DeserializeVector3Int(StreamBuffer inStream, short length)
         {
-            Vector3 vo = new Vector3();
+            Vector3Int vo = new Vector3Int();
             if (length != SizeV3Int)
             {
                 return vo;
@@ -48,9 +48,12 @@ namespace Features
             {
                 inStream.Read(memVector3Int, 0, SizeV3Int);
                 int index = 0;
-                Protocol.Deserialize(out vo.x, memVector3Int, ref index);
-                Protocol.Deserialize(out vo.y, memVector3Int, ref index);
-                Protocol.Deserialize(out vo.z, memVector3Int, ref index);
+                Protocol.Deserialize(out int x, memVector3Int, ref index);
+                Protocol.Deserialize(out int y, memVector3Int, ref index);
+                Protocol.Deserialize(out int z, memVector3Int, ref index);
+                vo.x = x;
+                vo.y = y;
+                vo.z = z;
             }
 
             return vo;
