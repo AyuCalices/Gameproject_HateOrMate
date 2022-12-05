@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Experimental;
 using Features.GlobalReferences;
+using Features.Tiles;
 using Features.Unit.GridMovement;
 using Features.Unit.Modding;
 using Photon.Pun;
@@ -13,7 +14,7 @@ namespace Features.Unit
 {
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private GridRuntimeDictionary_SO gridRuntimeDictionary;
+        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         [SerializeField] private GameObject localPlayerPrefab;
         [SerializeField] private GameObject networkedPlayerPrefab;
         
@@ -44,20 +45,20 @@ namespace Features.Unit
 
         private void SpawnUnit(bool isSpawnedByMaster)
         {
-            if (!gridRuntimeDictionary.TryGetRandomPlaceableTileBehaviour(
-                out KeyValuePair<Vector2, TileBehaviour> keyValuePair)) return;
+            if (!tileRuntimeDictionary.TryGetRandomPlaceableTileBehaviour(
+                out KeyValuePair<Vector3Int, TileContainer> tileKeyValuePair)) return;
 
-            Vector2 position = keyValuePair.Key;
-            TileBehaviour tileBehaviour = keyValuePair.Value;
+            Vector3Int gridPosition = tileKeyValuePair.Key;
+            TileContainer tileContainer = tileKeyValuePair.Value;
             
             GameObject player = Instantiate(isSpawnedByMaster ? localPlayerPrefab : networkedPlayerPrefab, transform);
-            tileBehaviour.AddUnit(player.GetComponent<NetworkedUnitTilePlacementBehaviour>());
-            player.transform.position = tileBehaviour.transform.position;
+            tileContainer.AddUnit(player.GetComponent<NetworkedUnitTilePlacementBehaviour>());
+            player.transform.position = tileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
 
-            MasterSpawnRaiseEvent(player, position, isSpawnedByMaster);
+            MasterSpawnRaiseEvent(player, gridPosition, isSpawnedByMaster);
         }
 
-        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector2 gridPosition, bool isSpawnedByMaster)
+        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster)
         {
             //Raise Event
             PhotonView instantiationPhotonView = playerPrefab.GetComponent<PhotonView>();
@@ -126,8 +127,8 @@ namespace Features.Unit
                 //sed grid position for all clients
                 NetworkedUnitTilePlacementBehaviour networkedUnitTilePlacementBehaviour =
                     player.GetComponent<NetworkedUnitTilePlacementBehaviour>();
-                networkedUnitTilePlacementBehaviour.GridPosition = (Vector2) data[3];
-                if (gridRuntimeDictionary.GetByGridPosition((Vector2) data[3], out TileBehaviour tileBehaviour))
+                networkedUnitTilePlacementBehaviour.GridPosition = (Vector3Int) data[3];
+                if (tileRuntimeDictionary.GetByGridPosition((Vector3Int) data[3], out TileContainer tileBehaviour))
                 {
                     tileBehaviour.AddUnit(networkedUnitTilePlacementBehaviour);
                 }

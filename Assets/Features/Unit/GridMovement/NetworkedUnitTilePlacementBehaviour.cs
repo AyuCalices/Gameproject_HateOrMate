@@ -1,5 +1,5 @@
 using ExitGames.Client.Photon;
-using Features.GlobalReferences;
+using Features.Tiles;
 using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
@@ -11,9 +11,9 @@ namespace Features.Unit.GridMovement
     [RequireComponent(typeof(PhotonView), typeof(NetworkedUnitBehaviour))]
     public class NetworkedUnitTilePlacementBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] protected GridRuntimeDictionary_SO gridRuntimeDictionary;
+        [SerializeField] protected TileRuntimeDictionary_SO tileRuntimeDictionary;
         
-        public Vector3 GridPosition { get; set; }
+        public Vector3Int GridPosition { get; set; }
 
         private float _movementSpeed = 3f;
         private PhotonView _photonView;
@@ -32,7 +32,7 @@ namespace Features.Unit.GridMovement
                 int viewID = (int) data[0];
                 if (_photonView.ViewID != viewID) return;
                 
-                MoveGameObjectToTarget(gameObject, (Vector3) data[1], (Vector3) data[2]);
+                MoveGameObjectToTarget(gameObject, (Vector3Int) data[1], (Vector3Int) data[2]);
             }
             else if (photonEvent.Code == (int)RaiseEventCode.OnRequestChangeUnitGridPosition)
             {
@@ -40,14 +40,14 @@ namespace Features.Unit.GridMovement
                 int viewID = (int) data[0];
                 if (_photonView.ViewID != viewID) return;
                 
-                gridRuntimeDictionary.TryGetValue((Vector3) data[1], out TileBehaviour targetTileBehaviour);
+                tileRuntimeDictionary.TryGetValue((Vector3Int) data[1], out TileContainer targetTileBehaviour);
                 if (targetTileBehaviour.ContainsUnit) return;
                 
-                NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, (Vector3) data[1], (Vector3) data[2]);
+                NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, (Vector3Int) data[1], (Vector3Int) data[2]);
             }
         }
     
-        public void NetworkMove(byte eventCode, ReceiverGroup receiverGroup, int viewID, Vector3 targetGridPosition, Vector3 previousGridPosition)
+        public void NetworkMove(byte eventCode, ReceiverGroup receiverGroup, int viewID, Vector3Int targetGridPosition, Vector3Int previousGridPosition)
         {
             object[] data = new object[]
             {
@@ -70,18 +70,18 @@ namespace Features.Unit.GridMovement
             PhotonNetwork.RaiseEvent(eventCode, data, raiseEventOptions, sendOptions);
         }
 
-        private void MoveGameObjectToTarget(GameObject movable, Vector3 newGridPosition, Vector3 previousGridPosition)
+        private void MoveGameObjectToTarget(GameObject movable, Vector3Int newGridPosition, Vector3Int previousGridPosition)
         {
-            gridRuntimeDictionary.TryGetValue(newGridPosition, out TileBehaviour targetTileBehaviour);
-            if (targetTileBehaviour.ContainsUnit) return;
+            tileRuntimeDictionary.TryGetValue(newGridPosition, out TileContainer targetTileContainer);
+            if (targetTileContainer.ContainsUnit) return;
             
-            Vector3 targetPosition = targetTileBehaviour.transform.position;
+            Vector3 targetPosition = tileRuntimeDictionary.GetCellToWorldPosition(newGridPosition);
             float time = Vector3.Distance(movable.transform.position, targetPosition) / _movementSpeed;
             LeanTween.move(movable, targetPosition, time);
 
-            targetTileBehaviour.AddUnit(this);
+            targetTileContainer.AddUnit(this);
 
-            if (!gridRuntimeDictionary.TryGetValue(previousGridPosition, out TileBehaviour previousTileBehaviour)) return;
+            if (!tileRuntimeDictionary.TryGetValue(previousGridPosition, out TileContainer previousTileBehaviour)) return;
             if (previousTileBehaviour.ContainsUnit)
             {
                 previousTileBehaviour.RemoveUnit();
