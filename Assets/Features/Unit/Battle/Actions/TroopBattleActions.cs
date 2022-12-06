@@ -40,7 +40,7 @@ namespace Features.Unit.Battle.Actions
 
         protected override void InternalOnPerformAction()
         {
-            if (!ownerBattleBehaviour.GetTarget(out NetworkedUnitBehaviour closestUnit)) return;
+            if (!ownerBattleBehaviour.TryGetTarget(out NetworkedUnitBehaviour closestUnit)) return;
             
             SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
         }

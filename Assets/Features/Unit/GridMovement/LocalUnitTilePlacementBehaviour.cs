@@ -1,6 +1,4 @@
 using Features.GlobalReferences;
-using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -30,6 +28,15 @@ namespace Features.Unit.GridMovement
                 _targetTileWorldPosition, fractionOfJourney);
         }
 
+        public override void OnDisable()
+        {
+            base.OnDisable();
+            if (_instantiatedPrefab == null) return;
+            
+            Destroy(_instantiatedPrefab);
+            _instantiatedPrefab = null;
+        }
+
         public void OnPointerDown(PointerEventData eventData)
         {
         }
@@ -52,7 +59,6 @@ namespace Features.Unit.GridMovement
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            tileRuntimeDictionary.SetAllOrderInLayer(1);
             _instantiatedPrefab = Instantiate(visualObject);
             _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
         }
@@ -75,19 +81,12 @@ namespace Features.Unit.GridMovement
         {
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;
-            
-            tileRuntimeDictionary.SetAllOrderInLayer(-1);
+
+            if (!tileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
             
             if (eventData.pointerDrag == null || !eventData.pointerDrag.TryGetComponent(out NetworkedUnitTilePlacementBehaviour unitDragBehaviour)) return;
 
-            if (PhotonNetwork.IsMasterClient)
-            {
-                unitDragBehaviour.NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _targetTileGridPosition, unitDragBehaviour.GridPosition);
-            }
-            else
-            {
-                unitDragBehaviour.NetworkMove((int)RaiseEventCode.OnRequestChangeUnitGridPosition, ReceiverGroup.MasterClient, eventData.pointerDrag.GetComponent<PhotonView>().ViewID, _targetTileGridPosition, unitDragBehaviour.GridPosition);
-            }
+            unitDragBehaviour.RequestMove(_targetTileGridPosition);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Features.Unit.Battle.Actions
             _currentStamina--;
             ownerUnitView.SetStaminaSlider(_currentStamina, _totalStamina);
         
-            if (!ownerBattleBehaviour.GetTarget(out NetworkedUnitBehaviour closestUnit)) return;
+            if (!ownerBattleBehaviour.TryGetTarget(out NetworkedUnitBehaviour closestUnit)) return;
 
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,

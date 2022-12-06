@@ -46,13 +46,13 @@ namespace Features.Unit
         private void SpawnUnit(bool isSpawnedByMaster)
         {
             if (!tileRuntimeDictionary.TryGetRandomPlaceableTileBehaviour(
-                out KeyValuePair<Vector3Int, TileContainer> tileKeyValuePair)) return;
+                out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
 
             Vector3Int gridPosition = tileKeyValuePair.Key;
-            TileContainer tileContainer = tileKeyValuePair.Value;
+            RuntimeTile runtimeTile = tileKeyValuePair.Value;
             
             GameObject player = Instantiate(isSpawnedByMaster ? localPlayerPrefab : networkedPlayerPrefab, transform);
-            tileContainer.AddUnit(player.GetComponent<NetworkedUnitTilePlacementBehaviour>());
+            runtimeTile.AddUnit(player.GetComponent<NetworkedUnitTilePlacementBehaviour>());
             player.transform.position = tileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
 
             MasterSpawnRaiseEvent(player, gridPosition, isSpawnedByMaster);
@@ -127,8 +127,7 @@ namespace Features.Unit
                 //sed grid position for all clients
                 NetworkedUnitTilePlacementBehaviour networkedUnitTilePlacementBehaviour =
                     player.GetComponent<NetworkedUnitTilePlacementBehaviour>();
-                networkedUnitTilePlacementBehaviour.GridPosition = (Vector3Int) data[3];
-                if (tileRuntimeDictionary.GetByGridPosition((Vector3Int) data[3], out TileContainer tileBehaviour))
+                if (tileRuntimeDictionary.TryGetByGridPosition((Vector3Int) data[3], out RuntimeTile tileBehaviour))
                 {
                     tileBehaviour.AddUnit(networkedUnitTilePlacementBehaviour);
                 }

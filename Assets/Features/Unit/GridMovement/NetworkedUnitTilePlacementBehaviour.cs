@@ -12,13 +12,12 @@ namespace Features.Unit.GridMovement
     public class NetworkedUnitTilePlacementBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] protected TileRuntimeDictionary_SO tileRuntimeDictionary;
-        
-        public Vector3Int GridPosition { get; set; }
 
+        public Vector3Int GridPosition => tileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+        
         private float _movementSpeed = 3f;
         private PhotonView _photonView;
 
-        //TODO: implement instantiating
         private void Awake()
         {
             _photonView = GetComponent<PhotonView>();
@@ -40,10 +39,22 @@ namespace Features.Unit.GridMovement
                 int viewID = (int) data[0];
                 if (_photonView.ViewID != viewID) return;
                 
-                tileRuntimeDictionary.TryGetValue((Vector3Int) data[1], out TileContainer targetTileBehaviour);
+                tileRuntimeDictionary.TryGetContent((Vector3Int) data[1], out RuntimeTile targetTileBehaviour);
                 if (targetTileBehaviour.ContainsUnit) return;
                 
                 NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, (Vector3Int) data[1], (Vector3Int) data[2]);
+            }
+        }
+
+        public void RequestMove(Vector3Int targetTileGridPosition)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                NetworkMove((int)RaiseEventCode.OnMasterChangeUnitGridPosition, ReceiverGroup.All, _photonView.ViewID, targetTileGridPosition, GridPosition);
+            }
+            else
+            {
+                NetworkMove((int)RaiseEventCode.OnRequestChangeUnitGridPosition, ReceiverGroup.MasterClient, _photonView.ViewID, targetTileGridPosition, GridPosition);
             }
         }
     
@@ -72,16 +83,16 @@ namespace Features.Unit.GridMovement
 
         private void MoveGameObjectToTarget(GameObject movable, Vector3Int newGridPosition, Vector3Int previousGridPosition)
         {
-            tileRuntimeDictionary.TryGetValue(newGridPosition, out TileContainer targetTileContainer);
+            tileRuntimeDictionary.TryGetContent(newGridPosition, out RuntimeTile targetTileContainer);
             if (targetTileContainer.ContainsUnit) return;
-            
+
             Vector3 targetPosition = tileRuntimeDictionary.GetCellToWorldPosition(newGridPosition);
             float time = Vector3.Distance(movable.transform.position, targetPosition) / _movementSpeed;
             LeanTween.move(movable, targetPosition, time);
 
             targetTileContainer.AddUnit(this);
-
-            if (!tileRuntimeDictionary.TryGetValue(previousGridPosition, out TileContainer previousTileBehaviour)) return;
+            
+            if (!tileRuntimeDictionary.TryGetContent(previousGridPosition, out RuntimeTile previousTileBehaviour)) return;
             if (previousTileBehaviour.ContainsUnit)
             {
                 previousTileBehaviour.RemoveUnit();

@@ -53,7 +53,7 @@ namespace Features.Unit.Battle.Actions
         {
             if (!PhotonNetwork.IsMasterClient) return;
             
-            if (!ownerBattleBehaviour.GetTarget(out NetworkedUnitBehaviour closestUnit)) return;
+            if (!ownerBattleBehaviour.TryGetTarget(out NetworkedUnitBehaviour closestUnit)) return;
 
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,

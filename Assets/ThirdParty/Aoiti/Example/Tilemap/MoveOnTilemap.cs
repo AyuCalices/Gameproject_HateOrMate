@@ -83,10 +83,7 @@ public class MoveOnTilemap : MonoBehaviour, IPointerDownHandler, IBeginDragHandl
             transform.position = tilemap.CellToWorld(path[0]);
             path.RemoveAt(0);
             yield return new WaitForSeconds(stepTime);
-            
         }
-        
-
     }
 
     private GameObject _instantiatedDragObject;

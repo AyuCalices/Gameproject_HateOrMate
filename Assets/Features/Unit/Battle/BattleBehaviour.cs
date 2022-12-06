@@ -3,6 +3,7 @@ using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Battle;
 using Features.Mod.Action;
+using Features.Tiles;
 using Features.Unit.Battle.Actions;
 using Features.Unit.Modding;
 using Features.Unit.View;
@@ -15,6 +16,7 @@ namespace Features.Unit.Battle
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
@@ -80,7 +82,7 @@ namespace Features.Unit.Battle
                 case AttackState or IdleState when _hasTargetableEnemy && closestUnit.Value > range:
                     RequestMovementState();
                     break;
-                case MovementState or IdleState when _hasTargetableEnemy && closestUnit.Value < range:
+                case MovementState or IdleState when _hasTargetableEnemy && closestUnit.Value <= range:
                     RequestAttackState();
                     break;
             }
@@ -116,7 +118,7 @@ namespace Features.Unit.Battle
             }
         }
         
-        public bool GetTarget(out NetworkedUnitBehaviour closestUnit)
+        public bool TryGetTarget(out NetworkedUnitBehaviour closestUnit)
         {
             closestUnit = _closestUnit;
             return _hasTargetableEnemy;
@@ -136,7 +138,7 @@ namespace Features.Unit.Battle
 
         private void RequestMovementState()
         {
-            _stateMachine.ChangeState(new MovementState(_battleActions));
+            _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary));
         }
         
         public void RequestDeathState()

@@ -32,6 +32,7 @@ namespace Features.Battle
             {
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
+                    //TODO: switching to idle state while unit is moving by drag and drop will continue to make unit move cause its command based and not in the state machine. Might result in problems when ai-move
                     battleBehaviour.RequestIdleState();
                     battleBehaviour.OnStageEnd();
                 }

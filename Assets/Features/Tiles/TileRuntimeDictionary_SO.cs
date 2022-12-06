@@ -1,25 +1,60 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using Aoiti.Pathfinding;
 using DataStructures.RuntimeSet;
 using UnityEngine;
 using UnityEngine.Tilemaps;
+using Random = UnityEngine.Random;
 
 namespace Features.Tiles
 {
     [CreateAssetMenu]
-    public class TileRuntimeDictionary_SO : RuntimeDictionary_SO<Vector3Int, TileContainer>
+    public class TileRuntimeDictionary_SO : RuntimeDictionary_SO<Vector3Int, RuntimeTile>
     {
-        public TilemapRenderer TilemapRenderer { get; set; }
-        public Tilemap Tilemap { get; set; }
+        private readonly Vector3Int[] _directions = new Vector3Int[4] {Vector3Int.left,Vector3Int.right,Vector3Int.up,Vector3Int.down };
+
+        private Tilemap _tilemap;
+        private TileLookup[] _tileReferences;
+        Pathfinder<Vector3Int> pathfinder;
+        
+        public void Initialize(Tilemap tilemap, TileLookup[] tileReferences, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
+        {
+            _tilemap = tilemap;
+            _tileReferences = tileReferences;
+            pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
+            populateRuntimeSet.Invoke(items);
+        }
+
+        public bool GenerateAStarPath(Vector3Int startNode, Vector3Int targetNode, out List<Vector3Int> path)
+        {
+            return pathfinder.GenerateAstarPath(startNode, targetNode, out path);
+        }
+        
+        private float DistanceFunc(Vector3Int a, Vector3Int b)
+        {
+            return (a-b).sqrMagnitude;
+        }
+
+        private Dictionary<Vector3Int,float> ConnectionsAndCosts(Vector3Int a)
+        {
+            Dictionary<Vector3Int, float> result= new Dictionary<Vector3Int, float>();
+            foreach (Vector3Int dir in _directions)
+            {
+                if (!TryGetByGridPosition(a + dir, out RuntimeTile runtimeTile)) continue;
+                if (!runtimeTile.ContainsUnit) result.Add(a + dir, runtimeTile.movementCost);
+            }
+            return result;
+        }
 
         public Vector3 GetCellToWorldPosition(Vector3Int gridPosition)
         {
-            return Tilemap.GetCellCenterWorld(gridPosition);
+            return _tilemap.GetCellCenterWorld(gridPosition);
         }
 
         public Vector3Int GetWorldToCellPosition(Vector3 worldPosition)
         {
-            return Tilemap.WorldToCell(worldPosition);
+            return _tilemap.WorldToCell(worldPosition);
         }
         
         public void ClearContainedUnits()
@@ -30,9 +65,9 @@ namespace Features.Tiles
             }
         }
         
-        private Dictionary<Vector3Int, TileContainer> GetPlaceableTileBehaviours()
+        private Dictionary<Vector3Int, RuntimeTile> GetPlaceableTileBehaviours()
         {
-            Dictionary<Vector3Int, TileContainer> placeableDictionary = new Dictionary<Vector3Int, TileContainer>();
+            Dictionary<Vector3Int, RuntimeTile> placeableDictionary = new Dictionary<Vector3Int, RuntimeTile>();
 
             foreach (var item in items)
             {
@@ -45,9 +80,9 @@ namespace Features.Tiles
             return placeableDictionary;
         }
 
-        public bool TryGetRandomPlaceableTileBehaviour(out KeyValuePair<Vector3Int, TileContainer> tileKeyValuePair)
+        public bool TryGetRandomPlaceableTileBehaviour(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
         {
-            Dictionary<Vector3Int, TileContainer> placeableDictionary = GetPlaceableTileBehaviours();
+            Dictionary<Vector3Int, RuntimeTile> placeableDictionary = GetPlaceableTileBehaviours();
             
             if (placeableDictionary.Count == 0)
             {
@@ -59,23 +94,15 @@ namespace Features.Tiles
             tileKeyValuePair = placeableDictionary.ElementAt(randomElement);
             return true;
         }
-        
-        /// <summary>
-        /// When dragging an Object the tiles needs to be in front of the clicker UI element else moving position not possible
-        /// </summary>
-        /// <param name="orderInLayer"></param>
-        /// <param name="highlightOrder"></param>
-        public void SetAllOrderInLayer(int orderInLayer)
+
+        public bool ContainsGridPosition(Vector3Int gridPosition)
         {
-            foreach (var item in items)
-            {
-                TilemapRenderer.sortingOrder = orderInLayer;
-            }
+            return items.ContainsKey(gridPosition);
         }
 
-        public bool GetByGridPosition(Vector3Int gridPosition, out TileContainer tileContainer)
+        public bool TryGetByGridPosition(Vector3Int gridPosition, out RuntimeTile runtimeTile)
         {
-            return items.TryGetValue(gridPosition, out tileContainer);
+            return items.TryGetValue(gridPosition, out runtimeTile);
         }
     }
 }

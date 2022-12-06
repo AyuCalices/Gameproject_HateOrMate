@@ -9,7 +9,8 @@ namespace Features
 
 
         /// <summary>Register de/serializer methods for Unity specific types. Makes the types usable in RaiseEvent and PUN.</summary>
-        internal static void Register()
+        [RuntimeInitializeOnLoadMethod]
+        private static void Register()
         {
             PhotonPeer.RegisterType(typeof(Vector3Int), (byte) 'a', SerializeVector3Int, DeserializeVector3Int);
         }

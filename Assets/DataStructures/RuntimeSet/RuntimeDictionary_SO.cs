@@ -12,7 +12,7 @@ namespace DataStructures.RuntimeSet
             return items;
         }
 
-        public bool TryGetValue(Key key, out Value value)
+        public bool TryGetContent(Key key, out Value value)
         {
             return items.TryGetValue(key, out value);
         }
