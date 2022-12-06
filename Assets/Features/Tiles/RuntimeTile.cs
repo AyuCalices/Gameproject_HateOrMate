@@ -13,7 +13,7 @@ namespace Features.Tiles
         
         public bool ContainsUnit => _containedUnitTilePlacementBehaviour != null;
 
-        private NetworkedUnitTilePlacementBehaviour _containedUnitTilePlacementBehaviour;
+        private GameObject _containedUnitTilePlacementBehaviour;
 
         public RuntimeTile(TileBase tile, float movementCost)
         {
@@ -21,7 +21,7 @@ namespace Features.Tiles
             this.movementCost = movementCost;
         }
         
-        public void AddUnit(NetworkedUnitTilePlacementBehaviour localUnitTilePlacementBehaviour)
+        public void AddUnit(GameObject localUnitTilePlacementBehaviour)
         {
             if (ContainsUnit)
             {

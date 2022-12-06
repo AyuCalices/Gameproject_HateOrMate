@@ -90,7 +90,7 @@ namespace Features.Unit.GridMovement
             float time = Vector3.Distance(movable.transform.position, targetPosition) / _movementSpeed;
             LeanTween.move(movable, targetPosition, time);
 
-            targetTileContainer.AddUnit(this);
+            targetTileContainer.AddUnit(gameObject);
             
             if (!tileRuntimeDictionary.TryGetContent(previousGridPosition, out RuntimeTile previousTileBehaviour)) return;
             if (previousTileBehaviour.ContainsUnit)

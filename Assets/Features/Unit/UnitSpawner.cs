@@ -52,7 +52,7 @@ namespace Features.Unit
             RuntimeTile runtimeTile = tileKeyValuePair.Value;
             
             GameObject player = Instantiate(isSpawnedByMaster ? localPlayerPrefab : networkedPlayerPrefab, transform);
-            runtimeTile.AddUnit(player.GetComponent<NetworkedUnitTilePlacementBehaviour>());
+            runtimeTile.AddUnit(player);
             player.transform.position = tileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
 
             MasterSpawnRaiseEvent(player, gridPosition, isSpawnedByMaster);
@@ -125,11 +125,9 @@ namespace Features.Unit
                 instantiationPhotonView.ViewID = (int) data[2];
 
                 //sed grid position for all clients
-                NetworkedUnitTilePlacementBehaviour networkedUnitTilePlacementBehaviour =
-                    player.GetComponent<NetworkedUnitTilePlacementBehaviour>();
                 if (tileRuntimeDictionary.TryGetByGridPosition((Vector3Int) data[3], out RuntimeTile tileBehaviour))
                 {
-                    tileBehaviour.AddUnit(networkedUnitTilePlacementBehaviour);
+                    tileBehaviour.AddUnit(player);
                 }
                 
                 player.GetComponent<NetworkedUnitBehaviour>().OnPhotonViewIdAllocated();
