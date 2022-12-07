@@ -63,7 +63,7 @@ namespace Features.Battle
 
             if (PhotonNetwork.IsMasterClient && !_restartStage)
             {
-                SendLootableByRaiseEvent(_lootGenerator.GenerateNew());
+                SendLootableByRaiseEvent(_lootGenerator.GetLootableGenerator());
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)
@@ -72,7 +72,7 @@ namespace Features.Battle
             }
         }
         
-        private void SendLootableByRaiseEvent(BaseMod lootable)
+        private void SendLootableByRaiseEvent(LootableGenerator_SO lootable)
         {
             object[] data = new object[]
             {

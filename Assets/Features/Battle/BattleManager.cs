@@ -101,14 +101,7 @@ namespace Features.Battle
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 
-                battleData.lootables.Add((BaseMod)data[0]);
-                /*
-                string typeString = (string) data[0];
-                Type type = Type.GetType(typeString);
-                if (type != null)
-                {
-                    var convertedObject = Convert.ChangeType(data[1], type);
-                }*/
+                battleData.lootables.Add((LootableGenerator_SO)data[0]);
             }
         }
         

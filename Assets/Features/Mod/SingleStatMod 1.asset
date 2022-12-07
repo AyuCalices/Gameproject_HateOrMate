@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b64365be0eabe4042afe39c007cb6646, type: 3}
-  m_Name: SingleStatMod
+  m_Name: SingleStatMod 1
   m_EditorClassIdentifier: Assembly-CSharp:Features.Mod:SingleStatModGeneratorGeneratorSo
-  internalId: 34880f22-4742-4de0-8278-4dc6ed139960
-  createdAtTicks: 638060290837827866
+  internalId: ee87b825-49e1-475f-80ac-12eab24698f7
+  createdAtTicks: 638060290011575973
   modName: 
   description: 
   statType: 0

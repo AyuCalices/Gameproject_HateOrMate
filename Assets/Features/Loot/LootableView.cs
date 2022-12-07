@@ -13,7 +13,7 @@ namespace Features.Loot
         [SerializeField] private TMP_Text lootableName;
         [SerializeField] private TMP_Text description;
 
-        public BaseMod BaseMod { get; private set; }
+        public LootableGenerator_SO LootableGenerator { get; private set; }
 
         private Button _button;
 
@@ -23,11 +23,12 @@ namespace Features.Loot
         }
 
 
-        public void Initialize(BaseMod baseMod, Action action)
+        public void Initialize(LootableGenerator_SO lootableGenerator, Action action)
         {
-            BaseMod = baseMod;
-            lootableName.text = baseMod.ModName;
-            description.text = baseMod.Description;
+            LootableGenerator = lootableGenerator;
+            
+            lootableName.text = lootableGenerator.ModName;
+            description.text = lootableGenerator.Description;
             
             _button.onClick.AddListener(() =>
             {

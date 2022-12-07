@@ -27,11 +27,11 @@ namespace Features.Battle
         public BattleManager BattleManager { get; private set; }
         public IState CurrentState => BattleManager.CurrentState;
 
-        public List<BaseMod> lootables;
+        public List<LootableGenerator_SO> lootables;
 
         public void RegisterBattleManager(BattleManager battleManager)
         {
-            lootables = new List<BaseMod>();
+            lootables = new List<LootableGenerator_SO>();
             BattleManager = battleManager;
         }
 

@@ -11,7 +11,7 @@ namespace Features.ModView
     public class ModDragBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
-        [SerializeField] private BaseModGenerator_SO baseModGenerator;
+        [SerializeField] private LootableGenerator_SO lootableGenerator;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         
         private CanvasGroup _canvasGroup;

@@ -87,7 +87,7 @@ namespace Features.Loot
             int ownDecision = (int)roomCustomProperties[localPlayer.ActorNumber.ToString()];
             if (_instantiatedLootables[ownDecision] != null)
             {
-                localUnitRuntimeSet.TryInstantiateModToAny(modDragBehaviourPrefab, _instantiatedLootables[ownDecision].BaseMod);
+                localUnitRuntimeSet.TryInstantiateModToAny(modDragBehaviourPrefab, _instantiatedLootables[ownDecision].LootableGenerator.Generate());
                 RemoveFromLootSlots(ownDecision);
             }
         }

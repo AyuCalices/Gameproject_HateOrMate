@@ -12,7 +12,7 @@ namespace Features.Loot
     {
         [SerializeField] private List<LootFrequency> baseModGenerators;
 
-        public BaseMod GenerateNew()
+        public LootableGenerator_SO GetLootableGenerator()
         {
             int sum = baseModGenerators.Sum(x => x.frequency);
             int selectedLoot = Random.Range(0, sum);
@@ -23,7 +23,7 @@ namespace Features.Loot
                 acc += baseModGenerator.frequency;
                 if (acc >= selectedLoot)
                 {
-                    return baseModGenerator.modGenerator.Generate();
+                    return baseModGenerator.modGenerator;
                 }
             }
 
@@ -41,7 +41,7 @@ namespace Features.Loot
     [Serializable]
     public struct LootFrequency
     {
-        public BaseModGenerator_SO modGenerator;
+        public LootableGenerator_SO modGenerator;
         public int frequency;
     }
 }

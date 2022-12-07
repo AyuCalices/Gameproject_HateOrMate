@@ -15,7 +15,7 @@ namespace Features.Experimental
     {
         public static Action onSpawnUnit;
 
-        [SerializeField] private BaseModGenerator_SO modGenerator;
+        [SerializeField] private LootableGenerator_SO modGenerator;
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
 
