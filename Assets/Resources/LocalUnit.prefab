@@ -84,6 +84,7 @@ MonoBehaviour:
   cameraFocus: {fileID: 11400000, guid: 053894e007eee164ea29eb71b78e2831, type: 2}
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
   visualObject: {fileID: 7663717459320071761, guid: f1e24e004dccc114eb7c9f4265b6e279, type: 3}
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
 --- !u!114 &2996986347998787957
 MonoBehaviour:
   m_ObjectHideFlags: 0

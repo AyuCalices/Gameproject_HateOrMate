@@ -1,7 +1,5 @@
 using System.Linq;
 using Features.Battle;
-using Features.GlobalReferences;
-using Features.ModView;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -12,17 +10,17 @@ namespace Features.Loot
     public class LootSelectionBehaviour : MonoBehaviour
     {
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private Transform instantiationParent;
         [SerializeField] private LootableView lootableViewPrefab;
         [SerializeField] private int lootCount;
 
         private LootableView[] _instantiatedLootables;
-        private Hashtable _localDecision;
+        private RoomDecisions<int> _roomDecisions;
 
         private void Awake()
         {
             _instantiatedLootables = new LootableView[lootCount];
+            _roomDecisions = new RoomDecisions<int>("Looting");
             
             gameObject.SetActive(false);
         }
@@ -40,7 +38,7 @@ namespace Features.Loot
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
                 int localScope = i;
-                lootableView.Initialize(battleData.lootables[i], () => SetLocalDecision(localScope));
+                lootableView.Initialize(battleData.lootables[i], () => _roomDecisions.SetLocalDecision(localScope));
                 _instantiatedLootables[i] = lootableView;
             }
             
@@ -53,7 +51,6 @@ namespace Features.Loot
             {
                 if (battleData.lootables.Count == 0)
                 {
-                    Debug.Log("all mods chosen");
                     gameObject.SetActive(false);
                 }
                 else
@@ -62,10 +59,11 @@ namespace Features.Loot
                 }
             }
             
-            if (!AllPlayerChose()) return;
-            DestroyOtherChoices();
-            TryTakeSelectedLootable();
-            ResetLocalDecision();
+            _roomDecisions.UpdateDecision(() =>
+            {
+                DestroyOtherChoices();
+                TryTakeSelectedLootable();
+            });
         }
 
         private void OnDisable()
@@ -81,9 +79,9 @@ namespace Features.Loot
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             Player localPlayer = PhotonNetwork.LocalPlayer;
         
-            if (!roomCustomProperties.ContainsKey(localPlayer.ActorNumber.ToString())) return;
+            if (!roomCustomProperties.ContainsKey(_roomDecisions.Identifier(localPlayer))) return;
             
-            int ownDecisionIndex = (int)roomCustomProperties[localPlayer.ActorNumber.ToString()];
+            int ownDecisionIndex = (int)roomCustomProperties[_roomDecisions.Identifier(localPlayer)];
             if (_instantiatedLootables[ownDecisionIndex] != null)
             {
                 _instantiatedLootables[ownDecisionIndex].LootableGenerator.OnAddInstanceToPlayer();
@@ -99,7 +97,7 @@ namespace Features.Loot
             {
                 if (Equals(player, PhotonNetwork.LocalPlayer)) continue;
 
-                int index = (int) roomCustomProperties[player.ActorNumber.ToString()];
+                int index = (int) roomCustomProperties[_roomDecisions.Identifier(player)];
                 RemoveFromLootSlots(index);
             }
         }
@@ -114,39 +112,6 @@ namespace Features.Loot
         private bool IsLootableRemaining()
         {
             return _instantiatedLootables.Any(t => t != null);
-        }
-        
-        private bool AllPlayerChose()
-        {
-            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-            foreach (Player player in PhotonNetwork.PlayerList)
-            {
-                if (Equals(player, PhotonNetwork.LocalPlayer) && _localDecision != null && _localDecision[player.ActorNumber.ToString()] == null)
-                {
-                    return false;
-                }
-                
-                if (!roomCustomProperties.ContainsKey(player.ActorNumber.ToString()) || roomCustomProperties[player.ActorNumber.ToString()] == null)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private void SetLocalDecision(int index)
-        {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
-            _localDecision = new Hashtable(){{localPlayer.ActorNumber.ToString(), index}};
-            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
-        }
-
-        private void ResetLocalDecision()
-        {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
-            _localDecision = new Hashtable(){{localPlayer.ActorNumber.ToString(), null}};
-            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
         }
     }
 }

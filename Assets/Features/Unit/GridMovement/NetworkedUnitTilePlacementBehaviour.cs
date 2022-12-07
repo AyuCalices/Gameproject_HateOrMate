@@ -15,7 +15,7 @@ namespace Features.Unit.GridMovement
 
         public Vector3Int GridPosition => tileRuntimeDictionary.GetWorldToCellPosition(transform.position);
         
-        private float _movementSpeed = 3f;
+        protected float _movementSpeed = 3f;
         private PhotonView _photonView;
 
         private void Awake()

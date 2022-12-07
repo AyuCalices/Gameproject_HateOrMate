@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Collections.Generic;
+using Features.Battle;
 using Features.GlobalReferences;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -6,10 +9,15 @@ namespace Features.Unit.GridMovement
 {
     public class LocalUnitTilePlacementBehaviour : NetworkedUnitTilePlacementBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
+        //TODO: make sure the battle cant proceed into another state if a unit moves
+        //TODO: there is a bug, where some cells are blocked (units not correctly assigned to current tile) - might resolve when correct refactoring below TODO
+        //TODO: multiple moves after each other need to be chained directly in the move RaiseEventCallback
+        
         [SerializeField] private float speed = 1.5f;
         [SerializeField] private CameraFocus_SO cameraFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private GameObject visualObject;
+        [SerializeField] private BattleData_SO battleData;
 
         private GameObject _instantiatedPrefab;
         private float _startTime;
@@ -19,6 +27,8 @@ namespace Features.Unit.GridMovement
 
         private void Update()
         {
+            if (battleData.CurrentState is not LootingState) return;
+            
             if (_instantiatedPrefab == null || _journeyLength == 0) return;
             
             float distCovered = (Time.time - _startTime) * speed;
@@ -59,13 +69,16 @@ namespace Features.Unit.GridMovement
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            if (battleData.CurrentState is not LootingState) return;
+            
             _instantiatedPrefab = Instantiate(visualObject);
             _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
         }
         
         public void OnDrag(PointerEventData eventData)
         {
-            //TODO: when a unit dies while dragging these events get lost => dont make player be able to drag while battle
+            if (battleData.CurrentState is not LootingState) return;
+            
             if (canvasFocus.Get() == null) return;
 
             if (cameraFocus.NotNull())
@@ -79,14 +92,34 @@ namespace Features.Unit.GridMovement
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if (battleData.CurrentState is not LootingState) return;
+            
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;
 
             if (!tileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
             
-            if (eventData.pointerDrag == null || !eventData.pointerDrag.TryGetComponent(out NetworkedUnitTilePlacementBehaviour unitDragBehaviour)) return;
+            if (eventData.pointerDrag == null) return;
+            
+            if (tileRuntimeDictionary.GenerateAStarPath(GridPosition,
+                _targetTileGridPosition, out List<Vector3Int> path) && path.Count > 0)
+            {
+                StartCoroutine(MoveCoroutine(path));
+            }
+        }
 
-            unitDragBehaviour.RequestMove(_targetTileGridPosition);
+        private IEnumerator MoveCoroutine(List<Vector3Int> path)
+        {
+            Vector3Int targetPosition = path[0];
+            RequestMove(targetPosition);
+            path.RemoveAt(0);
+            float time = Vector3.Distance(transform.position, targetPosition) / _movementSpeed;
+            yield return new WaitForSeconds(time);
+
+            if (path.Count > 0)
+            {
+                StartCoroutine(MoveCoroutine(path));
+            }
         }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Loot;
-using Features.Mod;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -18,6 +17,7 @@ namespace Features.Battle
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private TMP_Text stageText;
         [SerializeField] private Toggle requestLootPhaseToggle;
+        [SerializeField] private Button continueBattleButton;
     
         private StateMachine _stageStateMachine;
 
@@ -34,6 +34,7 @@ namespace Features.Battle
             battleData.RegisterBattleManager(this);
             battleData.Stage = 0;
             DisableLootPhaseRequested();
+            continueBattleButton.gameObject.SetActive(false);
         }
 
         private void Start()
@@ -43,19 +44,24 @@ namespace Features.Battle
             stageText.text = "Stage: " + battleData.Stage;
         }
 
+        private void Update()
+        {
+            _stageStateMachine.Update();
+        }
+
         private void RequestStageSetupState(bool restartState)
         {
             _stageStateMachine.ChangeState(new StageSetupState(this, lootGenerator, restartState));
         }
 
-        private void RequestBattleState()
+        public void RequestBattleState()
         {
             _stageStateMachine.ChangeState(new BattleState(this));
         }
         
         private void RequestLootingState()
         {
-            _stageStateMachine.ChangeState(new LootingState(this, lootSelectionBehaviour));
+            _stageStateMachine.ChangeState(new LootingState(this, lootSelectionBehaviour, continueBattleButton));
         }
 
         public void StageCheck()
