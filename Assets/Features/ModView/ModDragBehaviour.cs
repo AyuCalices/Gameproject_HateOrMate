@@ -1,4 +1,5 @@
 using Features.GlobalReferences;
+using Features.Loot;
 using Features.Mod;
 using Features.Unit;
 using Features.Unit.Modding;

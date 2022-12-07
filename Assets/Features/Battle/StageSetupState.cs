@@ -63,7 +63,7 @@ namespace Features.Battle
 
             if (PhotonNetwork.IsMasterClient && !_restartStage)
             {
-                SendLootableByRaiseEvent(_lootGenerator.GetLootableGenerator());
+                SendLootableByRaiseEvent(_lootGenerator.RandomizeLootableGenerator());
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)

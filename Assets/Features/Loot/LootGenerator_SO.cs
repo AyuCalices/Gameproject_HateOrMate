@@ -12,7 +12,7 @@ namespace Features.Loot
     {
         [SerializeField] private List<LootFrequency> baseModGenerators;
 
-        public LootableGenerator_SO GetLootableGenerator()
+        public LootableGenerator_SO RandomizeLootableGenerator()
         {
             int sum = baseModGenerators.Sum(x => x.frequency);
             int selectedLoot = Random.Range(0, sum);
@@ -28,13 +28,6 @@ namespace Features.Loot
             }
 
             return null;
-        }
-
-        public List<BaseMod> GetFirstGeneratedElements(List<BaseMod> generatedMods, int requestedCount)
-        {
-            List<BaseMod> result = generatedMods.GetRange(0, Mathf.Min(generatedMods.Count, requestedCount));
-            generatedMods.RemoveRange(0, requestedCount);
-            return result;
         }
     }
 

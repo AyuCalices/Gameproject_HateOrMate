@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp:Features.Mod:SingleStatModGeneratorGeneratorSo
   internalId: 34880f22-4742-4de0-8278-4dc6ed139960
   createdAtTicks: 638060290837827866
-  modName: 
+  lootableName: 
   description: 
+  localUnitRuntimeSet: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
+  modDragBehaviourPrefab: {fileID: 2493011977752105954, guid: 21f0c94f61b565a4aa59fa243a2144d1, type: 3}
   statType: 0
   baseValue: 10
   scaleValue: 0

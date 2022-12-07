@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public interface ILootable
+namespace Features.Loot
 {
-    public string Name { get; set; }
+    public interface ILootable
+    {
+        public string Name { get; set; }
+    }
 }

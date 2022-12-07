@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.GlobalReferences;
+using Features.Loot;
 using Features.Mod;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
@@ -11,9 +12,6 @@ namespace Features.Battle
     [CreateAssetMenu]
     public class BattleData_SO : ScriptableObject
     {
-        //TODO: stage information
-        //TODO: rewards
-        
         [SerializeField] private NetworkedUnitRuntimeSet_SO enemyUnitRuntimeSet;
 
         [SerializeField] private NetworkedUnitRuntimeSet_SO playerTeamUnitRuntimeSet;

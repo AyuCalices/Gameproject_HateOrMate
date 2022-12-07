@@ -27,7 +27,7 @@ namespace Features.Loot
         {
             LootableGenerator = lootableGenerator;
             
-            lootableName.text = lootableGenerator.ModName;
+            lootableName.text = lootableGenerator.LootableName;
             description.text = lootableGenerator.Description;
             
             _button.onClick.AddListener(() =>

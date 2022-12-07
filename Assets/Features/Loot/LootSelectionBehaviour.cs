@@ -13,7 +13,6 @@ namespace Features.Loot
     {
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
-        [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
         [SerializeField] private Transform instantiationParent;
         [SerializeField] private LootableView lootableViewPrefab;
         [SerializeField] private int lootCount;
@@ -84,11 +83,11 @@ namespace Features.Loot
         
             if (!roomCustomProperties.ContainsKey(localPlayer.ActorNumber.ToString())) return;
             
-            int ownDecision = (int)roomCustomProperties[localPlayer.ActorNumber.ToString()];
-            if (_instantiatedLootables[ownDecision] != null)
+            int ownDecisionIndex = (int)roomCustomProperties[localPlayer.ActorNumber.ToString()];
+            if (_instantiatedLootables[ownDecisionIndex] != null)
             {
-                localUnitRuntimeSet.TryInstantiateModToAny(modDragBehaviourPrefab, _instantiatedLootables[ownDecision].LootableGenerator.Generate());
-                RemoveFromLootSlots(ownDecision);
+                _instantiatedLootables[ownDecisionIndex].LootableGenerator.OnAddInstanceToPlayer();
+                RemoveFromLootSlots(ownDecisionIndex);
             }
         }
 
