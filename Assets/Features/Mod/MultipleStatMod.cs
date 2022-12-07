@@ -15,7 +15,7 @@ namespace Features.Mod
         {
             _multipleStatModTargets = multipleStatModTargets;
         }
-        
+
         protected override void InternalAddMod(LocalUnitBehaviour moddedLocalUnit)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)

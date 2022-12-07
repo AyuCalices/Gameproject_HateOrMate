@@ -1,4 +1,9 @@
+using System;
+using System.Collections.Generic;
 using ExitGames.Client.Photon;
+using Features.Mod;
+using Features.Unit.Modding.Stat;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Features
@@ -6,6 +11,7 @@ namespace Features
     internal static class CustomTypesUnity
     {
         private const int SizeV3Int = 3 * 4;
+        private const int SizeSingleStatMod = 3 * 4;
 
 
         /// <summary>Register de/serializer methods for Unity specific types. Makes the types usable in RaiseEvent and PUN.</summary>
@@ -13,6 +19,7 @@ namespace Features
         private static void Register()
         {
             PhotonPeer.RegisterType(typeof(Vector3Int), (byte) 'a', SerializeVector3Int, DeserializeVector3Int);
+            PhotonPeer.RegisterType(typeof(SingleStatMod), (byte) 'b', SerializeSingleStatMod, DeserializeSingleStatMod);
         }
 
 
@@ -58,6 +65,33 @@ namespace Features
             }
 
             return vo;
+        }
+
+        private static object DeserializeSingleStatMod(byte[] data)
+        {
+            int enumType = BitConverter.ToInt32(data, 0);
+            float baseValue = BitConverter.ToSingle(data, 4);
+            float scaleValue = BitConverter.ToSingle(data, 8);
+            
+            return new SingleStatMod((StatType)enumType, baseValue, scaleValue, "", "");
+        }
+
+        private static byte[] SerializeSingleStatMod(object customType)
+        {
+            SingleStatMod singleStatMod = (SingleStatMod) customType;
+            
+            List<byte> data = new List<byte>();
+            
+            byte[] enumByte = BitConverter.GetBytes(singleStatMod.StatType);
+            data.AddRange(enumByte);
+            
+            byte[] baseValue = BitConverter.GetBytes(singleStatMod.BaseValue);
+            data.AddRange(baseValue);
+            
+            byte[] scaleValue = BitConverter.GetBytes(singleStatMod.ScaleValue);
+            data.AddRange(scaleValue);
+
+            return data.ToArray();
         }
 
         #endregion

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using DataStructures.RuntimeSet;
+using Features.Mod;
 using Features.ModView;
 using Features.Unit.Battle;
 using Features.Unit.Battle.Actions;
@@ -14,12 +15,12 @@ namespace Features.GlobalReferences
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
     public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedUnitBehaviour>
     {
-        public bool TryAddModToAny(ModDragBehaviour modDragBehaviour)
+        public bool TryInstantiateModToAny(ModDragBehaviour modDragBehaviour, BaseMod baseMod)
         {
             foreach (NetworkedUnitBehaviour localUnitBehaviour in GetItems())
             {
                 if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
-                if (modUnitBehaviour.UnitMods.TryAddMod(modDragBehaviour))
+                if (modUnitBehaviour.UnitMods.TryInstantiateMod(modDragBehaviour, baseMod))
                 {
                     return true;
                 }

@@ -1,5 +1,6 @@
 using System;
 using Features.GlobalReferences;
+using Features.Mod;
 using Features.ModView;
 using Features.Unit;
 using Features.Unit.GridMovement;
@@ -13,7 +14,8 @@ namespace Features.Experimental
     public class TestingGenerator : MonoBehaviour
     {
         public static Action onSpawnUnit;
-        
+
+        [SerializeField] private BaseModGenerator_SO modGenerator;
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
         [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
 
@@ -22,9 +24,7 @@ namespace Features.Experimental
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                ModDragBehaviour modDragBehaviour = Instantiate(modDragBehaviourPrefab);
-                modDragBehaviour.GetComponent<Image>().color = Random.ColorHSV();
-                localUnitRuntimeSet.TryAddModToAny(modDragBehaviour);
+                localUnitRuntimeSet.TryInstantiateModToAny(modDragBehaviourPrefab, modGenerator.Generate());
             }
         
             if (Input.GetKeyDown(KeyCode.U))

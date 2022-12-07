@@ -38,6 +38,7 @@ namespace Features.Tiles
                         if (gridPositions.TryGetValue(position, out GameObject unit))
                         {
                             newRuntimeTile.AddUnit(unit);
+                            Debug.Log("o/");
                         }
                     }
                 }

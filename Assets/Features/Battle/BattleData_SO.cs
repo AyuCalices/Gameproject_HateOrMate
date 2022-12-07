@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.GlobalReferences;
+using Features.Mod;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
-using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Battle
@@ -26,8 +27,11 @@ namespace Features.Battle
         public BattleManager BattleManager { get; private set; }
         public IState CurrentState => BattleManager.CurrentState;
 
+        public List<BaseMod> lootables;
+
         public void RegisterBattleManager(BattleManager battleManager)
         {
+            lootables = new List<BaseMod>();
             BattleManager = battleManager;
         }
 

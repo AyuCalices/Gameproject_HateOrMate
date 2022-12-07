@@ -68,7 +68,7 @@ namespace Features.Unit.Battle
 
         private void Update()
         {
-            if (battleData.CurrentState is not RunningState) return;
+            if (battleData.CurrentState is not BattleState) return;
             
             _hasTargetableEnemy = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out KeyValuePair<NetworkedUnitBehaviour, float> closestUnit);
@@ -79,10 +79,10 @@ namespace Features.Unit.Battle
                 case AttackState when !_hasTargetableEnemy:
                     RequestIdleState();
                     break;
-                case AttackState or IdleState when _hasTargetableEnemy && closestUnit.Value > range:
+                case AttackState or IdleState when _hasTargetableEnemy && closestUnit.Value >= range:
                     RequestMovementState();
                     break;
-                case MovementState or IdleState when _hasTargetableEnemy && closestUnit.Value <= range:
+                case MovementState or IdleState when _hasTargetableEnemy && closestUnit.Value < range:
                     RequestAttackState();
                     break;
             }
@@ -96,7 +96,7 @@ namespace Features.Unit.Battle
         /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
-            if (battleData.CurrentState is not RunningState) return;
+            if (battleData.CurrentState is not BattleState) return;
             
             //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
             if (photonEvent.Code == (int)RaiseEventCode.OnPerformUnitAttack)

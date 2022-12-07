@@ -16,19 +16,21 @@ namespace Features.Tiles
 
         private Tilemap _tilemap;
         private TileLookup[] _tileReferences;
-        Pathfinder<Vector3Int> pathfinder;
+        private Pathfinder<Vector3Int> _pathfinder;
+        private Vector3Int _targetNode;
         
         public void Initialize(Tilemap tilemap, TileLookup[] tileReferences, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
         {
             _tilemap = tilemap;
             _tileReferences = tileReferences;
-            pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
+            _pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
             populateRuntimeSet.Invoke(items);
         }
 
         public bool GenerateAStarPath(Vector3Int startNode, Vector3Int targetNode, out List<Vector3Int> path)
         {
-            return pathfinder.GenerateAstarPath(startNode, targetNode, out path);
+            _targetNode = targetNode;
+            return _pathfinder.GenerateAstarPath(startNode, targetNode, out path);
         }
         
         private float DistanceFunc(Vector3Int a, Vector3Int b)
@@ -41,8 +43,9 @@ namespace Features.Tiles
             Dictionary<Vector3Int, float> result= new Dictionary<Vector3Int, float>();
             foreach (Vector3Int dir in _directions)
             {
-                if (!TryGetByGridPosition(a + dir, out RuntimeTile runtimeTile)) continue;
-                if (!runtimeTile.ContainsUnit) result.Add(a + dir, runtimeTile.movementCost);
+                Vector3Int position = a + dir;
+                if (!TryGetByGridPosition(position, out RuntimeTile runtimeTile)) continue;
+                if (!runtimeTile.ContainsUnit || _targetNode == position) result.Add(position, runtimeTile.movementCost);
             }
             return result;
         }

@@ -1,5 +1,7 @@
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using Features.Loot;
+using Features.Mod;
 using Features.Unit.Battle;
 using Features.Unit.Modding;
 using Photon.Pun;
@@ -7,14 +9,16 @@ using Photon.Realtime;
 
 namespace Features.Battle
 {
-    public class BattleSetupState : IState
+    public class StageSetupState : IState
     {
         private BattleManager _battleManager;
+        private readonly LootGenerator_SO _lootGenerator;
         private bool _restartStage;
         
-        public BattleSetupState(BattleManager battleManager, bool restartStage)
+        public StageSetupState(BattleManager battleManager, LootGenerator_SO lootGenerator, bool restartStage)
         {
             _battleManager = battleManager;
+            _lootGenerator = lootGenerator;
             _restartStage = restartStage;
         }
     
@@ -57,11 +61,24 @@ namespace Features.Battle
                 networkedUnitBehaviour.RemovedHealth = 0;
             }
 
-            EnterBattleByRaiseEvent();
+            if (PhotonNetwork.IsMasterClient && !_restartStage)
+            {
+                SendLootableByRaiseEvent(_lootGenerator.GenerateNew());
+            }
+
+            if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+                RequestBattleStateByRaiseEvent();
+            }
         }
         
-        private void EnterBattleByRaiseEvent()
+        private void SendLootableByRaiseEvent(BaseMod lootable)
         {
+            object[] data = new object[]
+            {
+                lootable
+            };
+            
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
                 Receivers = ReceiverGroup.All,
@@ -72,10 +89,29 @@ namespace Features.Battle
             {
                 Reliability = true
             };
-
-            object[] data = new object[] {};
             
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnStartBattle, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnObtainLoot, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void RequestBattleStateByRaiseEvent()
+        {
+            object[] data = new object[]
+            {
+                _battleManager.IsLootPhaseRequested
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.MasterClient,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestBattleState, data, raiseEventOptions, sendOptions);
         }
 
         public void Execute()

@@ -10,7 +10,11 @@ namespace Features.Mod
         private readonly StatType _statType;
         private readonly float _baseValue;
         private readonly float _scaleValue;
-    
+
+        public int StatType => (int) _statType;
+        public float BaseValue => _baseValue;
+        public float ScaleValue => _scaleValue;
+
         public SingleStatMod(StatType statType, float baseValue, float scaleValue, string modName, string description) : base(modName, description)
         {
             _statType = statType;

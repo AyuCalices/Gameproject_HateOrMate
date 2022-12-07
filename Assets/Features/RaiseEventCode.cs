@@ -8,6 +8,8 @@ namespace Features
         OnRequestChangeUnitGridPosition = 4,
         OnPerformUnitAttack = 5,
         OnPerformUpdateUnitHealth = 6,
-        OnStartBattle = 7
+        OnRequestBattleState = 7,
+        OnSetBattleState = 8,
+        OnObtainLoot = 9
     }
 }

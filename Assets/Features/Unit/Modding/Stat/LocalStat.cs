@@ -21,6 +21,7 @@ namespace Features.Unit.Modding.Stat
     
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
+            _baseStatValue = 0;
             _baseScalingStatValue = 1;
             
             _statModificationValues = new List<float>() {};
@@ -45,11 +46,11 @@ namespace Features.Unit.Modding.Stat
         {
             float finalValue = _baseScalingStatValue;
 
-            foreach (var statValue in _statModificationValues)
+            foreach (var scalingStatValue in _scalingStatModificationValues)
             {
-                finalValue += statValue;
+                finalValue += scalingStatValue;
             }
-
+            
             return finalValue;
         }
 
@@ -57,9 +58,9 @@ namespace Features.Unit.Modding.Stat
         {
             float finalValue = _baseStatValue;
         
-            foreach (var scalingStatValue in _scalingStatModificationValues)
+            foreach (var statValue in _statModificationValues)
             {
-                finalValue += scalingStatValue;
+                finalValue += statValue;
             }
 
             return finalValue;

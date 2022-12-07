@@ -17,8 +17,7 @@ namespace Features.ModView
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
 
-        public BaseMod BaseMod => _baseMod;
-        private BaseMod _baseMod;
+        public BaseMod BaseMod { get; set; }
         private ModSlotContainer _modSlotContainer;
         private ModSlotBehaviour _modSlotBehaviour;
 
@@ -37,8 +36,6 @@ namespace Features.ModView
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
-
-            _baseMod = baseModGenerator.Generate();
             
             _modSlotContainer = null;
             _modSlotBehaviour = null;
@@ -46,11 +43,15 @@ namespace Features.ModView
 
         public void OnPointerDown(PointerEventData eventData)
         {
+            if (BaseMod == null)
+            {
+                Debug.LogError("There is no Mod!");
+            }
         }
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            dragControllerFocus.Set(new DragController(this, _baseMod, _modSlotContainer, _modSlotBehaviour));
+            dragControllerFocus.Set(new DragController(this, BaseMod, _modSlotContainer, _modSlotBehaviour));
             
             _canvasGroup.alpha = 0.5f;
             _canvasGroup.blocksRaycasts = false;

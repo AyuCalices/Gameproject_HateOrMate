@@ -3,38 +3,25 @@ using Photon.Pun;
 
 namespace Features.Battle
 {
-    public class RunningState : IState
+    public class BattleState : IState
     {
         private readonly BattleManager _battleManager;
         
-        public RunningState(BattleManager battleManager)
+        public BattleState(BattleManager battleManager)
         {
             _battleManager = battleManager;
         }
     
         public void Enter()
         {
-            InitializeStage();
         }
 
         public void Execute()
         {
-            
         }
 
         public void Exit()
         {
-            ResetStage();
-        }
-
-        private void InitializeStage()
-        {
-            
-        }
-
-        private void ResetStage()
-        {
-            
         }
     }
 }

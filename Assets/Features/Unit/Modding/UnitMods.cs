@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Features.Mod;
 using Features.ModView;
+using UnityEngine;
+using UnityEngine.UI;
 
 namespace Features.Unit.Modding
 {
@@ -24,6 +26,26 @@ namespace Features.Unit.Modding
                     modSlotsContainers[i].DisableSlot();
                 }
             }
+        }
+        
+        public bool TryInstantiateMod(ModDragBehaviour modDragBehaviourPrefab, BaseMod baseMod)
+        {
+            for (int index = 0; index < modSlotsContainers.Length; index++)
+            {
+                ModSlotContainer modSlotsContainer = modSlotsContainers[index];
+                if (!modSlotsContainer.ContainsMod())
+                {
+                    ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, modSlotBehaviours[index].transform);
+                    modDragBehaviour.BaseMod = baseMod;
+                    modDragBehaviour.GetComponent<Image>().color = Random.ColorHSV();
+                    modSlotsContainer.AddMod(baseMod);
+                    modDragBehaviour.SetNewOrigin(modSlotsContainer, modSlotBehaviours[index]);
+
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         public bool TryAddMod(ModDragBehaviour modDragBehaviour)

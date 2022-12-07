@@ -116,7 +116,7 @@ namespace Features.Unit.Modding
 
         private void Update()
         {
-            //Debug.Log(gameObject.name + " " + NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
+            Debug.Log(gameObject.name + " " + NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
         }
 
         private void OnDestroy()

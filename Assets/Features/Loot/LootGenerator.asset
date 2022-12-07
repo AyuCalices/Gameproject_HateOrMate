@@ -9,11 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b64365be0eabe4042afe39c007cb6646, type: 3}
-  m_Name: SingleStatMod
-  m_EditorClassIdentifier: Assembly-CSharp:Features.Mod:SingleStatModGeneratorGeneratorSo
-  modName: 
-  description: 
-  statType: 0
-  baseValue: 10
-  scaleValue: 0
+  m_Script: {fileID: 11500000, guid: 4a84432f6e9598d4b99bef5fde10d3bf, type: 3}
+  m_Name: LootGenerator
+  m_EditorClassIdentifier: 
+  baseModGenerators:
+  - modGenerator: {fileID: 11400000, guid: 0929ebd1786d4ee44be101666c4ab9d9, type: 2}
+    frequency: 10
