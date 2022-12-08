@@ -17,6 +17,11 @@ namespace DataStructures.RuntimeSet
             return items.TryGetValue(key, out value);
         }
 
+        public Value GetContent(Key key)
+        {
+            return items[key];
+        }
+
         public void Add(Key key, Value value)
         {
             if (!items.ContainsKey(key))

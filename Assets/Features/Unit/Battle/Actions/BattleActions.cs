@@ -106,7 +106,6 @@ namespace Features.Unit.Battle.Actions
         public void OnSendHealthActionCallback(float newRemovedHealth,
             float totalHealth)
         {
-            //TODO: gets casted double on the client that send this
             ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth = newRemovedHealth;
         
             if (ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth >= totalHealth)
@@ -131,9 +130,6 @@ namespace Features.Unit.Battle.Actions
         }
         protected abstract void InternalUpdateBattleActions();
         
-        
-
-        //TODO: implement moving to enemy
         public void Move()
         {
             InternalMove();

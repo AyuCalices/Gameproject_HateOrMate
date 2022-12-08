@@ -23,7 +23,7 @@ namespace Features.Loot
         }
 
 
-        public void Initialize(LootableGenerator_SO lootableGenerator, Action action)
+        public void Initialize(LootableGenerator_SO lootableGenerator, Func<bool> action)
         {
             LootableGenerator = lootableGenerator;
             
@@ -32,9 +32,11 @@ namespace Features.Loot
             
             _button.onClick.AddListener(() =>
             {
-                _button.interactable = false;
-                image.color = Color.grey;
-                action.Invoke();
+                if (action.Invoke())
+                {
+                    _button.interactable = false;
+                    image.color = Color.grey;
+                }
             });
         }
     }

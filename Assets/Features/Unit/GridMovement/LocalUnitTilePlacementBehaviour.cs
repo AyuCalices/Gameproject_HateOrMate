@@ -99,27 +99,7 @@ namespace Features.Unit.GridMovement
 
             if (!tileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
             
-            if (eventData.pointerDrag == null) return;
-            
-            if (tileRuntimeDictionary.GenerateAStarPath(GridPosition,
-                _targetTileGridPosition, out List<Vector3Int> path) && path.Count > 0)
-            {
-                StartCoroutine(MoveCoroutine(path));
-            }
-        }
-
-        private IEnumerator MoveCoroutine(List<Vector3Int> path)
-        {
-            Vector3Int targetPosition = path[0];
-            RequestMove(targetPosition);
-            path.RemoveAt(0);
-            float time = Vector3.Distance(transform.position, targetPosition) / _movementSpeed;
-            yield return new WaitForSeconds(time);
-
-            if (path.Count > 0)
-            {
-                StartCoroutine(MoveCoroutine(path));
-            }
+            RequestMove(_targetTileGridPosition, 1);
         }
     }
 }

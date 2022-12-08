@@ -18,11 +18,17 @@ namespace Features
             _identifier = identifier;
         }
 
-        public void SetLocalDecision(T value)
+        public bool SetLocalDecision(T value)
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
+            
+            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            if (roomCustomProperties[Identifier(localPlayer)] != null) return false;
+
             _localDecision = new Hashtable(){{Identifier(localPlayer), value}};
             PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
+
+            return true;
         }
 
         public void UpdateDecision(Action onAllPlayerChose)

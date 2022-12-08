@@ -24,21 +24,14 @@ namespace Features.Unit.Battle
 
         public void Enter()
         {
+            if (!_battleBehaviour.TryGetTarget(out NetworkedUnitBehaviour closestUnit)) return;
+
+            Vector3Int enemyPosition = _tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
+            _ownerTilePlacementBehaviour.RequestMove(enemyPosition, 2);
         }
 
         public void Execute()
         {
-            if (LeanTween.isTweening(_battleBehaviour.gameObject)) return;
-            
-            if (!_battleBehaviour.TryGetTarget(out NetworkedUnitBehaviour closestUnit)) return;
-
-            Vector3Int enemyPosition = _tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
-
-            if (_tileRuntimeDictionary.GenerateAStarPath(_ownerTilePlacementBehaviour.GridPosition,
-                enemyPosition, out List<Vector3Int> path) && path.Count > 1)
-            {
-                _ownerTilePlacementBehaviour.RequestMove(path[0]);
-            }
         }
 
         public void Exit()
