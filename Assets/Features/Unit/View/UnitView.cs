@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace Features.Unit.View
 {
+    //TODO: UniRX
     public class UnitView : MonoBehaviour
     {
         [SerializeField] private Transform healthTransform;

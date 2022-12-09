@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Features.Loot;
+using Features.Loot.Scripts;
 using Features.Unit;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;

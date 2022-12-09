@@ -84,7 +84,7 @@ namespace Features.Unit.Modding.Stat
     
             if (!_services.ContainsKey(key))
             {
-                Debug.LogWarning($"{key} not registered with {GetType().Name}");
+                //Debug.LogWarning($"{key} not registered with {GetType().Name}");
                 service = default;
                 return false;
             }
@@ -98,7 +98,7 @@ namespace Features.Unit.Modding.Stat
             string key = typeof(T).Name + statType;
             if (!_services.ContainsKey(key))
             {
-                Debug.LogWarning($"{key} not registered with {GetType().Name}");
+                //Debug.LogWarning($"{key} not registered with {GetType().Name}");
                 throw new InvalidOperationException();
             }
 

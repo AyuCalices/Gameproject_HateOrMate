@@ -1,7 +1,6 @@
 using Features.GlobalReferences;
-using Features.Loot;
+using Features.GlobalReferences.Scripts;
 using Features.Mod;
-using Features.Unit;
 using Features.Unit.Modding;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -12,7 +11,6 @@ namespace Features.ModView
     public class ModDragBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
-        [SerializeField] private LootableGenerator_SO lootableGenerator;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         
         private CanvasGroup _canvasGroup;

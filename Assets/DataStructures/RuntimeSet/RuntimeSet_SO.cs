@@ -5,7 +5,7 @@ namespace DataStructures.RuntimeSet
 {
     public abstract class RuntimeSet_SO<T> : ScriptableObject
     {
-        [SerializeField] private List<T> items = new List<T>();
+        [SerializeField] protected List<T> items = new List<T>();
 
         public List<T> GetItems()
         {

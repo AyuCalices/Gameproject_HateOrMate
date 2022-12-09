@@ -1,6 +1,8 @@
 using System;
 using Features.GlobalReferences;
+using Features.GlobalReferences.Scripts;
 using Features.Loot;
+using Features.Loot.Scripts;
 using Features.Mod;
 using Features.ModView;
 using UnityEngine;

@@ -7,7 +7,6 @@ namespace Features
     internal static class CustomTypesGame
     {
         private const int SizeV3Int = 3 * 4;
-        private const int SizeSingleStatMod = 3 * 4;
 
 
         /// <summary>Register de/serializer methods for Game specific types. Makes the types usable in RaiseEvent and PUN.</summary>
@@ -63,40 +62,5 @@ namespace Features
         }
 
         #endregion
-    }
-
-    public static class UniqueCustomTypeByte
-    {
-        private static byte _acc;
-
-        public static byte GetByteExcludingPhoton()
-        {
-            _acc++;
-        
-            //Lock Photon Bytes
-            if (Encoding.ASCII.GetBytes("W")[0] == _acc)
-            {
-                _acc++;
-            }
-            if (Encoding.ASCII.GetBytes("V")[0] == _acc)
-            {
-                _acc++;
-            }
-            if (Encoding.ASCII.GetBytes("Q")[0] == _acc)
-            {
-                _acc++;
-            }
-            if (Encoding.ASCII.GetBytes("P")[0] == _acc)
-            {
-                _acc++;
-            }
-
-            if (_acc >= byte.MaxValue)
-            {
-                Debug.LogError("All Bytes Available Used!");
-            }
-
-            return _acc;
-        }
     }
 }

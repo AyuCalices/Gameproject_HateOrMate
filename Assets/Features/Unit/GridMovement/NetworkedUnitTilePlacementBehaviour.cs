@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Tiles;
+using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
@@ -17,7 +18,7 @@ namespace Features.Unit.GridMovement
 
         public Vector3Int CurrentCellPosition => tileRuntimeDictionary.GetWorldToCellPosition(transform.position);
         
-        protected float _movementSpeed = 3f;
+        protected float _movementSpeed = 1f;
         private PhotonView _photonView;
 
         private void Awake()
@@ -33,7 +34,7 @@ namespace Features.Unit.GridMovement
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
                 if (_photonView.ViewID != viewID) return;
-                
+
                 Vector3Int targetCellPosition = (Vector3Int) data[1];
                 Vector3Int nextCellPosition = (Vector3Int) data[2];
                 int pathMinLength = (int) data[3];
@@ -87,19 +88,12 @@ namespace Features.Unit.GridMovement
 
         private void OnMasterChangeUnitGridPosition(Vector3Int targetCellPosition, Vector3Int currentCellPosition, int pathMinLength)
         {
+            if (GetComponent<BattleBehaviour>().CurrentState is not MovementState) return;
+            
             if (!TryGetNextPosition(targetCellPosition, currentCellPosition, pathMinLength, out Vector3Int nextCellPosition)) return;
 
-            RuntimeTile targetTileContainer = tileRuntimeDictionary.GetContent(nextCellPosition);
-            targetTileContainer.AddUnit(gameObject);
+            UpdateUnitOnRuntimeTiles(currentCellPosition, nextCellPosition);
 
-            if (tileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
-            {
-                if (previousTileBehaviour.ContainsUnit)
-                {
-                    previousTileBehaviour.RemoveUnit();
-                }
-            }
-            
             object[] data = new object[]
             {
                 _photonView.ViewID,
@@ -120,6 +114,17 @@ namespace Features.Unit.GridMovement
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridPositionSwap, data, raiseEventOptions, sendOptions);
+        }
+
+        private void UpdateUnitOnRuntimeTiles(Vector3Int currentCellPosition, Vector3Int nextCellPosition)
+        {
+            RuntimeTile targetTileContainer = tileRuntimeDictionary.GetContent(nextCellPosition);
+            targetTileContainer.AddUnit(gameObject);
+
+            if (tileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
+            {
+                previousTileBehaviour.RemoveUnit();
+            }
         }
 
         private void RequestMoveToTarget(Vector3Int targetCellPosition, Vector3Int currentCellPosition, int pathMinLength)

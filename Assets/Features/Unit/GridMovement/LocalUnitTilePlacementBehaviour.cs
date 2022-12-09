@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Features.Battle;
+using Features.Battle.Scripts;
 using Features.GlobalReferences;
+using Features.GlobalReferences.Scripts;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,8 +12,6 @@ namespace Features.Unit.GridMovement
     public class LocalUnitTilePlacementBehaviour : NetworkedUnitTilePlacementBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         //TODO: make sure the battle cant proceed into another state if a unit moves
-        //TODO: there is a bug, where some cells are blocked (units not correctly assigned to current tile) - might resolve when correct refactoring below TODO
-        //TODO: multiple moves after each other need to be chained directly in the move RaiseEventCallback
         
         [SerializeField] private float speed = 1.5f;
         [SerializeField] private CameraFocus_SO cameraFocus;

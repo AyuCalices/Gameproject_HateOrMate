@@ -1,7 +1,10 @@
 using Features.Battle;
+using Features.Battle.Scripts;
 using Features.GlobalReferences;
+using Features.GlobalReferences.Scripts;
 using Features.Unit.Battle;
-using Features.Unit.Battle.Actions;
+using Features.Unit.Battle.Scripts;
+using Features.Unit.Battle.Scripts.Actions;
 using Features.Unit.Modding;
 using Features.Unit.View;
 using UnityEngine;

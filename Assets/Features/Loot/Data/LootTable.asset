@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4a84432f6e9598d4b99bef5fde10d3bf, type: 3}
+  m_Name: LootTable
+  m_EditorClassIdentifier: 
+  baseModGenerators:
+  - modGenerator: {fileID: 11400000, guid: 0929ebd1786d4ee44be101666c4ab9d9, type: 2}
+    frequency: 10
+  - modGenerator: {fileID: 11400000, guid: 50dcb90238490c34abd75ab730b0f97a, type: 2}
+    frequency: 10
