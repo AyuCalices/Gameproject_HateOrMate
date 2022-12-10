@@ -1,4 +1,6 @@
-﻿namespace DataStructures.StateLogic
+﻿using ExitGames.Client.Photon;
+
+namespace DataStructures.StateLogic
 {
     /// <summary>
     /// A MonoBehaviour can use a StateMachine in order to be state driven and decides whether
@@ -27,6 +29,11 @@
         public void Update()
         {
             CurrentState?.Execute();
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            CurrentState?.OnEvent(photonEvent);
         }
     }
 }

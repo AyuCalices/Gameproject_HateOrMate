@@ -21,6 +21,7 @@ namespace Features.Unit.Battle.Scripts
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
         [SerializeField] private float range;
+        [SerializeField] private float movementSpeed = 2f;
         
         public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
         private StateMachine _stateMachine;
@@ -65,6 +66,11 @@ namespace Features.Unit.Battle.Scripts
 
         public void OnStageEnd()
         {
+            if (CurrentState is DeathState or AttackState)
+            {
+                _stateMachine.ChangeState(new IdleState(this));
+            }
+            
             _battleActions.OnStageEnd();
         }
 
@@ -75,6 +81,10 @@ namespace Features.Unit.Battle.Scripts
             HasTarget = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
+            if (gameObject.name == "LocalUnit(Clone)")
+            {
+                Debug.Log(_stateMachine.CurrentState);
+            }
             _stateMachine.Update();
         }
 
@@ -84,8 +94,17 @@ namespace Features.Unit.Battle.Scripts
         /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
+            _stateMachine.OnEvent(photonEvent);
+
+            UpdateDamageEventsDuringBattle(photonEvent);
+        }
+
+        //TODO: maybe into BattleManager?
+        private void UpdateDamageEventsDuringBattle(EventData photonEvent)
+        {
             if (battleData.CurrentState is not BattleState) return;
             
+            //if (battleData.CurrentState is not BattleState) return;
             //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
             if (photonEvent.Code == (int)RaiseEventCode.OnPerformUnitAttack)
             {
@@ -106,24 +125,76 @@ namespace Features.Unit.Battle.Scripts
             }
         }
 
-        public void RequestIdleState()
+        public void ForceIdleState()
         {
             _stateMachine.ChangeState(new IdleState(this));
         }
 
-        public void RequestAttackState()
+        public bool TryRequestIdleState()
         {
-            _stateMachine.ChangeState(new AttackState(this, _battleActions));
+            bool result = !HasTarget && CurrentState is not DeathState;
+            
+            if (result)
+            {
+                _stateMachine.ChangeState(new IdleState(this));
+            }
+
+            return result;
         }
 
-        public void RequestMovementState()
+        public bool TryRequestAttackState()
         {
-            _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary));
+            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
+            
+            if (result)
+            {
+                _stateMachine.ChangeState(new AttackState(this, _battleActions));
+            }
+
+            return result;
+        }
+
+        public bool TryRequestMovementStateByAI()
+        {
+            bool result = HasTarget && !TargetInRange && CurrentState is not DeathState;
+
+            if (result)
+            {
+                NetworkedUnitBehaviour closestUnit = GetTarget.Key;
+                Vector3Int enemyPosition = tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
+                _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary, movementSpeed, enemyPosition, 1));
+            }
+
+            return result;
         }
         
-        public void RequestDeathState()
+        public bool RequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
         {
-            _stateMachine.ChangeState(new DeathState(this));
+            bool result = CurrentState is not DeathState;
+            
+            if (result)
+            {
+                _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary, movementSpeed, targetPosition, skipLastMovementCount));
+            }
+
+            return result;
+        }
+        
+        //TODO: when a unit dies while moving & this results in restart stage => two movement sequences start
+        public bool TryRequestDeathState()
+        {
+            bool result = battleData.CurrentState is BattleState;
+            
+            if (result)
+            {
+                _stateMachine.ChangeState(new DeathState(this));
+            }
+            else
+            {
+                Debug.LogWarning("Requesting Death is only possible during Battle!");
+            }
+
+            return false;
         }
     }
 }

@@ -1,4 +1,6 @@
 ﻿
+using ExitGames.Client.Photon;
+
 namespace DataStructures.StateLogic
 {
     public interface IState
@@ -11,5 +13,7 @@ namespace DataStructures.StateLogic
 
         // one-time call, when exiting a state
         void Exit();
+        
+        virtual void OnEvent(EventData photonEvent) {}
     }
 }

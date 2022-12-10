@@ -1,4 +1,5 @@
 using DataStructures.StateLogic;
+using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts
 {
@@ -17,13 +18,9 @@ namespace Features.Unit.Battle.Scripts
 
         public void Execute()
         {
-            if (_battleBehaviour.HasTarget && _battleBehaviour.TargetInRange)
+            if (!_battleBehaviour.TryRequestAttackState())
             {
-                _battleBehaviour.RequestAttackState();
-            }
-            else if (_battleBehaviour.HasTarget && !_battleBehaviour.TargetInRange)
-            {
-                _battleBehaviour.RequestMovementState();
+                _battleBehaviour.TryRequestMovementStateByAI();
             }
         }
 

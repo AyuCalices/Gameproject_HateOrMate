@@ -110,7 +110,7 @@ namespace Features.Unit.Battle.Scripts.Actions
         
             if (ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth >= totalHealth)
             {
-                ownerBattleBehaviour.RequestDeathState();
+                ownerBattleBehaviour.TryRequestDeathState();
                 ownerBattleBehaviour.NetworkedUnitBehaviour.StageCheck();
             }
         }

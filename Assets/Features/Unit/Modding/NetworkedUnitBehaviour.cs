@@ -61,8 +61,6 @@ namespace Features.Unit.Modding
         /// </summary>
         public void OnPhotonViewIdAllocated()
         {
-            Debug.Log("Init Networking");
-            
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
                 string scalingStatIdentity = Guid.NewGuid().ToString();
