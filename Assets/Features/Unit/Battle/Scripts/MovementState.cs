@@ -54,21 +54,12 @@ namespace Features.Unit.Battle.Scripts
                 int viewID = (int) data[0];
                 if (_battleBehaviour.photonView.ViewID != viewID) return;
 
-                Vector3Int targetCellPosition = (Vector3Int) data[1];
-                Vector3Int nextCellPosition = (Vector3Int) data[2];
-                int skipLastMovementsCount = (int) data[3];
+                Vector3Int nextCellPosition = (Vector3Int) data[1];
                 MoveGameObjectToTarget(_battleBehaviour.gameObject, nextCellPosition, () =>
                 {
-                    if (targetCellPosition == nextCellPosition || _battleBehaviour.CurrentState is DeathState)
+                    if (!_battleBehaviour.TryRequestAttackState() || !_battleBehaviour.TryRequestMovementStateByClosestUnit() || _battleBehaviour.CurrentState is not DeathState)
                     {
                         _battleBehaviour.ForceIdleState();
-                    }
-                    else if (!_battleBehaviour.TryRequestIdleState() && !_battleBehaviour.TryRequestAttackState())
-                    {
-                        if (PhotonNetwork.IsMasterClient)
-                        {
-                            OnMasterChangeUnitGridPosition(targetCellPosition, nextCellPosition, skipLastMovementsCount);
-                        }
                     }
                 });
             }
@@ -108,9 +99,7 @@ namespace Features.Unit.Battle.Scripts
             object[] data = new object[]
             {
                 _battleBehaviour.photonView.ViewID,
-                targetCellPosition,
-                nextCellPosition,
-                skipLastMovementsCount
+                nextCellPosition
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions

@@ -154,15 +154,15 @@ namespace Features.Unit.Battle.Scripts
             return result;
         }
 
-        public bool TryRequestMovementStateByAI()
+        public bool TryRequestMovementStateByClosestUnit()
         {
-            bool result = HasTarget && !TargetInRange && CurrentState is not DeathState;
+            bool result = HasTarget && !TargetInRange;
 
             if (result)
             {
                 NetworkedUnitBehaviour closestUnit = GetTarget.Key;
                 Vector3Int enemyPosition = tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
-                _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary, movementSpeed, enemyPosition, 1));
+                RequestMovementState(enemyPosition, 1);
             }
 
             return result;
@@ -170,7 +170,7 @@ namespace Features.Unit.Battle.Scripts
         
         public bool RequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
         {
-            bool result = CurrentState is not DeathState;
+            bool result = CurrentState is not DeathState && CurrentState is not MovementState;
             
             if (result)
             {

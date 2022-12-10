@@ -20,7 +20,7 @@ namespace Features.Unit.Battle.Scripts
         {
             if (!_battleBehaviour.TryRequestAttackState())
             {
-                _battleBehaviour.TryRequestMovementStateByAI();
+                _battleBehaviour.TryRequestMovementStateByClosestUnit();
             }
         }
 

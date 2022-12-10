@@ -23,7 +23,7 @@ namespace Features.Unit.Battle.Scripts
 
         public void Execute()
         {
-            if (!_battleBehaviour.TryRequestMovementStateByAI() && !_battleBehaviour.TryRequestIdleState())
+            if (!_battleBehaviour.TryRequestMovementStateByClosestUnit() && !_battleBehaviour.TryRequestIdleState())
             {
                 _battleActions.UpdateBattleActions();
             }

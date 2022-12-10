@@ -24,6 +24,7 @@ namespace Features.Unit.GridMovement
         private float _journeyLength;
         private Vector3 _targetTileWorldPosition;
         private Vector3Int _targetTileGridPosition;
+        private bool _isValidDrop;
 
         private void Awake()
         {
@@ -40,15 +41,25 @@ namespace Features.Unit.GridMovement
         
         private void Update()
         {
-            if (battleData.CurrentState is not LootingState) return;
-            
-            if (_instantiatedPrefab == null || _journeyLength == 0) return;
-            
-            float distCovered = (Time.time - _startTime) * hoverSpeed;
-            float fractionOfJourney = distCovered / _journeyLength;
-            
-            _instantiatedPrefab.transform.position = Vector3.Lerp(_instantiatedPrefab.transform.position,
-                _targetTileWorldPosition, fractionOfJourney);
+            if (battleData.CurrentState is not LootingState)
+            {
+                _isValidDrop = false;
+                return;
+            }
+
+            if (_instantiatedPrefab != null && _journeyLength != 0)
+            {
+                float distCovered = (Time.time - _startTime) * hoverSpeed;
+                float fractionOfJourney = distCovered / _journeyLength;
+
+                _instantiatedPrefab.transform.position = Vector3.Lerp(_instantiatedPrefab.transform.position,
+                    _targetTileWorldPosition, fractionOfJourney);
+            }
+
+            if (!TryResetDrop() && _isValidDrop)
+            {
+                _battleBehaviour.RequestMovementState(_targetTileGridPosition, 0);
+            }
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -86,7 +97,8 @@ namespace Features.Unit.GridMovement
             _instantiatedPrefab = null;
 
             if (!tileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
-            _battleBehaviour.RequestMovementState(_targetTileGridPosition, 0);
+            
+            _isValidDrop = true;
         }
         
         private Vector3 SetTileInterpolation(Vector3 targetWorldPosition)
@@ -103,6 +115,18 @@ namespace Features.Unit.GridMovement
             }
 
             return targetTileWorldPosition;
+        }
+
+        private bool TryResetDrop()
+        {
+            bool result = _targetTileGridPosition == tileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+            
+            if (result)
+            {
+                _isValidDrop = false;
+            }
+
+            return result;
         }
     }
 }
