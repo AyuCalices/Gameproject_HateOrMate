@@ -127,14 +127,10 @@ namespace Features.Unit.Battle.Scripts.Actions
             InternalUpdateBattleActions();
         }
         protected abstract void InternalUpdateBattleActions();
-        
-        public void Move()
-        {
-            InternalMove();
-        }
-        protected virtual void InternalMove() {}
 
+        
         public abstract void OnStageEnd();
+        
         
         public void OnPerformAction()
         {

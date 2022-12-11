@@ -13,15 +13,17 @@ namespace Features.Battle.Scripts
 {
     public class StageSetupState : IState
     {
-        private BattleManager _battleManager;
+        private readonly BattleData_SO _battleData;
+        private readonly BattleManager _battleManager;
         private readonly LootTable_SO _lootTable;
-        private bool _restartStage;
+        private readonly bool _restartStage;
         
-        public StageSetupState(BattleManager battleManager, LootTable_SO lootTable, bool restartStage)
+        public StageSetupState(BattleManager battleManager, LootTable_SO lootTable, bool restartStage, BattleData_SO battleData)
         {
             _battleManager = battleManager;
             _lootTable = lootTable;
             _restartStage = restartStage;
+            _battleData = battleData;
         }
     
         public void Enter()
@@ -68,6 +70,66 @@ namespace Features.Battle.Scripts
                 RequestBattleStateByRaiseEvent();
             }
         }
+
+        public void Execute()
+        {
+        }
+
+        public void Exit()
+        {
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                
+                _battleData.lootables.Add((LootableGenerator_SO)data[0]);
+            }
+            
+            if (photonEvent.Code == (int)RaiseEventCode.OnRequestBattleState)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                bool isLootingState = (bool) data[0] || _battleManager.IsLootPhaseRequested;
+                SetBattleStateByRaiseEvent(isLootingState);
+            }
+            
+            if (photonEvent.Code == (int)RaiseEventCode.OnSetBattleState)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                bool isLootingState = (bool) data[0];
+                if (isLootingState)
+                {
+                    _battleManager.RequestLootingState();
+                }
+                else
+                {
+                    _battleManager.RequestBattleState();
+                }
+            }
+        }
+        
+        private void SetBattleStateByRaiseEvent(bool isLootingState)
+        {
+            object[] data = new object[]
+            {
+                isLootingState
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSetBattleState, data, raiseEventOptions, sendOptions);
+        }
         
         private void SendLootableByRaiseEvent(LootableGenerator_SO lootable)
         {
@@ -109,14 +171,6 @@ namespace Features.Battle.Scripts
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestBattleState, data, raiseEventOptions, sendOptions);
-        }
-
-        public void Execute()
-        {
-        }
-
-        public void Exit()
-        {
         }
     }
 }

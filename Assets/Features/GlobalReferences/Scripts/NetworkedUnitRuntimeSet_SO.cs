@@ -88,5 +88,20 @@ namespace Features.GlobalReferences.Scripts
 
             return false;
         }
+
+        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+        {
+            foreach (NetworkedUnitBehaviour item in items)
+            {
+                if (requestedViewID == item.PhotonView.ViewID)
+                {
+                    networkedUnitBehaviour = item;
+                    return true;
+                }
+            }
+
+            networkedUnitBehaviour = default;
+            return false;
+        }
     }
 }

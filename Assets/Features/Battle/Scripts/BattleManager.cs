@@ -2,6 +2,7 @@ using System;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using Features.GlobalReferences.Scripts;
 using Features.Loot;
 using Features.Loot.Scripts;
 using Photon.Pun;
@@ -16,9 +17,9 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        //TODO: make sure the battlemanager can only proceed when all units stop moving
         [SerializeField] private LootTable_SO lootTable;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
         [SerializeField] private BattleData_SO battleData;
         
         [SerializeField] private Toggle requestLootPhaseToggle;
@@ -46,7 +47,7 @@ namespace Features.Battle.Scripts
 
         private void Start()
         {
-            _stageStateMachine.Initialize(new StageSetupState(this, lootTable, true));
+            _stageStateMachine.Initialize(new StageSetupState(this, lootTable, true, battleData));
             
             stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
@@ -58,17 +59,17 @@ namespace Features.Battle.Scripts
             _stageStateMachine.Update();
         }
 
-        private void RequestStageSetupState(bool restartState)
+        internal void RequestStageSetupState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new StageSetupState(this, lootTable, restartState));
+            _stageStateMachine.ChangeState(new StageSetupState(this, lootTable, restartState, battleData));
         }
 
-        public void RequestBattleState()
+        internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this));
+            _stageStateMachine.ChangeState(new BattleState(this, allUnitsRuntimeSet));
         }
         
-        private void RequestLootingState()
+        internal void RequestLootingState()
         {
             _stageStateMachine.ChangeState(new LootingState(this, lootSelectionBehaviour, continueBattleButton));
         }
@@ -91,54 +92,7 @@ namespace Features.Battle.Scripts
 
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestBattleState)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                bool isLootingState = (bool) data[0] || IsLootPhaseRequested;
-                SetBattleStateByRaiseEvent(isLootingState);
-            }
-
-            if (photonEvent.Code == (int)RaiseEventCode.OnSetBattleState)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                bool isLootingState = (bool) data[0];
-                if (isLootingState)
-                {
-                    RequestLootingState();
-                }
-                else
-                {
-                    RequestBattleState();
-                }
-            }
-
-            if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                
-                battleData.lootables.Add((LootableGenerator_SO)data[0]);
-            }
-        }
-        
-        private void SetBattleStateByRaiseEvent(bool isLootingState)
-        {
-            object[] data = new object[]
-            {
-                isLootingState
-            };
-            
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-            
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSetBattleState, data, raiseEventOptions, sendOptions);
+            _stageStateMachine.OnEvent(photonEvent);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Features.Unit.GridMovement
 
             if (!TryResetDrop() && _isValidDrop)
             {
-                _battleBehaviour.RequestMovementState(_targetTileGridPosition, 0);
+                _battleBehaviour.TryRequestMovementState(_targetTileGridPosition, 0);
             }
         }
 

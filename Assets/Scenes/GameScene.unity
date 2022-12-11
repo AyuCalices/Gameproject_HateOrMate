@@ -2795,6 +2795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lootTable: {fileID: 11400000, guid: 24a4d889f0fb1d042902a5a3c08cdd8e, type: 2}
   lootSelectionBehaviour: {fileID: 1932071502}
+  allUnitsRuntimeSet: {fileID: 11400000, guid: 908f73112ce935c439168cfec7805b5f, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   requestLootPhaseToggle: {fileID: 167365571}
   continueBattleButton: {fileID: 515661522}

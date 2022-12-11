@@ -15,6 +15,7 @@ namespace Features.Unit.Modding
 {
     public class NetworkedUnitBehaviour : MonoBehaviour
     {
+        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
         [SerializeField] protected BattleData_SO battleData;
         public NetworkedUnitRuntimeSet_SO OwnerNetworkedPlayerUnits => ownerNetworkedPlayerUnits;
         [SerializeField] private NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
@@ -51,6 +52,7 @@ namespace Features.Unit.Modding
         {
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
+            allUnitsRuntimeSet.Add(this);
             
             InternalAwake();
         }
@@ -123,6 +125,8 @@ namespace Features.Unit.Modding
         private void OnDestroy()
         {
             InternalOnDestroy();
+            
+            allUnitsRuntimeSet.Remove(this);
         }
 
         protected virtual void InternalOnDestroy()

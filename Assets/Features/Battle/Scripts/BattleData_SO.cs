@@ -7,8 +7,6 @@ using Features.Loot;
 using Features.Loot.Scripts;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
-using Plugins.UniRx.Extensions;
-using UniRx;
 using UnityEngine;
 
 namespace Features.Battle.Scripts

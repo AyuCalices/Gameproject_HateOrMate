@@ -5,6 +5,7 @@ using Features.Battle.Scripts;
 using Features.Mod.Action;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts.Actions;
+using Features.Unit.Battle.Scripts.CanMoveAction;
 using Features.Unit.Modding;
 using Features.Unit.View;
 using Photon.Pun;
@@ -16,12 +17,12 @@ namespace Features.Unit.Battle.Scripts
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        [SerializeField] private IsMovable_SO isMovable;
         [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
         [SerializeField] private float range;
-        [SerializeField] private float movementSpeed = 2f;
         
         public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
         private StateMachine _stateMachine;
@@ -30,10 +31,10 @@ namespace Features.Unit.Battle.Scripts
 
         public BattleActions BattleActions => _battleActions;
         public IState CurrentState => _stateMachine.CurrentState;
+        
 
         private KeyValuePair<NetworkedUnitBehaviour, float> _closestUnit;
-
-
+        
         public KeyValuePair<NetworkedUnitBehaviour, float> GetTarget => _closestUnit;
         public bool HasTarget { get; private set; }
         public bool TargetInRange => _closestUnit.Value < range;
@@ -81,10 +82,6 @@ namespace Features.Unit.Battle.Scripts
             HasTarget = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
-            if (gameObject.name == "LocalUnit(Clone)")
-            {
-                Debug.Log(_stateMachine.CurrentState);
-            }
             _stateMachine.Update();
         }
 
@@ -95,42 +92,17 @@ namespace Features.Unit.Battle.Scripts
         public void OnEvent(EventData photonEvent)
         {
             _stateMachine.OnEvent(photonEvent);
-
-            UpdateDamageEventsDuringBattle(photonEvent);
+            isMovable.OnEvent(this, photonEvent);
         }
 
-        //TODO: maybe into BattleManager?
-        private void UpdateDamageEventsDuringBattle(EventData photonEvent)
-        {
-            if (battleData.CurrentState is not BattleState) return;
-            
-            //if (battleData.CurrentState is not BattleState) return;
-            //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
-            if (photonEvent.Code == (int)RaiseEventCode.OnPerformUnitAttack)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                if (photonView.ViewID == (int) data[0])
-                {
-                    _battleActions.OnSendAttackActionCallback((float) data[1]);
-                }
-            }
-            //2nd step: raise event to update health on all clients on attacked instance
-            else if (photonEvent.Code == (int)RaiseEventCode.OnPerformUpdateUnitHealth)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                if (photonView.ViewID == (int) data[0])
-                {
-                    _battleActions.OnSendHealthActionCallback((float) data[1], (float) data[2]);
-                }
-            }
-        }
+        #region Request States
 
-        public void ForceIdleState()
+        internal void ForceIdleState()
         {
             _stateMachine.ChangeState(new IdleState(this));
         }
 
-        public bool TryRequestIdleState()
+        internal bool TryRequestIdleState()
         {
             bool result = !HasTarget && CurrentState is not DeathState;
             
@@ -142,7 +114,7 @@ namespace Features.Unit.Battle.Scripts
             return result;
         }
 
-        public bool TryRequestAttackState()
+        internal bool TryRequestAttackState()
         {
             bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
             
@@ -154,7 +126,7 @@ namespace Features.Unit.Battle.Scripts
             return result;
         }
 
-        public bool TryRequestMovementStateByClosestUnit()
+        internal bool TryRequestMovementStateByClosestUnit()
         {
             bool result = HasTarget && !TargetInRange;
 
@@ -162,26 +134,27 @@ namespace Features.Unit.Battle.Scripts
             {
                 NetworkedUnitBehaviour closestUnit = GetTarget.Key;
                 Vector3Int enemyPosition = tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
-                RequestMovementState(enemyPosition, 1);
+                TryRequestMovementState(enemyPosition, 1);
             }
 
             return result;
         }
         
-        public bool RequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
+        internal bool TryRequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
         {
-            bool result = CurrentState is not DeathState && CurrentState is not MovementState;
+            //TODO: just requesting a NetworkedUnitBehaviour is LocalUnitBehaviour is an easy fix (for preventing all clients change position - results in weird movement behaviour). Better would be to use a LocalBattleBehaviour & NetworkedUnitBehaviour. Big refactoring required!
+            bool result = CurrentState is not DeathState && CurrentState is not MovementState && NetworkedUnitBehaviour is LocalUnitBehaviour;
             
             if (result)
             {
-                _stateMachine.ChangeState(new MovementState(this, tileRuntimeDictionary, movementSpeed, targetPosition, skipLastMovementCount));
+                _stateMachine.ChangeState(new MovementState(isMovable, this, targetPosition, skipLastMovementCount));
             }
 
             return result;
         }
         
         //TODO: when a unit dies while moving & this results in restart stage => two movement sequences start
-        public bool TryRequestDeathState()
+        internal bool TryRequestDeathState()
         {
             bool result = battleData.CurrentState is BattleState;
             
@@ -196,5 +169,7 @@ namespace Features.Unit.Battle.Scripts
 
             return false;
         }
+
+        #endregion
     }
 }
