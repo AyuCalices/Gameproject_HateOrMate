@@ -16,9 +16,8 @@ namespace Features.Unit.Battle.Scripts.Actions
 
         public AiTowerBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
             BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet, DamageProjectileBehaviour damageProjectilePrefab) : base(
-            ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-            opponentNetworkedUnitRuntimeSet)
+            UnitView ownerUnitView, DamageProjectileBehaviour damageProjectilePrefab) : base(
+            ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;

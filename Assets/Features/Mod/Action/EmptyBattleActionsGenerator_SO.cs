@@ -13,10 +13,9 @@ namespace Features.Mod.Action
     public class EmptyBattleActionsGenerator_SO : BattleActionGenerator_SO
     {
         protected override BattleActions InternalGenerate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet)
+            UnitView ownerUnitView)
         {
-            return new EmptyBattleActions(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-                opponentNetworkedUnitRuntimeSet);
+            return new EmptyBattleActions(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView);
         }
     }
 }

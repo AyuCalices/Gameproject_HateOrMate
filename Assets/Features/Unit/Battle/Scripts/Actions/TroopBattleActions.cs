@@ -12,9 +12,7 @@ namespace Features.Unit.Battle.Scripts.Actions
         
         public TroopBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
             BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet) : base(
-            ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-            opponentNetworkedUnitRuntimeSet)
+            UnitView ownerUnitView) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
             _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
         }

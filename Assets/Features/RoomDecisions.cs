@@ -34,7 +34,6 @@ namespace Features
         public void UpdateDecision(Action onAllPlayerChose)
         {
             if (!AllPlayerChose()) return;
-            Debug.Log("all chose");
             onAllPlayerChose.Invoke();
             ResetLocalDecision();
         }

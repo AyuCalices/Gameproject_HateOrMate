@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
-using Features.GlobalReferences;
 using Features.GlobalReferences.Scripts;
-using Features.Loot;
 using Features.Loot.Scripts;
+using Features.Tiles;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
 {
+    /// <summary>
+    /// Container of all the battle relevant data. By exchanging an instance of this, you can configure a new battle (different Tile Set, Enemy & Player)
+    /// </summary>
     [CreateAssetMenu]
     public class BattleData_SO : ScriptableObject
     {
@@ -20,9 +22,13 @@ namespace Features.Battle.Scripts
         
         [SerializeField] private IntReactiveVariable stage;
 
+        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
+        
         public NetworkedUnitRuntimeSet_SO EnemyUnitRuntimeSet => enemyUnitRuntimeSet;
         
         public NetworkedUnitRuntimeSet_SO PlayerTeamUnitRuntimeSet => playerTeamUnitRuntimeSet;
+
+        public TileRuntimeDictionary_SO TileRuntimeDictionary => tileRuntimeDictionary;
 
         
         private BattleManager _battleManager;

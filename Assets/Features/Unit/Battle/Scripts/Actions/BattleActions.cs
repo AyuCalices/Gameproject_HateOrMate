@@ -14,17 +14,14 @@ namespace Features.Unit.Battle.Scripts.Actions
         protected readonly NetworkedUnitBehaviour ownerNetworkingUnitBehaviour;
         protected readonly BattleBehaviour ownerBattleBehaviour;
         protected readonly UnitView ownerUnitView;
-        protected readonly NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet;
 
 
         protected BattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
-            BattleBehaviour ownerBattleBehaviour, UnitView ownerUnitView,
-            NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet)
+            BattleBehaviour ownerBattleBehaviour, UnitView ownerUnitView)
         {
             this.ownerNetworkingUnitBehaviour = ownerNetworkingUnitBehaviour;
             this.ownerUnitView = ownerUnitView;
             this.ownerBattleBehaviour = ownerBattleBehaviour;
-            this.opponentNetworkedUnitRuntimeSet = opponentNetworkedUnitRuntimeSet;
         }
         
         /// <summary>
@@ -122,7 +119,7 @@ namespace Features.Unit.Battle.Scripts.Actions
 
         protected void SendAttack(NetworkedUnitBehaviour closestUnit)
         {
-            if (ownerNetworkingUnitBehaviour is LocalUnitBehaviour && closestUnit is LocalUnitBehaviour)
+            if (ownerNetworkingUnitBehaviour is LocalUnitBehaviour or AIUnitBehaviour && closestUnit is LocalUnitBehaviour or AIUnitBehaviour)
             {
                 closestUnit.RemovedHealth += ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
                 UpdateAllClientsHealthRaiseEvent(

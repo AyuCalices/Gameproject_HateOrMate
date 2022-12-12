@@ -16,9 +16,8 @@ namespace Features.Unit.Battle.Scripts.Actions
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet, DamageProjectileBehaviour damageProjectilePrefab, int totalStamina,
-            float staminaRefreshTime) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-            opponentNetworkedUnitRuntimeSet)
+            UnitView ownerUnitView, DamageProjectileBehaviour damageProjectilePrefab, int totalStamina,
+            float staminaRefreshTime) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;

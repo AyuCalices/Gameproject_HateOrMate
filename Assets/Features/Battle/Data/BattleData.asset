@@ -15,4 +15,5 @@ MonoBehaviour:
   enemyUnitRuntimeSet: {fileID: 11400000, guid: 88d480e3de14b6448865c07ae6e4c633, type: 2}
   playerTeamUnitRuntimeSet: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
   stage: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
+  tileRuntimeDictionary: {fileID: 11400000, guid: 9f2c7e601b45e504b826c8458cacfb02, type: 2}
   lootables: []

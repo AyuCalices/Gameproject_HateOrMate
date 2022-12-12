@@ -17,10 +17,9 @@ namespace Features.Mod.Action
         [SerializeField] private DamageProjectileBehaviour damageProjectileBehaviour;
         
         protected override BattleActions InternalGenerate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet)
+            UnitView ownerUnitView)
         {
-            return new AiTowerBattleActions(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-                opponentNetworkedUnitRuntimeSet, damageProjectileBehaviour);
+            return new AiTowerBattleActions(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView, damageProjectileBehaviour);
         }
     }
 }

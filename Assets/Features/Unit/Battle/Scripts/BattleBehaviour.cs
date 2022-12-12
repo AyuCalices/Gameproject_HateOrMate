@@ -24,6 +24,7 @@ namespace Features.Unit.Battle.Scripts
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
         [SerializeField] private float range;
+        [SerializeField] private float movementSpeed;
         
         public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
         private StateMachine _stateMachine;
@@ -39,6 +40,7 @@ namespace Features.Unit.Battle.Scripts
         public KeyValuePair<NetworkedUnitBehaviour, float> GetTarget => _closestUnit;
         public bool HasTarget { get; private set; }
         public bool TargetInRange => _closestUnit.Value < range;
+        public float MovementSpeed => movementSpeed;
 
         public bool IsTargetable
         {

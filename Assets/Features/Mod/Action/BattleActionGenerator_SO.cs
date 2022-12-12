@@ -14,11 +14,10 @@ namespace Features.Mod.Action
         public BattleActions Generate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView)
         {
-            return InternalGenerate(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView,
-                ownerNetworkingUnitBehaviour.EnemyRuntimeSet);
+            return InternalGenerate(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView);
         }
 
         protected abstract BattleActions InternalGenerate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet);
+            UnitView ownerUnitView);
     }
 }

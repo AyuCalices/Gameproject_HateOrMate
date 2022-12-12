@@ -6,7 +6,8 @@ namespace Features.Unit.Battle.Scripts.Actions
 {
     public class EmptyBattleActions : BattleActions
     {
-        public EmptyBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour, UnitView ownerUnitView, NetworkedUnitRuntimeSet_SO opponentNetworkedUnitRuntimeSet) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView, opponentNetworkedUnitRuntimeSet)
+        public EmptyBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour, 
+            UnitView ownerUnitView) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
         }
 

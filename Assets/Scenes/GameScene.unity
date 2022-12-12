@@ -2831,7 +2831,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allUnitsRuntimeSet: {fileID: 11400000, guid: 908f73112ce935c439168cfec7805b5f, type: 2}
   tileRuntimeDictionary: {fileID: 11400000, guid: 9f2c7e601b45e504b826c8458cacfb02, type: 2}
-  movementSpeed: 2
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
 --- !u!1 &969196821
 GameObject:
   m_ObjectHideFlags: 0

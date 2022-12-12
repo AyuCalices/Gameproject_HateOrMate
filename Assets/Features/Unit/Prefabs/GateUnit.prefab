@@ -64,12 +64,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMovable: {fileID: 11400000, guid: 5e80e2bfc7a69f045a6818ac089ac348, type: 2}
   tileRuntimeDictionary: {fileID: 11400000, guid: 9f2c7e601b45e504b826c8458cacfb02, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   battleActionsGenerator: {fileID: 11400000, guid: ab5515bdc46412344a0f9f6d816d3ecc, type: 2}
   isTargetable: 1
   range: 100
+  movementSpeed: 2
 --- !u!114 &1119605207248732696
 MonoBehaviour:
   m_ObjectHideFlags: 0
