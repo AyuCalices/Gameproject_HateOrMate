@@ -13,6 +13,9 @@ using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
 {
+    /// <summary>
+    /// Should not know about the BattleBehaviour, since the BattleBehaviour is a lower level script.
+    /// </summary>
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] private LootTable_SO lootTable;

@@ -1,24 +1,24 @@
 using System.Collections.Generic;
 using DataStructures.StateLogic;
-using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Mod.Action;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts.Actions;
-using Features.Unit.Battle.Scripts.CanMoveAction;
 using Features.Unit.Modding;
 using Features.Unit.View;
-using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
 //TODO: if refactoring: needs swap between idle & death state
 namespace Features.Unit.Battle.Scripts
 {
-    [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
-    public class BattleBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
+    /// <summary>
+    /// BattleBehaviour belongs to a LocalUnitBehaviour. It can only get BattleManager data through BattleData_SO but cannot change it.
+    /// All necessary data send by BattleActions must be available to all clients. To make sure the current BattleActions doesn't need to be synchronized
+    /// between clients, Pun2 RaiseEvent Callbacks can only be used inside the BattleManager/MovementManager Layer. Inside the BattleAction it is allowed to cast Photon Messages.
+    /// </summary>
+    [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(UnitView))]
+    public class BattleBehaviour : MonoBehaviour
     {
-        [SerializeField] private IsMovable_SO isMovable;
         [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
@@ -86,15 +86,6 @@ namespace Features.Unit.Battle.Scripts
             _stateMachine.Update();
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="photonEvent"></param>
-        public void OnEvent(EventData photonEvent)
-        {
-            isMovable.OnEvent(this, photonEvent);
-        }
-
         #region Request States
 
         internal void ForceIdleState()
@@ -142,18 +133,16 @@ namespace Features.Unit.Battle.Scripts
         
         internal bool TryRequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
         {
-            //TODO: just requesting a NetworkedUnitBehaviour is LocalUnitBehaviour is an easy fix (for preventing all clients change position - results in weird movement behaviour). Better would be to use a LocalBattleBehaviour & NetworkedUnitBehaviour. Big refactoring required!
             bool result = CurrentState is not DeathState && CurrentState is not MovementState && NetworkedUnitBehaviour is LocalUnitBehaviour;
             
             if (result)
             {
-                _stateMachine.ChangeState(new MovementState(isMovable, this, targetPosition, skipLastMovementCount));
+                _stateMachine.ChangeState(new MovementState( this, targetPosition, skipLastMovementCount));
             }
 
             return result;
         }
         
-        //TODO: when a unit dies while moving & this results in restart stage => two movement sequences start
         internal bool TryRequestDeathState()
         {
             bool result = battleData.CurrentState is BattleState;
