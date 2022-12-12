@@ -13,15 +13,6 @@ namespace Features.Unit.Modding
             
             OwnerNetworkedPlayerUnits.Add(this);
             battleData.PlayerTeamUnitRuntimeSet.Add(this);
-            
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ControlType = UnitControlType.Master;
-            }
-            else
-            {
-                ControlType = UnitControlType.Client;
-            }
         }
 
         protected override void InternalOnDestroy()

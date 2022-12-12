@@ -32,7 +32,6 @@ namespace Features.Unit.Battle.Scripts
 
         public void Enter()
         {
-            Debug.Log("o/");
             _movableAction.RequestMove(_battleBehaviour, _targetPosition, _skipLastMovementsCount);
         }
 

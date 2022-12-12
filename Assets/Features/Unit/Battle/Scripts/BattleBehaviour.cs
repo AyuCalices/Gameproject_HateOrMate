@@ -12,6 +12,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
+//TODO: if refactoring: needs swap between idle & death state
 namespace Features.Unit.Battle.Scripts
 {
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(PhotonView), typeof(UnitView))]
@@ -91,7 +92,6 @@ namespace Features.Unit.Battle.Scripts
         /// <param name="photonEvent"></param>
         public void OnEvent(EventData photonEvent)
         {
-            _stateMachine.OnEvent(photonEvent);
             isMovable.OnEvent(this, photonEvent);
         }
 

@@ -24,15 +24,17 @@ namespace Features.Battle.Scripts
         
         public NetworkedUnitRuntimeSet_SO PlayerTeamUnitRuntimeSet => playerTeamUnitRuntimeSet;
 
-        public BattleManager BattleManager { get; private set; }
-        public IState CurrentState => BattleManager.CurrentState;
+        
+        private BattleManager _battleManager;
+        public IState CurrentState => _battleManager.CurrentState;
+        
 
         public List<LootableGenerator_SO> lootables;
 
         public void RegisterBattleManager(BattleManager battleManager)
         {
             lootables = new List<LootableGenerator_SO>();
-            BattleManager = battleManager;
+            _battleManager = battleManager;
         }
 
         public void SetAiStats(AIUnitBehaviour aiUnitBehaviour)

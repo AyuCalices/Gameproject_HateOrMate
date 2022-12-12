@@ -7,7 +7,6 @@ namespace Features.Unit.Modding
     {
         protected override void InternalAwake()
         {
-            ControlType = UnitControlType.AI;
             OwnerNetworkedPlayerUnits.Add(this);
             EnemyRuntimeSet = battleData.PlayerTeamUnitRuntimeSet;
         

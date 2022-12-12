@@ -1,9 +1,7 @@
-using System;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.GlobalReferences.Scripts;
-using Features.Loot;
 using Features.Loot.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
@@ -66,28 +64,12 @@ namespace Features.Battle.Scripts
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this, allUnitsRuntimeSet));
+            _stageStateMachine.ChangeState(new BattleState(this, battleData, allUnitsRuntimeSet));
         }
         
         internal void RequestLootingState()
         {
             _stageStateMachine.ChangeState(new LootingState(this, lootSelectionBehaviour, continueBattleButton));
-        }
-
-        public void StageCheck()
-        {
-            if (CurrentState is not BattleState) return;
-            
-            if (!battleData.PlayerTeamUnitRuntimeSet.HasUnitAlive())
-            {
-                RequestStageSetupState(true);
-                return;
-            }
-
-            if (!battleData.EnemyUnitRuntimeSet.HasUnitAlive())
-            {
-                RequestStageSetupState(false);
-            }
         }
 
         public void OnEvent(EventData photonEvent)

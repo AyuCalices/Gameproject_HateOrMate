@@ -9,11 +9,13 @@ namespace Features.Battle.Scripts
     public class BattleState : IState
     {
         private readonly BattleManager _battleManager;
+        private readonly BattleData_SO _battleData;
         private readonly NetworkedUnitRuntimeSet_SO _allUnitsRuntimeSet;
 
-        public BattleState(BattleManager battleManager, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
+        public BattleState(BattleManager battleManager, BattleData_SO battleData, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
         {
             _battleManager = battleManager;
+            _battleData = battleData;
             _allUnitsRuntimeSet = allUnitsRuntimeSet;
         }
     
@@ -31,26 +33,58 @@ namespace Features.Battle.Scripts
 
         public void OnEvent(EventData photonEvent)
         {
-            //if (battleData.CurrentState is not BattleState) return;
-            //1st step: send damage + animation behaviour from attacker to calculating instance - Client & Master: Send to others
-            if (photonEvent.Code == (int)RaiseEventCode.OnPerformUnitAttack)
+            if (photonEvent.Code == (int)RaiseEventCode.OnSendFloatToTarget)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
-                    battleBehaviour.BattleActions.OnSendAttackActionCallback((float) data[1]);
+                    battleBehaviour.BattleActions.OnReceiveFloatActionCallback((float) data[1]);
                 }
             }
-            //2nd step: raise event to update health on all clients on attacked instance
-            else if (photonEvent.Code == (int)RaiseEventCode.OnPerformUpdateUnitHealth)
+            
+            else if (photonEvent.Code == (int)RaiseEventCode.OnUpdateAllClientsHealth)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour) 
-                    && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour))
                 {
-                    battleBehaviour.BattleActions.OnSendHealthActionCallback((float) data[1], (float) data[2]);
+                    OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
                 }
+            }
+        }
+        
+        /// <summary>
+        /// All players update this units health
+        /// </summary>
+        /// <param name="newRemovedHealth"></param>
+        /// <param name="totalHealth"></param>
+        private void OnUpdateAllClientsHealthCallback(NetworkedUnitBehaviour networkedUnitBehaviour, float newRemovedHealth,
+            float totalHealth)
+        {
+            networkedUnitBehaviour.RemovedHealth = newRemovedHealth;
+        
+            if (networkedUnitBehaviour.RemovedHealth >= totalHealth)
+            {
+                if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                {
+                    battleBehaviour.TryRequestDeathState();
+                }
+
+                SetStage();
+            }
+        }
+
+        private void SetStage()
+        {
+            if (!_battleData.PlayerTeamUnitRuntimeSet.HasUnitAlive())
+            {
+                _battleManager.RequestStageSetupState(true);
+                return;
+            }
+
+            if (!_battleData.EnemyUnitRuntimeSet.HasUnitAlive())
+            {
+                _battleManager.RequestStageSetupState(false);
             }
         }
     }

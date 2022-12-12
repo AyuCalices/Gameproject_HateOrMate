@@ -1,4 +1,5 @@
 using System;
+using ExitGames.Client.Photon;
 using Features.Battle;
 using Features.Battle.Scripts;
 using Features.GlobalReferences;
@@ -9,6 +10,7 @@ using Features.Unit.Modding.Stat;
 using Features.Unit.View;
 using JetBrains.Annotations;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -20,11 +22,8 @@ namespace Features.Unit.Modding
         public NetworkedUnitRuntimeSet_SO OwnerNetworkedPlayerUnits => ownerNetworkedPlayerUnits;
         [SerializeField] private NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
         
-        
         public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet { get; protected set; }
-        public UnitControlType ControlType { get; protected set; }
-        
-        
+
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
         public bool NetworkingInitialized { get; private set; }
@@ -43,11 +42,6 @@ namespace Features.Unit.Modding
             }
         }
 
-        public void StageCheck()
-        {
-            battleData.BattleManager.StageCheck();
-        }
-
         protected void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
@@ -55,6 +49,14 @@ namespace Features.Unit.Modding
             allUnitsRuntimeSet.Add(this);
             
             InternalAwake();
+        }
+        
+        protected virtual void InternalAwake()
+        {
+            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
+            
+            ownerNetworkedPlayerUnits.Add(this);
+            battleData.PlayerTeamUnitRuntimeSet.Add(this);
         }
 
         /// <summary>
@@ -80,34 +82,17 @@ namespace Features.Unit.Modding
             }
         }
         
-        protected virtual void InternalOnNetworkingEnabled()
-        { 
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
-        }
-        
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
-
-        protected virtual void InternalAwake()
-        {
-            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
-            
-            ownerNetworkedPlayerUnits.Add(this);
-            battleData.PlayerTeamUnitRuntimeSet.Add(this);
-            
-            if (PhotonNetwork.IsMasterClient)
-            {
-                ControlType = UnitControlType.Master;
-            }
-            else
-            {
-                ControlType = UnitControlType.Client;
-            }
+        
+        protected virtual void InternalOnNetworkingEnabled()
+        { 
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
 
         protected void Start()

@@ -40,8 +40,7 @@ namespace Features.Unit.Battle.Scripts.Actions
 
         protected override void InternalOnPerformAction()
         {
-            NetworkedUnitBehaviour closestUnit = ownerBattleBehaviour.NetworkedUnitBehaviour;
-            SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
+            SendAttack(ownerBattleBehaviour.GetTarget.Key);
         }
         
         public override void OnStageEnd()

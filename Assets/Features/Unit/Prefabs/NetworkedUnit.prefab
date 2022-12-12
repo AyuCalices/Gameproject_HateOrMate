@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7663717459320071767}
   - component: {fileID: 7321846215635961088}
-  - component: {fileID: 247457457016815705}
   - component: {fileID: 3695171276840931626}
   - component: {fileID: 7663717459320071766}
   - component: {fileID: 2691383368057905019}
@@ -53,24 +52,6 @@ MonoBehaviour:
   allUnitsRuntimeSet: {fileID: 11400000, guid: 908f73112ce935c439168cfec7805b5f, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   ownerNetworkedPlayerUnits: {fileID: 11400000, guid: 74d727fd9b420344b83a83190ca4ef67, type: 2}
---- !u!114 &247457457016815705
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7663717459320071761}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isMovable: {fileID: 11400000, guid: 2e7e59158ce465945824368d82cc0081, type: 2}
-  tileRuntimeDictionary: {fileID: 11400000, guid: 9f2c7e601b45e504b826c8458cacfb02, type: 2}
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  battleActionsGenerator: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
-  isTargetable: 1
-  range: 2
 --- !u!114 &3695171276840931626
 MonoBehaviour:
   m_ObjectHideFlags: 0

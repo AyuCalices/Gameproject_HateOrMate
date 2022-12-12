@@ -65,7 +65,7 @@ namespace Features.Unit.Battle.Scripts.Actions
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>
             {
-                SendAttack(ownerNetworkingUnitBehaviour.ControlType, closestUnit);
+                SendAttack(closestUnit);
                 _instantiatedProjectiles.Remove(instantiatedProjectile);
             });
         }
