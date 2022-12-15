@@ -11,13 +11,15 @@ namespace Features.Unit.GridMovement
     [RequireComponent(typeof(BattleBehaviour))]
     public class UnitDragPlacementBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        [SerializeField] protected TileRuntimeDictionary_SO tileRuntimeDictionary;
-        [SerializeField] private float hoverSpeed = 1.5f;
+        [Header("References")]
+        [SerializeField] private BattleData_SO battleData;
+        [SerializeField] private GameObject visualObject;
         [SerializeField] private CameraFocus_SO cameraFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
-        [SerializeField] private GameObject visualObject;
-        [SerializeField] private BattleData_SO battleData;
-
+        
+        [Header("Balancing")]
+        [SerializeField] private float hoverSpeed = 1.5f;
+        
         private BattleBehaviour _battleBehaviour;
         private GameObject _instantiatedPrefab;
         private float _startTime;
@@ -96,15 +98,15 @@ namespace Features.Unit.GridMovement
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;
 
-            if (!tileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
+            if (!battleData.TileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
             
             _isValidDrop = true;
         }
         
         private Vector3 SetTileInterpolation(Vector3 targetWorldPosition)
         {
-            Vector3Int targetCellPosition = tileRuntimeDictionary.GetWorldToCellPosition(targetWorldPosition);
-            Vector3 targetTileWorldPosition = tileRuntimeDictionary.GetCellToWorldPosition(targetCellPosition);
+            Vector3Int targetCellPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(targetWorldPosition);
+            Vector3 targetTileWorldPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(targetCellPosition);
 
             if (_targetTileWorldPosition != targetTileWorldPosition)
             {
@@ -119,7 +121,7 @@ namespace Features.Unit.GridMovement
 
         private bool TryResetDrop()
         {
-            bool result = _targetTileGridPosition == tileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+            bool result = _targetTileGridPosition == battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
             
             if (result)
             {

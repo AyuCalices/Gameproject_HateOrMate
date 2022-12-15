@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Mod.Action;
-using Features.Tiles;
 using Features.Unit.Battle.Scripts.Actions;
 using Features.Unit.Modding;
 using Features.Unit.View;
@@ -11,19 +10,18 @@ using UnityEngine;
 //TODO: if refactoring: needs swap between idle & death state
 namespace Features.Unit.Battle.Scripts
 {
-    /// <summary>
-    /// BattleBehaviour belongs to a LocalUnitBehaviour. It can only get BattleManager data through BattleData_SO but cannot change it.
-    /// All necessary data send by BattleActions must be available to all clients. To make sure the current BattleActions doesn't need to be synchronized
-    /// between clients, Pun2 RaiseEvent Callbacks can only be used inside the BattleManager/MovementManager Layer. Inside the BattleAction it is allowed to cast Photon Messages.
-    /// </summary>
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(UnitView))]
     public class BattleBehaviour : MonoBehaviour
     {
-        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
+        [Header("References")]
         [SerializeField] private BattleData_SO battleData;
+        
+        [Header("Balancing")]
+        //TODO: dependency injection & maybe IIsTargetable, ICanAttack
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
         [SerializeField] private bool isTargetable;
         [SerializeField] private float range;
+        //TODO: check for units that cant walk
         [SerializeField] private float movementSpeed;
         
         public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
@@ -56,8 +54,8 @@ namespace Features.Unit.Battle.Scripts
         {
             _stateMachine = new StateMachine();
             _stateMachine.Initialize(new IdleState(this));
+            //TODO: getComponent
             NetworkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
-            
             _unitView = GetComponent<UnitView>();
 
             IsTargetable = isTargetable;
@@ -126,7 +124,7 @@ namespace Features.Unit.Battle.Scripts
             if (result)
             {
                 NetworkedUnitBehaviour closestUnit = GetTarget.Key;
-                Vector3Int enemyPosition = tileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
+                Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
                 TryRequestMovementState(enemyPosition, 1);
             }
 

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using Features.GlobalReferences.Scripts;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
@@ -17,8 +16,7 @@ namespace Features.Battle.Scripts
     /// </summary>
     public class MovementManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
-        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
+        [Header("References")]
         [SerializeField] private BattleData_SO battleData;
 
         public override void OnEnable()
@@ -136,7 +134,8 @@ namespace Features.Battle.Scripts
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
-                if (allUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+                //TODO: getComponent
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     Vector3Int nextCellPosition = (Vector3Int) data[1];
@@ -155,7 +154,8 @@ namespace Features.Battle.Scripts
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
-                if (allUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+                //TODO: getComponent
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     Vector3Int targetCellPosition = (Vector3Int) data[1];
@@ -176,7 +176,7 @@ namespace Features.Battle.Scripts
                 return;
             }
             
-            Vector3 targetPosition = tileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
+            Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
             float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / battleBehaviour.MovementSpeed;
             LeanTween.move(battleBehaviour.gameObject, targetPosition, time).setOnComplete(onComplete.Invoke);
         }

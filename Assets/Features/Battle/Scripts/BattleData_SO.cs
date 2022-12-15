@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using Features.GlobalReferences.Scripts;
@@ -16,30 +15,31 @@ namespace Features.Battle.Scripts
     [CreateAssetMenu]
     public class BattleData_SO : ScriptableObject
     {
-        [SerializeField] private NetworkedUnitRuntimeSet_SO enemyUnitRuntimeSet;
+        public NetworkedUnitRuntimeSet_SO EnemyUnitsRuntimeSet => enemyUnitsRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO enemyUnitsRuntimeSet;
 
-        [SerializeField] private NetworkedUnitRuntimeSet_SO playerTeamUnitRuntimeSet;
-        
-        [SerializeField] private IntReactiveVariable stage;
+        public NetworkedUnitRuntimeSet_SO PlayerUnitsRuntimeSet => playerUnitsRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO playerUnitsRuntimeSet;
 
-        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
-        
-        public NetworkedUnitRuntimeSet_SO EnemyUnitRuntimeSet => enemyUnitRuntimeSet;
-        
-        public NetworkedUnitRuntimeSet_SO PlayerTeamUnitRuntimeSet => playerTeamUnitRuntimeSet;
+        public NetworkedUnitRuntimeSet_SO AllUnitsRuntimeSet => allUnitsRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
 
         public TileRuntimeDictionary_SO TileRuntimeDictionary => tileRuntimeDictionary;
-
+        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         
-        private BattleManager _battleManager;
+        public IntReactiveVariable Stage => stage;
+        [SerializeField] private IntReactiveVariable stage;
+
+        public LootTable_SO LootTable => lootTable;
+        [SerializeField] private LootTable_SO lootTable;
+        
+        
         public IState CurrentState => _battleManager.CurrentState;
+        private BattleManager _battleManager;
         
-
-        public List<LootableGenerator_SO> lootables;
 
         public void RegisterBattleManager(BattleManager battleManager)
         {
-            lootables = new List<LootableGenerator_SO>();
             _battleManager = battleManager;
         }
 

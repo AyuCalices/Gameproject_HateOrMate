@@ -37,6 +37,7 @@ namespace Features.Unit.Modding
                 {
                     ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, modSlotBehaviours[index].transform);
                     modDragBehaviour.BaseMod = baseMod;
+                    //TODO: getComponent
                     modDragBehaviour.GetComponent<Image>().color = Random.ColorHSV();
                     modSlotsContainer.AddMod(baseMod);
                     modDragBehaviour.SetNewOrigin(modSlotsContainer, modSlotBehaviours[index]);

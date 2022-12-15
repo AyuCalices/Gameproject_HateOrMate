@@ -15,13 +15,11 @@ namespace Features.Battle.Scripts
     {
         private readonly BattleData_SO _battleData;
         private readonly BattleManager _battleManager;
-        private readonly LootTable_SO _lootTable;
         private readonly bool _restartStage;
         
-        public StageSetupState(BattleManager battleManager, LootTable_SO lootTable, bool restartStage, BattleData_SO battleData)
+        public StageSetupState(BattleManager battleManager, bool restartStage, BattleData_SO battleData)
         {
             _battleManager = battleManager;
-            _lootTable = lootTable;
             _restartStage = restartStage;
             _battleData = battleData;
         }
@@ -30,11 +28,11 @@ namespace Features.Battle.Scripts
         {
             if (!_restartStage)
             {
-                _battleManager.stage.Add(1);
+                _battleData.Stage.Add(1);
             }
             
             //Debug.Log(battleData.PlayerTeamUnitRuntimeSet.GetItems().Count);
-            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleManager.BattleData.PlayerTeamUnitRuntimeSet.GetItems())
+            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
@@ -45,7 +43,7 @@ namespace Features.Battle.Scripts
             }
 
             //Debug.Log(battleData.EnemyUnitRuntimeSet.GetItems().Count);
-            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleManager.BattleData.EnemyUnitRuntimeSet.GetItems())
+            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
@@ -54,7 +52,7 @@ namespace Features.Battle.Scripts
 
                 if (networkedUnitBehaviour is AIUnitBehaviour aiUntBehaviour)
                 {
-                    _battleManager.BattleData.SetAiStats(aiUntBehaviour);
+                    _battleData.SetAiStats(aiUntBehaviour);
                 }
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
@@ -62,7 +60,7 @@ namespace Features.Battle.Scripts
 
             if (PhotonNetwork.IsMasterClient && !_restartStage)
             {
-                SendLootableByRaiseEvent(_lootTable.RandomizeLootableGenerator());
+                SendLootableByRaiseEvent(_battleData.LootTable.RandomizeLootableGenerator());
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)
@@ -81,13 +79,6 @@ namespace Features.Battle.Scripts
 
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                
-                _battleData.lootables.Add((LootableGenerator_SO)data[0]);
-            }
-            
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestBattleState)
             {
                 object[] data = (object[]) photonEvent.CustomData;

@@ -15,6 +15,7 @@ namespace Features.Unit.Battle.Scripts.Actions
         
         public DamageProjectileBehaviour FireProjectile(Vector3 startPosition, Vector3 targetPosition, int targetID)
         {
+            //TODO: getComponent
             return InstantiateProjectile(startPosition, targetPosition, targetID).GetComponent<DamageProjectileBehaviour>();
         }
 

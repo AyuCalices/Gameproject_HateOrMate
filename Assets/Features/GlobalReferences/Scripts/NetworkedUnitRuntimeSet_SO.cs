@@ -19,6 +19,7 @@ namespace Features.GlobalReferences.Scripts
         {
             foreach (NetworkedUnitBehaviour localUnitBehaviour in GetItems())
             {
+                //TODO: getComponent
                 if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
                 if (modUnitBehaviour.UnitMods.TryInstantiateMod(modDragBehaviour, baseMod))
                 {
@@ -37,6 +38,7 @@ namespace Features.GlobalReferences.Scripts
             var list = GetItems();
             for (int i = list.Count - 1; i >= 0; i--)
             {
+                //TODO: getComponent
                 if (list[i].TryGetComponent(out BattleBehaviour battleBehaviour) && battleBehaviour.IsTargetable && battleBehaviour.CurrentState is not DeathState)
                 {
                     networkedUnitBehaviours.Add(list[i]);
@@ -76,6 +78,7 @@ namespace Features.GlobalReferences.Scripts
         {
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in GetItems())
             {
+                //TODO: getComponent
                 if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     if (battleBehaviour.CurrentState is not DeathState && battleBehaviour.IsTargetable)

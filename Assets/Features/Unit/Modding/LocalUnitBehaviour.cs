@@ -9,16 +9,16 @@ namespace Features.Unit.Modding
     {
         protected override void InternalAwake()
         {
-            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
+            EnemyRuntimeSet = battleData.EnemyUnitsRuntimeSet;
             
-            OwnerNetworkedPlayerUnits.Add(this);
-            battleData.PlayerTeamUnitRuntimeSet.Add(this);
+            ownerNetworkedPlayerUnits.Add(this);
+            battleData.PlayerUnitsRuntimeSet.Add(this);
         }
 
         protected override void InternalOnDestroy()
         {
-            OwnerNetworkedPlayerUnits.Remove(this);
-            battleData.PlayerTeamUnitRuntimeSet.Remove(this);
+            ownerNetworkedPlayerUnits.Remove(this);
+            battleData.PlayerUnitsRuntimeSet.Remove(this);
         }
     }
 }

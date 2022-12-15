@@ -1,5 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
-using Features.Battle.Scripts;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using UniRx;
@@ -9,18 +10,19 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Loot.Scripts
 {
-    public class LootSelectionBehaviour : MonoBehaviour
+    public class LootSelectionBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private Transform instantiationParent;
         [SerializeField] private LootableView lootableViewPrefab;
         [SerializeField] private int lootCount;
 
         private LootableView[] _instantiatedLootables;
         private RoomDecisions<int> _roomDecisions;
+        private List<LootableGenerator_SO> _lootables;
 
         private void Awake()
         {
+            _lootables = new List<LootableGenerator_SO>();
             _instantiatedLootables = new LootableView[lootCount];
             _roomDecisions = new RoomDecisions<int>("Looting");
             
@@ -59,23 +61,23 @@ namespace Features.Loot.Scripts
 
         private void ShowNewLootablesOrClose()
         {
-            if (battleData.lootables.Count == 0)
+            if (_lootables.Count == 0)
             {
                 gameObject.SetActive(false);
                 return;
             }
             
-            int range = Mathf.Min(lootCount, battleData.lootables.Count);
+            int range = Mathf.Min(lootCount, _lootables.Count);
             
             for (int i = 0; i < range; i++)
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
                 int localScope = i;
-                lootableView.Initialize(battleData.lootables[i], () => _roomDecisions.SetLocalDecision(localScope));
+                lootableView.Initialize(_lootables[i], () => _roomDecisions.SetLocalDecision(localScope));
                 _instantiatedLootables[i] = lootableView;
             }
             
-            battleData.lootables.RemoveRange(0, range);
+            _lootables.RemoveRange(0, range);
         }
 
         private void TryTakeSelectedLootable()
@@ -116,6 +118,16 @@ namespace Features.Loot.Scripts
         private bool IsLootableRemaining()
         {
             return _instantiatedLootables.Any(t => t != null);
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                
+                _lootables.Add((LootableGenerator_SO)data[0]);
+            }
         }
     }
 }

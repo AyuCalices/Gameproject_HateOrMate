@@ -8,6 +8,7 @@ namespace Features.Unit.Modding
     [RequireComponent(typeof(LocalUnitBehaviour))]
     public class ModUnitBehaviour : MonoBehaviour
     {
+        [Header("Balancing")]
         [SerializeField] private int modCount;
     
         public UnitMods UnitMods { get; private set; }
@@ -19,6 +20,7 @@ namespace Features.Unit.Modding
         {
             UnitModHud unitModView = onInstantiateModSlot.Invoke();
             List<ModSlotBehaviour> modDropBehaviours = unitModView.GetAllChildren();
+            //TODO: getComponent
             UnitMods = new UnitMods(modCount, GetComponent<LocalUnitBehaviour>(), modDropBehaviours);
         }
     }

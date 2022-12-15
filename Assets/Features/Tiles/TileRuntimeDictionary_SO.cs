@@ -15,14 +15,12 @@ namespace Features.Tiles
         private readonly Vector3Int[] _directions = new Vector3Int[4] {Vector3Int.left,Vector3Int.right,Vector3Int.up,Vector3Int.down };
 
         private Tilemap _tilemap;
-        private TileLookup[] _tileReferences;
         private Pathfinder<Vector3Int> _pathfinder;
         private Vector3Int _targetNode;
         
         public void Initialize(Tilemap tilemap, TileLookup[] tileReferences, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
         {
             _tilemap = tilemap;
-            _tileReferences = tileReferences;
             _pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
             populateRuntimeSet.Invoke(items);
         }

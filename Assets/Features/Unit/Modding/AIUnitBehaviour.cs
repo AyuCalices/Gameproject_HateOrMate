@@ -7,8 +7,8 @@ namespace Features.Unit.Modding
     {
         protected override void InternalAwake()
         {
-            OwnerNetworkedPlayerUnits.Add(this);
-            EnemyRuntimeSet = battleData.PlayerTeamUnitRuntimeSet;
+            ownerNetworkedPlayerUnits.Add(this);
+            EnemyRuntimeSet = battleData.PlayerUnitsRuntimeSet;
         
             OnPhotonViewIdAllocated();
         }
@@ -20,7 +20,7 @@ namespace Features.Unit.Modding
 
         protected override void InternalOnDestroy()
         {
-            OwnerNetworkedPlayerUnits.Remove(this);
+            ownerNetworkedPlayerUnits.Remove(this);
         }
     }
 }

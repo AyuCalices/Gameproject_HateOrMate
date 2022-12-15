@@ -1,7 +1,5 @@
-using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
-using Features.GlobalReferences.Scripts;
 using Features.Loot.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
@@ -13,14 +11,9 @@ using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
 {
-    /// <summary>
-    /// Should not know about the BattleBehaviour, since the BattleBehaviour is a lower level script.
-    /// </summary>
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private LootTable_SO lootTable;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
         [SerializeField] private BattleData_SO battleData;
         
         [SerializeField] private Toggle requestLootPhaseToggle;
@@ -28,7 +21,6 @@ namespace Features.Battle.Scripts
         
         //reactive stage text
         [SerializeField] private TextMeshProUGUI stageText;
-        [SerializeField] public IntReactiveVariable stage;
     
         private StateMachine _stageStateMachine;
 
@@ -36,7 +28,6 @@ namespace Features.Battle.Scripts
         public void DisableLootPhaseRequested() => requestLootPhaseToggle.isOn = false;
         
         public IState CurrentState => _stageStateMachine.CurrentState;
-        public BattleData_SO BattleData => battleData;
 
         private void Awake()
         {
@@ -48,9 +39,9 @@ namespace Features.Battle.Scripts
 
         private void Start()
         {
-            _stageStateMachine.Initialize(new StageSetupState(this, lootTable, true, battleData));
+            _stageStateMachine.Initialize(new StageSetupState(this, true, battleData));
             
-            stage.RuntimeProperty
+            battleData.Stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
                 .SubscribeToText(stageText);
         }
@@ -62,12 +53,12 @@ namespace Features.Battle.Scripts
 
         internal void RequestStageSetupState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new StageSetupState(this, lootTable, restartState, battleData));
+            _stageStateMachine.ChangeState(new StageSetupState(this, restartState, battleData));
         }
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this, battleData, allUnitsRuntimeSet));
+            _stageStateMachine.ChangeState(new BattleState(this, battleData, battleData.AllUnitsRuntimeSet));
         }
         
         internal void RequestLootingState()

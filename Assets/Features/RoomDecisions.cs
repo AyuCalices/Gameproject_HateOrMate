@@ -1,7 +1,6 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features

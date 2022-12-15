@@ -35,6 +35,7 @@ namespace Features.Battle.Scripts
         {
             if (photonEvent.Code == (int)RaiseEventCode.OnSendFloatToTarget)
             {
+                //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
@@ -45,6 +46,7 @@ namespace Features.Battle.Scripts
             
             else if (photonEvent.Code == (int)RaiseEventCode.OnUpdateAllClientsHealth)
             {
+                //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour))
                 {
@@ -76,13 +78,13 @@ namespace Features.Battle.Scripts
 
         private void SetStage()
         {
-            if (!_battleData.PlayerTeamUnitRuntimeSet.HasUnitAlive())
+            if (!_battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
             {
                 _battleManager.RequestStageSetupState(true);
                 return;
             }
 
-            if (!_battleData.EnemyUnitRuntimeSet.HasUnitAlive())
+            if (!_battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
             {
                 _battleManager.RequestStageSetupState(false);
             }

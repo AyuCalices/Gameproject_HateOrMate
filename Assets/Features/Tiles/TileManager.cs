@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Features.Battle.Scripts;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -7,14 +8,14 @@ namespace Features.Tiles
     public class TileManager : MonoBehaviour
     {
         [SerializeField] private Tilemap tilemap;
-        [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
+        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private TileLookup[] tileReferences;
         [SerializeField] private List<GameObject> unitsPlacedInScene;
 
         private void Awake()
         {
-            tileRuntimeDictionary.ClearContainedUnits();
-            tileRuntimeDictionary.Initialize(tilemap, tileReferences, PopulateTileRuntimeDictionary);
+            battleData.TileRuntimeDictionary.ClearContainedUnits();
+            battleData.TileRuntimeDictionary.Initialize(tilemap, tileReferences, PopulateTileRuntimeDictionary);
         }
 
         private void PopulateTileRuntimeDictionary(Dictionary<Vector3Int, RuntimeTile> tileDictionary)

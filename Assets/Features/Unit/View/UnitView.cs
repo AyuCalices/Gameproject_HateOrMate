@@ -5,6 +5,7 @@ namespace Features.Unit.View
     //TODO: UniRX
     public class UnitView : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private Transform healthTransform;
         [SerializeField] private Transform staminaTransform;
 

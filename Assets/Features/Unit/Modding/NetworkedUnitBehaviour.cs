@@ -15,12 +15,14 @@ using UnityEngine;
 
 namespace Features.Unit.Modding
 {
+    [RequireComponent(typeof(PhotonView))]
     public class NetworkedUnitBehaviour : MonoBehaviour
     {
-        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
+        [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
-        public NetworkedUnitRuntimeSet_SO OwnerNetworkedPlayerUnits => ownerNetworkedPlayerUnits;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
+        
+        [Header("Team Selection")]
+        [SerializeField] protected NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
         
         public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet { get; protected set; }
 
@@ -35,6 +37,7 @@ namespace Features.Unit.Modding
             set
             {
                 _removedHealth = value;
+                //TODO: getComponent
                 if (TryGetComponent(out UnitView unitView))
                 {
                     unitView.SetHealthSlider(RemovedHealth, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
@@ -44,19 +47,20 @@ namespace Features.Unit.Modding
 
         protected void Awake()
         {
+            //TODO: getComponent
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
-            allUnitsRuntimeSet.Add(this);
+            battleData.AllUnitsRuntimeSet.Add(this);
             
             InternalAwake();
         }
         
         protected virtual void InternalAwake()
         {
-            EnemyRuntimeSet = battleData.EnemyUnitRuntimeSet;
+            EnemyRuntimeSet = battleData.EnemyUnitsRuntimeSet;
             
             ownerNetworkedPlayerUnits.Add(this);
-            battleData.PlayerTeamUnitRuntimeSet.Add(this);
+            battleData.PlayerUnitsRuntimeSet.Add(this);
         }
 
         /// <summary>
@@ -76,6 +80,7 @@ namespace Features.Unit.Modding
             NetworkingInitialized = true;
             InternalOnNetworkingEnabled();
 
+            //TODO: getComponent
             if (TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.OnNetworkingEnabled();
@@ -111,13 +116,13 @@ namespace Features.Unit.Modding
         {
             InternalOnDestroy();
             
-            allUnitsRuntimeSet.Remove(this);
+            battleData.AllUnitsRuntimeSet.Remove(this);
         }
 
         protected virtual void InternalOnDestroy()
         {
             ownerNetworkedPlayerUnits.Remove(this);
-            battleData.PlayerTeamUnitRuntimeSet.Remove(this);
+            battleData.PlayerUnitsRuntimeSet.Remove(this);
         }
     }
 }
