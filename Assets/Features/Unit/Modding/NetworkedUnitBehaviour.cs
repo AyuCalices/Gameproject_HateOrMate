@@ -81,7 +81,7 @@ namespace Features.Unit.Modding
             InternalOnNetworkingEnabled();
 
             //TODO: getComponent
-            if (TryGetComponent(out BattleBehaviour battleBehaviour))
+            if (TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
             {
                 battleBehaviour.OnNetworkingEnabled();
             }

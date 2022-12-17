@@ -34,7 +34,7 @@ namespace Features.Battle.Scripts
             //Debug.Log(battleData.PlayerTeamUnitRuntimeSet.GetItems().Count);
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
             {
-                if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.OnStageEnd();
                 }
@@ -45,7 +45,7 @@ namespace Features.Battle.Scripts
             //Debug.Log(battleData.EnemyUnitRuntimeSet.GetItems().Count);
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
             {
-                if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.OnStageEnd();
                 }

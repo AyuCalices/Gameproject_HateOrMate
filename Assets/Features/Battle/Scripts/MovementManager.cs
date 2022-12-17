@@ -38,11 +38,11 @@ namespace Features.Battle.Scripts
             Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour);
             if (PhotonNetwork.IsMasterClient)
             {
-                OnMasterChangeUnitGridPosition(battleBehaviour, targetTileGridPosition, currentCellPosition, skipLastMovementsCount);
+                OnMasterChangeUnitGridPosition(battleBehaviour, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
             }
             else
             {
-                RequestMoveToTarget(battleBehaviour.NetworkedUnitBehaviour.PhotonView, targetTileGridPosition, currentCellPosition, skipLastMovementsCount);
+                RequestMoveToTarget(battleBehaviour.NetworkedUnitBehaviour.PhotonView, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
             }
 
             return true;
@@ -53,7 +53,7 @@ namespace Features.Battle.Scripts
             return battleData.TileRuntimeDictionary.GetWorldToCellPosition(battleBehaviour.transform.position);
         }
 
-        private void OnMasterChangeUnitGridPosition(BattleBehaviour battleBehaviour, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount)
+        private void OnMasterChangeUnitGridPosition(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount, float movementSpeed)
         {
             if (!TryGetNextPosition(targetCellPosition, currentCellPosition, skipLastMovementsCount, out Vector3Int nextCellPosition)) return;
 
@@ -62,7 +62,8 @@ namespace Features.Battle.Scripts
             object[] data = new object[]
             {
                 battleBehaviour.NetworkedUnitBehaviour.PhotonView.ViewID,
-                nextCellPosition
+                nextCellPosition,
+                movementSpeed
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -92,7 +93,7 @@ namespace Features.Battle.Scripts
             return false;
         }
     
-        private void UpdateUnitOnRuntimeTiles(BattleBehaviour battleBehaviour, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
+        private void UpdateUnitOnRuntimeTiles(NetworkedBattleBehaviour battleBehaviour, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
         {
             RuntimeTile targetTileContainer = battleData.TileRuntimeDictionary.GetContent(nextCellPosition);
             targetTileContainer.AddUnit(battleBehaviour.gameObject);
@@ -103,14 +104,15 @@ namespace Features.Battle.Scripts
             }
         }
     
-        private static void RequestMoveToTarget(PhotonView photonView, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount)
+        private static void RequestMoveToTarget(PhotonView photonView, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount, float movementSpeed)
         {
             object[] data = new object[]
             {
                 photonView.ViewID,
                 targetCellPosition,
                 currentCellPosition,
-                skipLastMovementsCount
+                skipLastMovementsCount,
+                movementSpeed
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -136,10 +138,11 @@ namespace Features.Battle.Scripts
                 int viewID = (int) data[0];
                 //TODO: getComponent
                 if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
-                    && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                    && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     Vector3Int nextCellPosition = (Vector3Int) data[1];
-                    MoveGameObjectToTarget(battleBehaviour, nextCellPosition, () =>
+                    float movementSpeed = (float) data[2];
+                    MoveGameObjectToTarget(battleBehaviour, nextCellPosition, movementSpeed, () =>
                     {
                         if (!battleBehaviour.TryRequestAttackState() || !battleBehaviour.TryRequestMovementStateByClosestUnit() || battleBehaviour.CurrentState is not DeathState)
                         {
@@ -156,20 +159,21 @@ namespace Features.Battle.Scripts
                 int viewID = (int) data[0];
                 //TODO: getComponent
                 if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
-                    && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                    && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     Vector3Int targetCellPosition = (Vector3Int) data[1];
                     Vector3Int currentCellPosition = (Vector3Int) data[2];
                     int skipLastMovementsCount = (int) data[3];
+                    float movementSpeed = (float) data[4];
                     OnMasterChangeUnitGridPosition(battleBehaviour, targetCellPosition, currentCellPosition,
-                        skipLastMovementsCount);
+                        skipLastMovementsCount, movementSpeed);
                 }
             }
         }
     
-        private void MoveGameObjectToTarget(BattleBehaviour battleBehaviour, Vector3Int nextCellPosition, Action onComplete)
+        private void MoveGameObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed, Action onComplete)
         {
-            if (battleBehaviour.MovementSpeed <= 0)
+            if (movementSpeed <= 0)
             {
                 Debug.LogError("The Movement Speed is to low and thus no movement is applied!");
                 onComplete.Invoke();
@@ -177,7 +181,7 @@ namespace Features.Battle.Scripts
             }
             
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
-            float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / battleBehaviour.MovementSpeed;
+            float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / movementSpeed;
             LeanTween.move(battleBehaviour.gameObject, targetPosition, time).setOnComplete(onComplete.Invoke);
         }
     }

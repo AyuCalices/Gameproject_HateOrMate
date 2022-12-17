@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
@@ -25,8 +26,14 @@ namespace Features.Loot.Scripts
             _lootables = new List<LootableGenerator_SO>();
             _instantiatedLootables = new LootableView[lootCount];
             _roomDecisions = new RoomDecisions<int>("Looting");
-            
             gameObject.SetActive(false);
+            
+            PhotonNetwork.AddCallbackTarget(this);
+        }
+
+        private void OnDestroy()
+        {
+            PhotonNetwork.RemoveCallbackTarget(this);
         }
 
         private void Start()
@@ -46,12 +53,12 @@ namespace Features.Loot.Scripts
                 });
         }
 
-        private void OnEnable()
+        public override void OnEnable()
         {
             ShowNewLootablesOrClose();
         }
         
-        private void OnDisable()
+        public override void OnDisable()
         {
             foreach (LootableView lootable in _instantiatedLootables)
             {

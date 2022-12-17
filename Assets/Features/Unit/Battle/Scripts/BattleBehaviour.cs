@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Mod.Action;
 using Features.Unit.Battle.Scripts.Actions;
@@ -11,66 +10,47 @@ using UnityEngine;
 namespace Features.Unit.Battle.Scripts
 {
     [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(UnitView))]
-    public class BattleBehaviour : MonoBehaviour
+    public class BattleBehaviour : NetworkedBattleBehaviour
     {
-        [Header("References")]
-        [SerializeField] private BattleData_SO battleData;
-        
         [Header("Balancing")]
         //TODO: dependency injection & maybe IIsTargetable, ICanAttack
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
-        [SerializeField] private bool isTargetable;
+        [SerializeField] protected bool isTargetable;
         [SerializeField] private float range;
         //TODO: check for units that cant walk
         [SerializeField] private float movementSpeed;
         
-        public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
-        private StateMachine _stateMachine;
         private BattleActions _battleActions;
-        private UnitView _unitView;
 
         public BattleActions BattleActions => _battleActions;
-        public IState CurrentState => _stateMachine.CurrentState;
         
 
         private KeyValuePair<NetworkedUnitBehaviour, float> _closestUnit;
         
         public KeyValuePair<NetworkedUnitBehaviour, float> GetTarget => _closestUnit;
-        public bool HasTarget { get; private set; }
-        public bool TargetInRange => _closestUnit.Value < range;
+        private bool HasTarget { get; set; }
+        private bool TargetInRange => _closestUnit.Value < range;
         public float MovementSpeed => movementSpeed;
-
-        public bool IsTargetable
+        
+        public override bool IsTargetable
         {
             get => isTargetable;
-            set
+            set => isTargetable = value;
+        }
+
+        public override void OnNetworkingEnabled()
+        {
+            base.OnNetworkingEnabled();
+            _battleActions = battleActionsGenerator.Generate(NetworkedUnitBehaviour, this, unitView);
+        }
+
+        public override void OnStageEnd()
+        {
+            base.OnStageEnd();
+            
+            if (CurrentState is AttackState)
             {
-                isTargetable = value;
-                _unitView.SetHealthActive(value);
-            }
-        }
-
-        private void Awake()
-        {
-            _stateMachine = new StateMachine();
-            _stateMachine.Initialize(new IdleState(this));
-            //TODO: getComponent
-            NetworkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
-            _unitView = GetComponent<UnitView>();
-
-            IsTargetable = isTargetable;
-        }
-
-        public void OnNetworkingEnabled()
-        {
-            _battleActions = battleActionsGenerator.Generate(NetworkedUnitBehaviour, this, _unitView);
-        }
-
-        public void OnStageEnd()
-        {
-            if (CurrentState is DeathState or AttackState)
-            {
-                _stateMachine.ChangeState(new IdleState(this));
+                ForceIdleState();
             }
             
             _battleActions.OnStageEnd();
@@ -83,15 +63,10 @@ namespace Features.Unit.Battle.Scripts
             HasTarget = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
-            _stateMachine.Update();
+            stateMachine.Update();
         }
 
         #region Request States
-
-        internal void ForceIdleState()
-        {
-            _stateMachine.ChangeState(new IdleState(this));
-        }
 
         internal bool TryRequestIdleState()
         {
@@ -99,25 +74,25 @@ namespace Features.Unit.Battle.Scripts
             
             if (result)
             {
-                _stateMachine.ChangeState(new IdleState(this));
+                stateMachine.ChangeState(new IdleState(this));
             }
 
             return result;
         }
 
-        internal bool TryRequestAttackState()
+        internal override bool TryRequestAttackState()
         {
             bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
             
             if (result)
             {
-                _stateMachine.ChangeState(new AttackState(this, _battleActions));
+                stateMachine.ChangeState(new AttackState(this, _battleActions));
             }
 
             return result;
         }
 
-        internal bool TryRequestMovementStateByClosestUnit()
+        internal override bool TryRequestMovementStateByClosestUnit()
         {
             bool result = HasTarget && !TargetInRange;
 
@@ -137,19 +112,19 @@ namespace Features.Unit.Battle.Scripts
             
             if (result)
             {
-                _stateMachine.ChangeState(new MovementState( this, targetPosition, skipLastMovementCount));
+                stateMachine.ChangeState(new MovementState( this, targetPosition, skipLastMovementCount));
             }
 
             return result;
         }
         
-        internal bool TryRequestDeathState()
+        internal override bool TryRequestDeathState()
         {
             bool result = battleData.CurrentState is BattleState;
             
             if (result)
             {
-                _stateMachine.ChangeState(new DeathState(this));
+                stateMachine.ChangeState(new DeathState(this));
             }
             else
             {

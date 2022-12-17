@@ -5,9 +5,9 @@ namespace Features.Unit.Battle.Scripts
 {
     public class IdleState : IState
     {
-        private readonly BattleBehaviour _battleBehaviour;
+        private readonly NetworkedBattleBehaviour _battleBehaviour;
 
-        public IdleState(BattleBehaviour battleBehaviour)
+        public IdleState(NetworkedBattleBehaviour battleBehaviour)
         {
             _battleBehaviour = battleBehaviour;
         }

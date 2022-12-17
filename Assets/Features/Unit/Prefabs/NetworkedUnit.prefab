@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7663717459320071767}
   - component: {fileID: 7321846215635961088}
-  - component: {fileID: -1780465011361942600}
+  - component: {fileID: 4613841340793331561}
   - component: {fileID: 3695171276840931626}
   - component: {fileID: 7663717459320071766}
   - component: {fileID: 2691383368057905019}
@@ -50,10 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b5af6e1786ddd94593111fc2e023da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allUnitsRuntimeSet: {fileID: 11400000, guid: 908f73112ce935c439168cfec7805b5f, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   ownerNetworkedPlayerUnits: {fileID: 11400000, guid: 74d727fd9b420344b83a83190ca4ef67, type: 2}
---- !u!114 &-1780465011361942600
+--- !u!114 &4613841340793331561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -62,15 +61,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7663717459320071761}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fbc14778b6c237458fcbddb88fb81f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileRuntimeDictionary: {fileID: 11400000, guid: 9f2c7e601b45e504b826c8458cacfb02, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  battleActionsGenerator: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
   isTargetable: 1
-  range: 2
-  movementSpeed: 2
 --- !u!114 &3695171276840931626
 MonoBehaviour:
   m_ObjectHideFlags: 0

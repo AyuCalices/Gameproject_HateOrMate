@@ -67,7 +67,7 @@ namespace Features.Battle.Scripts
         
             if (networkedUnitBehaviour.RemovedHealth >= totalHealth)
             {
-                if (networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.TryRequestDeathState();
                 }
