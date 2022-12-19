@@ -10,7 +10,7 @@ namespace Features.Tiles
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private TileLookup[] tileReferences;
-        [SerializeField] private List<GameObject> unitsPlacedInScene;
+        [SerializeField] private List<GameObject> spawnerInstances;
 
         private void Awake()
         {
@@ -20,10 +20,10 @@ namespace Features.Tiles
 
         private void PopulateTileRuntimeDictionary(Dictionary<Vector3Int, RuntimeTile> tileDictionary)
         {
-            Dictionary<Vector3Int, GameObject> gridPositions = new Dictionary<Vector3Int, GameObject>();
-            foreach (GameObject unit in unitsPlacedInScene)
+            Dictionary<Vector3Int, GameObject> spawnerGridPositions = new Dictionary<Vector3Int, GameObject>();
+            foreach (GameObject spawner in spawnerInstances)
             {
-                gridPositions.Add(tilemap.WorldToCell(unit.transform.position), unit);
+                spawnerGridPositions.Add(tilemap.WorldToCell(spawner.transform.position), spawner);
             }
             
             foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
@@ -36,9 +36,9 @@ namespace Features.Tiles
                         RuntimeTile newRuntimeTile = new RuntimeTile(tile, tileData.movementCost);
                         tileDictionary.Add(position, newRuntimeTile);
                         
-                        if (gridPositions.TryGetValue(position, out GameObject unit))
+                        if (spawnerGridPositions.TryGetValue(position, out GameObject spawnerInstance))
                         {
-                            newRuntimeTile.AddUnit(unit);
+                            newRuntimeTile.AddSpawnerInstance(spawnerInstance);
                         }
                     }
                 }
@@ -47,7 +47,7 @@ namespace Features.Tiles
 
         public void UpdateUnitsPlacedInScenePosition()
         {
-            foreach (GameObject unit in unitsPlacedInScene)
+            foreach (GameObject unit in spawnerInstances)
             {
                 Vector3Int cellPosition = tilemap.WorldToCell(unit.transform.position);
                 unit.transform.position = tilemap.GetCellCenterWorld(cellPosition);

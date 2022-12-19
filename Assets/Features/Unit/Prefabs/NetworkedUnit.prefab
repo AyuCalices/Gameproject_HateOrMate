@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 7663717459320071766}
   - component: {fileID: 2691383368057905019}
   - component: {fileID: 7461365545101661289}
+  - component: {fileID: 2096621563160077121}
   m_Layer: 0
   m_Name: NetworkedUnit
   m_TagString: Untagged
@@ -65,7 +66,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  isTargetable: 1
 --- !u!114 &3695171276840931626
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -180,6 +180,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &2096621563160077121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663717459320071761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d6f0ec84bc54bb4f87128c78eee50fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6783122928636164024
 PrefabInstance:
   m_ObjectHideFlags: 0

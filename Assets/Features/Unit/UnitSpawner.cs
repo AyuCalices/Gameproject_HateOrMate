@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Experimental;
@@ -7,58 +9,91 @@ using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
+using ToolBox.Pools;
 using UnityEngine;
 
 namespace Features.Unit
 {
+    //TODO: see below
+    //spawn events: player gets mod -> instantiation till mod removed -> then destroy (needs reference on mod)
+    //spawn events: ai enemy dependant on stage -> enable when stage starts -> then disable from pool ?
+    
+    //for each stage: one stage spawner can max spawn 1 unit. -> inside the stage definition/generation
+    //for each player: there are multiple units that can be placed on the grid -> only on spots with space
+    //each spawner has references of the spawned units
+    //when a unit gets spawned, it needs to get all the modifiers
+    //pooling for units => mods will be assigned for each of them even if it is a inactive pool object
+    //every pooled object that gets inactive needs to be in deathState
+    
+    //mod => keeps reference of spawned unit
+    //stage => keeps reference of spawned unit
+    //must only be saved by owner => for destroying: owner sends RaiseEvent
+    
+    //TODO: new
+    //how to destroy units ? how to setup stages ? how to add battle actions ?
+    
+    public enum SpawnPosition { RandomPlaceablePosition, ThisTransform }
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private GameObject localPlayerPrefab;
-        [SerializeField] private GameObject networkedPlayerPrefab;
-        
+
+        [SerializeField] private List<SpawnerInstance> spawnerInstances;
 
         public override void OnEnable()
         {
             base.OnEnable();
             TestingGenerator.onSpawnUnit += Spawn;
+            StageSetupState.onSpawnUnit += Spawn;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             TestingGenerator.onSpawnUnit -= Spawn;
+            StageSetupState.onSpawnUnit -= Spawn;
         }
 
-        public void Spawn()
+        private void Spawn(string spawnerReference)
         {
+            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
+            if (spawnerInstanceIndex == -1)
+            {
+                Debug.LogError("Spawner Instance was not Found!");
+            }
+            
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnUnit(PhotonNetwork.IsMasterClient, localPlayerPrefab.GetComponent<BattleBehaviour>().IsTargetable);
+                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex);
             }
             else
             {
-                RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, localPlayerPrefab.GetComponent<BattleBehaviour>().IsTargetable);
+                RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex);
             }
         }
 
-        private void SpawnUnit(bool isSpawnedByMaster, bool isTargetable)
+        private void DestroyLocal(int viewID)
         {
-            if (!battleData.TileRuntimeDictionary.TryGetRandomPlaceableTileBehaviour(
-                out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
-
-            Vector3Int gridPosition = tileKeyValuePair.Key;
-            RuntimeTile runtimeTile = tileKeyValuePair.Value;
+            if (!battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
+                out NetworkedUnitBehaviour networkedUnitBehaviour)) return;
             
-            GameObject player = Instantiate(isSpawnedByMaster ? localPlayerPrefab : networkedPlayerPrefab, transform);
-            player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = isTargetable;
-            runtimeTile.AddUnit(player);
-            player.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
-
-            MasterSpawnRaiseEvent(player, gridPosition, isSpawnedByMaster, isTargetable);
+            networkedUnitBehaviour.gameObject.Release();
         }
 
-        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, bool isTargetable)
+        private void SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex)
+        {
+            if (!spawnerInstances[spawnerInstanceIndex]
+                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
+
+            GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerPrefab : spawnerInstances[spawnerInstanceIndex].networkedPlayerPrefab;
+            GameObject player = selectedPrefab.Reuse(transform);
+            player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstances[spawnerInstanceIndex].isTargetable;
+            tileKeyValuePair.Value.AddUnit(player);
+            player.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(tileKeyValuePair.Key);
+
+            MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex);
+        }
+
+        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex)
         {
             //TODO: getComponent
             PhotonView instantiationPhotonView = playerPrefab.GetComponent<PhotonView>();
@@ -67,7 +102,7 @@ namespace Features.Unit
                 var playerTransform = playerPrefab.transform;
                 object[] data = new object[]
                 {
-                    playerTransform.position, playerTransform.rotation, instantiationPhotonView.ViewID, gridPosition, isSpawnedByMaster, isTargetable
+                    playerTransform.position, playerTransform.rotation, instantiationPhotonView.ViewID, gridPosition, isSpawnedByMaster, spawnerInstanceIndex
                 };
 
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -93,12 +128,12 @@ namespace Features.Unit
             }
         }
         
-        private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, bool isTargetable)
+        private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex)
         {
             object[] data = new object[]
             {
                 isSpawnedByMaster,
-                isTargetable
+                spawnerInstanceIndex
             };
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -122,9 +157,11 @@ namespace Features.Unit
                 object[] data = (object[]) photonEvent.CustomData;
 
                 //instantiate and prepare photon view
-                GameObject player = Instantiate((bool) data[4] ? networkedPlayerPrefab : localPlayerPrefab, (Vector3) data[0], (Quaternion) data[1]);
-                player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = (bool) data[5];
-                Debug.Log(player.GetComponent<NetworkedBattleBehaviour>().IsTargetable);
+                SpawnerInstance spawnerInstance = spawnerInstances[(int) data[5]];
+                GameObject selectedPrefab = (bool) data[4] ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
+                GameObject player = selectedPrefab.Reuse((Vector3) data[0], (Quaternion) data[1], transform);
+                
+                player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstance.isTargetable;
                 //TODO: getComponent
                 PhotonView instantiationPhotonView = player.GetComponent<PhotonView>();
                 instantiationPhotonView.ViewID = (int) data[2];
@@ -142,7 +179,7 @@ namespace Features.Unit
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                SpawnUnit((bool) data[0], (bool) data[1]);
+                SpawnUnit((bool) data[0], (int) data[1]);
             }
         }
     }

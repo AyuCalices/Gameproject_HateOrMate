@@ -1,3 +1,4 @@
+using System;
 using ExitGames.Client.Photon;
 using Features.GlobalReferences.Scripts;
 using Features.Unit.Modding;
@@ -9,6 +10,7 @@ using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts.Actions
 {
+    [Serializable]
     public abstract class BattleActions
     {
         protected readonly NetworkedUnitBehaviour ownerNetworkingUnitBehaviour;

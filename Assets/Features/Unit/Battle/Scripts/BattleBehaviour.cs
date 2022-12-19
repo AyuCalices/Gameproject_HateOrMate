@@ -15,7 +15,6 @@ namespace Features.Unit.Battle.Scripts
         [Header("Balancing")]
         //TODO: dependency injection & maybe IIsTargetable, ICanAttack
         [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
-        [SerializeField] protected bool isTargetable;
         [SerializeField] private float range;
         //TODO: check for units that cant walk
         [SerializeField] private float movementSpeed;
@@ -31,12 +30,6 @@ namespace Features.Unit.Battle.Scripts
         private bool HasTarget { get; set; }
         private bool TargetInRange => _closestUnit.Value < range;
         public float MovementSpeed => movementSpeed;
-        
-        public override bool IsTargetable
-        {
-            get => isTargetable;
-            set => isTargetable = value;
-        }
 
         public override void OnNetworkingEnabled()
         {

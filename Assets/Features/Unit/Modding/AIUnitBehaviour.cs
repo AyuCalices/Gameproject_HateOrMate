@@ -9,8 +9,6 @@ namespace Features.Unit.Modding
         {
             ownerNetworkedPlayerUnits.Add(this);
             EnemyRuntimeSet = battleData.PlayerUnitsRuntimeSet;
-        
-            OnPhotonViewIdAllocated();
         }
 
         protected override void InternalOnNetworkingEnabled()

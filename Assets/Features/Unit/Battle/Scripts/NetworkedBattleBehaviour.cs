@@ -17,7 +17,7 @@ namespace Features.Unit.Battle.Scripts
         public IState CurrentState => stateMachine.CurrentState;
         
         protected UnitView unitView;
-        public virtual bool IsTargetable { get; set; }
+        public bool IsTargetable { get; set; }
 
         public virtual void OnNetworkingEnabled()
         {

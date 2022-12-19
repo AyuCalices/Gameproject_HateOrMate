@@ -43,7 +43,7 @@ namespace Features.Tiles
             {
                 Vector3Int position = a + dir;
                 if (!TryGetByGridPosition(position, out RuntimeTile runtimeTile)) continue;
-                if (!runtimeTile.ContainsUnit || _targetNode == position) result.Add(position, runtimeTile.movementCost);
+                if (runtimeTile.IsPlaceable || _targetNode == position) result.Add(position, runtimeTile.movementCost);
             }
             return result;
         }
@@ -72,7 +72,7 @@ namespace Features.Tiles
 
             foreach (var item in items)
             {
-                if (!item.Value.ContainsUnit)
+                if (item.Value.IsPlaceable)
                 {
                     placeableDictionary.Add(item.Key, item.Value);
                 }

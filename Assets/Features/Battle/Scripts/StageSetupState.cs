@@ -1,3 +1,4 @@
+using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Loot;
@@ -13,6 +14,8 @@ namespace Features.Battle.Scripts
 {
     public class StageSetupState : IState
     {
+        public static Action<string> onSpawnUnit;
+        
         private readonly BattleData_SO _battleData;
         private readonly BattleManager _battleManager;
         private readonly bool _restartStage;
@@ -31,7 +34,6 @@ namespace Features.Battle.Scripts
                 _battleData.Stage.Add(1);
             }
             
-            //Debug.Log(battleData.PlayerTeamUnitRuntimeSet.GetItems().Count);
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
@@ -42,7 +44,6 @@ namespace Features.Battle.Scripts
                 networkedUnitBehaviour.RemovedHealth = 0;
             }
 
-            //Debug.Log(battleData.EnemyUnitRuntimeSet.GetItems().Count);
             foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
@@ -61,6 +62,13 @@ namespace Features.Battle.Scripts
             if (PhotonNetwork.IsMasterClient && !_restartStage)
             {
                 SendLootableByRaiseEvent(_battleData.LootTable.RandomizeLootableGenerator());
+            }
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                onSpawnUnit?.Invoke("RightTower");
+                onSpawnUnit?.Invoke("LeftTower");
+                onSpawnUnit?.Invoke("Gate");
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)
