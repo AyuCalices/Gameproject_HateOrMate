@@ -13,11 +13,11 @@ namespace Features.GlobalReferences.Scripts
     public enum UnitControlType { Master, Client, AI }
     
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
-    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedUnitBehaviour>
+    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedStatsBehaviour>
     {
         public bool TryInstantiateModToAny(ModDragBehaviour modDragBehaviour, BaseMod baseMod)
         {
-            foreach (NetworkedUnitBehaviour localUnitBehaviour in GetItems())
+            foreach (NetworkedStatsBehaviour localUnitBehaviour in GetItems())
             {
                 //TODO: getComponent
                 if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
@@ -30,9 +30,9 @@ namespace Features.GlobalReferences.Scripts
             return false;
         }
 
-        private bool ContainsTargetable(out List<NetworkedUnitBehaviour> networkedUnitBehaviours)
+        private bool ContainsTargetable(out List<NetworkedStatsBehaviour> networkedUnitBehaviours)
         {
-            networkedUnitBehaviours = new List<NetworkedUnitBehaviour>();
+            networkedUnitBehaviours = new List<NetworkedStatsBehaviour>();
             
             //parse for targetable
             var list = GetItems();
@@ -48,9 +48,9 @@ namespace Features.GlobalReferences.Scripts
             return networkedUnitBehaviours.Count > 0;
         }
 
-        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedUnitBehaviour, float> closestUnit)
+        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedStatsBehaviour, float> closestUnit)
         {
-            if (!ContainsTargetable(out List<NetworkedUnitBehaviour> networkedUnitBehaviours))
+            if (!ContainsTargetable(out List<NetworkedStatsBehaviour> networkedUnitBehaviours))
             {
                 closestUnit = default;
                 return false;
@@ -70,13 +70,13 @@ namespace Features.GlobalReferences.Scripts
                 }
             }
 
-            closestUnit = new KeyValuePair<NetworkedUnitBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+            closestUnit = new KeyValuePair<NetworkedStatsBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
             return true;
         }
 
         public bool HasUnitAlive()
         {
-            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in GetItems())
+            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in GetItems())
             {
                 //TODO: getComponent
                 if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
@@ -92,18 +92,18 @@ namespace Features.GlobalReferences.Scripts
             return false;
         }
 
-        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedStatsBehaviour networkedStatsBehaviour)
         {
-            foreach (NetworkedUnitBehaviour item in items)
+            foreach (NetworkedStatsBehaviour item in items)
             {
                 if (requestedViewID == item.PhotonView.ViewID)
                 {
-                    networkedUnitBehaviour = item;
+                    networkedStatsBehaviour = item;
                     return true;
                 }
             }
 
-            networkedUnitBehaviour = default;
+            networkedStatsBehaviour = default;
             return false;
         }
     }

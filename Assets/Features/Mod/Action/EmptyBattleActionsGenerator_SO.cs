@@ -12,10 +12,10 @@ namespace Features.Mod.Action
     [CreateAssetMenu(fileName = "new EmptyBattleActions", menuName = "Unit/Actions/EmptyBattleActions")]
     public class EmptyBattleActionsGenerator_SO : BattleActionGenerator_SO
     {
-        protected override BattleActions InternalGenerate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
+        protected override BattleActions InternalGenerate(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView)
         {
-            return new EmptyBattleActions(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView);
+            return new EmptyBattleActions(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitView);
         }
     }
 }

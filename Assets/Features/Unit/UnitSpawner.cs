@@ -74,7 +74,7 @@ namespace Features.Unit
         private void DestroyLocal(int viewID)
         {
             if (!battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
-                out NetworkedUnitBehaviour networkedUnitBehaviour)) return;
+                out NetworkedStatsBehaviour networkedUnitBehaviour)) return;
             
             networkedUnitBehaviour.gameObject.Release();
         }
@@ -118,7 +118,7 @@ namespace Features.Unit
 
                 PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
                 //TODO: getComponent
-                playerPrefab.GetComponent<NetworkedUnitBehaviour>().OnPhotonViewIdAllocated();
+                playerPrefab.GetComponent<NetworkedStatsBehaviour>().OnPhotonViewIdAllocated();
             }
             else
             {
@@ -173,7 +173,7 @@ namespace Features.Unit
                 }
                 
                 //TODO: getComponent
-                player.GetComponent<NetworkedUnitBehaviour>().OnPhotonViewIdAllocated();
+                player.GetComponent<NetworkedStatsBehaviour>().OnPhotonViewIdAllocated();
             }
 
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)

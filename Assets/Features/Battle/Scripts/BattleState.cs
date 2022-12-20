@@ -37,7 +37,7 @@ namespace Features.Battle.Scripts
             {
                 //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
-                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour)
+                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedStatsBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.BattleActions.OnReceiveFloatActionCallback((float) data[1]);
@@ -48,7 +48,7 @@ namespace Features.Battle.Scripts
             {
                 //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
-                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedUnitBehaviour networkedUnitBehaviour))
+                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedStatsBehaviour networkedUnitBehaviour))
                 {
                     OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
                 }
@@ -60,14 +60,14 @@ namespace Features.Battle.Scripts
         /// </summary>
         /// <param name="newRemovedHealth"></param>
         /// <param name="totalHealth"></param>
-        private void OnUpdateAllClientsHealthCallback(NetworkedUnitBehaviour networkedUnitBehaviour, float newRemovedHealth,
+        private void OnUpdateAllClientsHealthCallback(NetworkedStatsBehaviour networkedStatsBehaviour, float newRemovedHealth,
             float totalHealth)
         {
-            networkedUnitBehaviour.RemovedHealth = newRemovedHealth;
+            networkedStatsBehaviour.RemovedHealth = newRemovedHealth;
         
-            if (networkedUnitBehaviour.RemovedHealth >= totalHealth)
+            if (networkedStatsBehaviour.RemovedHealth >= totalHealth)
             {
-                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
+                if (networkedStatsBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.TryRequestDeathState();
                 }

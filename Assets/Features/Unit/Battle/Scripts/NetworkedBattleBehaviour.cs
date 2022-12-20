@@ -6,14 +6,14 @@ using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts
 {
-    [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(UnitView))]
+    [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitView))]
     public class NetworkedBattleBehaviour : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
 
         protected StateMachine stateMachine;
-        public NetworkedUnitBehaviour NetworkedUnitBehaviour { get; private set; }
+        public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
         public IState CurrentState => stateMachine.CurrentState;
         
         protected UnitView unitView;
@@ -30,7 +30,7 @@ namespace Features.Unit.Battle.Scripts
             stateMachine.Initialize(new IdleState(this));
             
             unitView = GetComponent<UnitView>();
-            NetworkedUnitBehaviour = GetComponent<NetworkedUnitBehaviour>();
+            NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
         }
 
         public virtual void OnStageEnd()

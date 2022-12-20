@@ -13,15 +13,15 @@ namespace Features.Unit.Battle.Scripts.Actions
     [Serializable]
     public abstract class BattleActions
     {
-        protected readonly NetworkedUnitBehaviour ownerNetworkingUnitBehaviour;
+        protected readonly NetworkedStatsBehaviour ownerNetworkingStatsBehaviour;
         protected readonly BattleBehaviour ownerBattleBehaviour;
         protected readonly UnitView ownerUnitView;
 
 
-        protected BattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
+        protected BattleActions(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour, UnitView ownerUnitView)
         {
-            this.ownerNetworkingUnitBehaviour = ownerNetworkingUnitBehaviour;
+            this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
             this.ownerUnitView = ownerUnitView;
             this.ownerBattleBehaviour = ownerBattleBehaviour;
         }
@@ -60,11 +60,11 @@ namespace Features.Unit.Battle.Scripts.Actions
         public void OnReceiveFloatActionCallback(float value)
         {
             //TODO: getComponent
-            ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth += value;
+            ownerBattleBehaviour.NetworkedStatsBehaviour.RemovedHealth += value;
             UpdateAllClientsHealthRaiseEvent(
                 ownerBattleBehaviour.GetComponent<PhotonView>().ViewID,
-                ownerBattleBehaviour.NetworkedUnitBehaviour.RemovedHealth,
-                ownerBattleBehaviour.GetComponent<NetworkedUnitBehaviour>().NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
+                ownerBattleBehaviour.NetworkedStatsBehaviour.RemovedHealth,
+                ownerBattleBehaviour.GetComponent<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
             );
         }
         
@@ -120,23 +120,23 @@ namespace Features.Unit.Battle.Scripts.Actions
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedUnitBehaviour closestUnit)
+        protected void SendAttack(NetworkedStatsBehaviour closestStats)
         {
-            if (closestUnit.GetComponent<BattleBehaviour>() != null)
+            if (closestStats.GetComponent<BattleBehaviour>() != null)
             {
                 //TODO: getComponent
-                closestUnit.RemovedHealth += ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
+                closestStats.RemovedHealth += ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
                 UpdateAllClientsHealthRaiseEvent(
-                    closestUnit.GetComponent<PhotonView>().ViewID,
-                    closestUnit.RemovedHealth,
-                    closestUnit.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
+                    closestStats.GetComponent<PhotonView>().ViewID,
+                    closestStats.RemovedHealth,
+                    closestStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
                 );
             }
             else
             {
                 SendFloatToTargetRaiseEvent(
-                    closestUnit.PhotonView.ViewID,
-                    ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage)
+                    closestStats.PhotonView.ViewID,
+                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage)
                 );
             }
         }

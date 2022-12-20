@@ -43,13 +43,13 @@ namespace Features.Battle.Scripts
             _battleManager = battleManager;
         }
 
-        public void SetAiStats(NetworkedUnitBehaviour aiUnitBehaviour)
+        public void SetAiStats(NetworkedStatsBehaviour aiStatsBehaviour)
         {
-            if (aiUnitBehaviour.NetworkingInitialized)
+            if (aiStatsBehaviour.NetworkingInitialized)
             {
-                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10 * (stage.Get()));
-                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50 * (stage.Get()));
-                aiUnitBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
+                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10 * (stage.Get()));
+                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50 * (stage.Get()));
+                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
             }
         }
     }

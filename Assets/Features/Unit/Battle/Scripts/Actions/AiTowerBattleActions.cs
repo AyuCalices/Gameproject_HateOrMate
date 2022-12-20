@@ -13,20 +13,20 @@ namespace Features.Unit.Battle.Scripts.Actions
         private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
         private float _attackSpeedDeltaTime;
 
-        public AiTowerBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
+        public AiTowerBattleActions(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView, DamageProjectileBehaviour damageProjectilePrefab) : base(
-            ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
+            ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;
-            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
         }
 
         protected override void InternalInitializeBattleActions()
         {
-            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
-            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
         }
 
         protected override void InternalUpdateBattleActions()
@@ -37,26 +37,26 @@ namespace Features.Unit.Battle.Scripts.Actions
             
             if (_attackSpeedDeltaTime <= 0)
             {
-                _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+                _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
                 InternalOnPerformAction();
             }
             
-            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
         }
 
         protected override void InternalOnPerformAction()
         {
             if (!PhotonNetwork.IsMasterClient) return;
             
-            NetworkedUnitBehaviour closestUnit = ownerBattleBehaviour.GetTarget.Key;
+            NetworkedStatsBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,
-                closestUnit.transform.position, closestUnit.PhotonView.ViewID);
+                closestStats.transform.position, closestStats.PhotonView.ViewID);
             
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>
             {
-                SendAttack(closestUnit);
+                SendAttack(closestStats);
                 _instantiatedProjectiles.Remove(instantiatedProjectile);
             });
         }

@@ -42,7 +42,7 @@ namespace Features.Battle.Scripts
             }
             else
             {
-                RequestMoveToTarget(battleBehaviour.NetworkedUnitBehaviour.PhotonView, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                RequestMoveToTarget(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
             }
 
             return true;
@@ -61,7 +61,7 @@ namespace Features.Battle.Scripts
 
             object[] data = new object[]
             {
-                battleBehaviour.NetworkedUnitBehaviour.PhotonView.ViewID,
+                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
                 nextCellPosition,
                 movementSpeed
             };
@@ -137,7 +137,7 @@ namespace Features.Battle.Scripts
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
                 //TODO: getComponent
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedStatsBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     Vector3Int nextCellPosition = (Vector3Int) data[1];
@@ -158,7 +158,7 @@ namespace Features.Battle.Scripts
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
                 //TODO: getComponent
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedUnitBehaviour networkedUnitBehaviour)
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedStatsBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
                     Vector3Int targetCellPosition = (Vector3Int) data[1];

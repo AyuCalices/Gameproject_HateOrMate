@@ -10,17 +10,17 @@ namespace Features.Unit.Battle.Scripts.Actions
     {
         private float _attackSpeedDeltaTime;
         
-        public TroopBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour,
+        public TroopBattleActions(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour,
-            UnitView ownerUnitView) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
+            UnitView ownerUnitView) : base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
-            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
         }
 
         protected override void InternalInitializeBattleActions()
         {
-            _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
-            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
         }
 
         protected override void InternalUpdateBattleActions()
@@ -29,11 +29,11 @@ namespace Features.Unit.Battle.Scripts.Actions
             
             if (_attackSpeedDeltaTime <= 0)
             {
-                _attackSpeedDeltaTime = ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
+                _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed);
                 InternalOnPerformAction();
             }
             
-            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
+            ownerUnitView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Speed));
         }
 
         protected override void InternalOnPerformAction()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Features.Unit.Modding
 {
-    [RequireComponent(typeof(NetworkedUnitBehaviour))]
+    [RequireComponent(typeof(NetworkedStatsBehaviour))]
     public class ModUnitBehaviour : MonoBehaviour
     {
         [Header("Balancing")]
@@ -21,7 +21,7 @@ namespace Features.Unit.Modding
             UnitModHud unitModView = onInstantiateModSlot.Invoke();
             List<ModSlotBehaviour> modDropBehaviours = unitModView.GetAllChildren();
             //TODO: getComponent
-            UnitMods = new UnitMods(modCount, GetComponent<NetworkedUnitBehaviour>(), modDropBehaviours);
+            UnitMods = new UnitMods(modCount, GetComponent<NetworkedStatsBehaviour>(), modDropBehaviours);
         }
     }
 }

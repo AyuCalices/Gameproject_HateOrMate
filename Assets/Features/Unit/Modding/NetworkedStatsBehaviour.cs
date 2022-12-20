@@ -16,7 +16,7 @@ using UnityEngine;
 namespace Features.Unit.Modding
 {
     [RequireComponent(typeof(PhotonView))]
-    public class NetworkedUnitBehaviour : MonoBehaviour
+    public class NetworkedStatsBehaviour : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
@@ -54,11 +54,6 @@ namespace Features.Unit.Modding
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
             battleData.AllUnitsRuntimeSet.Add(this);
             
-            InternalAwake();
-        }
-        
-        protected virtual void InternalAwake()
-        {
             if (ownerNetworkedPlayerUnits != null)
             {
                 ownerNetworkedPlayerUnits.Add(this);
@@ -81,7 +76,9 @@ namespace Features.Unit.Modding
             }
 
             NetworkingInitialized = true;
-            InternalOnNetworkingEnabled();
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
 
             //TODO: getComponent
             if (TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
@@ -95,34 +92,8 @@ namespace Features.Unit.Modding
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
-        
-        protected virtual void InternalOnNetworkingEnabled()
-        { 
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
-        }
-
-        protected void Start()
-        {
-            InternalStart();
-        }
-        
-        protected virtual void InternalStart() { }
-
-        private void Update()
-        {
-            //Debug.Log(gameObject.name + " " + NetworkedStatServiceLocator.GetTotalValue(StatType.Damage));
-        }
 
         private void OnDestroy()
-        {
-            InternalOnDestroy();
-            
-            battleData.AllUnitsRuntimeSet.Remove(this);
-        }
-
-        protected virtual void InternalOnDestroy()
         {
             if (ownerNetworkedPlayerUnits != null)
             {
@@ -130,6 +101,8 @@ namespace Features.Unit.Modding
             }
 
             ownTeamRuntimeSet.Remove(this);
+            
+            battleData.AllUnitsRuntimeSet.Remove(this);
         }
     }
 }

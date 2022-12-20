@@ -15,9 +15,9 @@ namespace Features.Unit.Battle.Scripts.Actions
         private readonly float _staminaRefreshTime;
         private float _staminaRefreshTimeDelta;
 
-        public TowerBattleActions(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
+        public TowerBattleActions(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView, DamageProjectileBehaviour damageProjectilePrefab, int totalStamina,
-            float staminaRefreshTime) : base(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView)
+            float staminaRefreshTime) : base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;
@@ -56,15 +56,15 @@ namespace Features.Unit.Battle.Scripts.Actions
             _currentStamina--;
             ownerUnitView.SetStaminaSlider(_currentStamina, _totalStamina);
 
-            NetworkedUnitBehaviour closestUnit = ownerBattleBehaviour.GetTarget.Key;
+            NetworkedStatsBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,
-                closestUnit.transform.position, closestUnit.PhotonView.ViewID);
+                closestStats.transform.position, closestStats.PhotonView.ViewID);
             
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>
             {
-                SendAttack(closestUnit);
+                SendAttack(closestStats);
                 _instantiatedProjectiles.Remove(instantiatedProjectile);
             });
         }

@@ -18,30 +18,30 @@ namespace Features.Mod
             _scaleValue = scaleValue;
         }
         
-        protected override void InternalAddMod(NetworkedUnitBehaviour moddedLocalUnit)
+        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
+            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
             
-            result = moddedLocalUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         }
     
-        protected override void InternalRemoveMod(NetworkedUnitBehaviour moddedLocalUnit)
+        protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
+            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
             
-            result = moddedLocalUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");

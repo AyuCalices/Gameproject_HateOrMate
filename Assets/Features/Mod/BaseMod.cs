@@ -19,25 +19,25 @@ namespace Features.Mod
             _isEnabled = false;
         }
 
-        public void EnableMod(NetworkedUnitBehaviour moddedLocalUnit)
+        public void EnableMod(NetworkedStatsBehaviour moddedLocalStats)
         {
             if (_isEnabled) return;
             
-            InternalAddMod(moddedLocalUnit);
+            InternalAddMod(moddedLocalStats);
             _isEnabled = true;
         }
         
-        public void DisableMod(NetworkedUnitBehaviour moddedLocalUnit)
+        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats)
         {
             if (!_isEnabled) return;
             
-            InternalRemoveMod(moddedLocalUnit);
+            InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
 
         
 
-        protected abstract void InternalAddMod(NetworkedUnitBehaviour moddedLocalUnit);
-        protected abstract void InternalRemoveMod(NetworkedUnitBehaviour moddedLocalUnit);
+        protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats);
+        protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }
 }

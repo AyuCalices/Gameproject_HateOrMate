@@ -11,13 +11,13 @@ namespace Features.Mod.Action
 {
     public abstract class BattleActionGenerator_SO : ScriptableObject
     {
-        public BattleActions Generate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
+        public BattleActions Generate(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView)
         {
-            return InternalGenerate(ownerNetworkingUnitBehaviour, ownerBattleBehaviour, ownerUnitView);
+            return InternalGenerate(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitView);
         }
 
-        protected abstract BattleActions InternalGenerate(NetworkedUnitBehaviour ownerNetworkingUnitBehaviour, BattleBehaviour ownerBattleBehaviour,
+        protected abstract BattleActions InternalGenerate(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitView ownerUnitView);
     }
 }

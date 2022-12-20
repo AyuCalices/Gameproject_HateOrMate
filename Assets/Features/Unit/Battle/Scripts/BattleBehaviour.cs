@@ -9,7 +9,7 @@ using UnityEngine;
 //TODO: if refactoring: needs swap between idle & death state
 namespace Features.Unit.Battle.Scripts
 {
-    [RequireComponent(typeof(NetworkedUnitBehaviour), typeof(UnitView))]
+    [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitView))]
     public class BattleBehaviour : NetworkedBattleBehaviour
     {
         [Header("Balancing")]
@@ -24,9 +24,9 @@ namespace Features.Unit.Battle.Scripts
         public BattleActions BattleActions => _battleActions;
         
 
-        private KeyValuePair<NetworkedUnitBehaviour, float> _closestUnit;
+        private KeyValuePair<NetworkedStatsBehaviour, float> _closestUnit;
         
-        public KeyValuePair<NetworkedUnitBehaviour, float> GetTarget => _closestUnit;
+        public KeyValuePair<NetworkedStatsBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
         private bool TargetInRange => _closestUnit.Value < range;
         public float MovementSpeed => movementSpeed;
@@ -34,7 +34,7 @@ namespace Features.Unit.Battle.Scripts
         public override void OnNetworkingEnabled()
         {
             base.OnNetworkingEnabled();
-            _battleActions = battleActionsGenerator.Generate(NetworkedUnitBehaviour, this, unitView);
+            _battleActions = battleActionsGenerator.Generate(NetworkedStatsBehaviour, this, unitView);
         }
 
         public override void OnStageEnd()
@@ -53,7 +53,7 @@ namespace Features.Unit.Battle.Scripts
         {
             if (battleData.CurrentState is not BattleState) return;
             
-            HasTarget = NetworkedUnitBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
+            HasTarget = NetworkedStatsBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
             stateMachine.Update();
@@ -91,8 +91,8 @@ namespace Features.Unit.Battle.Scripts
 
             if (result)
             {
-                NetworkedUnitBehaviour closestUnit = GetTarget.Key;
-                Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestUnit.transform.position);
+                NetworkedStatsBehaviour closestStats = GetTarget.Key;
+                Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
                 TryRequestMovementState(enemyPosition, 1);
             }
 

@@ -13,9 +13,9 @@ namespace Features.Unit.Battle.Scripts
 
         public void OnClick()
         {
-            List<NetworkedUnitBehaviour> towerBattleActions = localUnitRuntimeSet.GetItems();
+            List<NetworkedStatsBehaviour> towerBattleActions = localUnitRuntimeSet.GetItems();
 
-            foreach (NetworkedUnitBehaviour towerBattleAction in towerBattleActions)
+            foreach (NetworkedStatsBehaviour towerBattleAction in towerBattleActions)
             {
                 if (towerBattleAction.TryGetComponent(out BattleBehaviour battleBehaviour) && battleBehaviour.CurrentState is AttackState)
                 {

@@ -18,52 +18,52 @@ namespace Features.Mod
             _multipleStatModTargets = multipleStatModTargets;
         }
 
-        protected override void InternalAddMod(NetworkedUnitBehaviour moddedLocalUnit)
+        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedUnitBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedStatsBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
                 {
                     Add(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
             }
         }
     
-        protected override void InternalRemoveMod(NetworkedUnitBehaviour moddedLocalUnit)
+        protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedUnitBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedStatsBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
                 {
                     Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
             }
         }
 
-        private void Add(NetworkedUnitBehaviour modifiedUnit, StatType statType, float baseValue, float scaleValue)
+        private void Add(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue)
         {
-            bool result = modifiedUnit.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, baseValue);
+            bool result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, baseValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         
-            result = modifiedUnit.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         }
 
-        private void Remove(NetworkedUnitBehaviour modifiedUnit, StatType statType, float baseValue, float scaleValue)
+        private void Remove(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue)
         {
-            bool result = modifiedUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.Stat, baseValue);
+            bool result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.Stat, baseValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         
-            result = modifiedUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");

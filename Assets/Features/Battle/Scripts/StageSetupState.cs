@@ -34,7 +34,7 @@ namespace Features.Battle.Scripts
                 _battleData.Stage.Add(1);
             }
             
-            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
+            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {
@@ -44,7 +44,7 @@ namespace Features.Battle.Scripts
                 networkedUnitBehaviour.RemovedHealth = 0;
             }
 
-            foreach (NetworkedUnitBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
+            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
             {
                 if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
                 {

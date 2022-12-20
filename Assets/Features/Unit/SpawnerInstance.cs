@@ -17,7 +17,7 @@ namespace Features.Unit
         public GameObject networkedPlayerPrefab;
         public bool isTargetable;
 
-        private List<NetworkedUnitBehaviour> _spawnedUnits = new List<NetworkedUnitBehaviour>();
+        private List<NetworkedStatsBehaviour> _spawnedUnits = new List<NetworkedStatsBehaviour>();
 
         public bool TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
         {
