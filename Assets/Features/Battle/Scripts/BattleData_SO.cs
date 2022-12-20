@@ -43,7 +43,7 @@ namespace Features.Battle.Scripts
             _battleManager = battleManager;
         }
 
-        public void SetAiStats(AIUnitBehaviour aiUnitBehaviour)
+        public void SetAiStats(NetworkedUnitBehaviour aiUnitBehaviour)
         {
             if (aiUnitBehaviour.NetworkingInitialized)
             {

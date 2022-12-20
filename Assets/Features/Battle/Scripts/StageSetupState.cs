@@ -51,10 +51,7 @@ namespace Features.Battle.Scripts
                     battleBehaviour.OnStageEnd();
                 }
 
-                if (networkedUnitBehaviour is AIUnitBehaviour aiUntBehaviour)
-                {
-                    _battleData.SetAiStats(aiUntBehaviour);
-                }
+                _battleData.SetAiStats(networkedUnitBehaviour);
                 
                 networkedUnitBehaviour.RemovedHealth = 0;
             }

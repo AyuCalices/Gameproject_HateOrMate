@@ -101,7 +101,7 @@ namespace Features.Unit.Battle.Scripts
         
         internal bool TryRequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
         {
-            bool result = CurrentState is not DeathState && CurrentState is not MovementState && NetworkedUnitBehaviour is LocalUnitBehaviour;
+            bool result = CurrentState is not DeathState && CurrentState is not MovementState;
             
             if (result)
             {

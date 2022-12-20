@@ -23,8 +23,10 @@ namespace Features.Unit.Modding
         
         [Header("Team Selection")]
         [SerializeField] protected NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
-        
-        public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet { get; protected set; }
+        [SerializeField] protected NetworkedUnitRuntimeSet_SO enemyRuntimeSet;
+        [SerializeField] protected NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet;
+
+        public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet => enemyRuntimeSet;
 
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
@@ -57,10 +59,11 @@ namespace Features.Unit.Modding
         
         protected virtual void InternalAwake()
         {
-            EnemyRuntimeSet = battleData.EnemyUnitsRuntimeSet;
-            
-            ownerNetworkedPlayerUnits.Add(this);
-            battleData.PlayerUnitsRuntimeSet.Add(this);
+            if (ownerNetworkedPlayerUnits != null)
+            {
+                ownerNetworkedPlayerUnits.Add(this);
+            }
+            ownTeamRuntimeSet.Add(this);
         }
 
         /// <summary>
@@ -121,8 +124,12 @@ namespace Features.Unit.Modding
 
         protected virtual void InternalOnDestroy()
         {
-            ownerNetworkedPlayerUnits.Remove(this);
-            battleData.PlayerUnitsRuntimeSet.Remove(this);
+            if (ownerNetworkedPlayerUnits != null)
+            {
+                ownerNetworkedPlayerUnits.Remove(this);
+            }
+
+            ownTeamRuntimeSet.Remove(this);
         }
     }
 }

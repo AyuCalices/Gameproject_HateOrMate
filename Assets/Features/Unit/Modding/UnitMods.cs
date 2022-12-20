@@ -11,7 +11,7 @@ namespace Features.Unit.Modding
         public readonly ModSlotContainer[] modSlotsContainers;
         public readonly List<ModSlotBehaviour> modSlotBehaviours;
 
-        public UnitMods(int size, LocalUnitBehaviour localUnit, List<ModSlotBehaviour> modSlotBehaviours)
+        public UnitMods(int size, NetworkedUnitBehaviour localUnit, List<ModSlotBehaviour> modSlotBehaviours)
         {
             this.modSlotBehaviours = modSlotBehaviours;
             
@@ -78,9 +78,9 @@ namespace Features.Unit.Modding
         public BaseMod baseMod;
         public bool isActive;
         
-        private LocalUnitBehaviour _localUnit;
+        private NetworkedUnitBehaviour _localUnit;
 
-        public ModSlotContainer(LocalUnitBehaviour localUnit)
+        public ModSlotContainer(NetworkedUnitBehaviour localUnit)
         {
             this._localUnit = localUnit;
             isActive = true;

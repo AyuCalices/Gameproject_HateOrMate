@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6238822348637795685}
-  - component: {fileID: 5480155828237113386}
+  - component: {fileID: -5620255999423280660}
   - component: {fileID: -6872459747210220268}
   - component: {fileID: 1119605207248732696}
   - component: {fileID: 6238822348637795684}
@@ -38,7 +38,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5480155828237113386
+--- !u!114 &-5620255999423280660
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47,11 +47,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 6238822348637795683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1791423082c53ff45bdf30ac2762b551, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b5af6e1786ddd94593111fc2e023da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  ownerNetworkedPlayerUnits: {fileID: 11400000, guid: 88d480e3de14b6448865c07ae6e4c633, type: 2}
+  ownerNetworkedPlayerUnits: {fileID: 0}
+  enemyRuntimeSet: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
+  ownTeamRuntimeSet: {fileID: 11400000, guid: 88d480e3de14b6448865c07ae6e4c633, type: 2}
 --- !u!114 &-6872459747210220268
 MonoBehaviour:
   m_ObjectHideFlags: 0

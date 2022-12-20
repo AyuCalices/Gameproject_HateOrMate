@@ -18,7 +18,7 @@ namespace Features.Mod
             _scaleValue = scaleValue;
         }
         
-        protected override void InternalAddMod(LocalUnitBehaviour moddedLocalUnit)
+        protected override void InternalAddMod(NetworkedUnitBehaviour moddedLocalUnit)
         {
             bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
@@ -33,7 +33,7 @@ namespace Features.Mod
             }
         }
     
-        protected override void InternalRemoveMod(LocalUnitBehaviour moddedLocalUnit)
+        protected override void InternalRemoveMod(NetworkedUnitBehaviour moddedLocalUnit)
         {
             bool result = moddedLocalUnit.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)

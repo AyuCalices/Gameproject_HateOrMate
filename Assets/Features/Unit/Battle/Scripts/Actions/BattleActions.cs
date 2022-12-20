@@ -122,7 +122,7 @@ namespace Features.Unit.Battle.Scripts.Actions
 
         protected void SendAttack(NetworkedUnitBehaviour closestUnit)
         {
-            if (ownerNetworkingUnitBehaviour is LocalUnitBehaviour or AIUnitBehaviour && closestUnit is LocalUnitBehaviour or AIUnitBehaviour)
+            if (closestUnit.GetComponent<BattleBehaviour>() != null)
             {
                 //TODO: getComponent
                 closestUnit.RemovedHealth += ownerNetworkingUnitBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);

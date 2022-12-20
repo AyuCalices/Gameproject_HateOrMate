@@ -18,7 +18,7 @@ namespace Features.Mod
             _multipleStatModTargets = multipleStatModTargets;
         }
 
-        protected override void InternalAddMod(LocalUnitBehaviour moddedLocalUnit)
+        protected override void InternalAddMod(NetworkedUnitBehaviour moddedLocalUnit)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
@@ -29,7 +29,7 @@ namespace Features.Mod
             }
         }
     
-        protected override void InternalRemoveMod(LocalUnitBehaviour moddedLocalUnit)
+        protected override void InternalRemoveMod(NetworkedUnitBehaviour moddedLocalUnit)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
