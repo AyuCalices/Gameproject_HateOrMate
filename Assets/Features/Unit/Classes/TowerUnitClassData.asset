@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
+  m_Name: TowerUnitClassData
+  m_EditorClassIdentifier: 
+  internalId: b640fa49-af5b-453f-a8dc-24f02a1e6cd6
+  createdAtTicks: 638071552478349474
+  battleActions: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
+  range: 2
+  movementSpeed: 2

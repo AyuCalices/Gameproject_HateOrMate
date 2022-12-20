@@ -14,8 +14,11 @@ namespace Features.Unit
         
         public string reference;
         public GameObject localPlayerPrefab;
+        public UnitTeamData_SO localPlayerTeamData;
         public GameObject networkedPlayerPrefab;
+        public UnitTeamData_SO networkedPlayerTeamData;
         public bool isTargetable;
+        
 
         private List<NetworkedStatsBehaviour> _spawnedUnits = new List<NetworkedStatsBehaviour>();
 

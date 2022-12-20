@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using Features.Battle.Scripts;
-using Features.Mod.Action;
 using Features.Unit.Battle.Scripts.Actions;
+using Features.Unit.Classes;
 using Features.Unit.Modding;
 using Features.Unit.View;
 using UnityEngine;
@@ -12,29 +12,21 @@ namespace Features.Unit.Battle.Scripts
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitView))]
     public class BattleBehaviour : NetworkedBattleBehaviour
     {
-        [Header("Balancing")]
-        //TODO: dependency injection & maybe IIsTargetable, ICanAttack
-        [SerializeField] private BattleActionGenerator_SO battleActionsGenerator;
-        [SerializeField] private float range;
-        //TODO: check for units that cant walk
-        [SerializeField] private float movementSpeed;
-        
         private BattleActions _battleActions;
-
         public BattleActions BattleActions => _battleActions;
-        
+        public UnitClassData_SO UnitClassData { get; set; }
 
         private KeyValuePair<NetworkedStatsBehaviour, float> _closestUnit;
         
         public KeyValuePair<NetworkedStatsBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
-        private bool TargetInRange => _closestUnit.Value < range;
-        public float MovementSpeed => movementSpeed;
+        private bool TargetInRange => _closestUnit.Value < UnitClassData.range;
+        public float MovementSpeed => UnitClassData.movementSpeed;
 
         public override void OnNetworkingEnabled()
         {
             base.OnNetworkingEnabled();
-            _battleActions = battleActionsGenerator.Generate(NetworkedStatsBehaviour, this, unitView);
+            _battleActions = UnitClassData.battleActions.Generate(NetworkedStatsBehaviour, this, unitView);
         }
 
         public override void OnStageEnd()
@@ -53,7 +45,7 @@ namespace Features.Unit.Battle.Scripts
         {
             if (battleData.CurrentState is not BattleState) return;
             
-            HasTarget = NetworkedStatsBehaviour.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
+            HasTarget = NetworkedStatsBehaviour.UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
             stateMachine.Update();

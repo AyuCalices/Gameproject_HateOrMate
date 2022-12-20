@@ -5,6 +5,7 @@ using Features.Loot;
 using Features.Loot.Scripts;
 using Features.Unit.Battle;
 using Features.Unit.Battle.Scripts;
+using Features.Unit.Classes;
 using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
@@ -14,7 +15,7 @@ namespace Features.Battle.Scripts
 {
     public class StageSetupState : IState
     {
-        public static Action<string> onSpawnUnit;
+        public static Action<string, UnitClassData_SO> onSpawnUnit;
         
         private readonly BattleData_SO _battleData;
         private readonly BattleManager _battleManager;
@@ -63,9 +64,9 @@ namespace Features.Battle.Scripts
 
             if (PhotonNetwork.IsMasterClient)
             {
-                onSpawnUnit?.Invoke("RightTower");
-                onSpawnUnit?.Invoke("LeftTower");
-                onSpawnUnit?.Invoke("Gate");
+                onSpawnUnit?.Invoke("RightTower", _battleManager.aiTowerClass);
+                onSpawnUnit?.Invoke("LeftTower", _battleManager.aiTowerClass);
+                onSpawnUnit?.Invoke("Gate", _battleManager.gateClass);
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)

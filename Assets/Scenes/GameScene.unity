@@ -1832,10 +1832,7 @@ MonoBehaviour:
   - tile: {fileID: 11400000, guid: 7cb85eafcffe460488518d4c6dc99b2c, type: 2}
     movable: 0
     movementCost: 0
-  unitsPlacedInScene:
-  - {fileID: 1657379420}
-  - {fileID: 1426717161}
-  - {fileID: 308443179}
+  spawnerInstances: []
 --- !u!1 &308443179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1884,7 +1881,9 @@ MonoBehaviour:
   spawnPosition: 1
   reference: RightTower
   localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
-  networkedPlayerPrefab: {fileID: 6238822348637795683, guid: 2dd2d49acbdc214498434431bda340cc, type: 3}
+  localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
+  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 0
 --- !u!1 &382776723
 GameObject:
@@ -2833,6 +2832,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821026a6df513594984122c0f088c980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gateClass: {fileID: 11400000, guid: 49d03fd6f35c1234d99a07207c1a8258, type: 2}
+  aiTowerClass: {fileID: 11400000, guid: ac2a905b7a0694e4b90dac633619f13e, type: 2}
   lootSelectionBehaviour: {fileID: 1932071502}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   requestLootPhaseToggle: {fileID: 167365571}
@@ -3110,9 +3111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9f435c27cd2a36439bfac7293f709fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitClassDataSo: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
   modGenerator: {fileID: 11400000, guid: 0929ebd1786d4ee44be101666c4ab9d9, type: 2}
-  localUnitRuntimeSet: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
-  modDragBehaviourPrefab: {fileID: 2493011977752105954, guid: 21f0c94f61b565a4aa59fa243a2144d1, type: 3}
 --- !u!4 &1221129563
 Transform:
   m_ObjectHideFlags: 0
@@ -3386,7 +3386,9 @@ MonoBehaviour:
   spawnPosition: 1
   reference: LeftTower
   localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
-  networkedPlayerPrefab: {fileID: 6238822348637795683, guid: 2dd2d49acbdc214498434431bda340cc, type: 3}
+  localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
+  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 0
 --- !u!1 &1445520327
 GameObject:
@@ -3924,8 +3926,10 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnPosition: 1
   reference: Gate
-  localPlayerPrefab: {fileID: 6238822348637795683, guid: 6ab91caa8c9f5104ea24b0d2759b8110, type: 3}
-  networkedPlayerPrefab: {fileID: 6238822348637795683, guid: da225ff312583784db817eba35ff8cf7, type: 3}
+  localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
+  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 1
 --- !u!1 &1669812203
 GameObject:
@@ -4162,7 +4166,9 @@ MonoBehaviour:
   spawnPosition: 0
   reference: Player
   localPlayerPrefab: {fileID: 7663717459320071761, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
+  localPlayerTeamData: {fileID: 11400000, guid: 39f7e16571adb2748919465e0834da40, type: 2}
   networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerTeamData: {fileID: 11400000, guid: 9a3bbf82aac045942bb1a6ae32a02f2b, type: 2}
   isTargetable: 1
 --- !u!1 &2126401709
 GameObject:

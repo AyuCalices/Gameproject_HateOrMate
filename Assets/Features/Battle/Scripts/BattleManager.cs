@@ -1,6 +1,7 @@
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Loot.Scripts;
+using Features.Unit.Classes;
 using Photon.Pun;
 using Photon.Realtime;
 using Plugins.UniRx.Extensions;
@@ -13,6 +14,8 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        public UnitClassData_SO gateClass;
+        public UnitClassData_SO aiTowerClass;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
         [SerializeField] private BattleData_SO battleData;
         

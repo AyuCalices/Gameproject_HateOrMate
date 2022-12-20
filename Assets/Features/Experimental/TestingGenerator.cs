@@ -5,17 +5,17 @@ using Features.Loot;
 using Features.Loot.Scripts;
 using Features.Mod;
 using Features.ModView;
+using Features.Unit.Classes;
 using UnityEngine;
 
 namespace Features.Experimental
 {
     public class TestingGenerator : MonoBehaviour
     {
-        public static Action<string> onSpawnUnit;
+        public static Action<string, UnitClassData_SO> onSpawnUnit;
 
+        [SerializeField] private UnitClassData_SO unitClassDataSo;
         [SerializeField] private LootableGenerator_SO modGenerator;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
-        [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
 
         
         private void Update()
@@ -27,7 +27,7 @@ namespace Features.Experimental
         
             if (Input.GetKeyDown(KeyCode.U))
             {
-                onSpawnUnit.Invoke("Player");
+                onSpawnUnit.Invoke("Player", unitClassDataSo);
             }
         }
     }

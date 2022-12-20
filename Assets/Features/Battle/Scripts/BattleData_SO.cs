@@ -36,6 +36,21 @@ namespace Features.Battle.Scripts
         
         public IState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
+
+        public NetworkedUnitRuntimeSet_SO GetEnemyTeam(NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet)
+        {
+            if (ownTeamRuntimeSet == enemyUnitsRuntimeSet)
+            {
+                return playerUnitsRuntimeSet;
+            }
+            if (ownTeamRuntimeSet == playerUnitsRuntimeSet)
+            {
+                return enemyUnitsRuntimeSet;
+            }
+            
+            Debug.LogError("Please pass a valid Team!");
+            return null;
+        }
         
 
         public void RegisterBattleManager(BattleManager battleManager)

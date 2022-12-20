@@ -1,11 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Experimental;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
+using Features.Unit.Classes;
 using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
@@ -53,7 +52,7 @@ namespace Features.Unit
             StageSetupState.onSpawnUnit -= Spawn;
         }
 
-        private void Spawn(string spawnerReference)
+        private void Spawn(string spawnerReference, UnitClassData_SO unitClassData)
         {
             int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
             if (spawnerInstanceIndex == -1)
@@ -63,11 +62,11 @@ namespace Features.Unit
             
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex);
+                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
             }
             else
             {
-                RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex);
+                RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
             }
         }
 
@@ -79,21 +78,28 @@ namespace Features.Unit
             networkedUnitBehaviour.gameObject.Release();
         }
 
-        private void SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex)
+        private void SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
             if (!spawnerInstances[spawnerInstanceIndex]
                 .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
 
             GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerPrefab : spawnerInstances[spawnerInstanceIndex].networkedPlayerPrefab;
             GameObject player = selectedPrefab.Reuse(transform);
+            
+            player.GetComponent<NetworkedStatsBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerTeamData : spawnerInstances[spawnerInstanceIndex].networkedPlayerTeamData;
             player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstances[spawnerInstanceIndex].isTargetable;
+            if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
+            {
+                battleBehaviour.UnitClassData = unitClassData;
+            }
+            
             tileKeyValuePair.Value.AddUnit(player);
             player.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(tileKeyValuePair.Key);
 
-            MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex);
+            MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex, unitClassData);
         }
 
-        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex)
+        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
             //TODO: getComponent
             PhotonView instantiationPhotonView = playerPrefab.GetComponent<PhotonView>();
@@ -102,7 +108,13 @@ namespace Features.Unit
                 var playerTransform = playerPrefab.transform;
                 object[] data = new object[]
                 {
-                    playerTransform.position, playerTransform.rotation, instantiationPhotonView.ViewID, gridPosition, isSpawnedByMaster, spawnerInstanceIndex
+                    playerTransform.position, 
+                    playerTransform.rotation, 
+                    instantiationPhotonView.ViewID, 
+                    gridPosition, 
+                    isSpawnedByMaster, 
+                    spawnerInstanceIndex, 
+                    unitClassData
                 };
 
                 RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -128,12 +140,13 @@ namespace Features.Unit
             }
         }
         
-        private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex)
+        private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
             object[] data = new object[]
             {
                 isSpawnedByMaster,
-                spawnerInstanceIndex
+                spawnerInstanceIndex,
+                unitClassData
             };
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -157,11 +170,17 @@ namespace Features.Unit
                 object[] data = (object[]) photonEvent.CustomData;
 
                 //instantiate and prepare photon view
+                bool isSpawnedByMaster = (bool) data[4];
                 SpawnerInstance spawnerInstance = spawnerInstances[(int) data[5]];
-                GameObject selectedPrefab = (bool) data[4] ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
+                GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
                 GameObject player = selectedPrefab.Reuse((Vector3) data[0], (Quaternion) data[1], transform);
                 
+                player.GetComponent<NetworkedStatsBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
                 player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstance.isTargetable;
+                if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
+                {
+                    battleBehaviour.UnitClassData = (UnitClassData_SO) data[6];
+                }
                 //TODO: getComponent
                 PhotonView instantiationPhotonView = player.GetComponent<PhotonView>();
                 instantiationPhotonView.ViewID = (int) data[2];
@@ -179,7 +198,7 @@ namespace Features.Unit
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                SpawnUnit((bool) data[0], (int) data[1]);
+                SpawnUnit((bool) data[0], (int) data[1], (UnitClassData_SO) data[2]);
             }
         }
     }

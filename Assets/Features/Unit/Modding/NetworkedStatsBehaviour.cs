@@ -1,16 +1,10 @@
 using System;
-using ExitGames.Client.Photon;
-using Features.Battle;
 using Features.Battle.Scripts;
-using Features.GlobalReferences;
-using Features.GlobalReferences.Scripts;
-using Features.Unit.Battle;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding.Stat;
 using Features.Unit.View;
 using JetBrains.Annotations;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -20,13 +14,8 @@ namespace Features.Unit.Modding
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
-        
-        [Header("Team Selection")]
-        [SerializeField] protected NetworkedUnitRuntimeSet_SO ownerNetworkedPlayerUnits;
-        [SerializeField] protected NetworkedUnitRuntimeSet_SO enemyRuntimeSet;
-        [SerializeField] protected NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet;
 
-        public NetworkedUnitRuntimeSet_SO EnemyRuntimeSet => enemyRuntimeSet;
+        public UnitTeamData_SO UnitTeamData { get; set; }
 
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
@@ -53,12 +42,6 @@ namespace Features.Unit.Modding
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
             battleData.AllUnitsRuntimeSet.Add(this);
-            
-            if (ownerNetworkedPlayerUnits != null)
-            {
-                ownerNetworkedPlayerUnits.Add(this);
-            }
-            ownTeamRuntimeSet.Add(this);
         }
 
         /// <summary>
@@ -74,6 +57,12 @@ namespace Features.Unit.Modding
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }
+            
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
+            {
+                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
+            }
+            UnitTeamData.ownTeamRuntimeSet.Add(this);
 
             NetworkingInitialized = true;
             NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
@@ -95,12 +84,12 @@ namespace Features.Unit.Modding
 
         private void OnDestroy()
         {
-            if (ownerNetworkedPlayerUnits != null)
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
             {
-                ownerNetworkedPlayerUnits.Remove(this);
+                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
             }
 
-            ownTeamRuntimeSet.Remove(this);
+            UnitTeamData.ownTeamRuntimeSet.Remove(this);
             
             battleData.AllUnitsRuntimeSet.Remove(this);
         }
