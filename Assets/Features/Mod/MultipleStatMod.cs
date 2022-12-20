@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Features.Loot;
 using Features.Loot.Scripts;
 using Features.Unit;
+using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
 using UnityEngine;
@@ -22,9 +23,9 @@ namespace Features.Mod
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedStatsBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
                 {
-                    Add(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                    Add(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
             }
         }
@@ -33,9 +34,9 @@ namespace Features.Mod
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedStatsBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
                 {
-                    Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                    Remove(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
             }
         }

@@ -136,17 +136,15 @@ namespace Features.Battle.Scripts
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
-                //TODO: getComponent
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedStatsBehaviour networkedUnitBehaviour)
-                    && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
                     Vector3Int nextCellPosition = (Vector3Int) data[1];
                     float movementSpeed = (float) data[2];
-                    MoveGameObjectToTarget(battleBehaviour, nextCellPosition, movementSpeed, () =>
+                    MoveGameObjectToTarget(networkedUnitBehaviour, nextCellPosition, movementSpeed, () =>
                     {
-                        if (!battleBehaviour.TryRequestAttackState() || !battleBehaviour.TryRequestMovementStateByClosestUnit() || battleBehaviour.CurrentState is not DeathState)
+                        if (!networkedUnitBehaviour.TryRequestAttackState() || !networkedUnitBehaviour.TryRequestMovementStateByClosestUnit() || networkedUnitBehaviour.CurrentState is not DeathState)
                         {
-                            battleBehaviour.ForceIdleState();
+                            networkedUnitBehaviour.ForceIdleState();
                         }
                     });
                 }
@@ -157,15 +155,13 @@ namespace Features.Battle.Scripts
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
-                //TODO: getComponent
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedStatsBehaviour networkedUnitBehaviour)
-                    && networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
                     Vector3Int targetCellPosition = (Vector3Int) data[1];
                     Vector3Int currentCellPosition = (Vector3Int) data[2];
                     int skipLastMovementsCount = (int) data[3];
                     float movementSpeed = (float) data[4];
-                    OnMasterChangeUnitGridPosition(battleBehaviour, targetCellPosition, currentCellPosition,
+                    OnMasterChangeUnitGridPosition(networkedUnitBehaviour, targetCellPosition, currentCellPosition,
                         skipLastMovementsCount, movementSpeed);
                 }
             }

@@ -73,7 +73,7 @@ namespace Features.Unit
         private void DestroyLocal(int viewID)
         {
             if (!battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
-                out NetworkedStatsBehaviour networkedUnitBehaviour)) return;
+                out NetworkedBattleBehaviour networkedUnitBehaviour)) return;
             
             networkedUnitBehaviour.gameObject.Release();
         }
@@ -86,7 +86,7 @@ namespace Features.Unit
             GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerPrefab : spawnerInstances[spawnerInstanceIndex].networkedPlayerPrefab;
             GameObject player = selectedPrefab.Reuse(transform);
             
-            player.GetComponent<NetworkedStatsBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerTeamData : spawnerInstances[spawnerInstanceIndex].networkedPlayerTeamData;
+            player.GetComponent<NetworkedBattleBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerTeamData : spawnerInstances[spawnerInstanceIndex].networkedPlayerTeamData;
             player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstances[spawnerInstanceIndex].isTargetable;
             if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
@@ -175,7 +175,7 @@ namespace Features.Unit
                 GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
                 GameObject player = selectedPrefab.Reuse((Vector3) data[0], (Quaternion) data[1], transform);
                 
-                player.GetComponent<NetworkedStatsBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
+                player.GetComponent<NetworkedBattleBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
                 player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstance.isTargetable;
                 if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using DataStructures.RuntimeSet;
 using Features.Mod;
 using Features.ModView;
@@ -10,14 +11,13 @@ using UnityEngine;
 
 namespace Features.GlobalReferences.Scripts
 {
-    public enum UnitControlType { Master, Client, AI }
     
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
-    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedStatsBehaviour>
+    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedBattleBehaviour>
     {
         public bool TryInstantiateModToAny(ModDragBehaviour modDragBehaviour, BaseMod baseMod)
         {
-            foreach (NetworkedStatsBehaviour localUnitBehaviour in GetItems())
+            foreach (NetworkedBattleBehaviour localUnitBehaviour in items)
             {
                 //TODO: getComponent
                 if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
@@ -30,27 +30,18 @@ namespace Features.GlobalReferences.Scripts
             return false;
         }
 
-        private bool ContainsTargetable(out List<NetworkedStatsBehaviour> networkedUnitBehaviours)
+        //battle
+        private bool ContainsTargetable(out List<NetworkedBattleBehaviour> networkedUnitBehaviours)
         {
-            networkedUnitBehaviours = new List<NetworkedStatsBehaviour>();
-            
-            //parse for targetable
-            var list = GetItems();
-            for (int i = list.Count - 1; i >= 0; i--)
-            {
-                //TODO: getComponent
-                if (list[i].TryGetComponent(out NetworkedBattleBehaviour battleBehaviour) && battleBehaviour.IsTargetable && battleBehaviour.CurrentState is not DeathState)
-                {
-                    networkedUnitBehaviours.Add(list[i]);
-                }
-            }
+            networkedUnitBehaviours = items.Where(t => t.IsTargetable && t.CurrentState is not DeathState).ToList();
 
             return networkedUnitBehaviours.Count > 0;
         }
 
-        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedStatsBehaviour, float> closestUnit)
+        //battle
+        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedBattleBehaviour, float> closestUnit)
         {
-            if (!ContainsTargetable(out List<NetworkedStatsBehaviour> networkedUnitBehaviours))
+            if (!ContainsTargetable(out List<NetworkedBattleBehaviour> networkedUnitBehaviours))
             {
                 closestUnit = default;
                 return false;
@@ -70,31 +61,19 @@ namespace Features.GlobalReferences.Scripts
                 }
             }
 
-            closestUnit = new KeyValuePair<NetworkedStatsBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+            closestUnit = new KeyValuePair<NetworkedBattleBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
             return true;
         }
-
+        
+        //battle
         public bool HasUnitAlive()
         {
-            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in GetItems())
-            {
-                //TODO: getComponent
-                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-                {
-                    if (battleBehaviour.CurrentState is not DeathState && battleBehaviour.IsTargetable)
-                    {
-                        return true;
-                    }
-                    
-                }
-            }
-
-            return false;
+            return GetItems().Any(networkedUnitBehaviour => networkedUnitBehaviour.CurrentState is not DeathState && networkedUnitBehaviour.IsTargetable);
         }
 
-        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedStatsBehaviour networkedStatsBehaviour)
+        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedBattleBehaviour networkedStatsBehaviour)
         {
-            foreach (NetworkedStatsBehaviour item in items)
+            foreach (NetworkedBattleBehaviour item in items)
             {
                 if (requestedViewID == item.PhotonView.ViewID)
                 {

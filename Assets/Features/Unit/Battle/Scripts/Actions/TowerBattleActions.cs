@@ -56,7 +56,7 @@ namespace Features.Unit.Battle.Scripts.Actions
             _currentStamina--;
             ownerUnitView.SetStaminaSlider(_currentStamina, _totalStamina);
 
-            NetworkedStatsBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
+            NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
                 ownerBattleBehaviour.transform.position,
                 closestStats.transform.position, closestStats.PhotonView.ViewID);

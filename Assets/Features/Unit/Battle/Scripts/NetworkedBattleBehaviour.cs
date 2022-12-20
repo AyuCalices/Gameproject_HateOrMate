@@ -1,7 +1,9 @@
+using System;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Unit.Modding;
 using Features.Unit.View;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts
@@ -13,8 +15,12 @@ namespace Features.Unit.Battle.Scripts
         [SerializeField] protected BattleData_SO battleData;
 
         protected StateMachine stateMachine;
+        
+        public UnitTeamData_SO UnitTeamData { get; set; }
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
         public IState CurrentState => stateMachine.CurrentState;
+        
+        public PhotonView PhotonView { get; private set; }
         
         protected UnitView unitView;
         public bool IsTargetable { get; set; }
@@ -29,8 +35,32 @@ namespace Features.Unit.Battle.Scripts
             stateMachine = new StateMachine();
             stateMachine.Initialize(new IdleState(this));
             
+            PhotonView = GetComponent<PhotonView>();
             unitView = GetComponent<UnitView>();
             NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
+        }
+
+        private void Start()
+        {
+            //needs to be done when instantiation is completed (the UnitTeamData is not available before)
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
+            {
+                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
+            }
+            UnitTeamData.ownTeamRuntimeSet.Add(this);
+            battleData.AllUnitsRuntimeSet.Add(this);
+        }
+
+        private void OnDestroy()
+        {
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
+            {
+                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
+            }
+
+            UnitTeamData.ownTeamRuntimeSet.Remove(this);
+            
+            battleData.AllUnitsRuntimeSet.Remove(this);
         }
 
         public virtual void OnStageEnd()

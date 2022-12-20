@@ -1,5 +1,4 @@
 using System;
-using Features.Battle.Scripts;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding.Stat;
 using Features.Unit.View;
@@ -12,11 +11,6 @@ namespace Features.Unit.Modding
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] protected BattleData_SO battleData;
-
-        public UnitTeamData_SO UnitTeamData { get; set; }
-
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
         public bool NetworkingInitialized { get; private set; }
@@ -41,7 +35,6 @@ namespace Features.Unit.Modding
             //TODO: getComponent
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
-            battleData.AllUnitsRuntimeSet.Add(this);
         }
 
         /// <summary>
@@ -57,12 +50,6 @@ namespace Features.Unit.Modding
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }
-            
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
-            }
-            UnitTeamData.ownTeamRuntimeSet.Add(this);
 
             NetworkingInitialized = true;
             NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
@@ -80,18 +67,6 @@ namespace Features.Unit.Modding
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
-        }
-
-        private void OnDestroy()
-        {
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
-            }
-
-            UnitTeamData.ownTeamRuntimeSet.Remove(this);
-            
-            battleData.AllUnitsRuntimeSet.Remove(this);
         }
     }
 }

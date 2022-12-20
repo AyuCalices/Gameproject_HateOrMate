@@ -37,7 +37,7 @@ namespace Features.Battle.Scripts
             {
                 //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
-                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedStatsBehaviour networkedUnitBehaviour)
+                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
                 {
                     battleBehaviour.BattleActions.OnReceiveFloatActionCallback((float) data[1]);
@@ -48,7 +48,7 @@ namespace Features.Battle.Scripts
             {
                 //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
-                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedStatsBehaviour networkedUnitBehaviour))
+                if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
                     OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
                 }
@@ -60,18 +60,15 @@ namespace Features.Battle.Scripts
         /// </summary>
         /// <param name="newRemovedHealth"></param>
         /// <param name="totalHealth"></param>
-        private void OnUpdateAllClientsHealthCallback(NetworkedStatsBehaviour networkedStatsBehaviour, float newRemovedHealth,
+        private void OnUpdateAllClientsHealthCallback(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth,
             float totalHealth)
         {
+            NetworkedStatsBehaviour networkedStatsBehaviour = networkedBattleBehaviour.NetworkedStatsBehaviour;
             networkedStatsBehaviour.RemovedHealth = newRemovedHealth;
         
             if (networkedStatsBehaviour.RemovedHealth >= totalHealth)
             {
-                if (networkedStatsBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-                {
-                    battleBehaviour.TryRequestDeathState();
-                }
-
+                networkedBattleBehaviour.TryRequestDeathState();
                 SetStage();
             }
         }

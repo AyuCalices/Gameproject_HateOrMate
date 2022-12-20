@@ -35,26 +35,17 @@ namespace Features.Battle.Scripts
                 _battleData.Stage.Add(1);
             }
             
-            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
             {
-                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-                {
-                    battleBehaviour.OnStageEnd();
-                }
-                
-                networkedUnitBehaviour.RemovedHealth = 0;
+                networkedUnitBehaviour.OnStageEnd();
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
 
-            foreach (NetworkedStatsBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
             {
-                if (networkedUnitBehaviour.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-                {
-                    battleBehaviour.OnStageEnd();
-                }
-
-                _battleData.SetAiStats(networkedUnitBehaviour);
-                
-                networkedUnitBehaviour.RemovedHealth = 0;
+                networkedUnitBehaviour.OnStageEnd();
+                _battleData.SetAiStats(networkedUnitBehaviour.NetworkedStatsBehaviour);
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
 
             if (PhotonNetwork.IsMasterClient && !_restartStage)

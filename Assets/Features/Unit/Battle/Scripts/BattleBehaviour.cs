@@ -16,9 +16,9 @@ namespace Features.Unit.Battle.Scripts
         public BattleActions BattleActions => _battleActions;
         public UnitClassData_SO UnitClassData { get; set; }
 
-        private KeyValuePair<NetworkedStatsBehaviour, float> _closestUnit;
+        private KeyValuePair<NetworkedBattleBehaviour, float> _closestUnit;
         
-        public KeyValuePair<NetworkedStatsBehaviour, float> GetTarget => _closestUnit;
+        public KeyValuePair<NetworkedBattleBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
         private bool TargetInRange => _closestUnit.Value < UnitClassData.range;
         public float MovementSpeed => UnitClassData.movementSpeed;
@@ -45,7 +45,7 @@ namespace Features.Unit.Battle.Scripts
         {
             if (battleData.CurrentState is not BattleState) return;
             
-            HasTarget = NetworkedStatsBehaviour.UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
+            HasTarget = UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
 
             stateMachine.Update();
@@ -83,7 +83,7 @@ namespace Features.Unit.Battle.Scripts
 
             if (result)
             {
-                NetworkedStatsBehaviour closestStats = GetTarget.Key;
+                NetworkedBattleBehaviour closestStats = GetTarget.Key;
                 Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
                 TryRequestMovementState(enemyPosition, 1);
             }

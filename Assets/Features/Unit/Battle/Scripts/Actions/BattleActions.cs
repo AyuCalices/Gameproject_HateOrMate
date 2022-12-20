@@ -120,16 +120,17 @@ namespace Features.Unit.Battle.Scripts.Actions
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedStatsBehaviour closestStats)
+        protected void SendAttack(NetworkedBattleBehaviour closestStats)
         {
+            NetworkedStatsBehaviour networkedStats = closestStats.NetworkedStatsBehaviour;
             if (closestStats.GetComponent<BattleBehaviour>() != null)
             {
                 //TODO: getComponent
-                closestStats.RemovedHealth += ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
+                networkedStats.RemovedHealth += ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
                 UpdateAllClientsHealthRaiseEvent(
                     closestStats.GetComponent<PhotonView>().ViewID,
-                    closestStats.RemovedHealth,
-                    closestStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
+                    networkedStats.RemovedHealth,
+                    networkedStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
                 );
             }
             else
