@@ -70,6 +70,7 @@ namespace Features.Unit.GridMovement
 
         public void OnBeginDrag(PointerEventData eventData)
         {
+            Debug.Log(battleData.CurrentState);
             if (battleData.CurrentState is not LootingState) return;
             
             _instantiatedPrefab = Instantiate(visualObject);

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Features.Battle.Scripts;
+using Features.Unit;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -10,7 +11,7 @@ namespace Features.Tiles
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private TileLookup[] tileReferences;
-        [SerializeField] private List<GameObject> spawnerInstances;
+        [SerializeField] private List<SpawnerInstance> spawnerInstances;
 
         private void Awake()
         {
@@ -20,10 +21,13 @@ namespace Features.Tiles
 
         private void PopulateTileRuntimeDictionary(Dictionary<Vector3Int, RuntimeTile> tileDictionary)
         {
-            Dictionary<Vector3Int, GameObject> spawnerGridPositions = new Dictionary<Vector3Int, GameObject>();
-            foreach (GameObject spawner in spawnerInstances)
+            Dictionary<Vector3Int, SpawnPosition> spawnerGridPositions = new Dictionary<Vector3Int, SpawnPosition>();
+            foreach (SpawnerInstance spawner in spawnerInstances)
             {
-                spawnerGridPositions.Add(tilemap.WorldToCell(spawner.transform.position), spawner);
+                foreach (SpawnPosition spawnPosition in spawner.spawnPositions)
+                {
+                    spawnerGridPositions.Add(tilemap.WorldToCell(spawnPosition.transform.position), spawnPosition);
+                }
             }
             
             foreach (Vector3Int position in tilemap.cellBounds.allPositionsWithin)
@@ -36,9 +40,9 @@ namespace Features.Tiles
                         RuntimeTile newRuntimeTile = new RuntimeTile(tile, tileData.movementCost);
                         tileDictionary.Add(position, newRuntimeTile);
                         
-                        if (spawnerGridPositions.TryGetValue(position, out GameObject spawnerInstance))
+                        if (spawnerGridPositions.TryGetValue(position, out SpawnPosition spawnerInstance))
                         {
-                            newRuntimeTile.AddSpawnerInstance(spawnerInstance);
+                            newRuntimeTile.AddSpawnerInstance(spawnerInstance.gameObject);
                         }
                     }
                 }
@@ -47,10 +51,13 @@ namespace Features.Tiles
 
         public void UpdateUnitsPlacedInScenePosition()
         {
-            foreach (GameObject unit in spawnerInstances)
+            foreach (SpawnerInstance spawner in spawnerInstances)
             {
-                Vector3Int cellPosition = tilemap.WorldToCell(unit.transform.position);
-                unit.transform.position = tilemap.GetCellCenterWorld(cellPosition);
+                foreach (SpawnPosition spawnPosition in spawner.spawnPositions)
+                {
+                    Vector3Int cellPosition = tilemap.WorldToCell(spawnPosition.transform.position);
+                    spawnPosition.transform.position = tilemap.GetCellCenterWorld(cellPosition);
+                }
             }
         }
     }

@@ -4,7 +4,6 @@ using Features.Battle.Scripts;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
-using Features.Unit.Modding;
 using Photon.Pun;
 using ToolBox.Pools;
 using UnityEngine;
@@ -14,7 +13,6 @@ namespace Features.Unit
     public class SpawnerInstance : MonoBehaviour
     {
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private SpawnPosition spawnPosition;
         
         public string reference;
         public NetworkedBattleBehaviour localPlayerPrefab;
@@ -22,49 +20,36 @@ namespace Features.Unit
         public NetworkedBattleBehaviour networkedPlayerPrefab;
         public UnitTeamData_SO networkedPlayerTeamData;
         public bool isTargetable;
+
+        public List<SpawnPosition> spawnPositions;
         
 
-        private List<PhotonView> _spawnedUnits = new List<PhotonView>();
+        private readonly List<PhotonView> _spawnedUnits = new List<PhotonView>();
 
-        private RuntimeTile _spawnerInstanceTile;
-        private Vector3Int _gridPosition;
-        private bool _hasValidTile;
-
-        private void Awake()
-        {
-            _gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
-            _hasValidTile = battleData.TileRuntimeDictionary.TryGetByGridPosition(_gridPosition,
-                out _spawnerInstanceTile);
-        }
 
         public bool TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
         {
-            switch (spawnPosition)
+            foreach (SpawnPosition spawnPosition in spawnPositions)
             {
-                case SpawnPosition.RandomPlaceablePosition:
-                    if (battleData.TileRuntimeDictionary.TryGetRandomPlaceableTileBehaviour(
-                        out tileKeyValuePair)) return true;
-                    break;
-                
-                case SpawnPosition.ThisTransform:
-                    if (_hasValidTile)
-                    {
-                        tileKeyValuePair = new KeyValuePair<Vector3Int, RuntimeTile>(_gridPosition, _spawnerInstanceTile);
-                        return true;
-                    }
-                    break;
-                
-                default:
-                    throw new ArgumentOutOfRangeException();
+                if (spawnPosition.HasValidTile && !spawnPosition.SpawnerInstanceTile.ContainsUnit)
+                {
+                    tileKeyValuePair = new KeyValuePair<Vector3Int, RuntimeTile>(spawnPosition.GridPosition, spawnPosition.SpawnerInstanceTile);
+                    return true;
+                }
             }
 
             tileKeyValuePair = default;
             return false;
         }
+
+        private SpawnPosition GetSpawnPositionByGrid(Vector3Int gridPosition)
+        {
+            return spawnPositions.Find(x => x.GridPosition == gridPosition);
+        }
         
         public NetworkedBattleBehaviour InstantiateAndInitialize(NetworkedBattleBehaviour selectedPrefab, UnitTeamData_SO unitTeamData, UnitClassData_SO unitClassData, Vector3Int gridPosition)
         {
-            NetworkedBattleBehaviour player = selectedPrefab.gameObject.Reuse<NetworkedBattleBehaviour>(transform);
+            NetworkedBattleBehaviour player = selectedPrefab.gameObject.Reuse<NetworkedBattleBehaviour>(GetSpawnPositionByGrid(gridPosition).transform);
             _spawnedUnits.Add(player.PhotonView);
             
             //initialize values
@@ -86,11 +71,21 @@ namespace Features.Unit
 
         public void DestroyByReference(PhotonView playerPhotonView)
         {
-            if (_spawnedUnits.Contains(playerPhotonView))
+            if (!_spawnedUnits.Contains(playerPhotonView)) return;
+
+            Destroy(playerPhotonView);
+        }
+
+        private void Destroy(PhotonView playerPhotonView)
+        {
+            Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(playerPhotonView.transform.position);
+            if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
             {
-                _spawnedUnits.Remove(playerPhotonView);
-                playerPhotonView.gameObject.Release();
+                tileBehaviour.RemoveUnit();
             }
+            
+            _spawnedUnits.Remove(playerPhotonView);
+            playerPhotonView.gameObject.Release();
         }
 
         public bool TryDestroy(int viewID)
@@ -100,16 +95,17 @@ namespace Features.Unit
             {
                 return false;
             }
-            
-            photonView.gameObject.Release();
+
+            Destroy(photonView);
             return true;
         }
 
         public void DestroyAll()
         {
-            foreach (PhotonView spawnedUnit in _spawnedUnits)
+            for (int index = _spawnedUnits.Count - 1; index >= 0; index--)
             {
-                spawnedUnit.gameObject.Release();
+                PhotonView spawnedUnit = _spawnedUnits[index];
+                Destroy(spawnedUnit);
             }
         }
     }

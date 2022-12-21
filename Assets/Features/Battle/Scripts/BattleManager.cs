@@ -1,3 +1,4 @@
+using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Loot.Scripts;
@@ -14,12 +15,15 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
+        public static Action<string> onLocalDespawnAllUnits;
+        
         public UnitClassData_SO gateClass;
         public UnitClassData_SO aiTowerClass;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
         [SerializeField] private BattleData_SO battleData;
         
-        [SerializeField] private Toggle requestLootPhaseToggle;
+        [SerializeField] private Button requestLootPhaseButton;
         [SerializeField] private Button continueBattleButton;
         
         //reactive stage text
@@ -27,22 +31,28 @@ namespace Features.Battle.Scripts
     
         private StateMachine _stageStateMachine;
 
-        public bool IsLootPhaseRequested => requestLootPhaseToggle.isOn;
-        public void DisableLootPhaseRequested() => requestLootPhaseToggle.isOn = false;
-        
         public IState CurrentState => _stageStateMachine.CurrentState;
+
+        private RoomDecisions<bool> _enterLootingPhaseRoomDecision;
 
         private void Awake()
         {
             _stageStateMachine = new StateMachine();
             battleData.RegisterBattleManager(this);
-            DisableLootPhaseRequested();
             continueBattleButton.gameObject.SetActive(false);
+
+            _enterLootingPhaseRoomDecision = new RoomDecisions<bool>("EnterLootingPhase", true);
+            requestLootPhaseButton.onClick.AddListener(() => _enterLootingPhaseRoomDecision.SetLocalDecision(true));
         }
 
         private void Start()
         {
-            _stageStateMachine.Initialize(new StageSetupState(this, true, battleData));
+            if (PhotonNetwork.IsMasterClient)
+            {
+                onNetworkedSpawnUnit.Invoke("Player", aiTowerClass);
+            }
+            
+            _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));
             
             battleData.Stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
@@ -63,10 +73,20 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.ChangeState(new BattleState(this, battleData, battleData.AllUnitsRuntimeSet));
         }
-        
-        internal void RequestLootingState()
+
+        private void RequestLootingState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new LootingState(this, lootSelectionBehaviour, continueBattleButton));
+            _stageStateMachine.ChangeState(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, restartState));
+        }
+
+        public void EndStage(bool restartState)
+        {
+            bool enteredLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(() => RequestLootingState(restartState));
+            Debug.Log(enteredLootingState);
+            if (!enteredLootingState)
+            {
+                RequestStageSetupState(restartState);
+            }
         }
 
         public void OnEvent(EventData photonEvent)

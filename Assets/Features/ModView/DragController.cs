@@ -8,10 +8,10 @@ namespace Features.ModView
 {
     public class DragController
     {
-        private ModDragBehaviour _originModDragBehaviour;
-        private BaseMod _originMod;
-        private ModSlotContainer _originModSlotContainer;
-        private ModSlotBehaviour _originModSlotBehaviour;
+        private readonly ModDragBehaviour _originModDragBehaviour;
+        private readonly BaseMod _originMod;
+        private readonly ModSlotContainer _originModSlotContainer;
+        private readonly ModSlotBehaviour _originModSlotBehaviour;
 
         public DragController(ModDragBehaviour originModDragBehaviour, BaseMod originMod, ModSlotContainer originModSlotContainer, ModSlotBehaviour originModSlotBehaviour)
         {

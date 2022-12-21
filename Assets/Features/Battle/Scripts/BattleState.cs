@@ -35,10 +35,9 @@ namespace Features.Battle.Scripts
         {
             if (photonEvent.Code == (int)RaiseEventCode.OnSendFloatToTarget)
             {
-                //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
-                    && networkedUnitBehaviour.TryGetComponent(out BattleBehaviour battleBehaviour))
+                    && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
                 {
                     battleBehaviour.BattleActions.OnReceiveFloatActionCallback((float) data[1]);
                 }
@@ -46,7 +45,6 @@ namespace Features.Battle.Scripts
             
             else if (photonEvent.Code == (int)RaiseEventCode.OnUpdateAllClientsHealth)
             {
-                //TODO: getComponent
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
@@ -77,13 +75,13 @@ namespace Features.Battle.Scripts
         {
             if (!_battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
             {
-                _battleManager.RequestStageSetupState(true);
+                _battleManager.EndStage(true);
                 return;
             }
 
             if (!_battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
             {
-                _battleManager.RequestStageSetupState(false);
+                _battleManager.EndStage(false);
             }
         }
     }

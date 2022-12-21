@@ -19,13 +19,12 @@ namespace Features.Loot.Scripts
 
         private LootableView[] _instantiatedLootables;
         private RoomDecisions<int> _roomDecisions;
-        private List<LootableGenerator_SO> _lootables;
+        private readonly List<LootableGenerator_SO> _lootables = new List<LootableGenerator_SO>();
 
         private void Awake()
         {
-            _lootables = new List<LootableGenerator_SO>();
             _instantiatedLootables = new LootableView[lootCount];
-            _roomDecisions = new RoomDecisions<int>("Looting");
+            _roomDecisions = new RoomDecisions<int>("Looting", false);
             gameObject.SetActive(false);
             
             PhotonNetwork.AddCallbackTarget(this);
@@ -134,6 +133,7 @@ namespace Features.Loot.Scripts
                 object[] data = (object[]) photonEvent.CustomData;
                 
                 _lootables.Add((LootableGenerator_SO)data[0]);
+                gameObject.SetActive(true);
             }
         }
     }

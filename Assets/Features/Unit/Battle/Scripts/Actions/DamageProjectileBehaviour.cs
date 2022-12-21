@@ -12,10 +12,8 @@ namespace Features.Unit.Battle.Scripts.Actions
         private Action _onCompleteAction;
         private bool _onCompleteActionCanceled;
         
-        
         public DamageProjectileBehaviour FireProjectile(Vector3 startPosition, Vector3 targetPosition, int targetID)
         {
-            //TODO: getComponent
             return InstantiateProjectile(startPosition, targetPosition, targetID).GetComponent<DamageProjectileBehaviour>();
         }
 

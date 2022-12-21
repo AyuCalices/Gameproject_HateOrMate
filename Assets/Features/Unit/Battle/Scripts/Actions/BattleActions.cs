@@ -59,12 +59,11 @@ namespace Features.Unit.Battle.Scripts.Actions
         /// <param name="value"></param>
         public void OnReceiveFloatActionCallback(float value)
         {
-            //TODO: getComponent
             ownerBattleBehaviour.NetworkedStatsBehaviour.RemovedHealth += value;
             UpdateAllClientsHealthRaiseEvent(
-                ownerBattleBehaviour.GetComponent<PhotonView>().ViewID,
+                ownerBattleBehaviour.PhotonView.ViewID,
                 ownerBattleBehaviour.NetworkedStatsBehaviour.RemovedHealth,
-                ownerBattleBehaviour.GetComponent<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
+                ownerBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
             );
         }
         
@@ -125,10 +124,9 @@ namespace Features.Unit.Battle.Scripts.Actions
             NetworkedStatsBehaviour networkedStats = closestStats.NetworkedStatsBehaviour;
             if (closestStats.GetComponent<BattleBehaviour>() != null)
             {
-                //TODO: getComponent
                 networkedStats.RemovedHealth += ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
                 UpdateAllClientsHealthRaiseEvent(
-                    closestStats.GetComponent<PhotonView>().ViewID,
+                    closestStats.PhotonView.ViewID,
                     networkedStats.RemovedHealth,
                     networkedStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Health)
                 );

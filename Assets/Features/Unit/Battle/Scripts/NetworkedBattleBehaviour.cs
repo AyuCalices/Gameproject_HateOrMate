@@ -23,6 +23,7 @@ namespace Features.Unit.Battle.Scripts
             get => _unitTeamData;
             set
             {
+                //TODO: re-apply modifier - eg: remove networked stats and send it through attack. when unit gets instantiated, all mods need to get applied to it
                 if (_unitTeamData != null)
                 {
                     ClearRuntimeSets();

@@ -1,6 +1,9 @@
 using DataStructures.StateLogic;
+using ExitGames.Client.Photon;
 using Features.Loot;
 using Features.Loot.Scripts;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
@@ -8,34 +11,65 @@ namespace Features.Battle.Scripts
     public class LootingState : IState
     {
         private readonly BattleManager _battleManager;
+        private readonly BattleData_SO _battleData;
         private readonly LootSelectionBehaviour _lootSelectionBehaviour;
         private readonly Button _continueBattleButton;
+        private readonly bool _restartStage;
         private RoomDecisions<bool> _roomDecision;
 
-        public LootingState(BattleManager battleManager, LootSelectionBehaviour lootSelectionBehaviour, Button continueBattleButton)
+        public LootingState(BattleManager battleManager, BattleData_SO battleData, LootSelectionBehaviour lootSelectionBehaviour, Button continueBattleButton, bool restartStage)
         {
             _battleManager = battleManager;
+            _battleData = battleData;
             _lootSelectionBehaviour = lootSelectionBehaviour;
             _continueBattleButton = continueBattleButton;
+            _restartStage = restartStage;
         }
 
         public void Enter()
         {
-            _roomDecision = new RoomDecisions<bool>("Placement");
-            _battleManager.DisableLootPhaseRequested();
+            _roomDecision = new RoomDecisions<bool>("Placement", false);
             _lootSelectionBehaviour.gameObject.SetActive(true);
             _continueBattleButton.gameObject.SetActive(true);
             _continueBattleButton.onClick.AddListener(() => _roomDecision.SetLocalDecision(true));
+            
+            if (!PhotonNetwork.IsMasterClient) return;
+            if (!_restartStage)
+            {
+                SendLootableByRaiseEvent(_battleData.LootTable.RandomizeLootableGenerator());
+            }
         }
 
         public void Execute()
         {
-            _roomDecision.UpdateDecision(() => _battleManager.RequestBattleState());
+            if (_roomDecision == null) return;
+            _roomDecision.UpdateDecision(() => _battleManager.RequestStageSetupState(_restartStage));
         }
 
         public void Exit()
         {
             _continueBattleButton.gameObject.SetActive(false);
+        }
+        
+        private void SendLootableByRaiseEvent(LootableGenerator_SO lootable)
+        {
+            object[] data = new object[]
+            {
+                lootable
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnObtainLoot, data, raiseEventOptions, sendOptions);
         }
     }
 }

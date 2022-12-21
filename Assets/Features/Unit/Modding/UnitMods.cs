@@ -36,12 +36,8 @@ namespace Features.Unit.Modding
                 if (!modSlotsContainer.ContainsMod())
                 {
                     ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, modSlotBehaviours[index].transform);
-                    modDragBehaviour.BaseMod = baseMod;
-                    //TODO: getComponent
-                    modDragBehaviour.GetComponent<Image>().color = Random.ColorHSV();
+                    modDragBehaviour.Initialize(modSlotsContainer, modSlotBehaviours[index], baseMod);
                     modSlotsContainer.AddMod(baseMod);
-                    modDragBehaviour.SetNewOrigin(modSlotsContainer, modSlotBehaviours[index]);
-
                     return true;
                 }
             }
@@ -100,7 +96,7 @@ namespace Features.Unit.Modding
                 RemoveMod();
             }
             
-            if (origin != null && origin.ContainsMod())
+            if (origin.ContainsMod())
             {
                 origin.RemoveMod();
 

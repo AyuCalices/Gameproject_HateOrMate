@@ -2,13 +2,12 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Experimental;
+using Features.Mod;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
-using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
-using ToolBox.Pools;
 using UnityEngine;
 
 namespace Features.Unit
@@ -31,27 +30,64 @@ namespace Features.Unit
     //TODO: new
     //how to destroy units ? how to setup stages ? how to add battle actions ?
     
-    public enum SpawnPosition { RandomPlaceablePosition, ThisTransform }
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private BattleData_SO battleData;
-
         [SerializeField] private List<SpawnerInstance> spawnerInstances;
 
         public override void OnEnable()
         {
             base.OnEnable();
             TestingGenerator.onNetworkedSpawnUnit += NetworkedSpawn;
-            StageSetupState.onNetworkedSpawnUnit += NetworkedSpawn;
-            StageSetupState.onLocalDespawnAllUnits += NetworkedDespawnAll;
+            BattleManager.onNetworkedSpawnUnit += NetworkedSpawn;
+            BattleManager.onLocalDespawnAllUnits += NetworkedDespawnAll;
+            UnitMod.onAddUnit += SpawnLocal;
+            UnitMod.onRemoveUnit += LocalDespawn;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             TestingGenerator.onNetworkedSpawnUnit -= NetworkedSpawn;
-            StageSetupState.onNetworkedSpawnUnit -= NetworkedSpawn;
-            StageSetupState.onLocalDespawnAllUnits -= NetworkedDespawnAll;
+            BattleManager.onNetworkedSpawnUnit -= NetworkedSpawn;
+            BattleManager.onLocalDespawnAllUnits -= NetworkedDespawnAll;
+            UnitMod.onAddUnit -= SpawnLocal;
+            UnitMod.onRemoveUnit -= LocalDespawn;
+        }
+
+        private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData)
+        {
+            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
+            if (spawnerInstanceIndex == -1)
+            {
+                Debug.LogError("Spawner Instance was not Found!");
+            }
+
+            NetworkedBattleBehaviour localUnit = SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData,false);
+
+            if (localUnit == null) return null;
+
+            if (localUnit.NetworkedStatsBehaviour.NetworkingInitialized) return localUnit;
+            
+            if (PhotonNetwork.AllocateViewID(localUnit.PhotonView))
+            {
+                localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
+                return localUnit;
+            }
+            
+            Debug.LogError("Failed to allocate a ViewId.");
+            spawnerInstances[spawnerInstanceIndex].DestroyByReference(localUnit.PhotonView);
+            return null;
+        }
+
+        private void LocalDespawn(string spawnerReference, PhotonView photonView)
+        {
+            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
+            if (spawnerInstanceIndex == -1)
+            {
+                Debug.LogError("Spawner Instance was not Found!");
+            }
+            
+            spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
         }
 
         private void NetworkedDespawnAll(string spawnerReference)
@@ -75,7 +111,7 @@ namespace Features.Unit
             
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
+                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData, true);
             }
             else
             {
@@ -83,17 +119,25 @@ namespace Features.Unit
             }
         }
         
-        private void SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        private NetworkedBattleBehaviour SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData, bool castRaiseEvent)
         {
             if (!spawnerInstances[spawnerInstanceIndex]
-                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
+                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair))
+            {
+                return null;
+            }
 
             SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
             NetworkedBattleBehaviour selectedPrefab = isSpawnedByMaster ? spawnerInstance.localPlayerPrefab : spawnerInstance.networkedPlayerPrefab;
             UnitTeamData_SO unitTeamData = isSpawnedByMaster ? spawnerInstance.localPlayerTeamData : spawnerInstance.networkedPlayerTeamData;
             NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, tileKeyValuePair.Key);
 
-            MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex, unitClassData);
+            if (castRaiseEvent)
+            {
+                MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex, unitClassData);
+            }
+
+            return player;
         }
 
         private void MasterSpawnRaiseEvent(NetworkedBattleBehaviour playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
@@ -189,7 +233,7 @@ namespace Features.Unit
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                SpawnUnit((bool) data[0], (int) data[1], (UnitClassData_SO) data[2]);
+                SpawnUnit((bool) data[0], (int) data[1], (UnitClassData_SO) data[2], true);
             }
         }
     }

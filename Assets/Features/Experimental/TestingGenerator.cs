@@ -1,10 +1,5 @@
 using System;
-using Features.GlobalReferences;
-using Features.GlobalReferences.Scripts;
-using Features.Loot;
 using Features.Loot.Scripts;
-using Features.Mod;
-using Features.ModView;
 using Features.Unit.Classes;
 using UnityEngine;
 
@@ -14,15 +9,15 @@ namespace Features.Experimental
     {
         public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
 
+        [SerializeField] private LootTable_SO lootTable;
         [SerializeField] private UnitClassData_SO unitClassDataSo;
-        [SerializeField] private LootableGenerator_SO modGenerator;
 
         
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.G))
             {
-                modGenerator.OnAddInstanceToPlayer();
+                lootTable.RandomizeLootableGenerator().OnAddInstanceToPlayer();
             }
         
             if (Input.GetKeyDown(KeyCode.U))

@@ -9,7 +9,7 @@ namespace Features
         OnSendFloatToTarget = 5,
         OnUpdateAllClientsHealth = 6,
         OnRequestBattleState = 7,
-        OnSetBattleState = 8,
-        OnObtainLoot = 9
+        OnObtainLoot = 8,
+        OnStartLootingPhase = 9
     }
 }

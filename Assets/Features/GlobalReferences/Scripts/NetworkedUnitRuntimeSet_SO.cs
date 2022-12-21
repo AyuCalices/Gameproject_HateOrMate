@@ -19,7 +19,6 @@ namespace Features.GlobalReferences.Scripts
         {
             foreach (NetworkedBattleBehaviour localUnitBehaviour in items)
             {
-                //TODO: getComponent
                 if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
                 if (modUnitBehaviour.UnitMods.TryInstantiateMod(modDragBehaviour, baseMod))
                 {

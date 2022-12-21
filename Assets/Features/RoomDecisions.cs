@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
@@ -9,12 +10,14 @@ namespace Features
     {
         private Hashtable _localDecision;
         private readonly string _identifier;
-    
+        private readonly bool _triggerIfOneChose;
+
         public string Identifier(Player player) => _identifier + player.ActorNumber;
 
-        public RoomDecisions(string identifier)
+        public RoomDecisions(string identifier, bool triggerIfOneChose)
         {
             _identifier = identifier;
+            _triggerIfOneChose = triggerIfOneChose;
         }
 
         public bool SetLocalDecision(T value)
@@ -30,16 +33,18 @@ namespace Features
             return true;
         }
 
-        public void UpdateDecision(Action onAllPlayerChose)
+        public bool UpdateDecision(Action onAllPlayerChose)
         {
-            if (!AllPlayerChose()) return;
+            if (!PlayerChose()) return false;
             onAllPlayerChose.Invoke();
             ResetLocalDecision();
+            return true;
         }
         
-        private bool AllPlayerChose()
+        private bool PlayerChose()
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 if (Equals(player, PhotonNetwork.LocalPlayer) && _localDecision != null && _localDecision[Identifier(player)] == null)
@@ -50,6 +55,11 @@ namespace Features
                 if (!roomCustomProperties.ContainsKey(Identifier(player)) || roomCustomProperties[Identifier(player)] == null)
                 {
                     return false;
+                }
+                
+                if (_triggerIfOneChose && roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null)
+                {
+                    return true;
                 }
             }
 

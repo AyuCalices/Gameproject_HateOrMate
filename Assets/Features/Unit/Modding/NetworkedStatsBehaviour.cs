@@ -31,7 +31,6 @@ namespace Features.Unit.Modding
 
         protected void Awake()
         {
-            //TODO: getComponent
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
         }

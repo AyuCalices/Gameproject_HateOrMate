@@ -13,7 +13,5 @@ MonoBehaviour:
   m_Name: LootTable
   m_EditorClassIdentifier: 
   baseModGenerators:
-  - modGenerator: {fileID: 11400000, guid: 0929ebd1786d4ee44be101666c4ab9d9, type: 2}
-    frequency: 10
-  - modGenerator: {fileID: 11400000, guid: 50dcb90238490c34abd75ab730b0f97a, type: 2}
+  - modGenerator: {fileID: 11400000, guid: f1a7bf3b1bb02ea4c8274dd72bcad44a, type: 2}
     frequency: 10

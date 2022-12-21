@@ -6,7 +6,6 @@ using Features.Unit.Modding;
 using Features.Unit.View;
 using UnityEngine;
 
-//TODO: if refactoring: needs swap between idle & death state
 namespace Features.Unit.Battle.Scripts
 {
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitView))]

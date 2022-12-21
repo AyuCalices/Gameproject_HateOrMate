@@ -1,7 +1,3 @@
-using System;
-using System.Linq;
-using System.Text;
-using ExitGames.Client.Photon;
 using UnityEngine;
 
 namespace Features.Loot.Scripts

@@ -20,6 +20,7 @@ namespace Features.Mod
         
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
+            Debug.Log("SingleStat");
             bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {

@@ -4,6 +4,7 @@ using Features.Mod;
 using Features.Unit.Modding;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Features.ModView
 {
@@ -31,13 +32,14 @@ namespace Features.ModView
             transform.SetParent(bufferTransform);
         }
 
-        private void Awake()
+        public void Initialize(ModSlotContainer targetSlotContainer, ModSlotBehaviour targetOrigin, BaseMod baseMod)
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
             
-            _modSlotContainer = null;
-            _modSlotBehaviour = null;
+            BaseMod = baseMod;
+            GetComponent<Image>().color = Random.ColorHSV();
+            SetNewOrigin(targetSlotContainer, targetOrigin);
         }
 
         public void OnPointerDown(PointerEventData eventData)
