@@ -43,7 +43,7 @@ namespace Features.Unit.Battle.Scripts.Actions
         
         public override void OnStageEnd()
         {
-            
+            ownerUnitView.ResetStaminaSlider();
         }
     }
 }

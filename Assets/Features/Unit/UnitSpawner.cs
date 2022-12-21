@@ -41,18 +41,31 @@ namespace Features.Unit
         public override void OnEnable()
         {
             base.OnEnable();
-            TestingGenerator.onSpawnUnit += Spawn;
-            StageSetupState.onSpawnUnit += Spawn;
+            TestingGenerator.onNetworkedSpawnUnit += NetworkedSpawn;
+            StageSetupState.onNetworkedSpawnUnit += NetworkedSpawn;
+            StageSetupState.onLocalDespawnAllUnits += NetworkedDespawnAll;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            TestingGenerator.onSpawnUnit -= Spawn;
-            StageSetupState.onSpawnUnit -= Spawn;
+            TestingGenerator.onNetworkedSpawnUnit -= NetworkedSpawn;
+            StageSetupState.onNetworkedSpawnUnit -= NetworkedSpawn;
+            StageSetupState.onLocalDespawnAllUnits -= NetworkedDespawnAll;
         }
 
-        private void Spawn(string spawnerReference, UnitClassData_SO unitClassData)
+        private void NetworkedDespawnAll(string spawnerReference)
+        {
+            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
+            if (spawnerInstanceIndex == -1)
+            {
+                Debug.LogError("Spawner Instance was not Found!");
+            }
+            
+            spawnerInstances[spawnerInstanceIndex].DestroyAll();
+        }
+
+        private void NetworkedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
         {
             int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
             if (spawnerInstanceIndex == -1)
@@ -69,75 +82,66 @@ namespace Features.Unit
                 RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
             }
         }
-
-        private void DestroyLocal(int viewID)
-        {
-            if (!battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
-                out NetworkedBattleBehaviour networkedUnitBehaviour)) return;
-            
-            networkedUnitBehaviour.gameObject.Release();
-        }
-
+        
         private void SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
             if (!spawnerInstances[spawnerInstanceIndex]
                 .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return;
 
-            GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerPrefab : spawnerInstances[spawnerInstanceIndex].networkedPlayerPrefab;
-            GameObject player = selectedPrefab.Reuse(transform);
-            
-            player.GetComponent<NetworkedBattleBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstances[spawnerInstanceIndex].localPlayerTeamData : spawnerInstances[spawnerInstanceIndex].networkedPlayerTeamData;
-            player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstances[spawnerInstanceIndex].isTargetable;
-            if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
-            {
-                battleBehaviour.UnitClassData = unitClassData;
-            }
-            
-            tileKeyValuePair.Value.AddUnit(player);
-            player.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(tileKeyValuePair.Key);
+            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
+            NetworkedBattleBehaviour selectedPrefab = isSpawnedByMaster ? spawnerInstance.localPlayerPrefab : spawnerInstance.networkedPlayerPrefab;
+            UnitTeamData_SO unitTeamData = isSpawnedByMaster ? spawnerInstance.localPlayerTeamData : spawnerInstance.networkedPlayerTeamData;
+            NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, tileKeyValuePair.Key);
 
             MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex, unitClassData);
         }
 
-        private void MasterSpawnRaiseEvent(GameObject playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        private void MasterSpawnRaiseEvent(NetworkedBattleBehaviour playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
-            //TODO: getComponent
-            PhotonView instantiationPhotonView = playerPrefab.GetComponent<PhotonView>();
-            if (PhotonNetwork.AllocateViewID(instantiationPhotonView))
+            if (playerPrefab.NetworkedStatsBehaviour.NetworkingInitialized)
             {
-                var playerTransform = playerPrefab.transform;
-                object[] data = new object[]
-                {
-                    playerTransform.position, 
-                    playerTransform.rotation, 
-                    instantiationPhotonView.ViewID, 
-                    gridPosition, 
-                    isSpawnedByMaster, 
-                    spawnerInstanceIndex, 
-                    unitClassData
-                };
-
-                RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-                {
-                    Receivers = ReceiverGroup.Others,
-                    CachingOption = EventCaching.AddToRoomCache
-                };
-
-                SendOptions sendOptions = new SendOptions
-                {
-                    Reliability = true
-                };
-
-                PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
-                //TODO: getComponent
-                playerPrefab.GetComponent<NetworkedStatsBehaviour>().OnPhotonViewIdAllocated();
+                PerformSpawnRaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
+                    spawnerInstanceIndex, unitClassData);
+                return;
+            }
+            
+            if (PhotonNetwork.AllocateViewID(playerPrefab.PhotonView))
+            {
+                PerformSpawnRaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
+                    spawnerInstanceIndex, unitClassData);
+                playerPrefab.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
             }
             else
             {
                 Debug.LogError("Failed to allocate a ViewId.");
 
-                Destroy(playerPrefab);
+                spawnerInstances[spawnerInstanceIndex].DestroyByReference(playerPrefab.PhotonView);
             }
+        }
+
+        private void PerformSpawnRaiseEvent(int viewID, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        {
+            object[] data = new object[]
+            {
+                viewID,
+                gridPosition,
+                isSpawnedByMaster,
+                spawnerInstanceIndex,
+                unitClassData
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
         }
         
         private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
@@ -169,30 +173,17 @@ namespace Features.Unit
             {
                 object[] data = (object[]) photonEvent.CustomData;
 
-                //instantiate and prepare photon view
-                bool isSpawnedByMaster = (bool) data[4];
-                SpawnerInstance spawnerInstance = spawnerInstances[(int) data[5]];
-                GameObject selectedPrefab = isSpawnedByMaster ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
-                GameObject player = selectedPrefab.Reuse((Vector3) data[0], (Quaternion) data[1], transform);
-                
-                player.GetComponent<NetworkedBattleBehaviour>().UnitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
-                player.GetComponent<NetworkedBattleBehaviour>().IsTargetable = spawnerInstance.isTargetable;
-                if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
-                {
-                    battleBehaviour.UnitClassData = (UnitClassData_SO) data[6];
-                }
-                //TODO: getComponent
-                PhotonView instantiationPhotonView = player.GetComponent<PhotonView>();
-                instantiationPhotonView.ViewID = (int) data[2];
+                Vector3Int gridPosition = (Vector3Int) data[1];
+                bool isSpawnedByMaster = (bool) data[2];
+                SpawnerInstance spawnerInstance = spawnerInstances[(int) data[3]];
+                UnitClassData_SO unitClassData = (UnitClassData_SO) data[4];
 
-                //sed grid position for all clients
-                if (battleData.TileRuntimeDictionary.TryGetByGridPosition((Vector3Int) data[3], out RuntimeTile tileBehaviour))
-                {
-                    tileBehaviour.AddUnit(player);
-                }
+                NetworkedBattleBehaviour selectedPrefab = isSpawnedByMaster ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
+                UnitTeamData_SO unitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
+                NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, gridPosition);
                 
-                //TODO: getComponent
-                player.GetComponent<NetworkedStatsBehaviour>().OnPhotonViewIdAllocated();
+                player.PhotonView.ViewID = (int) data[0];
+                player.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
             }
 
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)

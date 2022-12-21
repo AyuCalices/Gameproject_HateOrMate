@@ -14,7 +14,17 @@ namespace Features.Unit.Battle.Scripts
     {
         private BattleActions _battleActions;
         public BattleActions BattleActions => _battleActions;
-        public UnitClassData_SO UnitClassData { get; set; }
+
+        private UnitClassData_SO _unitClassData;
+        public UnitClassData_SO UnitClassData
+        {
+            get => _unitClassData;
+            set
+            {
+                _unitClassData = value;
+                _battleActions = UnitClassData.battleActions.Generate(NetworkedStatsBehaviour, this, unitView);
+            }
+        }
 
         private KeyValuePair<NetworkedBattleBehaviour, float> _closestUnit;
         
@@ -22,12 +32,6 @@ namespace Features.Unit.Battle.Scripts
         private bool HasTarget { get; set; }
         private bool TargetInRange => _closestUnit.Value < UnitClassData.range;
         public float MovementSpeed => UnitClassData.movementSpeed;
-
-        public override void OnNetworkingEnabled()
-        {
-            base.OnNetworkingEnabled();
-            _battleActions = UnitClassData.battleActions.Generate(NetworkedStatsBehaviour, this, unitView);
-        }
 
         public override void OnStageEnd()
         {

@@ -1880,9 +1880,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnPosition: 1
   reference: RightTower
-  localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
-  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 0
 --- !u!1 &382776723
@@ -3385,9 +3385,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnPosition: 1
   reference: LeftTower
-  localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
-  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 0
 --- !u!1 &1445520327
@@ -3926,9 +3926,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnPosition: 1
   reference: Gate
-  localPlayerPrefab: {fileID: 6238822348637795683, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   localPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
-  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   networkedPlayerTeamData: {fileID: 11400000, guid: 1ea48af82894f544cbafa90c88090bdd, type: 2}
   isTargetable: 1
 --- !u!1 &1669812203
@@ -4165,9 +4165,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnPosition: 0
   reference: Player
-  localPlayerPrefab: {fileID: 7663717459320071761, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
+  localPlayerPrefab: {fileID: 2996986347998787957, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
   localPlayerTeamData: {fileID: 11400000, guid: 39f7e16571adb2748919465e0834da40, type: 2}
-  networkedPlayerPrefab: {fileID: 7663717459320071761, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   networkedPlayerTeamData: {fileID: 11400000, guid: 9a3bbf82aac045942bb1a6ae32a02f2b, type: 2}
   isTargetable: 1
 --- !u!1 &2126401709

@@ -15,19 +15,61 @@ namespace Features.Unit.Battle.Scripts
         [SerializeField] protected BattleData_SO battleData;
 
         protected StateMachine stateMachine;
-        
-        public UnitTeamData_SO UnitTeamData { get; set; }
+
+        private UnitTeamData_SO _unitTeamData;
+
+        public UnitTeamData_SO UnitTeamData
+        {
+            get => _unitTeamData;
+            set
+            {
+                if (_unitTeamData != null)
+                {
+                    ClearRuntimeSets();
+                }
+                _unitTeamData = value;
+                AddRuntimeSets();
+            }
+        }
+
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
         public IState CurrentState => stateMachine.CurrentState;
         
         public PhotonView PhotonView { get; private set; }
         
         protected UnitView unitView;
-        public bool IsTargetable { get; set; }
 
-        public virtual void OnNetworkingEnabled()
+        private bool _isTargetable;
+        public bool IsTargetable
         {
-            unitView.SetHealthActive(IsTargetable);
+            get => _isTargetable;
+            set
+            {
+                _isTargetable = value;
+                unitView.SetHealthActive(IsTargetable);
+            }
+        }
+
+        private void AddRuntimeSets()
+        {
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
+            {
+                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
+            }
+            UnitTeamData.ownTeamRuntimeSet.Add(this);
+            battleData.AllUnitsRuntimeSet.Add(this);
+        }
+        
+        private void ClearRuntimeSets()
+        {
+            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
+            {
+                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
+            }
+
+            UnitTeamData.ownTeamRuntimeSet.Remove(this);
+            
+            battleData.AllUnitsRuntimeSet.Remove(this);
         }
     
         protected virtual void Awake()
@@ -40,27 +82,9 @@ namespace Features.Unit.Battle.Scripts
             NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
         }
 
-        private void Start()
-        {
-            //needs to be done when instantiation is completed (the UnitTeamData is not available before)
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
-            }
-            UnitTeamData.ownTeamRuntimeSet.Add(this);
-            battleData.AllUnitsRuntimeSet.Add(this);
-        }
-
         private void OnDestroy()
         {
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
-            }
-
-            UnitTeamData.ownTeamRuntimeSet.Remove(this);
-            
-            battleData.AllUnitsRuntimeSet.Remove(this);
+            ClearRuntimeSets();
         }
 
         public virtual void OnStageEnd()

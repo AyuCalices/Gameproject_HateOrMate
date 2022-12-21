@@ -12,7 +12,7 @@ namespace Features.Experimental
 {
     public class TestingGenerator : MonoBehaviour
     {
-        public static Action<string, UnitClassData_SO> onSpawnUnit;
+        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
 
         [SerializeField] private UnitClassData_SO unitClassDataSo;
         [SerializeField] private LootableGenerator_SO modGenerator;
@@ -27,7 +27,7 @@ namespace Features.Experimental
         
             if (Input.GetKeyDown(KeyCode.U))
             {
-                onSpawnUnit.Invoke("Player", unitClassDataSo);
+                onNetworkedSpawnUnit.Invoke("Player", unitClassDataSo);
             }
         }
     }

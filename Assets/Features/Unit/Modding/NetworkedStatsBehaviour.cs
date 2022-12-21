@@ -1,5 +1,4 @@
 using System;
-using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding.Stat;
 using Features.Unit.View;
 using JetBrains.Annotations;
@@ -55,12 +54,6 @@ namespace Features.Unit.Modding
             NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
             NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
             NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
-
-            //TODO: getComponent
-            if (TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-            {
-                battleBehaviour.OnNetworkingEnabled();
-            }
         }
         
         [PunRPC, UsedImplicitly]

@@ -41,5 +41,12 @@ namespace Features.Unit.View
             Vector3 newScale = new Vector3(sliderValue, localScale.y, localScale.z);
             staminaTransform.localScale = newScale;
         }
+
+        public void ResetStaminaSlider()
+        {
+            Vector3 localScale = staminaTransform.localScale;
+            Vector3 newScale = new Vector3(1, localScale.y, localScale.z);
+            staminaTransform.localScale = newScale;
+        }
     }
 }

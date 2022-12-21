@@ -71,6 +71,8 @@ namespace Features.Unit.Battle.Scripts.Actions
         
         public override void OnStageEnd()
         {
+            ownerUnitView.ResetStaminaSlider();
+            
             foreach (DamageProjectileBehaviour instantiatedProjectile in _instantiatedProjectiles)
             {
                 instantiatedProjectile.CancelProjectile();

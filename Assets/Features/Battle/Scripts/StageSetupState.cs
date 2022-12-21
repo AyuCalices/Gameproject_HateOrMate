@@ -1,21 +1,18 @@
 using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
-using Features.Loot;
 using Features.Loot.Scripts;
-using Features.Unit.Battle;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
-using Features.Unit.Modding;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 namespace Features.Battle.Scripts
 {
     public class StageSetupState : IState
     {
-        public static Action<string, UnitClassData_SO> onSpawnUnit;
+        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
+        public static Action<string> onLocalDespawnAllUnits;
         
         private readonly BattleData_SO _battleData;
         private readonly BattleManager _battleManager;
@@ -34,17 +31,10 @@ namespace Features.Battle.Scripts
             {
                 _battleData.Stage.Add(1);
             }
-            
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.PlayerUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
-            }
 
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.EnemyUnitsRuntimeSet.GetItems())
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.AllUnitsRuntimeSet.GetItems())
             {
                 networkedUnitBehaviour.OnStageEnd();
-                _battleData.SetAiStats(networkedUnitBehaviour.NetworkedStatsBehaviour);
                 networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
 
@@ -53,11 +43,14 @@ namespace Features.Battle.Scripts
                 SendLootableByRaiseEvent(_battleData.LootTable.RandomizeLootableGenerator());
             }
 
+            onLocalDespawnAllUnits?.Invoke("RightTower");
+            onLocalDespawnAllUnits?.Invoke("LeftTower");
+            onLocalDespawnAllUnits?.Invoke("Gate");
             if (PhotonNetwork.IsMasterClient)
             {
-                onSpawnUnit?.Invoke("RightTower", _battleManager.aiTowerClass);
-                onSpawnUnit?.Invoke("LeftTower", _battleManager.aiTowerClass);
-                onSpawnUnit?.Invoke("Gate", _battleManager.gateClass);
+                onNetworkedSpawnUnit?.Invoke("RightTower", _battleManager.aiTowerClass);
+                onNetworkedSpawnUnit?.Invoke("LeftTower", _battleManager.aiTowerClass);
+                onNetworkedSpawnUnit?.Invoke("Gate", _battleManager.gateClass);
             }
 
             if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount == 1)
