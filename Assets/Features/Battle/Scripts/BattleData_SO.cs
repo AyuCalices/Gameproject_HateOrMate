@@ -3,8 +3,6 @@ using DataStructures.StateLogic;
 using Features.GlobalReferences.Scripts;
 using Features.Loot.Scripts;
 using Features.Tiles;
-using Features.Unit.Modding;
-using Features.Unit.Modding.Stat;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
@@ -56,16 +54,6 @@ namespace Features.Battle.Scripts
         public void RegisterBattleManager(BattleManager battleManager)
         {
             _battleManager = battleManager;
-        }
-
-        public void SetAiStats(NetworkedStatsBehaviour aiStatsBehaviour)
-        {
-            if (aiStatsBehaviour.NetworkingInitialized)
-            {
-                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10 * (stage.Get()));
-                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50 * (stage.Get()));
-                aiStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
-            }
         }
     }
 }

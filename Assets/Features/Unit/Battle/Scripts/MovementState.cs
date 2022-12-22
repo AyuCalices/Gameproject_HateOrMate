@@ -7,7 +7,7 @@ namespace Features.Unit.Battle.Scripts
 {
     public class MovementState : IState
     {
-        public static Func<BattleBehaviour, Vector3Int, int, bool> onPerformMovement;
+        public static Action<BattleBehaviour, Vector3Int, int> onPerformMovement;
         
         private readonly BattleBehaviour _battleBehaviour;
         private readonly Vector3Int _targetPosition;
@@ -22,10 +22,7 @@ namespace Features.Unit.Battle.Scripts
 
         public void Enter()
         {
-            if (!onPerformMovement.Invoke(_battleBehaviour, _targetPosition, _skipLastMovementsCount))
-            {
-                _battleBehaviour.ForceIdleState();
-            }
+            onPerformMovement.Invoke(_battleBehaviour, _targetPosition, _skipLastMovementsCount);
         }
 
         public void Execute()

@@ -5,11 +5,12 @@ namespace Features
         OnUnitManualInstantiation = 1,
         OnRequestUnitManualInstantiation = 2,
         OnPerformGridPositionSwap = 3,
-        OnRequestMoveToTarget = 4,
-        OnSendFloatToTarget = 5,
-        OnUpdateAllClientsHealth = 6,
-        OnRequestBattleState = 7,
-        OnObtainLoot = 8,
-        OnStartLootingPhase = 9
+        OnRequestGridPositionSwap = 4,
+        OnPerformGridTeleport = 5,
+        OnRequestGridTeleport = 6,
+        OnSendFloatToTarget = 7,
+        OnUpdateAllClientsHealth = 8,
+        OnRequestBattleState = 9,
+        OnObtainLoot = 10
     }
 }

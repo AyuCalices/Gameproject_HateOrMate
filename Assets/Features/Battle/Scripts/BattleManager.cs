@@ -20,6 +20,7 @@ namespace Features.Battle.Scripts
         
         public UnitClassData_SO gateClass;
         public UnitClassData_SO aiTowerClass;
+        public UnitClassData_SO towerClass;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
         [SerializeField] private BattleData_SO battleData;
         
@@ -49,7 +50,7 @@ namespace Features.Battle.Scripts
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                onNetworkedSpawnUnit.Invoke("Player", aiTowerClass);
+                onNetworkedSpawnUnit.Invoke("Player", towerClass);
             }
             
             _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));

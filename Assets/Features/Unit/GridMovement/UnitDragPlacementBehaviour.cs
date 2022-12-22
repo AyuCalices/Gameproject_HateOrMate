@@ -11,6 +11,8 @@ namespace Features.Unit.GridMovement
     [RequireComponent(typeof(BattleBehaviour))]
     public class UnitDragPlacementBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
+        public static Action<BattleBehaviour, Vector3Int> onPerformTeleport;
+        
         [Header("References")]
         [SerializeField] private BattleData_SO battleData;
         [SerializeField] private GameObject visualObject;
@@ -60,7 +62,7 @@ namespace Features.Unit.GridMovement
 
             if (!TryResetDrop() && _isValidDrop)
             {
-                _battleBehaviour.TryRequestMovementState(_targetTileGridPosition, 0);
+                onPerformTeleport?.Invoke(_battleBehaviour, _targetTileGridPosition);
             }
         }
 
@@ -70,7 +72,6 @@ namespace Features.Unit.GridMovement
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            Debug.Log(battleData.CurrentState);
             if (battleData.CurrentState is not LootingState) return;
             
             _instantiatedPrefab = Instantiate(visualObject);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
-using Features.Unit.Modding;
+using Features.Unit.GridMovement;
 using Photon.Pun;
 using Photon.Realtime;
 using ThirdParty.LeanTween.Framework;
@@ -24,6 +24,7 @@ namespace Features.Battle.Scripts
             base.OnEnable();
 
             MovementState.onPerformMovement += RequestMove;
+            UnitDragPlacementBehaviour.onPerformTeleport += RequestTeleport;
         }
 
         public override void OnDisable()
@@ -31,39 +32,55 @@ namespace Features.Battle.Scripts
             base.OnDisable();
             
             MovementState.onPerformMovement -= RequestMove;
+            UnitDragPlacementBehaviour.onPerformTeleport -= RequestTeleport;
         }
-        
-        private bool RequestMove(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
+
+        private void RequestTeleport(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition)
         {
-            Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour);
             if (PhotonNetwork.IsMasterClient)
             {
-                OnMasterChangeUnitGridPosition(battleBehaviour, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                PerformGridTeleport(battleBehaviour, targetTileGridPosition);
             }
             else
             {
-                RequestMoveToTarget(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, currentCellPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                RequestTeleport(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition);
             }
+        }
 
-            return true;
+        private void RequestMove(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
+        {
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PerformGridPositionSwap(battleBehaviour, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+            }
+            else
+            {
+                RequestGridPositionSwap(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+            }
         }
     
-        private Vector3Int CurrentCellPosition(BattleBehaviour battleBehaviour)
+        private Vector3Int CurrentCellPosition(NetworkedBattleBehaviour battleBehaviour)
         {
             return battleData.TileRuntimeDictionary.GetWorldToCellPosition(battleBehaviour.transform.position);
         }
 
-        private void OnMasterChangeUnitGridPosition(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount, float movementSpeed)
+        private void PerformGridPositionSwap(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition, int skipLastMovementsCount, float movementSpeed)
         {
-            if (!TryGetNextPosition(targetCellPosition, currentCellPosition, skipLastMovementsCount, out Vector3Int nextCellPosition)) return;
+            Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour);
+            bool wasSuccessful = TryGetNextPosition(targetCellPosition, currentCellPosition, skipLastMovementsCount,
+                out Vector3Int nextCellPosition);
 
-            UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, nextCellPosition);
+            if (wasSuccessful)
+            {
+                UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, nextCellPosition);
+            }
 
             object[] data = new object[]
             {
                 battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
                 nextCellPosition,
-                movementSpeed
+                movementSpeed,
+                wasSuccessful
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -78,6 +95,38 @@ namespace Features.Battle.Scripts
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridPositionSwap, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void PerformGridTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition)
+        {
+            Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour);
+            bool wasSuccessful = battleData.TileRuntimeDictionary.TryGetByGridPosition(targetCellPosition, out RuntimeTile runtimeTile) 
+                                 && runtimeTile.IsPlaceable;
+
+            if (wasSuccessful)
+            {
+                UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, targetCellPosition);
+            }
+
+            object[] data = new object[]
+            {
+                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
+                targetCellPosition,
+                wasSuccessful
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridTeleport, data, raiseEventOptions, sendOptions);
         }
     
         private bool TryGetNextPosition(Vector3Int targetCellPosition, Vector3Int startCellPosition, int skipLastMovementsCount, out Vector3Int nextCellPosition)
@@ -104,13 +153,12 @@ namespace Features.Battle.Scripts
             }
         }
     
-        private static void RequestMoveToTarget(PhotonView photonView, Vector3Int targetCellPosition, Vector3Int currentCellPosition, int skipLastMovementsCount, float movementSpeed)
+        private void RequestGridPositionSwap(PhotonView photonView, Vector3Int targetCellPosition, int skipLastMovementsCount, float movementSpeed)
         {
             object[] data = new object[]
             {
                 photonView.ViewID,
                 targetCellPosition,
-                currentCellPosition,
                 skipLastMovementsCount,
                 movementSpeed
             };
@@ -126,12 +174,33 @@ namespace Features.Battle.Scripts
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestMoveToTarget, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridPositionSwap, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void RequestTeleport(PhotonView photonView, Vector3Int targetCellPosition)
+        {
+            object[] data = new object[]
+            {
+                photonView.ViewID,
+                targetCellPosition
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.MasterClient,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleport, data, raiseEventOptions, sendOptions);
         }
 
         public void OnEvent(EventData photonEvent)
         {
-            //moves unit to target position for all players
             if (photonEvent.Code == (int)RaiseEventCode.OnPerformGridPositionSwap)
             {
                 object[] data = (object[]) photonEvent.CustomData;
@@ -140,6 +209,19 @@ namespace Features.Battle.Scripts
                 {
                     Vector3Int nextCellPosition = (Vector3Int) data[1];
                     float movementSpeed = (float) data[2];
+                    bool wasSuccessful = (bool) data[3];
+                    if (!wasSuccessful)
+                    {
+                        networkedUnitBehaviour.ForceIdleState();
+                        return;
+                    }
+
+                    if (!PhotonNetwork.IsMasterClient)
+                    {
+                        Vector3Int currentCellPosition = CurrentCellPosition(networkedUnitBehaviour);
+                        UpdateUnitOnRuntimeTiles(networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                    }
+                    
                     MoveGameObjectToTarget(networkedUnitBehaviour, nextCellPosition, movementSpeed, () =>
                     {
                         if (!networkedUnitBehaviour.TryRequestAttackState() || !networkedUnitBehaviour.TryRequestMovementStateByClosestUnit() || networkedUnitBehaviour.CurrentState is not DeathState)
@@ -150,19 +232,52 @@ namespace Features.Battle.Scripts
                 }
             }
         
-            //master calculated path
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestMoveToTarget)
+            if (photonEvent.Code == (int)RaiseEventCode.OnRequestGridPositionSwap)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 int viewID = (int) data[0];
                 if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
                     Vector3Int targetCellPosition = (Vector3Int) data[1];
-                    Vector3Int currentCellPosition = (Vector3Int) data[2];
-                    int skipLastMovementsCount = (int) data[3];
-                    float movementSpeed = (float) data[4];
-                    OnMasterChangeUnitGridPosition(networkedUnitBehaviour, targetCellPosition, currentCellPosition,
+                    int skipLastMovementsCount = (int) data[2];
+                    float movementSpeed = (float) data[3];
+                    PerformGridPositionSwap(networkedUnitBehaviour, targetCellPosition,
                         skipLastMovementsCount, movementSpeed);
+                }
+            }
+
+            if (photonEvent.Code == (int)RaiseEventCode.OnPerformGridTeleport)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                int viewID = (int) data[0];
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                {
+                    Vector3Int nextCellPosition = (Vector3Int) data[1];
+                    bool wasSuccessful = (bool) data[2];
+                    if (!wasSuccessful)
+                    {
+                        networkedUnitBehaviour.ForceIdleState();
+                        return;
+                    }
+
+                    if (!PhotonNetwork.IsMasterClient)
+                    {
+                        Vector3Int currentCellPosition = CurrentCellPosition(networkedUnitBehaviour);
+                        UpdateUnitOnRuntimeTiles(networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                    }
+                    
+                    TeleportObjectToTarget(networkedUnitBehaviour, nextCellPosition);
+                }
+            }
+        
+            if (photonEvent.Code == (int)RaiseEventCode.OnRequestGridTeleport)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                int viewID = (int) data[0];
+                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                {
+                    Vector3Int targetCellPosition = (Vector3Int) data[1];
+                    PerformGridTeleport(networkedUnitBehaviour, targetCellPosition);
                 }
             }
         }
@@ -171,7 +286,7 @@ namespace Features.Battle.Scripts
         {
             if (movementSpeed <= 0)
             {
-                Debug.LogError("The Movement Speed is to low and thus no movement is applied!");
+                Debug.LogWarning("The Movement Speed is to low and thus no movement is applied!");
                 onComplete.Invoke();
                 return;
             }
@@ -179,6 +294,12 @@ namespace Features.Battle.Scripts
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
             float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / movementSpeed;
             LeanTween.move(battleBehaviour.gameObject, targetPosition, time).setOnComplete(onComplete.Invoke);
+        }
+        
+        private void TeleportObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition)
+        {
+            Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
+            battleBehaviour.transform.position = targetPosition;
         }
     }
 }

@@ -40,7 +40,11 @@ namespace Features.Unit.Battle.Scripts.Actions
             Vector3 targetPosition = (Vector3) instantiationData[0];
             
             float time = Vector3.Distance(transform.position, targetPosition) / speed;
-            Transform targetTransform = PhotonView.Find((int) instantiationData[1]).transform;
+            PhotonView targetPhotonView = PhotonView.Find((int) instantiationData[1]);
+
+            if (targetPhotonView == null) return;
+            
+            Transform targetTransform = targetPhotonView.transform;
             LeanTween.move(gameObject, targetTransform, time).setTryMoveToTransform()
                 .setOnComplete(() =>
                 {
