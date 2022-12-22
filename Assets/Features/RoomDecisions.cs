@@ -35,10 +35,33 @@ namespace Features
 
         public bool UpdateDecision(Action onAllPlayerChose)
         {
-            if (!PlayerChose()) return false;
+            if (_triggerIfOneChose)
+            {
+                if (!AnyPlayerChose()) return false;
+            }
+            else
+            {
+                if (!PlayerChose()) return false;
+            }
+            
             onAllPlayerChose.Invoke();
             ResetLocalDecision();
             return true;
+        }
+
+        private bool AnyPlayerChose()
+        {
+            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            
+            foreach (Player player in PhotonNetwork.PlayerList)
+            {
+                if (roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
         
         private bool PlayerChose()
@@ -55,11 +78,6 @@ namespace Features
                 if (!roomCustomProperties.ContainsKey(Identifier(player)) || roomCustomProperties[Identifier(player)] == null)
                 {
                     return false;
-                }
-                
-                if (_triggerIfOneChose && roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null)
-                {
-                    return true;
                 }
             }
 

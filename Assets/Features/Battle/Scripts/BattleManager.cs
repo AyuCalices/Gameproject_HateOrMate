@@ -82,8 +82,12 @@ namespace Features.Battle.Scripts
 
         public void EndStage(bool restartState)
         {
+            if (!restartState)
+            {
+                LootingState.LootCount++;
+            }
+            
             bool enteredLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(() => RequestLootingState(restartState));
-            Debug.Log(enteredLootingState);
             if (!enteredLootingState)
             {
                 RequestStageSetupState(restartState);

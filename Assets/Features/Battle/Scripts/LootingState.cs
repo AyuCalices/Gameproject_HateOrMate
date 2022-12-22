@@ -17,6 +17,8 @@ namespace Features.Battle.Scripts
         private readonly bool _restartStage;
         private RoomDecisions<bool> _roomDecision;
 
+        public static int LootCount { get; set; }
+
         public LootingState(BattleManager battleManager, BattleData_SO battleData, LootSelectionBehaviour lootSelectionBehaviour, Button continueBattleButton, bool restartStage)
         {
             _battleManager = battleManager;
@@ -34,9 +36,16 @@ namespace Features.Battle.Scripts
             _continueBattleButton.onClick.AddListener(() => _roomDecision.SetLocalDecision(true));
             
             if (!PhotonNetwork.IsMasterClient) return;
+
+            LootableGenerator_SO[] lootables = new LootableGenerator_SO[LootCount];
+            for (int index = 0; index < lootables.Length; index++)
+            {
+                lootables[index] = _battleData.LootTable.RandomizeLootableGenerator();
+            }
+
             if (!_restartStage)
             {
-                SendLootableByRaiseEvent(_battleData.LootTable.RandomizeLootableGenerator());
+                SendLootableByRaiseEvent(lootables);
             }
         }
 
@@ -51,7 +60,7 @@ namespace Features.Battle.Scripts
             _continueBattleButton.gameObject.SetActive(false);
         }
         
-        private void SendLootableByRaiseEvent(LootableGenerator_SO lootable)
+        private void SendLootableByRaiseEvent(LootableGenerator_SO[] lootable)
         {
             object[] data = new object[]
             {

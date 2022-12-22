@@ -131,8 +131,13 @@ namespace Features.Loot.Scripts
             if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
             {
                 object[] data = (object[]) photonEvent.CustomData;
+                LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[0];
+
+                foreach (var lootable in lootables)
+                {
+                    _lootables.Add(lootable);
+                }
                 
-                _lootables.Add((LootableGenerator_SO)data[0]);
                 gameObject.SetActive(true);
             }
         }
