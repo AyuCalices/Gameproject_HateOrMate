@@ -821,6 +821,22 @@ namespace ThirdParty.LeanTween.Framework
 			};
 			return this;
 		}
+		
+		public LTDescr setTryMoveToTransform(){
+			this.type = TweenAction.MOVE_TO_TRANSFORM;
+			this.initInternal = ()=>{ this.from = trans.position; };
+			this.easeInternal = ()=>
+			{
+				if (this._optional.toTrans == null) return;
+				this.to = this._optional.toTrans.position;
+				this.diff = this.to - this.@from;
+				this.diffDiv2 = this.diff * 0.5f;
+
+				newVect = easeMethod();
+				this.trans.position = newVect;
+			};
+			return this;
+		}
 
 		public LTDescr setRotate(){
 			this.type = TweenAction.ROTATE;

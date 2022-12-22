@@ -1,11 +1,9 @@
-using System;
 using System.Collections.Generic;
 using Features.Battle.Scripts;
 using Features.Tiles;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
 using Photon.Pun;
-using ToolBox.Pools;
 using UnityEngine;
 
 namespace Features.Unit
@@ -49,7 +47,7 @@ namespace Features.Unit
         
         public NetworkedBattleBehaviour InstantiateAndInitialize(NetworkedBattleBehaviour selectedPrefab, UnitTeamData_SO unitTeamData, UnitClassData_SO unitClassData, Vector3Int gridPosition)
         {
-            NetworkedBattleBehaviour player = selectedPrefab.gameObject.Reuse<NetworkedBattleBehaviour>(GetSpawnPositionByGrid(gridPosition).transform);
+            NetworkedBattleBehaviour player = Instantiate(selectedPrefab, transform);
             _spawnedUnits.Add(player.PhotonView);
             
             //initialize values
@@ -85,7 +83,7 @@ namespace Features.Unit
             }
             
             _spawnedUnits.Remove(playerPhotonView);
-            playerPhotonView.gameObject.Release();
+            Destroy(playerPhotonView.gameObject);
         }
 
         public bool TryDestroy(int viewID)

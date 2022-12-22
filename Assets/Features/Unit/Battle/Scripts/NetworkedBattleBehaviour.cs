@@ -4,6 +4,7 @@ using Features.Battle.Scripts;
 using Features.Unit.Modding;
 using Features.Unit.View;
 using Photon.Pun;
+using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts
@@ -24,10 +25,6 @@ namespace Features.Unit.Battle.Scripts
             set
             {
                 //TODO: re-apply modifier - eg: remove networked stats and send it through attack. when unit gets instantiated, all mods need to get applied to it
-                if (_unitTeamData != null)
-                {
-                    ClearRuntimeSets();
-                }
                 _unitTeamData = value;
                 AddRuntimeSets();
             }

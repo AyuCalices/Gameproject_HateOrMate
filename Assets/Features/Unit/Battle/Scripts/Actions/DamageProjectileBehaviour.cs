@@ -40,17 +40,19 @@ namespace Features.Unit.Battle.Scripts.Actions
             Vector3 targetPosition = (Vector3) instantiationData[0];
             
             float time = Vector3.Distance(transform.position, targetPosition) / speed;
-            LeanTween.move(gameObject, PhotonView.Find((int)instantiationData[1]).transform, time).setFollow().setOnComplete(() =>
-            {
-                if (!info.photonView.IsMine) return;
-                
-                if (!_onCompleteActionCanceled)
+            Transform targetTransform = PhotonView.Find((int) instantiationData[1]).transform;
+            LeanTween.move(gameObject, targetTransform, time).setTryMoveToTransform()
+                .setOnComplete(() =>
                 {
-                    _onCompleteAction.Invoke();
-                }
-                
-                PhotonNetwork.Destroy(gameObject);
-            });
+                    if (!info.photonView.IsMine) return;
+                    
+                    if (!_onCompleteActionCanceled)
+                    {
+                        _onCompleteAction.Invoke();
+                    }
+                    
+                    PhotonNetwork.Destroy(gameObject);
+                });
         }
     }
 }

@@ -12,7 +12,6 @@ namespace Features.Unit.Modding
     {
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
-        public bool NetworkingInitialized { get; private set; }
 
         private float _removedHealth;
         public float RemovedHealth
@@ -49,7 +48,6 @@ namespace Features.Unit.Modding
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
             }
 
-            NetworkingInitialized = true;
             NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
             NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
             NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);

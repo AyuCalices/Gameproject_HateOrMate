@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 1119605207248732696}
   - component: {fileID: 6238822348637795684}
   - component: {fileID: 1844214538914090057}
-  - component: {fileID: -6355625548377119624}
   m_Layer: 0
   m_Name: LocalAiUnit
   m_TagString: Untagged
@@ -50,10 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b5af6e1786ddd94593111fc2e023da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  ownerNetworkedPlayerUnits: {fileID: 0}
-  enemyRuntimeSet: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
-  ownTeamRuntimeSet: {fileID: 11400000, guid: 88d480e3de14b6448865c07ae6e4c633, type: 2}
 --- !u!114 &4585056453339632491
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -67,9 +62,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  battleActionsGenerator: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
-  range: 100
-  movementSpeed: 2
 --- !u!114 &1119605207248732696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,18 +150,6 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-6355625548377119624
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6238822348637795683}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d6f0ec84bc54bb4f87128c78eee50fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &7128142604671378570
 PrefabInstance:
   m_ObjectHideFlags: 0

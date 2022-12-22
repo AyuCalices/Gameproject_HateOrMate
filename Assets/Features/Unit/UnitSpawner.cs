@@ -66,8 +66,6 @@ namespace Features.Unit
 
             if (localUnit == null) return null;
 
-            if (localUnit.NetworkedStatsBehaviour.NetworkingInitialized) return localUnit;
-            
             if (PhotonNetwork.AllocateViewID(localUnit.PhotonView))
             {
                 localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
@@ -142,13 +140,6 @@ namespace Features.Unit
 
         private void MasterSpawnRaiseEvent(NetworkedBattleBehaviour playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
-            if (playerPrefab.NetworkedStatsBehaviour.NetworkingInitialized)
-            {
-                PerformSpawnRaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
-                    spawnerInstanceIndex, unitClassData);
-                return;
-            }
-            
             if (PhotonNetwork.AllocateViewID(playerPrefab.PhotonView))
             {
                 PerformSpawnRaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
