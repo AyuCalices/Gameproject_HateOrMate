@@ -28,14 +28,6 @@ namespace Features.Battle.Scripts
                 _battleData.Stage.Add(1);
             }
 
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in _battleData.AllUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
-            }
-
-            BattleManager.onLocalDespawnAllUnits?.Invoke("AiTower");
-            BattleManager.onLocalDespawnAllUnits?.Invoke("Gate");
             if (PhotonNetwork.IsMasterClient)
             {
                 BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass);

@@ -2,6 +2,7 @@ using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Loot.Scripts;
+using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
 using Photon.Pun;
 using Photon.Realtime;
@@ -87,6 +88,15 @@ namespace Features.Battle.Scripts
                 LootingState.LootCount++;
             }
             
+            onLocalDespawnAllUnits?.Invoke("AiTower");
+            onLocalDespawnAllUnits?.Invoke("Gate");
+            
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+            {
+                networkedUnitBehaviour.OnStageEnd();
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
+            }
+
             bool enteredLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(() => RequestLootingState(restartState));
             if (!enteredLootingState)
             {

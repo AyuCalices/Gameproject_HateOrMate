@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using Features.GlobalReferences.Scripts;
-using Features.Unit.Battle.Scripts.Actions;
-using Features.Unit.Modding;
 using UnityEngine;
 
 namespace Features.Unit.Battle.Scripts

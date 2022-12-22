@@ -28,7 +28,6 @@ namespace Features.Unit.GridMovement
         private float _journeyLength;
         private Vector3 _targetTileWorldPosition;
         private Vector3Int _targetTileGridPosition;
-        private bool _isValidDrop;
 
         private void Awake()
         {
@@ -45,11 +44,7 @@ namespace Features.Unit.GridMovement
         
         private void Update()
         {
-            if (battleData.CurrentState is not LootingState)
-            {
-                _isValidDrop = false;
-                return;
-            }
+            if (battleData.CurrentState is not LootingState) return;
 
             if (_instantiatedPrefab != null && _journeyLength != 0)
             {
@@ -58,11 +53,6 @@ namespace Features.Unit.GridMovement
 
                 _instantiatedPrefab.transform.position = Vector3.Lerp(_instantiatedPrefab.transform.position,
                     _targetTileWorldPosition, fractionOfJourney);
-            }
-
-            if (!TryResetDrop() && _isValidDrop)
-            {
-                onPerformTeleport?.Invoke(_battleBehaviour, _targetTileGridPosition);
             }
         }
 
@@ -102,7 +92,7 @@ namespace Features.Unit.GridMovement
 
             if (!battleData.TileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
             
-            _isValidDrop = true;
+            onPerformTeleport?.Invoke(_battleBehaviour, _targetTileGridPosition);
         }
         
         private Vector3 SetTileInterpolation(Vector3 targetWorldPosition)
@@ -119,18 +109,6 @@ namespace Features.Unit.GridMovement
             }
 
             return targetTileWorldPosition;
-        }
-
-        private bool TryResetDrop()
-        {
-            bool result = _targetTileGridPosition == battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
-            
-            if (result)
-            {
-                _isValidDrop = false;
-            }
-
-            return result;
         }
     }
 }
