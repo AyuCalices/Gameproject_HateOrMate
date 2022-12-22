@@ -53,6 +53,7 @@ namespace Features.Unit.Modding
             NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
         
+        //TODO: make sure this gets casted when all units are spawned (or synchronize different - probably the way)
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {

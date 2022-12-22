@@ -45,7 +45,7 @@ namespace Features.Unit
             return spawnPositions.Find(x => x.GridPosition == gridPosition);
         }
         
-        public NetworkedBattleBehaviour InstantiateAndInitialize(NetworkedBattleBehaviour selectedPrefab, UnitTeamData_SO unitTeamData, UnitClassData_SO unitClassData, Vector3Int gridPosition)
+        public NetworkedBattleBehaviour InstantiateAndInitialize(NetworkedBattleBehaviour selectedPrefab, UnitTeamData_SO unitTeamData, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
         {
             NetworkedBattleBehaviour player = Instantiate(selectedPrefab, transform);
             _spawnedUnits.Add(player.PhotonView);
@@ -53,6 +53,7 @@ namespace Features.Unit
             //initialize values
             player.UnitTeamData = unitTeamData;
             player.IsTargetable = isTargetable;
+            player.SpawnerInstanceIndex = index;
             if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;

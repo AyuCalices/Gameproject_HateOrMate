@@ -17,6 +17,7 @@ namespace Features.Battle.Scripts
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
+        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onLocalSpawnUnit;
         public static Action<string> onLocalDespawnAllUnits;
         
         public UnitClassData_SO gateClass;
@@ -49,10 +50,7 @@ namespace Features.Battle.Scripts
 
         private void Start()
         {
-            if (PhotonNetwork.IsMasterClient)
-            {
-                onNetworkedSpawnUnit.Invoke("Player", towerClass);
-            }
+            onLocalSpawnUnit.Invoke("Player", towerClass);
             
             _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));
             

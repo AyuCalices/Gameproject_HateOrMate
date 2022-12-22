@@ -8,9 +8,11 @@ namespace Features
         OnRequestGridPositionSwap = 4,
         OnPerformGridTeleport = 5,
         OnRequestGridTeleport = 6,
-        OnSendFloatToTarget = 7,
-        OnUpdateAllClientsHealth = 8,
-        OnRequestBattleState = 9,
-        OnObtainLoot = 10
+        OnRequestGridTeleportAndSpawn = 7,
+        OnSendFloatToTarget = 8,
+        OnUpdateAllClientsHealth = 9,
+        OnRequestBattleState = 10,
+        OnObtainLoot = 11,
+        OnAllPlayerUnitsInstantiated = 12
     }
 }
