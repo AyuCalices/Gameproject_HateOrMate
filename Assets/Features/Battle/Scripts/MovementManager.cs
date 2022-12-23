@@ -11,19 +11,27 @@ using Photon.Realtime;
 using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 
-//TODO: cleanup
 namespace Features.Battle.Scripts
 {
+    //TODO: check isSpawnedLocally
     /// <summary>
-    /// Make sure every 'MovementManager' exists only once for each Battle -> marked by 'BattleData_SO'
+    /// In order to prevent, that two Players can place a Unit at the same GridPosition at the same
+    /// time, locking tile positions is handled by the MasterClient. When a Non-MasterClient wants
+    /// to swap a tile position, he always needs to send a request to the MasterClient by a RaiseEvent.
+    /// Inside the Callback, a new RaiseEvent will be called to update Positions if valid.
+    ///
+    /// On the other hand, if a MasterClient wants to change the Position, it directly calls a RaiseEvent
+    /// to update Positions if valid.
+    ///
+    /// Methods starting with 'Perform' represents those position swaps, and 'Requests' are RaiseEvents
+    /// that should call 'Perform'
     /// </summary>
     public class MovementManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Action<int, int, UnitClassData_SO, Vector3Int> onRequestTeleportAndSpawn;
-        public static Action<int, Vector3Int, bool, int, UnitClassData_SO> onPerformTeleportAndSpawn;
-        
         [Header("References")]
         [SerializeField] private BattleData_SO battleData;
+
+        [SerializeField] private UnitSpawner unitSpawner;
 
         public override void OnEnable()
         {
@@ -47,23 +55,8 @@ namespace Features.Battle.Scripts
             {
                 if (battleBehaviour.IsSpawnedLocally)
                 {
-                    Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour.transform);
-                    bool wasSuccessful = IsViablePosition(battleData, targetTileGridPosition);
-            
-                    if (wasSuccessful)
-                    {
-                        UpdateUnitOnRuntimeTiles(battleData, battleBehaviour, currentCellPosition, targetTileGridPosition);
-                        battleBehaviour.IsSpawnedLocally = false;
-                    }
-                    else
-                    {
-                        battleBehaviour.ForceIdleState();
-                        return;
-                    }
-                    
-                    TeleportObjectToTarget(battleBehaviour, targetTileGridPosition);
-                    
-                    onPerformTeleportAndSpawn.Invoke(battleBehaviour.PhotonView.ViewID, targetTileGridPosition, PhotonNetwork.IsMasterClient, battleBehaviour.SpawnerInstanceIndex, battleBehaviour.UnitClassData);
+                    PerformGridSpawnTeleport(battleBehaviour, targetTileGridPosition,
+                        battleBehaviour.UnitClassData);
                 }
                 else
                 {
@@ -74,12 +67,12 @@ namespace Features.Battle.Scripts
             {
                 if (battleBehaviour.IsSpawnedLocally)
                 {
-                    onRequestTeleportAndSpawn.Invoke(battleBehaviour.PhotonView.ViewID, battleBehaviour.SpawnerInstanceIndex, battleBehaviour.UnitClassData,
+                    unitSpawner.RequestTeleportAndSpawn_RaiseEvent(battleBehaviour.PhotonView.ViewID, battleBehaviour.SpawnerInstanceIndex, battleBehaviour.UnitClassData,
                         targetTileGridPosition);
                 }
                 else
                 {
-                    RequestTeleport(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition);
+                    RequestTeleport_RaiseEvent(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition);
                 }
             }
         }
@@ -92,79 +85,81 @@ namespace Features.Battle.Scripts
             }
             else
             {
-                RequestGridPositionSwap(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                RequestGridPositionSwap_RaiseEvent(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
             }
-        }
-    
-        private Vector3Int CurrentCellPosition(Transform currentTransform)
-        {
-            return battleData.TileRuntimeDictionary.GetWorldToCellPosition(currentTransform.position);
-        }
-
-        private void PerformGridPositionSwap(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition, int skipLastMovementsCount, float movementSpeed)
-        {
-            Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour.transform);
-            bool wasSuccessful = TryGetNextPosition(targetCellPosition, currentCellPosition, skipLastMovementsCount,
-                out Vector3Int nextCellPosition);
-
-            if (wasSuccessful)
-            {
-                UpdateUnitOnRuntimeTiles(battleData, battleBehaviour, currentCellPosition, nextCellPosition);
-            }
-
-            object[] data = new object[]
-            {
-                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
-                nextCellPosition,
-                movementSpeed,
-                wasSuccessful
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridPositionSwap, data, raiseEventOptions, sendOptions);
-        }
-
-        public static bool IsViablePosition(BattleData_SO battleData, Vector3Int targetCellPosition)
-        {
-            return battleData.TileRuntimeDictionary.TryGetByGridPosition(targetCellPosition, out RuntimeTile runtimeTile) 
-                                 && runtimeTile.IsPlaceable;
         }
         
+        #region MasterClient Perform Methods
+        
+        /// <summary>
+        /// Master Cast: Unit Only exists locally.
+        /// </summary>
+        /// <param name="battleBehaviour"></param>
+        /// <param name="targetTileGridPosition"></param>
+        /// <param name="unitClassData"></param>
+        private void PerformGridSpawnTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, UnitClassData_SO unitClassData)
+        {
+            Vector3Int currentCellPosition = GetCurrentCellPosition(battleBehaviour.transform);
+            if (IsViablePosition(targetTileGridPosition))
+            {
+                UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, targetTileGridPosition);
+                battleBehaviour.IsSpawnedLocally = false;
+                
+                //Note: the local unit will be teleported and the unit is directly spawned at the target
+                TeleportObjectToTarget(battleBehaviour, targetTileGridPosition);
+                unitSpawner.PerformGridSpawn_RaiseEvent(battleBehaviour.PhotonView.ViewID, targetTileGridPosition, PhotonNetwork.IsMasterClient,
+                    battleBehaviour.SpawnerInstanceIndex, unitClassData);
+            }
+        }
+        
+        /// <summary>
+        /// Master Cast: Unit Already exists on all clients
+        /// </summary>
+        /// <param name="battleBehaviour"></param>
+        /// <param name="targetCellPosition"></param>
         private void PerformGridTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition)
         {
-            Vector3Int currentCellPosition = CurrentCellPosition(battleBehaviour.transform);
-            bool wasSuccessful = IsViablePosition(battleData, targetCellPosition);
-            
-            if (wasSuccessful)
-            {
-                UpdateUnitOnRuntimeTiles(battleData, battleBehaviour, currentCellPosition, targetCellPosition);
-            }
+            Vector3Int currentCellPosition = GetCurrentCellPosition(battleBehaviour.transform);
 
-            PerformGridTeleport(battleBehaviour, targetCellPosition, wasSuccessful);
+            if (!IsViablePosition(targetCellPosition)) return;
+            
+            UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, targetCellPosition);
+            PerformGridTeleport_RaiseEvent(battleBehaviour, targetCellPosition);
         }
 
-        public static void PerformGridTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition, bool wasSuccessful)
+        /// <summary>
+        /// Master Cast
+        /// </summary>
+        /// <param name="battleBehaviour"></param>
+        /// <param name="targetTileGridPosition"></param>
+        /// <param name="skipLastMovementsCount"></param>
+        /// <param name="movementSpeed"></param>
+        private void PerformGridPositionSwap(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount, float movementSpeed)
+        {
+            Vector3Int currentCellPosition = GetCurrentCellPosition(battleBehaviour.transform);
+            if (!TryGetNextPathfindingPosition(targetTileGridPosition, currentCellPosition, skipLastMovementsCount,
+                out Vector3Int nextCellPosition)) return;
+                
+            UpdateUnitOnRuntimeTiles(battleBehaviour, currentCellPosition, nextCellPosition);
+            PerformGridPositionSwap_RaiseEvent(battleBehaviour, nextCellPosition, movementSpeed);
+        }
+        
+        #endregion
+
+        
+        #region RaiseEvents: Requests for MasterClient
+
+        private void RequestTeleport_RaiseEvent(PhotonView photonView, Vector3Int targetCellPosition)
         {
             object[] data = new object[]
             {
-                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
-                targetCellPosition,
-                wasSuccessful
+                photonView.ViewID,
+                targetCellPosition
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
+                Receivers = ReceiverGroup.MasterClient,
                 CachingOption = EventCaching.AddToRoomCache
             };
 
@@ -173,34 +168,10 @@ namespace Features.Battle.Scripts
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridTeleport, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleport, data, raiseEventOptions, sendOptions);
         }
     
-        private bool TryGetNextPosition(Vector3Int targetCellPosition, Vector3Int startCellPosition, int skipLastMovementsCount, out Vector3Int nextCellPosition)
-        {
-            if (battleData.TileRuntimeDictionary.GenerateAStarPath(startCellPosition,
-                targetCellPosition, out List<Vector3Int> path) && path.Count > skipLastMovementsCount)
-            {
-                nextCellPosition = path[0];
-                return true;
-            }
-
-            nextCellPosition = default;
-            return false;
-        }
-    
-        private static void UpdateUnitOnRuntimeTiles(BattleData_SO battleData, NetworkedBattleBehaviour battleBehaviour, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
-        {
-            RuntimeTile targetTileContainer = battleData.TileRuntimeDictionary.GetContent(nextCellPosition);
-            targetTileContainer.AddUnit(battleBehaviour.gameObject);
-
-            if (battleData.TileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
-            {
-                previousTileBehaviour.RemoveUnit();
-            }
-        }
-    
-        private void RequestGridPositionSwap(PhotonView photonView, Vector3Int targetCellPosition, int skipLastMovementsCount, float movementSpeed)
+        private void RequestGridPositionSwap_RaiseEvent(PhotonView photonView, Vector3Int targetCellPosition, int skipLastMovementsCount, float movementSpeed)
         {
             object[] data = new object[]
             {
@@ -223,18 +194,23 @@ namespace Features.Battle.Scripts
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridPositionSwap, data, raiseEventOptions, sendOptions);
         }
+
+        #endregion
         
-        private void RequestTeleport(PhotonView photonView, Vector3Int targetCellPosition)
+        
+        #region RaiseEvents: MasterClient sends result to all
+        
+        public void PerformGridTeleport_RaiseEvent(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition)
         {
             object[] data = new object[]
             {
-                photonView.ViewID,
+                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
                 targetCellPosition
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.MasterClient,
+                Receivers = ReceiverGroup.All,
                 CachingOption = EventCaching.AddToRoomCache
             };
 
@@ -243,95 +219,72 @@ namespace Features.Battle.Scripts
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleport, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridTeleport, data, raiseEventOptions, sendOptions);
         }
-
-        public void OnEvent(EventData photonEvent)
+        
+        private void PerformGridPositionSwap_RaiseEvent(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed)
         {
-            if (photonEvent.Code == (int)RaiseEventCode.OnPerformGridPositionSwap)
+            object[] data = new object[]
             {
-                object[] data = (object[]) photonEvent.CustomData;
-                int viewID = (int) data[0];
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
-                {
-                    Vector3Int nextCellPosition = (Vector3Int) data[1];
-                    float movementSpeed = (float) data[2];
-                    bool wasSuccessful = (bool) data[3];
-                    if (!wasSuccessful)
-                    {
-                        networkedUnitBehaviour.ForceIdleState();
-                        return;
-                    }
+                battleBehaviour.NetworkedStatsBehaviour.PhotonView.ViewID,
+                nextCellPosition,
+                movementSpeed
+            };
 
-                    if (!PhotonNetwork.IsMasterClient)
-                    {
-                        Vector3Int currentCellPosition = CurrentCellPosition(networkedUnitBehaviour.transform);
-                        UpdateUnitOnRuntimeTiles(battleData, networkedUnitBehaviour, currentCellPosition, nextCellPosition);
-                    }
-                    
-                    MoveGameObjectToTarget(networkedUnitBehaviour, nextCellPosition, movementSpeed, () =>
-                    {
-                        if (!networkedUnitBehaviour.TryRequestAttackState() || !networkedUnitBehaviour.TryRequestMovementStateByClosestUnit() || networkedUnitBehaviour.CurrentState is not DeathState)
-                        {
-                            networkedUnitBehaviour.ForceIdleState();
-                        }
-                    });
-                }
-            }
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridPositionSwap, data, raiseEventOptions, sendOptions);
+        }
         
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestGridPositionSwap)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                int viewID = (int) data[0];
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
-                {
-                    Vector3Int targetCellPosition = (Vector3Int) data[1];
-                    int skipLastMovementsCount = (int) data[2];
-                    float movementSpeed = (float) data[3];
-                    PerformGridPositionSwap(networkedUnitBehaviour, targetCellPosition,
-                        skipLastMovementsCount, movementSpeed);
-                }
-            }
-
-            if (photonEvent.Code == (int)RaiseEventCode.OnPerformGridTeleport)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                int viewID = (int) data[0];
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
-                {
-                    Vector3Int nextCellPosition = (Vector3Int) data[1];
-                    bool wasSuccessful = (bool) data[2];
-                    if (!wasSuccessful)
-                    {
-                        networkedUnitBehaviour.ForceIdleState();
-                        return;
-                    }
-
-                    networkedUnitBehaviour.IsSpawnedLocally = false;
-
-                    if (!PhotonNetwork.IsMasterClient)
-                    {
-                        Vector3Int currentCellPosition = CurrentCellPosition(networkedUnitBehaviour.transform);
-                        UpdateUnitOnRuntimeTiles(battleData, networkedUnitBehaviour, currentCellPosition, nextCellPosition);
-                    }
-                    
-                    TeleportObjectToTarget(networkedUnitBehaviour, nextCellPosition);
-                }
-            }
+        #endregion
         
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestGridTeleport)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                int viewID = (int) data[0];
+        
+        #region Helper Functions
 
-                if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
-                {
-                    Vector3Int targetCellPosition = (Vector3Int) data[1];
-                    PerformGridTeleport(networkedUnitBehaviour, targetCellPosition);
-                }
+        private Vector3Int GetCurrentCellPosition(Transform currentTransform)
+        {
+            return battleData.TileRuntimeDictionary.GetWorldToCellPosition(currentTransform.position);
+        }
+
+        public bool IsViablePosition(Vector3Int targetCellPosition)
+        {
+            return battleData.TileRuntimeDictionary.TryGetByGridPosition(targetCellPosition, out RuntimeTile runtimeTile) 
+                   && runtimeTile.IsPlaceable;
+        }
+        
+        private bool TryGetNextPathfindingPosition(Vector3Int targetCellPosition, Vector3Int startCellPosition, int skipLastMovementsCount, out Vector3Int nextCellPosition)
+        {
+            if (battleData.TileRuntimeDictionary.GenerateAStarPath(startCellPosition,
+                targetCellPosition, out List<Vector3Int> path) && path.Count > skipLastMovementsCount)
+            {
+                nextCellPosition = path[0];
+                return true;
+            }
+
+            nextCellPosition = default;
+            return false;
+        }
+
+        private void UpdateUnitOnRuntimeTiles(NetworkedBattleBehaviour battleBehaviour, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
+        {
+            RuntimeTile targetTileContainer = battleData.TileRuntimeDictionary.GetContent(nextCellPosition);
+            targetTileContainer.AddUnit(battleBehaviour.gameObject);
+
+            if (battleData.TileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
+            {
+                previousTileBehaviour.RemoveUnit();
             }
         }
-    
+
         private void MoveGameObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed, Action onComplete)
         {
             if (movementSpeed <= 0)
@@ -351,5 +304,97 @@ namespace Features.Battle.Scripts
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
             battleBehaviour.transform.position = targetPosition;
         }
+        
+        #endregion
+        
+        
+        #region RaiseEvent Callbacks
+        
+        public void OnEvent(EventData photonEvent)
+        {
+            switch (photonEvent.Code)
+            {
+                case (int)RaiseEventCode.OnPerformGridPositionSwap:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int viewID = (int) data[0];
+                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    {
+                        Vector3Int nextCellPosition = (Vector3Int) data[1];
+                        float movementSpeed = (float) data[2];
+
+                        //the masterClient already locked the position to prevent race conditions
+                        if (!PhotonNetwork.IsMasterClient)
+                        {
+                            Vector3Int currentCellPosition = GetCurrentCellPosition(networkedUnitBehaviour.transform);
+                            UpdateUnitOnRuntimeTiles(networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                        }
+                    
+                        MoveGameObjectToTarget(networkedUnitBehaviour, nextCellPosition, movementSpeed, () =>
+                        {
+                            if (!networkedUnitBehaviour.TryRequestAttackState() || !networkedUnitBehaviour.TryRequestMovementStateByClosestUnit() || networkedUnitBehaviour.CurrentState is not DeathState)
+                            {
+                                networkedUnitBehaviour.ForceIdleState();
+                            }
+                        });
+                    }
+
+                    break;
+                }
+                case (int)RaiseEventCode.OnRequestGridPositionSwap:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int viewID = (int) data[0];
+                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    {
+                        Vector3Int targetCellPosition = (Vector3Int) data[1];
+                        int skipLastMovementsCount = (int) data[2];
+                        float movementSpeed = (float) data[3];
+
+                        PerformGridPositionSwap(networkedUnitBehaviour, targetCellPosition, skipLastMovementsCount, movementSpeed);
+                    }
+
+                    break;
+                }
+                case (int)RaiseEventCode.OnPerformGridTeleport:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int viewID = (int) data[0];
+                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    {
+                        Vector3Int nextCellPosition = (Vector3Int) data[1];
+
+                        networkedUnitBehaviour.IsSpawnedLocally = false;
+
+                        //the masterClient already locked the position to prevent race conditions
+                        if (!PhotonNetwork.IsMasterClient)
+                        {
+                            Vector3Int currentCellPosition = GetCurrentCellPosition(networkedUnitBehaviour.transform);
+                            UpdateUnitOnRuntimeTiles( networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                        }
+                    
+                        TeleportObjectToTarget(networkedUnitBehaviour, nextCellPosition);
+                    }
+
+                    break;
+                }
+                case (int)RaiseEventCode.OnRequestGridTeleport:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int viewID = (int) data[0];
+
+                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    {
+                        Vector3Int targetCellPosition = (Vector3Int) data[1];
+                        PerformGridTeleport(networkedUnitBehaviour, targetCellPosition);
+                    }
+
+                    break;
+                }
+            }
+        }
+        
+        #endregion
+
     }
 }

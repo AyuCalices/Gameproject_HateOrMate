@@ -2676,6 +2676,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  unitSpawner: {fileID: 1135514588}
 --- !u!1 &969196821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2929,11 +2930,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fc2d739386500054597071da096690b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   spawnerInstances:
   - {fileID: 2000028973}
   - {fileID: 1657379422}
   - {fileID: 308443181}
+  movementManager: {fileID: 918058705}
 --- !u!1 &1188822405
 GameObject:
   m_ObjectHideFlags: 0

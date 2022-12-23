@@ -82,25 +82,13 @@ namespace Features.Unit.Battle.Scripts
 
         internal override bool TryRequestMovementStateByClosestUnit()
         {
-            bool result = HasTarget && !TargetInRange;
+            bool result = HasTarget && !TargetInRange && CurrentState is not DeathState && CurrentState is not MovementState;
 
             if (result)
             {
                 NetworkedBattleBehaviour closestStats = GetTarget.Key;
                 Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
-                TryRequestMovementState(enemyPosition, 1);
-            }
-
-            return result;
-        }
-        
-        internal bool TryRequestMovementState(Vector3Int targetPosition, int skipLastMovementCount)
-        {
-            bool result = CurrentState is not DeathState && CurrentState is not MovementState;
-            
-            if (result)
-            {
-                stateMachine.ChangeState(new MovementState( this, targetPosition, skipLastMovementCount));
+                stateMachine.ChangeState(new MovementState( this, enemyPosition, 1));
             }
 
             return result;

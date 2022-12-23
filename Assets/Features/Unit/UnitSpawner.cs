@@ -15,8 +15,8 @@ namespace Features.Unit
     //TODO: cleanup
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private List<SpawnerInstance> spawnerInstances;
+        [SerializeField] private MovementManager movementManager;
 
         public override void OnEnable()
         {
@@ -27,8 +27,6 @@ namespace Features.Unit
             BattleManager.onLocalSpawnUnit += SpawnLocal;
             UnitMod.onAddUnit += SpawnLocal;
             UnitMod.onRemoveUnit += LocalDespawn;
-            MovementManager.onRequestTeleportAndSpawn += RequestTeleportAndSpawn;
-            MovementManager.onPerformTeleportAndSpawn += PerformSpawnRaiseEvent;
         }
 
         public override void OnDisable()
@@ -40,17 +38,11 @@ namespace Features.Unit
             BattleManager.onLocalSpawnUnit -= SpawnLocal;
             UnitMod.onAddUnit -= SpawnLocal;
             UnitMod.onRemoveUnit -= LocalDespawn;
-            MovementManager.onRequestTeleportAndSpawn -= RequestTeleportAndSpawn;
-            MovementManager.onPerformTeleportAndSpawn -= PerformSpawnRaiseEvent;
         }
 
         private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData)
         {
-            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
-            if (spawnerInstanceIndex == -1)
-            {
-                Debug.LogError("Spawner Instance was not Found!");
-            }
+            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
             
             if (!spawnerInstances[spawnerInstanceIndex]
                 .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair))
@@ -62,8 +54,6 @@ namespace Features.Unit
             NetworkedBattleBehaviour selectedPrefab = spawnerInstance.localPlayerPrefab;
             UnitTeamData_SO unitTeamData = spawnerInstance.localPlayerTeamData;
             NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex);
-
-            if (localUnit == null) return null;
 
             if (PhotonNetwork.AllocateViewID(localUnit.PhotonView))
             {
@@ -84,8 +74,6 @@ namespace Features.Unit
             UnitTeamData_SO unitTeamData = spawnerInstance.networkedPlayerTeamData;
             NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, targetGridPosition, spawnerInstanceIndex);
 
-            if (localUnit == null) return null;
-
             localUnit.PhotonView.ViewID = viewID;
             localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
             return localUnit;
@@ -93,33 +81,31 @@ namespace Features.Unit
 
         private void LocalDespawn(string spawnerReference, PhotonView photonView)
         {
-            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
-            if (spawnerInstanceIndex == -1)
-            {
-                Debug.LogError("Spawner Instance was not Found!");
-            }
-            
+            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
             spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
         }
 
         private void NetworkedDespawnAll(string spawnerReference)
         {
-            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
-            if (spawnerInstanceIndex == -1)
-            {
-                Debug.LogError("Spawner Instance was not Found!");
-            }
-            
+            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
             spawnerInstances[spawnerInstanceIndex].DestroyAll();
         }
 
-        private void NetworkedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
+        private int GetSpawnerInstanceIndex(string spawnerReference)
         {
             int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
             if (spawnerInstanceIndex == -1)
             {
                 Debug.LogError("Spawner Instance was not Found!");
+                return -1;
             }
+
+            return spawnerInstanceIndex;
+        }
+
+        private void NetworkedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
+        {
+            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
             
             if (PhotonNetwork.IsMasterClient)
             {
@@ -127,7 +113,7 @@ namespace Features.Unit
             }
             else
             {
-                RequestSpawnRaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
+                RequestSpawn_RaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
             }
         }
         
@@ -153,7 +139,7 @@ namespace Features.Unit
         {
             if (PhotonNetwork.AllocateViewID(playerPrefab.PhotonView))
             {
-                PerformSpawnRaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
+                PerformGridSpawn_RaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
                     spawnerInstanceIndex, unitClassData);
                 playerPrefab.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
             }
@@ -164,79 +150,9 @@ namespace Features.Unit
                 spawnerInstances[spawnerInstanceIndex].DestroyByReference(playerPrefab.PhotonView);
             }
         }
-
-        private void PerformSpawnRaiseEvent(int viewID, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
-        {
-            object[] data = new object[]
-            {
-                viewID,
-                gridPosition,
-                isSpawnedByMaster,
-                spawnerInstanceIndex,
-                unitClassData
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
-        }
         
-        private void RequestSpawnRaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
-        {
-            object[] data = new object[]
-            {
-                isSpawnedByMaster,
-                spawnerInstanceIndex,
-                unitClassData
-            };
-            
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.MasterClient,
-                CachingOption = EventCaching.AddToRoomCache
-            };
+        //--------------------------Callbacks------------------------------------
 
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestUnitManualInstantiation, data, raiseEventOptions, sendOptions);
-        }
-        
-        private void RequestTeleportAndSpawn(int viewID, int spawnerInstanceIndex, UnitClassData_SO unitClassData, Vector3Int targetCellPosition)
-        {
-            object[] data = new object[]
-            {
-                viewID,
-                spawnerInstanceIndex,
-                unitClassData,
-                targetCellPosition
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleportAndSpawn, data, raiseEventOptions, sendOptions);
-        }
-        
         public void OnEvent(EventData photonEvent)
         {
             if (photonEvent.Code == (int)RaiseEventCode.OnUnitManualInstantiation)
@@ -270,14 +186,85 @@ namespace Features.Unit
                 UnitClassData_SO unitClassData = (UnitClassData_SO) data[2];
                 Vector3Int targetGridPosition = (Vector3Int) data[3];
 
-                bool isViablePosition = MovementManager.IsViablePosition(battleData, targetGridPosition);
-
-                if (isViablePosition)
-                {
-                    NetworkedBattleBehaviour battleBehaviour = SpawnNetworkedIfNotExisting(spawnerInstanceIndex, unitClassData, targetGridPosition, viewID);
-                    MovementManager.PerformGridTeleport(battleBehaviour, targetGridPosition, isViablePosition);
-                }
+                if (!movementManager.IsViablePosition(targetGridPosition)) return;
+                
+                NetworkedBattleBehaviour battleBehaviour = SpawnNetworkedIfNotExisting(spawnerInstanceIndex, unitClassData, targetGridPosition, viewID);
+                movementManager.PerformGridTeleport_RaiseEvent(battleBehaviour, targetGridPosition);
             }
+        }
+        
+        //--------------------------RaiseEvents------------------------------------
+        
+        public void PerformGridSpawn_RaiseEvent(int viewID, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        {
+            object[] data = new object[]
+            {
+                viewID,
+                gridPosition,
+                isSpawnedByMaster,
+                spawnerInstanceIndex,
+                unitClassData
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void RequestSpawn_RaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        {
+            object[] data = new object[]
+            {
+                isSpawnedByMaster,
+                spawnerInstanceIndex,
+                unitClassData
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.MasterClient,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestUnitManualInstantiation, data, raiseEventOptions, sendOptions);
+        }
+        
+        public void RequestTeleportAndSpawn_RaiseEvent(int viewID, int spawnerInstanceIndex, UnitClassData_SO unitClassData, Vector3Int targetCellPosition)
+        {
+            object[] data = new object[]
+            {
+                viewID,
+                spawnerInstanceIndex,
+                unitClassData,
+                targetCellPosition
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleportAndSpawn, data, raiseEventOptions, sendOptions);
         }
     }
 }

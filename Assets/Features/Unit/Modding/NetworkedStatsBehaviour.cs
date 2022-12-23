@@ -32,6 +32,17 @@ namespace Features.Unit.Modding
         {
             PhotonView = GetComponent<PhotonView>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
+            
+            foreach (object value in Enum.GetValues(typeof(StatType)))
+            {
+                string scalingStatIdentity = Guid.NewGuid().ToString();
+                string statIdentity = Guid.NewGuid().ToString();
+                NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
+            }
+            
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
+            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
 
         /// <summary>
@@ -42,15 +53,9 @@ namespace Features.Unit.Modding
         {
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
-                string scalingStatIdentity = Guid.NewGuid().ToString();
-                string statIdentity = Guid.NewGuid().ToString();
-                NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
-                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, (StatType)value, scalingStatIdentity, statIdentity);
+                LocalStat selectedStat = NetworkedStatServiceLocator.Get<LocalStat>((StatType)value);
+                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedStat.StatType, selectedStat.ScalingStatIdentity, selectedStat.StatIdentity);
             }
-
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
         
         //TODO: make sure this gets casted when all units are spawned (or synchronize different - probably the way)
