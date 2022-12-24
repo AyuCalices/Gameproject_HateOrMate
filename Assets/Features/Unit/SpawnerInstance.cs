@@ -45,8 +45,12 @@ namespace Features.Unit
             return spawnPositions.Find(x => x.GridPosition == gridPosition);
         }
         
-        public NetworkedBattleBehaviour InstantiateAndInitialize(NetworkedBattleBehaviour selectedPrefab, UnitTeamData_SO unitTeamData, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
+        public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
         {
+            bool isOwner = PhotonNetwork.LocalPlayer.ActorNumber == photonActorNumber;
+            NetworkedBattleBehaviour selectedPrefab = isOwner ? localPlayerPrefab : networkedPlayerPrefab;
+            UnitTeamData_SO unitTeamData = isOwner ? localPlayerTeamData : networkedPlayerTeamData;
+            
             NetworkedBattleBehaviour player = Instantiate(selectedPrefab, transform);
             _spawnedUnits.Add(player.PhotonView);
             

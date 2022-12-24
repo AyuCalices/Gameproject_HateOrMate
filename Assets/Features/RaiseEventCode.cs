@@ -2,17 +2,18 @@ namespace Features
 {
     public enum RaiseEventCode
     {
-        OnUnitManualInstantiation = 1,
-        OnRequestUnitManualInstantiation = 2,
-        OnPerformGridPositionSwap = 3,
-        OnRequestGridPositionSwap = 4,
-        OnPerformGridTeleport = 5,
-        OnRequestGridTeleport = 6,
-        OnRequestGridTeleportAndSpawn = 7,
-        OnSendFloatToTarget = 8,
-        OnUpdateAllClientsHealth = 9,
-        OnRequestBattleState = 10,
-        OnObtainLoot = 11,
-        OnAllPlayerUnitsInstantiated = 12
+        OnPerformUnitInstantiation = 1,
+        OnRequestUnitInstantiation = 2,
+        OnPerformGridStep = 3,
+        OnRequestGridStep = 4,
+        OnRequestSpawnThenTeleport = 5,
+        OnPerformSpawnThenTeleport = 6,
+        OnRequestTeleport = 7,
+        OnPerformTeleportThenSpawn = 8,
+        OnSendFloatToTarget = 9,
+        OnUpdateAllClientsHealth = 10,
+        OnRequestBattleState = 11,
+        OnEnterUnitIdleState = 12,
+        OnObtainLoot = 13
     }
 }

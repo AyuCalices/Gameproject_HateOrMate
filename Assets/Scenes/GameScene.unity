@@ -2676,7 +2676,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  unitSpawner: {fileID: 1135514588}
 --- !u!1 &969196821
 GameObject:
   m_ObjectHideFlags: 0
@@ -2893,6 +2892,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1135514587}
   - component: {fileID: 1135514588}
+  - component: {fileID: 1135514589}
   m_Layer: 0
   m_Name: UnitSpawner
   m_TagString: Untagged
@@ -2931,10 +2931,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnerInstances:
-  - {fileID: 2000028973}
   - {fileID: 1657379422}
   - {fileID: 308443181}
-  movementManager: {fileID: 918058705}
+--- !u!114 &1135514589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135514586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29256a6d9b6fb0a46bae5f6d21910dbf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnerInstances:
+  - {fileID: 2000028973}
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
 --- !u!1 &1188822405
 GameObject:
   m_ObjectHideFlags: 0

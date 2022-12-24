@@ -2,8 +2,6 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Experimental;
-using Features.Mod;
-using Features.Tiles;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
 using Photon.Pun;
@@ -12,196 +10,100 @@ using UnityEngine;
 
 namespace Features.Unit
 {
-    //TODO: cleanup
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] private List<SpawnerInstance> spawnerInstances;
-        [SerializeField] private MovementManager movementManager;
 
         public override void OnEnable()
         {
             base.OnEnable();
-            TestingGenerator.onNetworkedSpawnUnit += NetworkedSpawn;
-            BattleManager.onNetworkedSpawnUnit += NetworkedSpawn;
-            BattleManager.onLocalDespawnAllUnits += NetworkedDespawnAll;
-            BattleManager.onLocalSpawnUnit += SpawnLocal;
-            UnitMod.onAddUnit += SpawnLocal;
-            UnitMod.onRemoveUnit += LocalDespawn;
+            TestingGenerator.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
+            BattleManager.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
+            BattleManager.onLocalDespawnAllUnits += PlayerSynchronizedDespawnAll;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
-            TestingGenerator.onNetworkedSpawnUnit -= NetworkedSpawn;
-            BattleManager.onNetworkedSpawnUnit -= NetworkedSpawn;
-            BattleManager.onLocalDespawnAllUnits -= NetworkedDespawnAll;
-            BattleManager.onLocalSpawnUnit -= SpawnLocal;
-            UnitMod.onAddUnit -= SpawnLocal;
-            UnitMod.onRemoveUnit -= LocalDespawn;
+            TestingGenerator.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
+            BattleManager.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
+            BattleManager.onLocalDespawnAllUnits -= PlayerSynchronizedDespawnAll;
         }
-
-        private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData)
+        
+        private void PlayerSynchronizedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
         {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
-            
-            if (!spawnerInstances[spawnerInstanceIndex]
-                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair))
-            {
-                return null;
-            }
-            
-            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour selectedPrefab = spawnerInstance.localPlayerPrefab;
-            UnitTeamData_SO unitTeamData = spawnerInstance.localPlayerTeamData;
-            NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex);
-
-            if (PhotonNetwork.AllocateViewID(localUnit.PhotonView))
-            {
-                localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-                localUnit.IsSpawnedLocally = true;
-                return localUnit;
-            }
-            
-            Debug.LogError("Failed to allocate a ViewId.");
-            spawnerInstances[spawnerInstanceIndex].DestroyByReference(localUnit.PhotonView);
-            return null;
-        }
-
-        private NetworkedBattleBehaviour SpawnNetworkedIfNotExisting(int spawnerInstanceIndex, UnitClassData_SO unitClassData, Vector3Int targetGridPosition, int viewID)
-        {
-            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour selectedPrefab = spawnerInstance.networkedPlayerPrefab;
-            UnitTeamData_SO unitTeamData = spawnerInstance.networkedPlayerTeamData;
-            NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, targetGridPosition, spawnerInstanceIndex);
-
-            localUnit.PhotonView.ViewID = viewID;
-            localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-            return localUnit;
-        }
-
-        private void LocalDespawn(string spawnerReference, PhotonView photonView)
-        {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
-            spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
-        }
-
-        private void NetworkedDespawnAll(string spawnerReference)
-        {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
-            spawnerInstances[spawnerInstanceIndex].DestroyAll();
-        }
-
-        private int GetSpawnerInstanceIndex(string spawnerReference)
-        {
-            int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
-            if (spawnerInstanceIndex == -1)
-            {
-                Debug.LogError("Spawner Instance was not Found!");
-                return -1;
-            }
-
-            return spawnerInstanceIndex;
-        }
-
-        private void NetworkedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
-        {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerReference);
-            
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnUnit(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
+                SpawnHelper.SpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, unitClassData, (unit, position) =>
+                {
+                    int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
+                    PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(unit.PhotonView.ViewID, position, PhotonNetwork.LocalPlayer.ActorNumber,
+                        spawnerInstanceIndex, unitClassData);
+                    unit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
+                });
             }
             else
             {
-                RequestSpawn_RaiseEvent(PhotonNetwork.IsMasterClient, spawnerInstanceIndex, unitClassData);
+                RequestPlayerSynchronizedUnitInstantiation_RaiseEvent(PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, unitClassData);
             }
         }
         
-        private NetworkedBattleBehaviour SpawnUnit(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        private void PlayerSynchronizedDespawnAll(string spawnerReference)
         {
-            if (!spawnerInstances[spawnerInstanceIndex]
-                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair))
-            {
-                return null;
-            }
-
-            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour selectedPrefab = isSpawnedByMaster ? spawnerInstance.localPlayerPrefab : spawnerInstance.networkedPlayerPrefab;
-            UnitTeamData_SO unitTeamData = isSpawnedByMaster ? spawnerInstance.localPlayerTeamData : spawnerInstance.networkedPlayerTeamData;
-            NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex);
-
-            MasterSpawnRaiseEvent(player, tileKeyValuePair.Key, isSpawnedByMaster, spawnerInstanceIndex, unitClassData);
-
-            return player;
+            SpawnHelper.PlayerSynchronizedDespawnAll(spawnerInstances, spawnerReference);
         }
 
-        private void MasterSpawnRaiseEvent(NetworkedBattleBehaviour playerPrefab, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
-        {
-            if (PhotonNetwork.AllocateViewID(playerPrefab.PhotonView))
-            {
-                PerformGridSpawn_RaiseEvent(playerPrefab.PhotonView.ViewID, gridPosition, isSpawnedByMaster,
-                    spawnerInstanceIndex, unitClassData);
-                playerPrefab.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-            }
-            else
-            {
-                Debug.LogError("Failed to allocate a ViewId.");
-
-                spawnerInstances[spawnerInstanceIndex].DestroyByReference(playerPrefab.PhotonView);
-            }
-        }
-        
-        //--------------------------Callbacks------------------------------------
+        #region RaiseEvent Callbacks
 
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == (int)RaiseEventCode.OnUnitManualInstantiation)
+            switch (photonEvent.Code)
             {
-                object[] data = (object[]) photonEvent.CustomData;
+                case (int)RaiseEventCode.OnPerformUnitInstantiation:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
 
-                Vector3Int gridPosition = (Vector3Int) data[1];
-                bool isSpawnedByMaster = (bool) data[2];
-                SpawnerInstance spawnerInstance = spawnerInstances[(int) data[3]];
-                UnitClassData_SO unitClassData = (UnitClassData_SO) data[4];
-
-                NetworkedBattleBehaviour selectedPrefab = isSpawnedByMaster ? spawnerInstance.networkedPlayerPrefab : spawnerInstance.localPlayerPrefab;
-                UnitTeamData_SO unitTeamData = isSpawnedByMaster ? spawnerInstance.networkedPlayerTeamData : spawnerInstance.localPlayerTeamData;
-                NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(selectedPrefab, unitTeamData, unitClassData, gridPosition, (int) data[3]);
+                    Vector3Int gridPosition = (Vector3Int) data[1];
+                    int actorNumber = (int) data[2];
+                    SpawnerInstance spawnerInstance = spawnerInstances[(int) data[3]];
+                    UnitClassData_SO unitClassData = (UnitClassData_SO) data[4];
                 
-                player.PhotonView.ViewID = (int) data[0];
-                player.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-            }
-
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestUnitManualInstantiation)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                SpawnUnit((bool) data[0], (int) data[1], (UnitClassData_SO) data[2]);
-            }
-            
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestGridTeleportAndSpawn)
-            {
-                object[] data = (object[]) photonEvent.CustomData;
-                int viewID = (int) data[0];
-                int spawnerInstanceIndex = (int) data[1];
-                UnitClassData_SO unitClassData = (UnitClassData_SO) data[2];
-                Vector3Int targetGridPosition = (Vector3Int) data[3];
-
-                if (!movementManager.IsViablePosition(targetGridPosition)) return;
+                    NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(actorNumber, unitClassData, gridPosition, (int) data[3]);
                 
-                NetworkedBattleBehaviour battleBehaviour = SpawnNetworkedIfNotExisting(spawnerInstanceIndex, unitClassData, targetGridPosition, viewID);
-                movementManager.PerformGridTeleport_RaiseEvent(battleBehaviour, targetGridPosition);
+                    player.PhotonView.ViewID = (int) data[0];
+                    player.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
+                    break;
+                }
+                case (int)RaiseEventCode.OnRequestUnitInstantiation:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int actorNumber = (int) data[0];
+                    string spawnerReference = (string) data[1];
+                    UnitClassData_SO unitClassData = (UnitClassData_SO) data[2];
+                
+                    SpawnHelper.SpawnUnit(spawnerInstances, actorNumber, spawnerReference, unitClassData, (unit, position) =>
+                    {
+                        int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
+                        PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(unit.PhotonView.ViewID, position, actorNumber,
+                            spawnerInstanceIndex, unitClassData);
+                        unit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
+                    });
+                    break;
+                }
             }
         }
         
-        //--------------------------RaiseEvents------------------------------------
+        #endregion
         
-        public void PerformGridSpawn_RaiseEvent(int viewID, Vector3Int gridPosition, bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        #region RaiseEvents: MasterClient sends result to all
+
+        private static void PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(int viewID, Vector3Int targetGridPosition, int photonActorNumber, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
         {
             object[] data = new object[]
             {
                 viewID,
-                gridPosition,
-                isSpawnedByMaster,
+                targetGridPosition,
+                photonActorNumber,
                 spawnerInstanceIndex,
                 unitClassData
             };
@@ -217,15 +119,19 @@ namespace Features.Unit
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUnitManualInstantiation, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformUnitInstantiation, data, raiseEventOptions, sendOptions);
         }
         
-        private void RequestSpawn_RaiseEvent(bool isSpawnedByMaster, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        #endregion
+
+        #region RaiseEvents: Requests for MasterClient
+        
+        private static void RequestPlayerSynchronizedUnitInstantiation_RaiseEvent(int photonActorNumber, string spawnerReference, UnitClassData_SO unitClassData)
         {
             object[] data = new object[]
             {
-                isSpawnedByMaster,
-                spawnerInstanceIndex,
+                photonActorNumber,
+                spawnerReference,
                 unitClassData
             };
             
@@ -240,31 +146,9 @@ namespace Features.Unit
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestUnitManualInstantiation, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestUnitInstantiation, data, raiseEventOptions, sendOptions);
         }
         
-        public void RequestTeleportAndSpawn_RaiseEvent(int viewID, int spawnerInstanceIndex, UnitClassData_SO unitClassData, Vector3Int targetCellPosition)
-        {
-            object[] data = new object[]
-            {
-                viewID,
-                spawnerInstanceIndex,
-                unitClassData,
-                targetCellPosition
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridTeleportAndSpawn, data, raiseEventOptions, sendOptions);
-        }
+        #endregion
     }
 }
