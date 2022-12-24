@@ -1,4 +1,3 @@
-using Features.Unit;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
 using UnityEngine;
@@ -17,7 +16,7 @@ namespace Features.Mod
             _baseValue = baseValue;
             _scaleValue = scaleValue;
         }
-        
+
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
             Debug.Log("SingleStat");

@@ -19,7 +19,7 @@ namespace Features.Unit
             base.OnEnable();
             TestingGenerator.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
             BattleManager.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
-            BattleManager.onLocalDespawnAllUnits += PlayerSynchronizedDespawnAll;
+            BattleManager.onLocalDespawnAllUnits += PlayerDespawnAll;
         }
 
         public override void OnDisable()
@@ -27,7 +27,7 @@ namespace Features.Unit
             base.OnDisable();
             TestingGenerator.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
             BattleManager.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
-            BattleManager.onLocalDespawnAllUnits -= PlayerSynchronizedDespawnAll;
+            BattleManager.onLocalDespawnAllUnits -= PlayerDespawnAll;
         }
         
         private void PlayerSynchronizedSpawn(string spawnerReference, UnitClassData_SO unitClassData)
@@ -48,8 +48,9 @@ namespace Features.Unit
             }
         }
         
-        private void PlayerSynchronizedDespawnAll(string spawnerReference)
+        private void PlayerDespawnAll(string spawnerReference)
         {
+            
             SpawnHelper.PlayerSynchronizedDespawnAll(spawnerInstances, spawnerReference);
         }
 

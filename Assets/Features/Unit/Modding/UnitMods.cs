@@ -93,20 +93,33 @@ namespace Features.Unit.Modding
             
             if (ContainsMod())
             {
-                RemoveMod();
+                RemoveMod(true);
             }
             
             if (origin.ContainsMod())
             {
-                origin.RemoveMod();
+                origin.RemoveMod(true);
 
                 if (removedMod != null)
                 {
-                    origin.AddMod(removedMod);
+                    origin.SwapAddMod(removedMod, origin);
                 }
             }
 
-            AddMod(newMod);
+            SwapAddMod(newMod, origin);
+        }
+
+        private void SwapAddMod(BaseMod newMod, ModSlotContainer origin)
+        {
+            if (!isActive)
+            {
+                newMod.DisableMod(_localStats, false);
+                origin.baseMod = null;
+            }
+            else if (isActive)
+            {
+                AddMod(newMod);
+            }
         }
 
         public void AddMod(BaseMod newMod)
@@ -115,10 +128,10 @@ namespace Features.Unit.Modding
 
             if (isActive) newMod.EnableMod(_localStats);
         }
-
-        public void RemoveMod()
+        
+        private void RemoveMod(bool isSwap)
         {
-            if (isActive) baseMod.DisableMod(_localStats);
+            if (isActive) baseMod.DisableMod(_localStats, isSwap);
             
             baseMod = null;
         }
@@ -131,7 +144,7 @@ namespace Features.Unit.Modding
             }
             else
             {
-                baseMod.DisableMod(_localStats);
+                baseMod.DisableMod(_localStats, false);
             }
         }
         
@@ -153,11 +166,11 @@ namespace Features.Unit.Modding
 
             if (baseMod != null)
             {
-                baseMod.DisableMod(_localStats);
+                baseMod.DisableMod(_localStats, false);
             }
         }
         
-        public void EnableSlot()
+        private void EnableSlot()
         {
             isActive = true;
             

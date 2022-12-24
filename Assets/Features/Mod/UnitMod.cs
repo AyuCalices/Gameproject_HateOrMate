@@ -3,13 +3,14 @@ using System;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
 using Photon.Pun;
+using UnityEngine;
 
 namespace Features.Mod
 {
     public class UnitMod : BaseMod
     {
         public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onAddUnit;
-        public static Action<string, PhotonView> onRemoveUnit;
+        public static Action<string, int> onRemoveUnit;
         
         private readonly UnitClassData_SO _classData;
         private NetworkedBattleBehaviour _instantiatedUnit;
@@ -28,7 +29,7 @@ namespace Features.Mod
         {
             if (_instantiatedUnit != null)
             {
-                onRemoveUnit.Invoke("Player", _instantiatedUnit.PhotonView);
+                onRemoveUnit.Invoke("Player", _instantiatedUnit.PhotonView.ViewID);
             }
         }
     }

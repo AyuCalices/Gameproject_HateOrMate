@@ -1,5 +1,4 @@
-using Features.Experimental;
-using Features.Unit;
+using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
 using UnityEngine;
 
@@ -28,16 +27,17 @@ namespace Features.Mod
             _isEnabled = true;
         }
         
-        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats)
+        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats, bool isSwap)
         {
             if (!_isEnabled) return;
+            if (isSwap) return;
             
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
 
-        
 
+        protected virtual void ApplyToInstantiatedUnits(NetworkedBattleBehaviour instantiatedUnit) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }

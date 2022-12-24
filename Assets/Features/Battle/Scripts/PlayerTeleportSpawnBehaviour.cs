@@ -25,7 +25,7 @@ namespace Features.Battle.Scripts
             BattleManager.onLocalSpawnUnit += SpawnLocal;
             UnitMod.onAddUnit += SpawnLocal;
             UnitDragPlacementBehaviour.onPerformTeleport += RequestTeleport;
-            UnitMod.onRemoveUnit += LocalDespawn;
+            UnitMod.onRemoveUnit += PlayerSynchronizedDespawn_RaiseEvent;
         }
 
         public override void OnDisable()
@@ -36,7 +36,7 @@ namespace Features.Battle.Scripts
             BattleManager.onLocalSpawnUnit -= SpawnLocal;
             UnitMod.onAddUnit -= SpawnLocal;
             UnitDragPlacementBehaviour.onPerformTeleport -= RequestTeleport;
-            UnitMod.onRemoveUnit -= LocalDespawn;
+            UnitMod.onRemoveUnit -= PlayerSynchronizedDespawn_RaiseEvent;
         }
         
         private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData)
@@ -74,11 +74,32 @@ namespace Features.Battle.Scripts
                 }
             }
         }
-
-        private void LocalDespawn(string spawnerReference, PhotonView photonView)
+        
+        #region AllClients RaiseEvent
+        
+        private void PlayerSynchronizedDespawn_RaiseEvent(string spawnerReference, int viewID)
         {
-            SpawnHelper.LocalDespawn(spawnerInstances, spawnerReference, photonView);
+            object[] data = new object[]
+            {
+                viewID,
+                spawnerReference
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPlayerSynchronizedDespawn, data, raiseEventOptions, sendOptions);
         }
+        
+        #endregion
 
         #region MasterClient Perform Methods
     
@@ -328,6 +349,20 @@ namespace Features.Battle.Scripts
                     int actorNumber = (int) data[4];
                 
                     PerformSpawnThenTeleport(spawnerInstanceIndex, actorNumber, unitClassData, targetGridPosition, viewID);
+                    break;
+                }
+                case (int) RaiseEventCode.OnPlayerSynchronizedDespawn:
+                {
+                    object[] data = (object[]) photonEvent.CustomData;
+                    int viewID = (int) data[0];
+                    string spawnerReference = (string) data[1];
+
+                    int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
+                    PhotonView photonView = PhotonView.Find(viewID);
+                    if (photonView != null)
+                    {
+                        spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
+                    }
                     break;
                 }
             }

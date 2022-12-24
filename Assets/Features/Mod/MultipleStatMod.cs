@@ -1,8 +1,5 @@
-using System;
 using System.Collections.Generic;
-using Features.Loot;
 using Features.Loot.Scripts;
-using Features.Unit;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding;
 using Features.Unit.Modding.Stat;
@@ -17,6 +14,15 @@ namespace Features.Mod
         public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description) : base(modName, description)
         {
             _multipleStatModTargets = multipleStatModTargets;
+        }
+
+        protected override void ApplyToInstantiatedUnits(NetworkedBattleBehaviour instantiatedUnit)
+        {
+            foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
+            {
+                Add(instantiatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType,
+                    multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+            }
         }
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)

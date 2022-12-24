@@ -14,6 +14,7 @@ namespace Features
         OnUpdateAllClientsHealth = 10,
         OnRequestBattleState = 11,
         OnEnterUnitIdleState = 12,
-        OnObtainLoot = 13
+        OnObtainLoot = 13,
+        OnPlayerSynchronizedDespawn = 14
     }
 }

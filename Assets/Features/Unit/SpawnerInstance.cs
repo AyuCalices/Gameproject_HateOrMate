@@ -39,11 +39,6 @@ namespace Features.Unit
             tileKeyValuePair = default;
             return false;
         }
-
-        private SpawnPosition GetSpawnPositionByGrid(Vector3Int gridPosition)
-        {
-            return spawnPositions.Find(x => x.GridPosition == gridPosition);
-        }
         
         public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
         {
