@@ -35,9 +35,8 @@ namespace Features.Mod
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
-
-
-        protected virtual void ApplyToInstantiatedUnits(NetworkedBattleBehaviour instantiatedUnit) {}
+        
+        public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }

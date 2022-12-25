@@ -16,18 +16,23 @@ namespace Features.Mod
             _multipleStatModTargets = multipleStatModTargets;
         }
 
-        protected override void ApplyToInstantiatedUnits(NetworkedBattleBehaviour instantiatedUnit)
+        public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                Add(instantiatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType,
-                    multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                {
+                    if (manipulatedUnit.NetworkedStatsBehaviour == instantiatedUnit)
+                    {
+                        Add(instantiatedUnit, multipleStatModTarget.statType,
+                            multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                    }
+                }
             }
         }
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            Debug.Log("MultipleStat");
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
                 foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())

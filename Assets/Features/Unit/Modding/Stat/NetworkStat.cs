@@ -29,6 +29,8 @@ namespace Features.Unit.Modding.Stat
             bool found = false;
             foreach (var player in PhotonNetwork.PlayerList)
             {
+                if (player == PhotonNetwork.LocalPlayer) continue;
+                
                 if (player.CustomProperties.ContainsKey(ScalingStatIdentity))
                 {
                     float[] value = (float[])player.CustomProperties[ScalingStatIdentity];
@@ -52,6 +54,8 @@ namespace Features.Unit.Modding.Stat
             bool found = false;
             foreach (var player in PhotonNetwork.PlayerList)
             {
+                if (player == PhotonNetwork.LocalPlayer) continue;
+                
                 if (player.CustomProperties.ContainsKey(StatIdentity))
                 {
                     float[] value = (float[])player.CustomProperties[StatIdentity];

@@ -2,41 +2,40 @@ using System.Collections.Generic;
 using Features.Mod;
 using Features.ModView;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Features.Unit.Modding
 {
     public class UnitMods
     {
-        public readonly ModSlotContainer[] modSlotsContainers;
-        public readonly List<ModSlotBehaviour> modSlotBehaviours;
+        private readonly ModSlotContainer[] _modSlotsContainers;
+        private readonly List<ModSlotBehaviour> _modSlotBehaviours;
 
         public UnitMods(int size, NetworkedStatsBehaviour localStats, List<ModSlotBehaviour> modSlotBehaviours)
         {
-            this.modSlotBehaviours = modSlotBehaviours;
+            this._modSlotBehaviours = modSlotBehaviours;
             
-            modSlotsContainers = new ModSlotContainer[size];
+            _modSlotsContainers = new ModSlotContainer[size];
             for (int i = 0; i < size; i++)
             {
-                modSlotsContainers[i] = new ModSlotContainer(localStats);
-                modSlotBehaviours[i].Init(modSlotsContainers[i]);
+                _modSlotsContainers[i] = new ModSlotContainer(localStats);
+                modSlotBehaviours[i].Init(_modSlotsContainers[i]);
 
                 if (i > 2)
                 {
-                    modSlotsContainers[i].DisableSlot();
+                    _modSlotsContainers[i].DisableSlot();
                 }
             }
         }
         
         public bool TryInstantiateMod(ModDragBehaviour modDragBehaviourPrefab, BaseMod baseMod)
         {
-            for (int index = 0; index < modSlotsContainers.Length; index++)
+            for (int index = 0; index < _modSlotsContainers.Length; index++)
             {
-                ModSlotContainer modSlotsContainer = modSlotsContainers[index];
+                ModSlotContainer modSlotsContainer = _modSlotsContainers[index];
                 if (!modSlotsContainer.ContainsMod())
                 {
-                    ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, modSlotBehaviours[index].transform);
-                    modDragBehaviour.Initialize(modSlotsContainer, modSlotBehaviours[index], baseMod);
+                    ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, _modSlotBehaviours[index].transform);
+                    modDragBehaviour.Initialize(modSlotsContainer, _modSlotBehaviours[index], baseMod);
                     modSlotsContainer.AddMod(baseMod);
                     return true;
                 }
@@ -45,15 +44,23 @@ namespace Features.Unit.Modding
             return false;
         }
 
+        public void AddModToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        {
+            foreach (ModSlotContainer modSlotContainer in _modSlotsContainers)
+            {
+                modSlotContainer.ApplyModToInstantiatedUnit(instantiatedUnit);
+            }
+        }
+
         public bool TryAddMod(ModDragBehaviour modDragBehaviour)
         {
-            for (int index = 0; index < modSlotsContainers.Length; index++)
+            for (int index = 0; index < _modSlotsContainers.Length; index++)
             {
-                ModSlotContainer modSlotsContainer = modSlotsContainers[index];
+                ModSlotContainer modSlotsContainer = _modSlotsContainers[index];
                 if (!modSlotsContainer.ContainsMod())
                 {
                     modSlotsContainer.AddMod(modDragBehaviour.BaseMod);
-                    modDragBehaviour.SetNewOrigin(modSlotsContainer, modSlotBehaviours[index]);
+                    modDragBehaviour.SetNewOrigin(modSlotsContainer, _modSlotBehaviours[index]);
 
                     return true;
                 }
@@ -64,32 +71,39 @@ namespace Features.Unit.Modding
         
         public void ToggleSlot(int index)
         {
-            modSlotsContainers[index].ToggleSlot();
-            modSlotBehaviours[index].UpdateSlot();
+            _modSlotsContainers[index].ToggleSlot();
+            _modSlotBehaviours[index].UpdateSlot();
         }
     }
 
     public class ModSlotContainer
     {
-        public BaseMod baseMod;
-        public bool isActive;
-        
-        private NetworkedStatsBehaviour _localStats;
+        private BaseMod _baseMod;
+        private bool _isActive;
+        private readonly NetworkedStatsBehaviour _localStats;
 
         public ModSlotContainer(NetworkedStatsBehaviour localStats)
         {
             this._localStats = localStats;
-            isActive = true;
+            _isActive = true;
+        }
+
+        public void ApplyModToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        {
+            if (!ContainsMod()) return;
+            if (!_isActive) return;
+            
+            _baseMod.ApplyToInstantiatedUnit(instantiatedUnit);
         }
 
         public bool ContainsMod()
         {
-            return baseMod != null;
+            return _baseMod != null;
         }
 
         public void AddOrExchangeMod(BaseMod newMod, ModSlotContainer origin)
         {
-            BaseMod removedMod = baseMod;
+            BaseMod removedMod = _baseMod;
             
             if (ContainsMod())
             {
@@ -111,12 +125,12 @@ namespace Features.Unit.Modding
 
         private void SwapAddMod(BaseMod newMod, ModSlotContainer origin)
         {
-            if (!isActive)
+            if (!_isActive)
             {
                 newMod.DisableMod(_localStats, false);
-                origin.baseMod = null;
+                origin._baseMod = null;
             }
-            else if (isActive)
+            else if (_isActive)
             {
                 AddMod(newMod);
             }
@@ -124,33 +138,33 @@ namespace Features.Unit.Modding
 
         public void AddMod(BaseMod newMod)
         {
-            baseMod = newMod;
+            _baseMod = newMod;
 
-            if (isActive) newMod.EnableMod(_localStats);
+            if (_isActive) newMod.EnableMod(_localStats);
         }
         
         private void RemoveMod(bool isSwap)
         {
-            if (isActive) baseMod.DisableMod(_localStats, isSwap);
+            if (_isActive) _baseMod.DisableMod(_localStats, isSwap);
             
-            baseMod = null;
+            _baseMod = null;
         }
 
         public void UpdateActiveStatus()
         {
-            if (isActive)
+            if (_isActive)
             {
-                baseMod.EnableMod(_localStats);
+                _baseMod.EnableMod(_localStats);
             }
             else
             {
-                baseMod.DisableMod(_localStats, false);
+                _baseMod.DisableMod(_localStats, false);
             }
         }
         
         public void ToggleSlot()
         {
-            if (isActive)
+            if (_isActive)
             {
                 DisableSlot();
             }
@@ -162,21 +176,21 @@ namespace Features.Unit.Modding
 
         public void DisableSlot()
         {
-            isActive = false;
+            _isActive = false;
 
-            if (baseMod != null)
+            if (_baseMod != null)
             {
-                baseMod.DisableMod(_localStats, false);
+                _baseMod.DisableMod(_localStats, false);
             }
         }
         
         private void EnableSlot()
         {
-            isActive = true;
+            _isActive = true;
             
-            if (baseMod != null)
+            if (_baseMod != null)
             {
-                baseMod.EnableMod(_localStats);
+                _baseMod.EnableMod(_localStats);
             }
         }
     }

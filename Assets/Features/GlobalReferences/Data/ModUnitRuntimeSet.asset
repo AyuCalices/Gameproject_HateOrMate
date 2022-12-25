@@ -9,9 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4a84432f6e9598d4b99bef5fde10d3bf, type: 3}
-  m_Name: LootTable
+  m_Script: {fileID: 11500000, guid: b716d59de83de1c428a3095a28946386, type: 3}
+  m_Name: ModUnitRuntimeSet
   m_EditorClassIdentifier: 
-  baseModGenerators:
-  - modGenerator: {fileID: 11400000, guid: 5523ebb8babb04c41ad34b2dedace042, type: 2}
-    frequency: 10
+  items: []

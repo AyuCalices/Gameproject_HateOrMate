@@ -1,8 +1,11 @@
 using System;
+using Features.GlobalReferences.Scripts;
+using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding.Stat;
 using Features.Unit.View;
 using JetBrains.Annotations;
 using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 
 namespace Features.Unit.Modding
@@ -10,6 +13,8 @@ namespace Features.Unit.Modding
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviour
     {
+        [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
+        
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
 
@@ -56,9 +61,13 @@ namespace Features.Unit.Modding
                 LocalStat selectedStat = NetworkedStatServiceLocator.Get<LocalStat>((StatType)value);
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedStat.StatType, selectedStat.ScalingStatIdentity, selectedStat.StatIdentity);
             }
+            
+            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
+            {
+                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
+            }
         }
         
-        //TODO: make sure this gets casted when all units are spawned (or synchronize different - probably the way)
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {

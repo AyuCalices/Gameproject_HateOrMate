@@ -14,7 +14,6 @@ namespace Features.Unit.Modding.Stat
     public class LocalStat : NetworkStat
     {
         private float _baseStatValue;
-        private readonly float _baseScalingStatValue;
         
         private readonly List<float> _statModificationValues;
         private readonly List<float> _scalingStatModificationValues;
@@ -22,12 +21,11 @@ namespace Features.Unit.Modding.Stat
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
             _baseStatValue = 0;
-            _baseScalingStatValue = 1;
             
             _statModificationValues = new List<float>() {};
             UpdateStat(statIdentity, _statModificationValues.ToArray());
         
-            _scalingStatModificationValues = new List<float>() {};
+            _scalingStatModificationValues = new List<float>() {1};
             UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
         }
 
@@ -44,7 +42,7 @@ namespace Features.Unit.Modding.Stat
     
         protected override float GetScalingStat()
         {
-            float finalValue = _baseScalingStatValue;
+            float finalValue = 0;
 
             foreach (var scalingStatValue in _scalingStatModificationValues)
             {

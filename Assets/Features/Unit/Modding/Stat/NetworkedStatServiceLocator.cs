@@ -68,10 +68,12 @@ namespace Features.Unit.Modding.Stat
     
             if (TryGetService(out NetworkStat networkStat, statType))
             {
+                //Debug.Log(networkStat.GetTotalValue());
                 finalValue += networkStat.GetTotalValue();
             }
             if (TryGetService(out LocalStat localStat, statType))
             {
+                //Debug.Log(localStat.GetTotalValue());
                 finalValue += localStat.GetTotalValue();
             }
 
