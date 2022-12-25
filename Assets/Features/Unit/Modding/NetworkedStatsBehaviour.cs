@@ -1,4 +1,5 @@
 using System;
+using Features.Battle.Scripts;
 using Features.GlobalReferences.Scripts;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Modding.Stat;
@@ -14,7 +15,18 @@ namespace Features.Unit.Modding
     public class NetworkedStatsBehaviour : MonoBehaviour
     {
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
-        
+
+        private SynchronizedBaseStats _synchronizedBaseStats;
+        public SynchronizedBaseStats SynchronizedBaseStats
+        {
+            get => _synchronizedBaseStats;
+            set
+            {
+                _synchronizedBaseStats = value;
+                value.ApplyBaseStats(this);
+            }
+        }
+
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
 

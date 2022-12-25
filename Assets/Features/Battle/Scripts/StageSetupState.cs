@@ -30,9 +30,9 @@ namespace Features.Battle.Scripts
 
             if (PhotonNetwork.IsMasterClient)
             {
-                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass);
-                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass);
-                BattleManager.onNetworkedSpawnUnit?.Invoke("Gate", _battleManager.gateClass);
+                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass, new SynchronizedBaseStats(10, 50, 3));
+                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass, new SynchronizedBaseStats(10, 50, 3));
+                BattleManager.onNetworkedSpawnUnit?.Invoke("Gate", _battleManager.gateClass, new SynchronizedBaseStats(10, 50, 3));
             }
 
             if (PhotonNetwork.IsMasterClient)

@@ -1,15 +1,14 @@
 using Features.Unit.Modding;
 using System;
+using Features.Battle.Scripts;
 using Features.Unit.Battle.Scripts;
 using Features.Unit.Classes;
-using Photon.Pun;
-using UnityEngine;
 
 namespace Features.Mod
 {
     public class UnitMod : BaseMod
     {
-        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onAddUnit;
+        public static Func<string, UnitClassData_SO, SynchronizedBaseStats, NetworkedBattleBehaviour> onAddUnit;
         public static Action<string, int> onRemoveUnit;
         
         private readonly UnitClassData_SO _classData;
@@ -22,7 +21,7 @@ namespace Features.Mod
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            _instantiatedUnit = onAddUnit.Invoke("Player", _classData);
+            _instantiatedUnit = onAddUnit.Invoke("Player", _classData, new SynchronizedBaseStats(10, 50, 3));
         }
 
         protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)

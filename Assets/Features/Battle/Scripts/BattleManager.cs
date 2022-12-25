@@ -16,8 +16,8 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
-        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onLocalSpawnUnit;
+        public static Action<string, UnitClassData_SO, SynchronizedBaseStats> onNetworkedSpawnUnit;
+        public static Func<string, UnitClassData_SO, SynchronizedBaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
         public static Action<string> onLocalDespawnAllUnits;
         
         public UnitClassData_SO gateClass;
@@ -50,7 +50,7 @@ namespace Features.Battle.Scripts
 
         private void Start()
         {
-            onLocalSpawnUnit.Invoke("Player", towerClass);
+            onLocalSpawnUnit.Invoke("Player", towerClass, new SynchronizedBaseStats(10, 50, 3));
             
             _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));
             

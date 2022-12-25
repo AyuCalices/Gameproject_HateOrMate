@@ -39,9 +39,10 @@ namespace Features.Battle.Scripts
             UnitMod.onRemoveUnit -= PlayerSynchronizedDespawn_RaiseEvent;
         }
         
-        private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData)
+        private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData, SynchronizedBaseStats synchronizedBaseStats)
         {
-            return SpawnHelper.SpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, unitClassData, (unit, position) =>
+            return SpawnHelper.SpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, 
+                unitClassData, synchronizedBaseStats, (unit, position) =>
             {
                 unit.IsSpawnedLocally = true;
             });
@@ -54,7 +55,7 @@ namespace Features.Battle.Scripts
                 if (battleBehaviour.IsSpawnedLocally)
                 {
                     PerformTeleportThenSpawn(battleBehaviour, targetTileGridPosition,
-                        battleBehaviour.UnitClassData);
+                        battleBehaviour.UnitClassData, battleBehaviour.NetworkedStatsBehaviour.SynchronizedBaseStats);
                 }
                 else
                 {
@@ -66,7 +67,7 @@ namespace Features.Battle.Scripts
                 if (battleBehaviour.IsSpawnedLocally)
                 {
                     RequestSpawnThenTeleport_RaiseEvent(battleBehaviour.PhotonView.ViewID, battleBehaviour.SpawnerInstanceIndex, battleBehaviour.UnitClassData,
-                        targetTileGridPosition, PhotonNetwork.LocalPlayer.ActorNumber);
+                        battleBehaviour.NetworkedStatsBehaviour.SynchronizedBaseStats, targetTileGridPosition, PhotonNetwork.LocalPlayer.ActorNumber);
                 }
                 else
                 {
@@ -109,7 +110,8 @@ namespace Features.Battle.Scripts
         /// <param name="battleBehaviour"></param>
         /// <param name="targetTileGridPosition"></param>
         /// <param name="unitClassData"></param>
-        private void PerformTeleportThenSpawn(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, UnitClassData_SO unitClassData)
+        private void PerformTeleportThenSpawn(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, 
+            UnitClassData_SO unitClassData, SynchronizedBaseStats synchronizedBaseStats)
         {
             Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, battleBehaviour.transform);
             if (!GridPositionHelper.IsViablePosition(battleData, targetTileGridPosition)) return;
@@ -119,7 +121,7 @@ namespace Features.Battle.Scripts
             //Note: the local unit will be teleported and the unit is directly spawned at the target
             TeleportObjectToTarget(battleBehaviour, targetTileGridPosition);
             PerformTeleportThenSpawn_RaiseEvent(battleBehaviour.PhotonView.ViewID, targetTileGridPosition, PhotonNetwork.LocalPlayer.ActorNumber,
-                battleBehaviour.SpawnerInstanceIndex, unitClassData);
+                battleBehaviour.SpawnerInstanceIndex, unitClassData, synchronizedBaseStats);
         }
         
         /// <summary>
@@ -128,12 +130,12 @@ namespace Features.Battle.Scripts
         /// <param name="battleBehaviour"></param>
         /// <param name="targetTileGridPosition"></param>
         /// <param name="unitClassData"></param>
-        private void PerformSpawnThenTeleport(int spawnerInstanceIndex, int actorNumber, UnitClassData_SO unitClassData, Vector3Int targetGridPosition, int viewID)
+        private void PerformSpawnThenTeleport(int spawnerInstanceIndex, int actorNumber, UnitClassData_SO unitClassData, SynchronizedBaseStats synchronizedBaseStats, Vector3Int targetGridPosition, int viewID)
         {
             if (!GridPositionHelper.IsViablePosition(battleData, targetGridPosition)) return;
             
             SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(actorNumber, unitClassData, targetGridPosition, spawnerInstanceIndex);
+            NetworkedBattleBehaviour localUnit = spawnerInstance.InstantiateAndInitialize(actorNumber, unitClassData, synchronizedBaseStats, targetGridPosition, spawnerInstanceIndex);
 
             localUnit.PhotonView.ViewID = viewID;
             localUnit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
@@ -160,7 +162,8 @@ namespace Features.Battle.Scripts
 
         #region RaiseEvents: MasterClient sends result to all
         
-        private void PerformTeleportThenSpawn_RaiseEvent(int viewID, Vector3Int targetGridPosition, int photonActorNumber, int spawnerInstanceIndex, UnitClassData_SO unitClassData)
+        private void PerformTeleportThenSpawn_RaiseEvent(int viewID, Vector3Int targetGridPosition, int photonActorNumber, 
+            int spawnerInstanceIndex, UnitClassData_SO unitClassData, SynchronizedBaseStats synchronizedBaseStats)
         {
             object[] data = new object[]
             {
@@ -168,7 +171,8 @@ namespace Features.Battle.Scripts
                 targetGridPosition,
                 photonActorNumber,
                 spawnerInstanceIndex,
-                unitClassData
+                unitClassData,
+                synchronizedBaseStats
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -233,7 +237,8 @@ namespace Features.Battle.Scripts
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestTeleport, data, raiseEventOptions, sendOptions);
         }
 
-        private void RequestSpawnThenTeleport_RaiseEvent(int viewID, int spawnerInstanceIndex, UnitClassData_SO unitClassData, Vector3Int targetCellPosition, int actorNumber)
+        private void RequestSpawnThenTeleport_RaiseEvent(int viewID, int spawnerInstanceIndex, UnitClassData_SO unitClassData, 
+            SynchronizedBaseStats synchronizedBaseStats, Vector3Int targetCellPosition, int actorNumber)
         {
             object[] data = new object[]
             {
@@ -241,7 +246,8 @@ namespace Features.Battle.Scripts
                 spawnerInstanceIndex,
                 unitClassData,
                 targetCellPosition,
-                actorNumber
+                actorNumber,
+                synchronizedBaseStats
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -285,6 +291,7 @@ namespace Features.Battle.Scripts
                     int actorNumber = (int) data[2];
                     SpawnerInstance spawnerInstance = spawnerInstances[(int) data[3]];
                     UnitClassData_SO unitClassData = (UnitClassData_SO) data[4];
+                    SynchronizedBaseStats synchronizedBaseStats = (SynchronizedBaseStats) data[5];
                 
                     if (PhotonNetwork.IsMasterClient)
                     {
@@ -294,7 +301,7 @@ namespace Features.Battle.Scripts
                     }
                     else
                     {
-                        NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(actorNumber, unitClassData, gridPosition, (int) data[3]);
+                        NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(actorNumber, unitClassData, synchronizedBaseStats, gridPosition, (int) data[3]);
                         player.PhotonView.ViewID = viewID;
                         player.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
                     }
@@ -347,8 +354,9 @@ namespace Features.Battle.Scripts
                     UnitClassData_SO unitClassData = (UnitClassData_SO) data[2];
                     Vector3Int targetGridPosition = (Vector3Int) data[3];
                     int actorNumber = (int) data[4];
+                    SynchronizedBaseStats synchronizedBaseStats = (SynchronizedBaseStats) data[5];
                 
-                    PerformSpawnThenTeleport(spawnerInstanceIndex, actorNumber, unitClassData, targetGridPosition, viewID);
+                    PerformSpawnThenTeleport(spawnerInstanceIndex, actorNumber, unitClassData, synchronizedBaseStats, targetGridPosition, viewID);
                     break;
                 }
                 case (int) RaiseEventCode.OnPlayerSynchronizedDespawn:

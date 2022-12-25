@@ -33,7 +33,7 @@ namespace Features.Unit.Battle.Scripts
         public bool IsSpawnedLocally { get; set; }
         
         public int SpawnerInstanceIndex { get; set; }
-
+        
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
         public IState CurrentState => stateMachine.CurrentState;
         
