@@ -11,14 +11,16 @@ namespace Features.Battle.Scripts
     public class StageSetupState : IState
     {
         private readonly BattleData_SO _battleData;
+        private readonly StageRandomizer_SO _stageRandomizer;
         private readonly BattleManager _battleManager;
         private readonly bool _restartStage;
         
-        public StageSetupState(BattleManager battleManager, bool restartStage, BattleData_SO battleData)
+        public StageSetupState(BattleManager battleManager, bool restartStage, BattleData_SO battleData, StageRandomizer_SO stageRandomizer)
         {
             _battleManager = battleManager;
             _restartStage = restartStage;
             _battleData = battleData;
+            _stageRandomizer = stageRandomizer;
         }
     
         public void Enter()
@@ -30,9 +32,7 @@ namespace Features.Battle.Scripts
 
             if (PhotonNetwork.IsMasterClient)
             {
-                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass, new SynchronizedBaseStats(10, 50, 3));
-                BattleManager.onNetworkedSpawnUnit?.Invoke("AiTower", _battleManager.aiTowerClass, new SynchronizedBaseStats(10, 50, 3));
-                BattleManager.onNetworkedSpawnUnit?.Invoke("Gate", _battleManager.gateClass, new SynchronizedBaseStats(10, 50, 3));
+                _stageRandomizer.GenerateUnits();
             }
 
             if (PhotonNetwork.IsMasterClient)

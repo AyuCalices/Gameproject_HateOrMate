@@ -19,5 +19,5 @@ MonoBehaviour:
   localUnitRuntimeSet: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
   modDragBehaviourPrefab: {fileID: 2493011977752105954, guid: 21f0c94f61b565a4aa59fa243a2144d1, type: 3}
   statType: 0
-  baseValue: 10
+  baseValue: 50
   scaleValue: 0

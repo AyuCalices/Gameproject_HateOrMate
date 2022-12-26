@@ -56,10 +56,6 @@ namespace Features.Unit.Modding
                 string statIdentity = Guid.NewGuid().ToString();
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
             }
-            
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, 10);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Health, 50);
-            NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, 3);
         }
 
         /// <summary>

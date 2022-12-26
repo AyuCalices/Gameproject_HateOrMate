@@ -16,12 +16,10 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Action<string, UnitClassData_SO, SynchronizedBaseStats> onNetworkedSpawnUnit;
         public static Func<string, UnitClassData_SO, SynchronizedBaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
-        public static Action<string> onLocalDespawnAllUnits;
-        
-        public UnitClassData_SO gateClass;
-        public UnitClassData_SO aiTowerClass;
+        public static Action onLocalDespawnAllUnits;
+
+        [SerializeField] private StageRandomizer_SO stageRandomizer;
         public UnitClassData_SO towerClass;
         [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
         [SerializeField] private BattleData_SO battleData;
@@ -66,7 +64,7 @@ namespace Features.Battle.Scripts
 
         internal void RequestStageSetupState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new StageSetupState(this, restartState, battleData));
+            _stageStateMachine.ChangeState(new StageSetupState(this, restartState, battleData, stageRandomizer));
         }
 
         internal void RequestBattleState()
@@ -86,8 +84,7 @@ namespace Features.Battle.Scripts
                 LootingState.LootCount++;
             }
             
-            onLocalDespawnAllUnits?.Invoke("AiTower");
-            onLocalDespawnAllUnits?.Invoke("Gate");
+            onLocalDespawnAllUnits?.Invoke();
             
             foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
             {

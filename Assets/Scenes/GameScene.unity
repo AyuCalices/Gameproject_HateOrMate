@@ -2640,8 +2640,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821026a6df513594984122c0f088c980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gateClass: {fileID: 11400000, guid: 49d03fd6f35c1234d99a07207c1a8258, type: 2}
-  aiTowerClass: {fileID: 11400000, guid: ac2a905b7a0694e4b90dac633619f13e, type: 2}
+  stageRandomizer: {fileID: 11400000, guid: b73bcdb7f212a1049851af14d89c2fa9, type: 2}
   towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
   lootSelectionBehaviour: {fileID: 1932071502}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

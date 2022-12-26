@@ -18,7 +18,7 @@ namespace Features.Unit
         {
             base.OnEnable();
             TestingGenerator.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
-            BattleManager.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
+            StageRandomizer_SO.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
             BattleManager.onLocalDespawnAllUnits += PlayerDespawnAll;
         }
 
@@ -26,7 +26,7 @@ namespace Features.Unit
         {
             base.OnDisable();
             TestingGenerator.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
-            BattleManager.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
+            StageRandomizer_SO.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
             BattleManager.onLocalDespawnAllUnits -= PlayerDespawnAll;
         }
         
@@ -49,10 +49,9 @@ namespace Features.Unit
             }
         }
         
-        private void PlayerDespawnAll(string spawnerReference)
+        private void PlayerDespawnAll()
         {
-            
-            SpawnHelper.PlayerSynchronizedDespawnAll(spawnerInstances, spawnerReference);
+            SpawnHelper.PlayerSynchronizedDespawnAll(spawnerInstances);
         }
 
         #region RaiseEvent Callbacks

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Features.Battle.Scripts;
+using Features.Tiles;
 using Features.Unit.Battle.Scripts.Actions;
 using Features.Unit.Classes;
 using Features.Unit.Modding;
@@ -88,7 +89,7 @@ namespace Features.Unit.Battle.Scripts
             {
                 NetworkedBattleBehaviour closestStats = GetTarget.Key;
                 Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
-                stateMachine.ChangeState(new MovementState( this, enemyPosition, 1));
+                stateMachine.ChangeState(new MovementState( this, enemyPosition, 1, battleData.TileRuntimeDictionary));
             }
 
             return result;

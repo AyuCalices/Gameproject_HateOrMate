@@ -50,10 +50,9 @@ namespace Features.Battle.Scripts
             return spawnerInstanceIndex;
         }
         
-        public static void PlayerSynchronizedDespawnAll(List<SpawnerInstance> spawnerInstances, string spawnerReference)
+        public static void PlayerSynchronizedDespawnAll(List<SpawnerInstance> spawnerInstances)
         {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-            spawnerInstances[spawnerInstanceIndex].DestroyAll();
+            spawnerInstances.ForEach(x => x.DestroyAll());
         }
         
         public static void PlayerSynchronizedDespawn(List<SpawnerInstance> spawnerInstances, string spawnerReference, PhotonView photonView)
