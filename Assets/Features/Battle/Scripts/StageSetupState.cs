@@ -1,8 +1,9 @@
 using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using Features.Battle.Scripts.StageProgression;
+using Features.Connection;
 using Features.Loot.Scripts;
-using Features.Unit.Battle.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 

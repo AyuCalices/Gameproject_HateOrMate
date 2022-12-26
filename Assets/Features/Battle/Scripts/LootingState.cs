@@ -1,7 +1,10 @@
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using Features.Connection;
 using Features.Loot;
 using Features.Loot.Scripts;
+using Features.Loot.Scripts.Generator;
+using Features.Loot.Scripts.LootView;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;

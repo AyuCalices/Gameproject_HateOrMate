@@ -1,9 +1,13 @@
 using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using Features.Battle.Scripts.StageProgression;
+using Features.Connection;
 using Features.Loot.Scripts;
-using Features.Unit.Battle.Scripts;
-using Features.Unit.Classes;
+using Features.Loot.Scripts.LootView;
+using Features.Unit.Scripts;
+using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Stat;
 using Photon.Pun;
 using Photon.Realtime;
 using Plugins.UniRx.Extensions;
@@ -16,7 +20,7 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Func<string, UnitClassData_SO, SynchronizedBaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
+        public static Func<string, UnitClassData_SO, BaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
         public static Action onLocalDespawnAllUnits;
 
         [SerializeField] private StageRandomizer_SO stageRandomizer;
@@ -48,7 +52,7 @@ namespace Features.Battle.Scripts
 
         private void Start()
         {
-            onLocalSpawnUnit.Invoke("Player", towerClass, new SynchronizedBaseStats(10, 50, 3));
+            onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
             
             _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));
             

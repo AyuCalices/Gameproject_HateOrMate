@@ -1,8 +1,9 @@
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
-using Features.GlobalReferences.Scripts;
 using Features.Loot.Scripts;
 using Features.Tiles;
+using Features.Tiles.Scripts;
+using Features.Unit.Scripts.Behaviours;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
