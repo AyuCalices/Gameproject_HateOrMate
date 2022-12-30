@@ -13,20 +13,6 @@ namespace Features.Unit.Scripts.Behaviours
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
     public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedBattleBehaviour>
     {
-        public bool TryInstantiateModToAny(ModDragBehaviour modDragBehaviour, BaseMod baseMod)
-        {
-            foreach (NetworkedBattleBehaviour localUnitBehaviour in items)
-            {
-                if (!localUnitBehaviour.TryGetComponent(out ModUnitBehaviour modUnitBehaviour)) continue;
-                if (modUnitBehaviour.UnitMods.TryInstantiateMod(modDragBehaviour, baseMod))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         //battle
         private bool ContainsTargetable(out List<NetworkedBattleBehaviour> networkedUnitBehaviours)
         {

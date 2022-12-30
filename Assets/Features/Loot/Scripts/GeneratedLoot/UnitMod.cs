@@ -1,4 +1,5 @@
 using System;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -13,7 +14,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly UnitClassData_SO _classData;
         private NetworkedBattleBehaviour _instantiatedUnit;
 
-        public UnitMod(UnitClassData_SO classData, string modName, string description) : base(modName, description)
+        public UnitMod(UnitClassData_SO classData, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
+            : base(modName, description, modDragBehaviourPrefab)
         {
             _classData = classData;
         }

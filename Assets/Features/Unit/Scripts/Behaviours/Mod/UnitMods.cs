@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -9,14 +8,14 @@ namespace Features.Unit.Scripts.Behaviours.Mod
     public class UnitMods
     {
         private readonly ModSlotContainer[] _modSlotsContainers;
-        private readonly List<ModSlotBehaviour> _modSlotBehaviours;
+        private readonly ModSlotBehaviour[] _modSlotBehaviours;
 
-        public UnitMods(int size, NetworkedStatsBehaviour localStats, List<ModSlotBehaviour> modSlotBehaviours)
+        public UnitMods(NetworkedStatsBehaviour localStats, ModSlotBehaviour[] modSlotBehaviours)
         {
-            this._modSlotBehaviours = modSlotBehaviours;
+            _modSlotBehaviours = modSlotBehaviours;
             
-            _modSlotsContainers = new ModSlotContainer[size];
-            for (int i = 0; i < size; i++)
+            _modSlotsContainers = new ModSlotContainer[modSlotBehaviours.Length];
+            for (int i = 0; i < modSlotBehaviours.Length; i++)
             {
                 _modSlotsContainers[i] = new ModSlotContainer(localStats);
                 modSlotBehaviours[i].Init(_modSlotsContainers[i]);
@@ -27,23 +26,6 @@ namespace Features.Unit.Scripts.Behaviours.Mod
                 }
             }
         }
-        
-        public bool TryInstantiateMod(ModDragBehaviour modDragBehaviourPrefab, BaseMod baseMod)
-        {
-            for (int index = 0; index < _modSlotsContainers.Length; index++)
-            {
-                ModSlotContainer modSlotsContainer = _modSlotsContainers[index];
-                if (!modSlotsContainer.ContainsMod())
-                {
-                    ModDragBehaviour modDragBehaviour = Object.Instantiate(modDragBehaviourPrefab, _modSlotBehaviours[index].transform);
-                    modDragBehaviour.Initialize(modSlotsContainer, _modSlotBehaviours[index], baseMod);
-                    modSlotsContainer.AddMod(baseMod);
-                    return true;
-                }
-            }
-
-            return false;
-        }
 
         public void AddModToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
@@ -51,23 +33,6 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             {
                 modSlotContainer.ApplyModToInstantiatedUnit(instantiatedUnit);
             }
-        }
-
-        public bool TryAddMod(ModDragBehaviour modDragBehaviour)
-        {
-            for (int index = 0; index < _modSlotsContainers.Length; index++)
-            {
-                ModSlotContainer modSlotsContainer = _modSlotsContainers[index];
-                if (!modSlotsContainer.ContainsMod())
-                {
-                    modSlotsContainer.AddMod(modDragBehaviour.BaseMod);
-                    modDragBehaviour.SetNewOrigin(modSlotsContainer, _modSlotBehaviours[index]);
-
-                    return true;
-                }
-            }
-
-            return false;
         }
         
         public void ToggleSlot(int index)
@@ -97,7 +62,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             _baseMod.ApplyToInstantiatedUnit(instantiatedUnit);
         }
 
-        public bool ContainsMod()
+        private bool ContainsMod()
         {
             return _baseMod != null;
         }
@@ -105,15 +70,18 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         public void AddOrExchangeMod(BaseMod newMod, ModSlotContainer origin)
         {
             BaseMod removedMod = _baseMod;
-            
-            if (ContainsMod())
+
+            if (origin != null && origin.ContainsMod())
             {
-                RemoveMod(true);
-            }
-            
-            if (origin.ContainsMod())
-            {
-                origin.RemoveMod(true);
+                if (ContainsMod())
+                {
+                    RemoveMod(true);
+                }
+
+                if (origin.ContainsMod())
+                {
+                    origin.RemoveMod(true);
+                }
 
                 if (removedMod != null)
                 {

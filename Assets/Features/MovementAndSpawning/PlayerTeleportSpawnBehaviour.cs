@@ -43,6 +43,7 @@ namespace Features.MovementAndSpawning
         
         private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData, BaseStats baseStats)
         {
+            Debug.Log("o/");
             return SpawnHelper.SpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, 
                 unitClassData, baseStats, (unit, position) =>
             {

@@ -26,7 +26,7 @@ namespace Features.Loot.Scripts.LootView
         {
             LootableGenerator = lootableGenerator;
             
-            lootableName.text = lootableGenerator.LootableName;
+            //lootableName.text = lootableGenerator.LootableName;
             description.text = lootableGenerator.Description;
             
             _button.onClick.AddListener(() =>

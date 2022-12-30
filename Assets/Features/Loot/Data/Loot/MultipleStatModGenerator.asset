@@ -16,8 +16,7 @@ MonoBehaviour:
   createdAtTicks: 638075753758596302
   lootableName: 
   description: 
-  modDragBehaviourPrefab: {fileID: 2493011977752105954, guid: 21f0c94f61b565a4aa59fa243a2144d1, type: 3}
-  localUnitRuntimeSet: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
+  modDragBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   multipleStatModTargets:
   - networkedUnitRuntimeSet: {fileID: 11400000, guid: 88d480e3de14b6448865c07ae6e4c633, type: 2}
     statType: 0

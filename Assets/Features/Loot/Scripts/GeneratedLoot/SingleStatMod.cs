@@ -1,3 +1,4 @@
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 
@@ -9,7 +10,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly float _baseValue;
         private readonly float _scaleValue;
 
-        public SingleStatMod(StatType statType, float baseValue, float scaleValue, string modName, string description) : base(modName, description)
+        public SingleStatMod(StatType statType, float baseValue, float scaleValue, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
+            : base(modName, description, modDragBehaviourPrefab)
         {
             _statType = statType;
             _baseValue = baseValue;

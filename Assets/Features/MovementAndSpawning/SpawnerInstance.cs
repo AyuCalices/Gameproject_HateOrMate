@@ -28,6 +28,7 @@ namespace Features.MovementAndSpawning
 
         public bool TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
         {
+            Debug.Log(spawnPositions.Count);
             foreach (SpawnPosition spawnPosition in spawnPositions)
             {
                 if (spawnPosition.HasValidTile && !spawnPosition.SpawnerInstanceTile.ContainsUnit)

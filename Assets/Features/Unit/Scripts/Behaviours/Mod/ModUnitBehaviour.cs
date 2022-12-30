@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -10,22 +9,19 @@ namespace Features.Unit.Scripts.Behaviours.Mod
     public class ModUnitBehaviour : MonoBehaviour
     {
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
-        
-        [Header("Balancing")]
-        [SerializeField] private int modCount;
     
         public UnitMods UnitMods { get; private set; }
     
-        public static Func<UnitModHud> onInstantiateModSlot;
+        public static Func<GameObject> onInstantiateModSlot;
 
-        private UnitModHud _unitModView;
+        private GameObject _unitModGameObject;
     
         // Start is called before the first frame update
         private void Awake()
         {
-            _unitModView = onInstantiateModSlot.Invoke();
-            List<ModSlotBehaviour> modDropBehaviours = _unitModView.GetAllChildren();
-            UnitMods = new UnitMods(modCount, GetComponent<NetworkedStatsBehaviour>(), modDropBehaviours);
+            _unitModGameObject = onInstantiateModSlot.Invoke();
+            ModSlotBehaviour[] modDropBehaviours = _unitModGameObject.GetComponentsInChildren<ModSlotBehaviour>();
+            UnitMods = new UnitMods(GetComponent<NetworkedStatsBehaviour>(), modDropBehaviours);
             modUnitRuntimeSet.Add(this);
         }
 

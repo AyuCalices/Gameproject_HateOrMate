@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 
@@ -5,33 +7,39 @@ namespace Features.Loot.Scripts.ModView
 {
     public class EquipView : MonoBehaviour
     {
-        public GameObject equipView;
-        public UnitModHud unitModViewPrefab;
+        public GameObject unitModViewPrefab;
         public Transform instantiationParent;
+        public Transform modInstantiationParent;
+
+        private List<ModDragBehaviour> _modDragBehaviourPrefab = new List<ModDragBehaviour>();
 
         private void Awake()
         {
-            equipView.SetActive(false);
-        }
-
-        private void OnEnable()
-        {
+            gameObject.SetActive(false);
             ModUnitBehaviour.onInstantiateModSlot += InstantiateModView;
+            BaseMod.onModInstantiated += InstantiateModToHand;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             ModUnitBehaviour.onInstantiateModSlot -= InstantiateModView;
+            BaseMod.onModInstantiated -= InstantiateModToHand;
         }
 
-        private UnitModHud InstantiateModView()
+        private GameObject InstantiateModView()
         {
             return Instantiate(unitModViewPrefab, instantiationParent);
         }
 
+        private void InstantiateModToHand(ModDragBehaviour modDragBehaviourPrefab, BaseMod baseMod)
+        {
+            ModDragBehaviour modDragBehaviour = Instantiate(modDragBehaviourPrefab, modInstantiationParent);
+            modDragBehaviour.Initialize(baseMod, transform);
+        }
+
         public void ToggleEquipView()
         {
-            equipView.SetActive(!equipView.activeInHierarchy);
+            gameObject.SetActive(!gameObject.activeInHierarchy);
         }
     }
 }

@@ -56,6 +56,7 @@ namespace Features.Tiles.Scripts
                 foreach (SpawnPosition spawnPosition in spawner.spawnPositions)
                 {
                     Vector3Int cellPosition = tilemap.WorldToCell(spawnPosition.transform.position);
+                    Debug.Log(cellPosition);
                     spawnPosition.transform.position = tilemap.GetCellCenterWorld(cellPosition);
                 }
             }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Features.Loot.Scripts.Generator;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -10,7 +11,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
     {
         private readonly List<MultipleStatModTarget> _multipleStatModTargets;
         
-        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description) : base(modName, description)
+        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
+            : base(modName, description, modDragBehaviourPrefab)
         {
             _multipleStatModTargets = multipleStatModTargets;
         }
