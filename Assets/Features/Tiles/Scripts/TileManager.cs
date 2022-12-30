@@ -34,7 +34,7 @@ namespace Features.Tiles.Scripts
             {
                 foreach (TileLookup tileData in tileReferences)
                 {
-                    TileBase tile = tilemap.GetTile(position);
+                    TileBase tile = tilemap.GetTile(new Vector3Int(position.x, position.y, -1));
                     if (tile == tileData.tile && tileData.movable)
                     {
                         RuntimeTile newRuntimeTile = new RuntimeTile(tile, tileData.movementCost);
@@ -56,7 +56,6 @@ namespace Features.Tiles.Scripts
                 foreach (SpawnPosition spawnPosition in spawner.spawnPositions)
                 {
                     Vector3Int cellPosition = tilemap.WorldToCell(spawnPosition.transform.position);
-                    Debug.Log(cellPosition);
                     spawnPosition.transform.position = tilemap.GetCellCenterWorld(cellPosition);
                 }
             }
