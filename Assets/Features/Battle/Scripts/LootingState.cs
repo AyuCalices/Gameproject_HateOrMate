@@ -1,6 +1,7 @@
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Connection;
+using Features.Connection.Scripts.Utils;
 using Features.Loot;
 using Features.Loot.Scripts;
 using Features.Loot.Scripts.Generator;
