@@ -71,18 +71,22 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         {
             BaseMod removedMod = _baseMod;
 
+            //can be null due to hand
             if (origin != null && origin.ContainsMod())
             {
+                //can be null due to hand
                 if (ContainsMod())
                 {
                     RemoveMod(true);
                 }
 
+                //can be null due to hand
                 if (origin.ContainsMod())
                 {
                     origin.RemoveMod(true);
                 }
 
+                //can be null due to hand
                 if (removedMod != null)
                 {
                     origin.SwapAddMod(removedMod, origin);
@@ -97,7 +101,12 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             if (!_isActive)
             {
                 newMod.DisableMod(_localStats, false);
-                origin._baseMod = null;
+
+                //can be null due to hand
+                if (origin != null)
+                {
+                    origin._baseMod = null;
+                }
             }
             else if (_isActive)
             {

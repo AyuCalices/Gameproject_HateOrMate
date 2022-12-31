@@ -44,10 +44,14 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine = new StateMachine();
             battleData.RegisterBattleManager(this);
-            continueBattleButton.gameObject.SetActive(false);
+            continueBattleButton.interactable = false;
 
             _enterLootingPhaseRoomDecision = new RoomDecisions<bool>("EnterLootingPhase", true);
-            requestLootPhaseButton.onClick.AddListener(() => _enterLootingPhaseRoomDecision.SetLocalDecision(true));
+            requestLootPhaseButton.onClick.AddListener(() =>
+            {
+                _enterLootingPhaseRoomDecision.SetLocalDecision(true);
+                requestLootPhaseButton.interactable = false;
+            });
         }
 
         private void Start()
@@ -73,7 +77,7 @@ namespace Features.Battle.Scripts
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this, battleData, battleData.AllUnitsRuntimeSet));
+            _stageStateMachine.ChangeState(new BattleState(this, battleData, requestLootPhaseButton, battleData.AllUnitsRuntimeSet));
         }
 
         private void RequestLootingState(bool restartState)

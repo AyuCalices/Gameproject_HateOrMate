@@ -4,6 +4,7 @@ using Features.Connection;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
+using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
 {
@@ -11,17 +12,20 @@ namespace Features.Battle.Scripts
     {
         private readonly BattleManager _battleManager;
         private readonly BattleData_SO _battleData;
+        private readonly Button _requestLootPhaseButton;
         private readonly NetworkedUnitRuntimeSet_SO _allUnitsRuntimeSet;
 
-        public BattleState(BattleManager battleManager, BattleData_SO battleData, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
+        public BattleState(BattleManager battleManager, BattleData_SO battleData, Button requestLootPhaseButton, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
         {
             _battleManager = battleManager;
             _battleData = battleData;
+            _requestLootPhaseButton = requestLootPhaseButton;
             _allUnitsRuntimeSet = allUnitsRuntimeSet;
         }
     
         public void Enter()
         {
+            _requestLootPhaseButton.interactable = true;
         }
 
         public void Execute()

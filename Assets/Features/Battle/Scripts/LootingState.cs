@@ -7,6 +7,7 @@ using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.LootView;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
@@ -35,8 +36,22 @@ namespace Features.Battle.Scripts
         {
             _roomDecision = new RoomDecisions<bool>("Placement", false);
             _lootSelectionBehaviour.gameObject.SetActive(true);
-            _continueBattleButton.gameObject.SetActive(true);
-            _continueBattleButton.onClick.AddListener(() => _roomDecision.SetLocalDecision(true));
+            _continueBattleButton.interactable = true;
+            for (int i = 0; i < _continueBattleButton.transform.childCount; i++)
+            {
+                Debug.Log(i);
+                _continueBattleButton.transform.GetChild(i).gameObject.SetActive(true);
+            }
+            
+            _continueBattleButton.onClick.AddListener(() =>
+            {
+                _roomDecision.SetLocalDecision(true);
+                _continueBattleButton.interactable = false;
+                for (int i = 0; i < _continueBattleButton.transform.childCount; i++)
+                {
+                    _continueBattleButton.transform.GetChild(i).gameObject.SetActive(false);
+                }
+            });
             
             if (!PhotonNetwork.IsMasterClient) return;
 
@@ -60,7 +75,6 @@ namespace Features.Battle.Scripts
 
         public void Exit()
         {
-            _continueBattleButton.gameObject.SetActive(false);
         }
         
         private void SendLootableByRaiseEvent(LootableGenerator_SO[] lootable)
