@@ -40,7 +40,6 @@ namespace Features.Battle.Scripts
             _continueBattleButton.interactable = true;
             for (int i = 0; i < _continueBattleButton.transform.childCount; i++)
             {
-                Debug.Log(i);
                 _continueBattleButton.transform.GetChild(i).gameObject.SetActive(true);
             }
             

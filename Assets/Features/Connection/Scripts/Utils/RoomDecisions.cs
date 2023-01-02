@@ -13,10 +13,26 @@ namespace Features.Connection.Scripts.Utils
 
         public string Identifier(Player player) => _identifier + player.ActorNumber;
 
+        public T GetDecisionValue(Player player)
+        {
+            string identifier = Identifier(player);
+            return (T)PhotonNetwork.CurrentRoom.CustomProperties[identifier];
+        }
+
         public RoomDecisions(string identifier, bool triggerIfOneChose)
         {
             _identifier = identifier;
             _triggerIfOneChose = triggerIfOneChose;
+        }
+        
+        public bool OverwriteLocalDecision(T value)
+        {
+            Player localPlayer = PhotonNetwork.LocalPlayer;
+
+            _localDecision = new Hashtable(){{Identifier(localPlayer), value}};
+            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
+
+            return true;
         }
 
         public bool SetLocalDecision(T value)
@@ -32,29 +48,30 @@ namespace Features.Connection.Scripts.Utils
             return true;
         }
 
-        public bool UpdateDecision(Action onAllPlayerChose)
+        public bool UpdateDecision(Action onAllPlayerChose, Predicate<T> predicate = null)
         {
             if (_triggerIfOneChose)
             {
-                if (!AnyPlayerChose()) return false;
+                if (!AnyPlayerChose(predicate)) return false;
             }
             else
             {
-                if (!PlayerChose()) return false;
+                if (!PlayerChose(predicate)) return false;
             }
             
             onAllPlayerChose.Invoke();
             ResetLocalDecision();
             return true;
         }
-
-        private bool AnyPlayerChose()
+        
+        private bool AnyPlayerChose(Predicate<T> predicate)
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if (roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null)
+                if (roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null
+                && predicate != null && predicate.Invoke((T)roomCustomProperties[Identifier(player)]))
                 {
                     return true;
                 }
@@ -63,7 +80,7 @@ namespace Features.Connection.Scripts.Utils
             return false;
         }
         
-        private bool PlayerChose()
+        private bool PlayerChose(Predicate<T> predicate)
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
@@ -78,12 +95,17 @@ namespace Features.Connection.Scripts.Utils
                 {
                     return false;
                 }
+                
+                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(player)]))
+                {
+                    return false;
+                }
             }
 
             return true;
         }
 
-        private void ResetLocalDecision()
+        public void ResetLocalDecision()
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
             _localDecision = new Hashtable(){{Identifier(localPlayer), null}};

@@ -114,7 +114,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             }
         }
 
-        public void AddMod(BaseMod newMod)
+        private void AddMod(BaseMod newMod)
         {
             _baseMod = newMod;
 

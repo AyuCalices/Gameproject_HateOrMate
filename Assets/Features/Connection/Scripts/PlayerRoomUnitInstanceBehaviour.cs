@@ -9,6 +9,7 @@ namespace Features.Connection.Scripts
     public class PlayerRoomUnitInstanceBehaviour : MonoBehaviour
     {
         [SerializeField] private TMP_Text tmpDescription;
+        [SerializeField] private GameObject readyImage;
 
         private Player _playerReference;
 
@@ -19,6 +20,7 @@ namespace Features.Connection.Scripts
             PlayerRoomUnitInstanceBehaviour playerRoomUnitInstanceBehaviour = Instantiate(this, instantiationParent);
             playerRoomUnitInstanceBehaviour.tmpDescription.text = Equals(player, PhotonNetwork.LocalPlayer) ? "You" : "Mate";
             playerRoomUnitInstanceBehaviour._playerReference = player;
+            playerRoomUnitInstanceBehaviour.readyImage.SetActive(false);
             _playerRoomBehaviours.Add(playerRoomUnitInstanceBehaviour);
         }
 
@@ -44,6 +46,18 @@ namespace Features.Connection.Scripts
             }
         
             _playerRoomBehaviours.Clear();
+        }
+
+        public static void SetReadyButton(Player playerReference, bool value)
+        {
+            for (int index = _playerRoomBehaviours.Count - 1; index >= 0; index--)
+            {
+                PlayerRoomUnitInstanceBehaviour playerRoomUnitInstanceBehaviour = _playerRoomBehaviours[index];
+                if (Equals(playerRoomUnitInstanceBehaviour._playerReference, playerReference))
+                {
+                    playerRoomUnitInstanceBehaviour.readyImage.SetActive(value);
+                }
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
+using UnityEngine;
 
 namespace Features.Loot.Scripts.ModView
 {
@@ -28,6 +29,7 @@ namespace Features.Loot.Scripts.ModView
         
             if (targetModDragBehaviour == null)
             {
+                Debug.Log("whowiejfoiewjf");
                 if (_originModSlotBehaviour != null)
                 {
                     _originModSlotBehaviour.ContainedModDragBehaviour = null;

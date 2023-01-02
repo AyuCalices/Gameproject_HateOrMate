@@ -44,7 +44,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
-        
+
+        public virtual bool IsValidAddMod() { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
