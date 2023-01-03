@@ -17,8 +17,7 @@ namespace Features.Loot.Scripts.ModView
         private RectTransform _rectTransform;
         private ExpandBehaviour _expandBehaviour;
 
-        private BaseMod BaseMod { get; set; }
-        private ModSlotContainer _modSlotContainer;
+        public BaseMod BaseMod { get; private set; }
         private ModSlotBehaviour _modSlotBehaviour;
         private Vector3 _originPosition;
 
@@ -30,15 +29,14 @@ namespace Features.Loot.Scripts.ModView
         private GraphicRaycaster _tempRaycaster;
         private GameObject _hoverGapObject;
 
-        public void SetNewOrigin(ModSlotContainer targetSlotContainer, ModSlotBehaviour targetOrigin)
+        public void SetNewOrigin(ModSlotBehaviour targetOrigin)
         {
-            _modSlotContainer = targetSlotContainer;
             _modSlotBehaviour = targetOrigin;
             targetOrigin.ContainedModDragBehaviour = this;
 
             _originTransform = targetOrigin.transform;
             transform.position = _originTransform.position;
-            transform.SetParent(targetOrigin.transform);
+            transform.SetParent(_originTransform);
             
             _isInHand = false;
         }
@@ -65,7 +63,7 @@ namespace Features.Loot.Scripts.ModView
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            dragControllerFocus.Set(new DragController(this, BaseMod, _modSlotContainer, _modSlotBehaviour));
+            dragControllerFocus.Set(new DragController(this, _modSlotBehaviour));
 
             if (_isInHand)
             {
