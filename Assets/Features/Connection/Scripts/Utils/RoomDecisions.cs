@@ -70,11 +70,10 @@ namespace Features.Connection.Scripts.Utils
             
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if (roomCustomProperties.ContainsKey(Identifier(player)) && roomCustomProperties[Identifier(player)] != null
-                && predicate != null && predicate.Invoke((T)roomCustomProperties[Identifier(player)]))
-                {
-                    return true;
-                }
+                if (!roomCustomProperties.ContainsKey(Identifier(player)) ||
+                    roomCustomProperties[Identifier(player)] == null) continue;
+
+                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(player)]);
             }
 
             return false;

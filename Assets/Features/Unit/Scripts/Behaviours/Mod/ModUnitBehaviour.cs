@@ -25,9 +25,13 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             modUnitRuntimeSet.Add(this);
         }
 
-        private void OnDestroy()
+        public void OnDestroy()
         {
             modUnitRuntimeSet.Remove(this);
+            Destroy(_unitModGameObject);
+            UnitMods.OnDestroy();
+            
+            //TODO: move all mods to hand
         }
     }
 }

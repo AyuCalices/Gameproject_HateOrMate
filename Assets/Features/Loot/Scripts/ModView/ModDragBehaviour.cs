@@ -1,4 +1,3 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
@@ -12,6 +11,7 @@ namespace Features.Loot.Scripts.ModView
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
+        [SerializeField] private GameObject blankedModPrefab;
         
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
@@ -28,6 +28,7 @@ namespace Features.Loot.Scripts.ModView
         
         private Canvas _tempCanvas;
         private GraphicRaycaster _tempRaycaster;
+        private GameObject _hoverGapObject;
 
         public void SetNewOrigin(ModSlotContainer targetSlotContainer, ModSlotBehaviour targetOrigin)
         {
@@ -37,6 +38,7 @@ namespace Features.Loot.Scripts.ModView
 
             _originTransform = targetOrigin.transform;
             transform.position = _originTransform.position;
+            transform.SetParent(targetOrigin.transform);
             
             _isInHand = false;
         }
@@ -106,6 +108,17 @@ namespace Features.Loot.Scripts.ModView
 
         public void OnPointerEnter(PointerEventData eventData)
         {
+            Transform parent = transform.parent;
+            int siblingIndex = transform.GetSiblingIndex();
+            if (parent.childCount - 1 != siblingIndex)
+            {
+                _hoverGapObject = Instantiate(blankedModPrefab, parent);
+                RectTransform rectTransform = (RectTransform) _hoverGapObject.transform;
+                Vector2 sizeDelta = rectTransform.sizeDelta;
+                rectTransform.sizeDelta = new Vector2(Mathf.Abs(parent.GetComponent<HorizontalLayoutGroup>().spacing) * 2, sizeDelta.y);
+                _hoverGapObject.transform.SetSiblingIndex(siblingIndex + 1);
+            }
+
             _tempCanvas = gameObject.AddComponent<Canvas>();
             _tempCanvas.pixelPerfect = false;
             _tempCanvas.overrideSorting = true;
@@ -117,6 +130,7 @@ namespace Features.Loot.Scripts.ModView
         {
             Destroy(_tempRaycaster);
             Destroy(_tempCanvas);
+            Destroy(_hoverGapObject);
         }
     }
 }

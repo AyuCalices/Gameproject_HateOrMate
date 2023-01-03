@@ -22,7 +22,8 @@ namespace Features.Unit.Scripts.Behaviours.Mod
 
                 if (i > 2)
                 {
-                    _modSlotsContainers[i].DisableSlot();
+                    ToggleSlot(i);
+                    //_modSlotsContainers[i].DisableSlot();
                 }
             }
         }
@@ -35,10 +36,23 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             }
         }
         
+        //TODO: one call station
         public void ToggleSlot(int index)
         {
             _modSlotsContainers[index].ToggleSlot();
             _modSlotBehaviours[index].UpdateSlot();
+        }
+
+        public void OnDestroy()
+        {
+            for (int index = _modSlotBehaviours.Length - 1; index >= 0; index--)
+            {
+                ModSlotBehaviour modSlotBehaviour = _modSlotBehaviours[index];
+                ModSlotContainer modSlotsContainer = _modSlotsContainers[index];
+
+                Object.Destroy(modSlotBehaviour);
+                modSlotsContainer.RemoveMod(false);
+            }
         }
     }
 
@@ -67,19 +81,22 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             return _baseMod != null;
         }
 
+        //TODO: not clear enough what is target and what origin - use abstraction to differentiate between hand and slot
         public void AddOrExchangeMod(BaseMod newMod, ModSlotContainer origin)
         {
+            if (this == origin) return;
+            
             BaseMod removedMod = _baseMod;
+            
+            //can be null due to hand
+            if (ContainsMod())
+            {
+                RemoveMod(true);
+            }
 
             //can be null due to hand
-            if (origin != null && origin.ContainsMod())
+            if (origin != null)
             {
-                //can be null due to hand
-                if (ContainsMod())
-                {
-                    RemoveMod(true);
-                }
-
                 //can be null due to hand
                 if (origin.ContainsMod())
                 {
@@ -93,24 +110,20 @@ namespace Features.Unit.Scripts.Behaviours.Mod
                 }
             }
 
-            SwapAddMod(newMod, origin);
+            SwapAddMod(newMod, this);
         }
 
-        private void SwapAddMod(BaseMod newMod, ModSlotContainer origin)
+        private void SwapAddMod(BaseMod newMod, ModSlotContainer target)
         {
-            if (!_isActive)
+            if (target == null) return;
+            
+            if (!target._isActive)
             {
-                newMod.DisableMod(_localStats, false);
-
-                //can be null due to hand
-                if (origin != null)
-                {
-                    origin._baseMod = null;
-                }
+                newMod.DisableMod(target._localStats, false);
             }
-            else if (_isActive)
+            else if (target._isActive)
             {
-                AddMod(newMod);
+                target.AddMod(newMod);
             }
         }
 
@@ -121,9 +134,9 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             if (_isActive) newMod.EnableMod(_localStats);
         }
         
-        private void RemoveMod(bool isSwap)
+        public void RemoveMod(bool isSwap)
         {
-            if (_isActive) _baseMod.DisableMod(_localStats, isSwap);
+            if (_isActive && _baseMod != null) _baseMod.DisableMod(_localStats, isSwap);
             
             _baseMod = null;
         }

@@ -3,6 +3,7 @@ using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.View;
 using JetBrains.Annotations;
 using Photon.Pun;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Stat
@@ -52,6 +53,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 string statIdentity = Guid.NewGuid().ToString();
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
             }
+        }
+
+        private void OnDestroy()
+        {
+            NetworkedStatServiceLocator.RemoveAllValues();
         }
 
         /// <summary>

@@ -11,8 +11,6 @@ namespace Features.Loot.Scripts.ModView
         public Transform instantiationParent;
         public Transform modInstantiationParent;
 
-        private List<ModDragBehaviour> _modDragBehaviourPrefab = new List<ModDragBehaviour>();
-
         private void Awake()
         {
             gameObject.SetActive(false);

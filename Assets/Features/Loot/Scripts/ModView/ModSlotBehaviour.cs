@@ -1,12 +1,16 @@
 using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 namespace Features.Loot.Scripts.ModView
 {
     public class ModSlotBehaviour : MonoBehaviour, IDropHandler
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
+        [SerializeField] private Image image;
+        [SerializeField] private Color freeColor;
+        [SerializeField] private Color blockedColor;
 
         private ModSlotContainer _modSlotContainer;
 
@@ -19,7 +23,7 @@ namespace Features.Loot.Scripts.ModView
 
         public void UpdateSlot()
         {
-            //TODO: implement UI
+            image.color = blockedColor;
         }
 
         public void OnDrop(PointerEventData eventData)

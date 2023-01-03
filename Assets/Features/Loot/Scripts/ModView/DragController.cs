@@ -27,16 +27,15 @@ namespace Features.Loot.Scripts.ModView
             targetModSlotContainer.AddOrExchangeMod(_originMod, _originModSlotContainer);
             IsSuccessful = true;
         
-            if (targetModDragBehaviour == null)
+            if (targetModDragBehaviour == null)     //no swap
             {
-                Debug.Log("whowiejfoiewjf");
                 if (_originModSlotBehaviour != null)
                 {
                     _originModSlotBehaviour.ContainedModDragBehaviour = null;
                 }
                 _originModDragBehaviour.SetNewOrigin(targetModSlotContainer, targetModSlotBehaviour);
             }
-            else
+            else        //swap
             {
                 targetModDragBehaviour.SetNewOrigin(_originModSlotContainer, _originModSlotBehaviour);
                 _originModDragBehaviour.SetNewOrigin(targetModSlotContainer, targetModSlotBehaviour);

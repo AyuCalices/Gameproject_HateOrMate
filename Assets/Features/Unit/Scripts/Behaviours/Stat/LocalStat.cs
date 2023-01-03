@@ -91,7 +91,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             };
         }
 
-        public void RemoveAll()
+        public void RemoveFromNetwork()
         {
             _statModificationValues.Clear();
             _scalingStatModificationValues.Clear();

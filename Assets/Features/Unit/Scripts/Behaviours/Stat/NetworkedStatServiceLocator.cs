@@ -57,9 +57,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 if (service.Value is LocalStat localStat)
                 {
-                    localStat.RemoveAll();
+                    localStat.RemoveFromNetwork();
                 }
             }
+            
+            _services.Clear();
         }
 
         public float GetTotalValue(StatType statType)
