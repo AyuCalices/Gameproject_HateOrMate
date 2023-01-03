@@ -306,6 +306,8 @@ MonoBehaviour:
   dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
   blankedModPrefab: {fileID: 4916425106311729183, guid: 0b126d14c9fd1c34d99d9d1d7c43b277, type: 3}
+  image: {fileID: 7720680836037871777}
+  isInHand: 0
 --- !u!114 &2649396635948923171
 MonoBehaviour:
   m_ObjectHideFlags: 0

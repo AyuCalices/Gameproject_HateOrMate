@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -60,6 +58,8 @@ namespace Features.Loot.Scripts.ModView
             {
                 AddMod(newModBehaviour);
             }
+            
+            UpdateModColor();
         }
 
         private void AddMod(ModBehaviour newMod)
@@ -67,6 +67,8 @@ namespace Features.Loot.Scripts.ModView
             ContainedModBehaviour = newMod;
             
             if (_isActive) newMod.BaseMod.EnableMod(_localStats);
+            
+            UpdateModColor();
         }
         
         public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap)
@@ -74,6 +76,11 @@ namespace Features.Loot.Scripts.ModView
             if (_isActive && ContainsMod()) ContainedModBehaviour.BaseMod.DisableMod(_localStats, isSwap);
             
             ContainedModBehaviour = null;
+
+            if (!isSwap)
+            {
+                UpdateModColor();
+            }
         }
 
         public void UpdateActiveStatus()
@@ -110,6 +117,7 @@ namespace Features.Loot.Scripts.ModView
             }
 
             UpdateSlot();
+            UpdateModColor();
         }
         
         private void EnableSlot()
@@ -122,11 +130,20 @@ namespace Features.Loot.Scripts.ModView
             }
 
             UpdateSlot();
+            UpdateModColor();
         }
         
         private void UpdateSlot()
         {
             image.color = _isActive ? freeColor : blockedColor;
+        }
+
+        private void UpdateModColor()
+        {
+            if (ContainsMod())
+            {
+                ContainedModBehaviour.UpdateColor(_isActive ? freeColor : blockedColor);
+            }
         }
     }
 }

@@ -1,13 +1,9 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Mod;
-using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class ModHandBehaviour : MonoBehaviour, IDropHandler, IModContainer
 {
@@ -15,7 +11,7 @@ public class ModHandBehaviour : MonoBehaviour, IDropHandler, IModContainer
     [SerializeField] private Transform dragTransform;
     [SerializeField] private Transform contentTransform;
 
-    public List<ModBehaviour> ContainedModBehaviours { get; set; }
+    private List<ModBehaviour> ContainedModBehaviours { get; set; }
     public bool ContainsMod() => ContainedModBehaviours is {Count: > 0};
     public Transform Transform => contentTransform;
     
@@ -24,6 +20,7 @@ public class ModHandBehaviour : MonoBehaviour, IDropHandler, IModContainer
     public void SwapAddMod(ModBehaviour newModBehaviour)
     {
         ContainedModBehaviours.Add(newModBehaviour);
+        UpdateMod(newModBehaviour);
     }
 
     public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap)
@@ -53,15 +50,23 @@ public class ModHandBehaviour : MonoBehaviour, IDropHandler, IModContainer
         
         dragControllerFocus.Get().AddOrExchangeMod(movingMod, null, movingMod.CurrentModSlotBehaviour, this);
         
-        movingMod.GetComponent<ExpandBehaviour>().SetExpanded(true);
-        movingMod.GetComponent<ExpandBehaviour>().IsActive = false;
-        movingMod.isInHand = true;
+        UpdateMod(movingMod);
     }
 
-    private void MoveToHand(ModBehaviour modBehaviourPrefab)
+    private void MoveToHand(ModBehaviour modBehaviour)
     {
-        SwapAddMod(modBehaviourPrefab);
-        modBehaviourPrefab.SetNewOrigin(this);
+        SwapAddMod(modBehaviour);
+        modBehaviour.SetNewOrigin(this);
+        ContainedModBehaviours.Add(modBehaviour);
+        UpdateMod(modBehaviour);
+    }
+
+    private void UpdateMod(ModBehaviour modBehaviour)
+    {
+        modBehaviour.GetComponent<ExpandBehaviour>().SetExpanded(true);
+        modBehaviour.GetComponent<ExpandBehaviour>().IsActive = false;
+        modBehaviour.isInHand = true;
+        modBehaviour.UpdateColor(Color.white);
     }
     
     private void InstantiateModToHand(ModBehaviour modBehaviourPrefab, BaseMod baseMod)

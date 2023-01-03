@@ -13,6 +13,8 @@ namespace Features.Loot.Scripts.ModView
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private GameObject blankedModPrefab;
         
+        [SerializeField] private Image image;
+        
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
         private ExpandBehaviour _expandBehaviour;
@@ -37,6 +39,11 @@ namespace Features.Loot.Scripts.ModView
             _originTransform = targetOrigin.Transform;
             transform.position = _originTransform.position;
             transform.SetParent(_originTransform);
+        }
+
+        public void UpdateColor(Color newColor)
+        {
+            image.color = newColor;
         }
 
         public void Initialize(BaseMod baseMod, Transform dragTransform, IModContainer currentModContainer)
