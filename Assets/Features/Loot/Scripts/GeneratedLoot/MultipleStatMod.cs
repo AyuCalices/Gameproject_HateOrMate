@@ -11,8 +11,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
     {
         private readonly List<MultipleStatModTarget> _multipleStatModTargets;
         
-        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
-            : base(modName, description, modDragBehaviourPrefab)
+        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description, ModBehaviour modBehaviourPrefab) 
+            : base(modName, description, modBehaviourPrefab)
         {
             _multipleStatModTargets = multipleStatModTargets;
         }

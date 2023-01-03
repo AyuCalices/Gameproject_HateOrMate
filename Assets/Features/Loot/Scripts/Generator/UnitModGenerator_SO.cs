@@ -9,12 +9,12 @@ namespace Features.Loot.Scripts.Generator
     [CreateAssetMenu(fileName = "new UnitMod", menuName = "Unit/Mod/Unit")]
     public class UnitModGenerator_SO : LootableGenerator_SO
     {
-        [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
+        [SerializeField] private ModBehaviour modBehaviourPrefab;
         [SerializeField] private UnitClassData_SO classData;
         
         public override void OnAddInstanceToPlayer()
         {
-            UnitMod unitMod = new UnitMod(classData, LootableName, Description, modDragBehaviourPrefab);
+            UnitMod unitMod = new UnitMod(classData, LootableName, Description, modBehaviourPrefab);
             unitMod.RaiseOnModInstantiated();
         }
     }

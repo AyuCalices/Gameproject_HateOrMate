@@ -14,8 +14,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly UnitClassData_SO _classData;
         private NetworkedBattleBehaviour _instantiatedUnit;
 
-        public UnitMod(UnitClassData_SO classData, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
-            : base(modName, description, modDragBehaviourPrefab)
+        public UnitMod(UnitClassData_SO classData, string modName, string description, ModBehaviour modBehaviourPrefab) 
+            : base(modName, description, modBehaviourPrefab)
         {
             _classData = classData;
         }

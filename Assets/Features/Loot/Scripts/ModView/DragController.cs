@@ -6,36 +6,31 @@ namespace Features.Loot.Scripts.ModView
 {
     public class DragController
     {
-        private readonly ModDragBehaviour _originModDragBehaviour;
-        private readonly ModSlotBehaviour _originModSlotBehaviour;
+        public bool IsSuccessful { get; set; }
 
-        public bool IsSuccessful { get; private set; }
-
-        public DragController(ModDragBehaviour originModDragBehaviour, ModSlotBehaviour originModSlotBehaviour)
+        public DragController()
         {
-            _originModDragBehaviour = originModDragBehaviour;
-            _originModSlotBehaviour = originModSlotBehaviour;
             IsSuccessful = false;
         }
-
-        public void AddOrExchangeMod(ModDragBehaviour targetModDragBehaviour, ModSlotBehaviour targetModSlotBehaviour)
-        {
-            targetModSlotBehaviour.AddOrExchangeMod(_originModDragBehaviour, _originModSlotBehaviour);
-            IsSuccessful = true;
         
-            if (targetModDragBehaviour == null)     //no swap
+        public void AddOrExchangeMod(ModBehaviour originMod, ModBehaviour targetMod, IModContainer origin, IModContainer target)
+        {
+            if (target == origin) return;
+            
+            IsSuccessful = true;
+            
+            origin.RemoveMod(originMod, !target.DisableModOnSwap());
+            
+            //can be null due to hand
+            if (target.ContainsMod() && targetMod != null)
             {
-                if (_originModSlotBehaviour != null)
-                {
-                    _originModSlotBehaviour.ContainedModDragBehaviour = null;
-                }
-                _originModDragBehaviour.SetNewOrigin(targetModSlotBehaviour);
+                target.RemoveMod(targetMod, !origin.DisableModOnSwap());
+                origin.SwapAddMod(targetMod);
+                targetMod.SetNewOrigin(origin);
             }
-            else        //swap
-            {
-                targetModDragBehaviour.SetNewOrigin(_originModSlotBehaviour);
-                _originModDragBehaviour.SetNewOrigin(targetModSlotBehaviour);
-            }
+
+            target.SwapAddMod(originMod);
+            originMod.SetNewOrigin(target);
         }
     }
 }

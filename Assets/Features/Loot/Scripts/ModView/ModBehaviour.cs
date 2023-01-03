@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Features.Loot.Scripts.ModView
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class ModDragBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
+    public class ModBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private DragControllerFocus_SO dragControllerFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
@@ -18,10 +18,11 @@ namespace Features.Loot.Scripts.ModView
         private ExpandBehaviour _expandBehaviour;
 
         public BaseMod BaseMod { get; private set; }
-        private ModSlotBehaviour _modSlotBehaviour;
+        public IModContainer CurrentModSlotBehaviour { get; private set; }
+        
         private Vector3 _originPosition;
 
-        private bool _isInHand;
+        public bool isInHand;
         private Transform _originTransform;
         private Transform _dragTransform;
         
@@ -29,28 +30,26 @@ namespace Features.Loot.Scripts.ModView
         private GraphicRaycaster _tempRaycaster;
         private GameObject _hoverGapObject;
 
-        public void SetNewOrigin(ModSlotBehaviour targetOrigin)
+        public void SetNewOrigin(IModContainer targetOrigin)
         {
-            _modSlotBehaviour = targetOrigin;
-            targetOrigin.ContainedModDragBehaviour = this;
+            CurrentModSlotBehaviour = targetOrigin;
 
-            _originTransform = targetOrigin.transform;
+            _originTransform = targetOrigin.Transform;
             transform.position = _originTransform.position;
             transform.SetParent(_originTransform);
-            
-            _isInHand = false;
         }
 
-        public void Initialize(BaseMod baseMod, Transform dragTransform)
+        public void Initialize(BaseMod baseMod, Transform dragTransform, IModContainer currentModContainer)
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
             _expandBehaviour = GetComponent<ExpandBehaviour>();
             BaseMod = baseMod;
 
+            CurrentModSlotBehaviour = currentModContainer;
             _originTransform = transform.parent;
             _dragTransform = dragTransform;
-            _isInHand = true;
+            isInHand = true;
         }
 
         public void OnPointerDown(PointerEventData eventData)
@@ -63,9 +62,9 @@ namespace Features.Loot.Scripts.ModView
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            dragControllerFocus.Set(new DragController(this, _modSlotBehaviour));
+            dragControllerFocus.Set(new DragController());
 
-            if (_isInHand)
+            if (isInHand)
             {
                 _expandBehaviour.IsActive = true;
             }
@@ -92,7 +91,7 @@ namespace Features.Loot.Scripts.ModView
 
             if (!dragControllerFocus.Get().IsSuccessful)
             {
-                if (_isInHand)
+                if (isInHand)
                 {
                     _expandBehaviour.SetExpanded(true);
                     _expandBehaviour.IsActive = false;

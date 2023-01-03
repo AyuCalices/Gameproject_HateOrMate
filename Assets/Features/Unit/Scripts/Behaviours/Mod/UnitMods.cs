@@ -1,12 +1,13 @@
-using Features.Loot.Scripts.GeneratedLoot;
+using System;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
-using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Mod
 {
     public class UnitMods
     {
+        public static Action<ModBehaviour> onMoveToHand;
+        
         private readonly ModSlotBehaviour[] _modSlotBehaviours;
 
         public UnitMods(NetworkedStatsBehaviour localStats, ModSlotBehaviour[] modSlotBehaviours)
@@ -19,8 +20,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
 
                 if (i > 2)
                 {
-                    ToggleSlot(i);
-                    //_modSlotsContainers[i].DisableSlot();
+                    _modSlotBehaviours[i].DisableSlot();
                 }
             }
         }
@@ -33,11 +33,9 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             }
         }
         
-        //TODO: one call station
         public void ToggleSlot(int index)
         {
             _modSlotBehaviours[index].ToggleSlot();
-            _modSlotBehaviours[index].UpdateSlot();
         }
 
         public void OnDestroy()
@@ -46,8 +44,12 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             {
                 ModSlotBehaviour modSlotBehaviour = _modSlotBehaviours[index];
 
-                Object.Destroy(modSlotBehaviour);
-                modSlotBehaviour.RemoveMod(false);
+                if (modSlotBehaviour.ContainsMod())
+                {
+                    ModBehaviour modBehaviour = modSlotBehaviour.ContainedModBehaviour;
+                    onMoveToHand?.Invoke(modBehaviour);
+                    modSlotBehaviour.RemoveMod(modBehaviour, false);
+                }
             }
         }
     }

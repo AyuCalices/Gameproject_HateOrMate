@@ -11,13 +11,13 @@ namespace Features.Loot.Scripts.Generator
     [CreateAssetMenu(fileName = "new MultipleStatMod", menuName = "Unit/Mod/MultipleStat")]
     public class MultipleStatModGenerator_SO : LootableGenerator_SO
     {
-        [SerializeField] private ModDragBehaviour modDragBehaviourPrefab;
+        [SerializeField] private ModBehaviour modBehaviourPrefab;
         [SerializeField] private List<MultipleStatModTarget> multipleStatModTargets;
 
 
         public override void OnAddInstanceToPlayer()
         {
-            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, LootableName, Description, modDragBehaviourPrefab);
+            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, LootableName, Description, modBehaviourPrefab);
             multipleStatMod.RaiseOnModInstantiated();
         }
     }

@@ -9,32 +9,23 @@ namespace Features.Loot.Scripts.ModView
     {
         public GameObject unitModViewPrefab;
         public Transform instantiationParent;
-        public Transform modInstantiationParent;
 
         private void Awake()
         {
             gameObject.SetActive(false);
             ModUnitBehaviour.onInstantiateModSlot += InstantiateModView;
-            BaseMod.onModInstantiated += InstantiateModToHand;
         }
 
         private void OnDestroy()
         {
             ModUnitBehaviour.onInstantiateModSlot -= InstantiateModView;
-            BaseMod.onModInstantiated -= InstantiateModToHand;
         }
 
         private GameObject InstantiateModView()
         {
             return Instantiate(unitModViewPrefab, instantiationParent);
         }
-
-        private void InstantiateModToHand(ModDragBehaviour modDragBehaviourPrefab, BaseMod baseMod)
-        {
-            ModDragBehaviour modDragBehaviour = Instantiate(modDragBehaviourPrefab, modInstantiationParent);
-            modDragBehaviour.Initialize(baseMod, transform);
-        }
-
+        
         public void ToggleEquipView()
         {
             gameObject.SetActive(!gameObject.activeInHierarchy);

@@ -10,8 +10,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly float _baseValue;
         private readonly float _scaleValue;
 
-        public SingleStatMod(StatType statType, float baseValue, float scaleValue, string modName, string description, ModDragBehaviour modDragBehaviourPrefab) 
-            : base(modName, description, modDragBehaviourPrefab)
+        public SingleStatMod(StatType statType, float baseValue, float scaleValue, string modName, string description, ModBehaviour modBehaviourPrefab) 
+            : base(modName, description, modBehaviourPrefab)
         {
             _statType = statType;
             _baseValue = baseValue;

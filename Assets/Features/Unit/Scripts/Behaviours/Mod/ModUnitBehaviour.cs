@@ -28,10 +28,8 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         public void OnDestroy()
         {
             modUnitRuntimeSet.Remove(this);
-            Destroy(_unitModGameObject);
             UnitMods.OnDestroy();
-            
-            //TODO: move all mods to hand
+            Destroy(_unitModGameObject);
         }
     }
 }

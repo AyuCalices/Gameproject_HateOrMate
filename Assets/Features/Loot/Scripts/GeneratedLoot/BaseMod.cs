@@ -6,18 +6,18 @@ namespace Features.Loot.Scripts.GeneratedLoot
 {
     public abstract class BaseMod
     {
-        public static Action<ModDragBehaviour, BaseMod> onModInstantiated;
+        public static Action<ModBehaviour, BaseMod> onModInstantiated;
         
         public string ModName { get; }
         public string Description { get; }
         
         //make sure a mod can't be added twice
         private bool _isEnabled;
-        private readonly ModDragBehaviour _modDragBehaviourPrefab;
+        private readonly ModBehaviour _modBehaviourPrefab;
 
-        protected BaseMod(string modName, string description, ModDragBehaviour modDragBehaviourPrefab)
+        protected BaseMod(string modName, string description, ModBehaviour modBehaviourPrefab)
         {
-            _modDragBehaviourPrefab = modDragBehaviourPrefab;
+            _modBehaviourPrefab = modBehaviourPrefab;
             ModName = modName;
             Description = description;
             _isEnabled = false;
@@ -25,7 +25,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         public void RaiseOnModInstantiated()
         {
-            onModInstantiated?.Invoke(_modDragBehaviourPrefab, this);
+            onModInstantiated?.Invoke(_modBehaviourPrefab, this);
         }
 
         public void EnableMod(NetworkedStatsBehaviour moddedLocalStats)
