@@ -1,6 +1,7 @@
 using System;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
+using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot
 {
@@ -28,26 +29,37 @@ namespace Features.Loot.Scripts.GeneratedLoot
             onModInstantiated?.Invoke(_modBehaviourPrefab, this);
         }
 
-        public void EnableMod(NetworkedStatsBehaviour moddedLocalStats)
+        public void EnableMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
-            if (_isEnabled) return;
+            if (_isEnabled)
+            {
+                AddOnSwapSlot(moddedLocalStats, slot);
+                return;
+            }
             
-            InternalAddMod(moddedLocalStats);
+            InternalAddMod(moddedLocalStats, slot);
             _isEnabled = true;
         }
         
         public void DisableMod(NetworkedStatsBehaviour moddedLocalStats, bool isSwap)
         {
-            if (!_isEnabled) return;
-            if (isSwap) return;
+            if (isSwap)
+            {
+                RemoveOnSwapSlot(moddedLocalStats);
+                return;
+            }
             
+            if (!_isEnabled) return;
+
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
 
         public virtual bool IsValidAddMod() { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
-        protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats);
+        public virtual void AddOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats, int slot) {}
+        public virtual void RemoveOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats) {}
+        protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }
 }

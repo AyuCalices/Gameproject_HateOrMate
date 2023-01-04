@@ -18,10 +18,17 @@ namespace Features.Loot.Scripts.ModView
 
         private void OverrideSortingOrderOnHover()
         {
-            _hoverTempCanvas = gameObject.AddComponent<Canvas>();
-            _hoverTempCanvas.overrideSorting = true;
-            _hoverTempCanvas.sortingOrder = sortingOrder;
-            _hoverTempRaycaster = gameObject.AddComponent<GraphicRaycaster>();
+            if (GetComponent<Canvas>() == null)
+            {
+                _hoverTempCanvas = gameObject.AddComponent<Canvas>();
+                _hoverTempCanvas.overrideSorting = true;
+                _hoverTempCanvas.sortingOrder = sortingOrder;
+            }
+
+            if (GetComponent<GraphicRaycaster>() == null)
+            {
+                _hoverTempRaycaster = gameObject.AddComponent<GraphicRaycaster>();
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -31,8 +38,15 @@ namespace Features.Loot.Scripts.ModView
 
         private void CleanupOverrideSortingOrderOnHover()
         {
-            Destroy(_hoverTempRaycaster);
-            Destroy(_hoverTempCanvas);
+            if (_hoverTempRaycaster != null)
+            {
+                Destroy(_hoverTempRaycaster);
+            }
+
+            if (_hoverTempCanvas != null)
+            {
+                Destroy(_hoverTempCanvas);
+            }
         }
     }
 }

@@ -16,12 +16,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             
             for (int i = 0; i < modSlotBehaviours.Length; i++)
             {
-                modSlotBehaviours[i].Initialize(localStats);
-
-                if (i > 2)
-                {
-                    ToggleSlot(i);
-                }
+                modSlotBehaviours[i].Initialize(localStats, i);
             }
         }
 
@@ -47,8 +42,8 @@ namespace Features.Unit.Scripts.Behaviours.Mod
                 if (modSlotBehaviour.ContainsMod)
                 {
                     ModBehaviour modBehaviour = modSlotBehaviour.ContainedModBehaviour;
-                    onDestroyUnit?.Invoke(modBehaviour);
                     modSlotBehaviour.RemoveMod(modBehaviour, false);
+                    onDestroyUnit?.Invoke(modBehaviour);
                 }
             }
         }

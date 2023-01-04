@@ -55,6 +55,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             }
         }
 
+        private void Start()
+        {
+            ApplyModToInstantiatedUnit();
+        }
+
         private void OnDestroy()
         {
             NetworkedStatServiceLocator.RemoveAllValues();
@@ -71,17 +76,21 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 LocalStat selectedStat = NetworkedStatServiceLocator.Get<LocalStat>((StatType)value);
                 PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedStat.StatType, selectedStat.ScalingStatIdentity, selectedStat.StatIdentity);
             }
-            
-            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
-            {
-                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
-            }
         }
         
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
+            ApplyModToInstantiatedUnit();
+        }
+
+        private void ApplyModToInstantiatedUnit()
+        {
+            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
+            {
+                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
+            }
         }
     }
 }

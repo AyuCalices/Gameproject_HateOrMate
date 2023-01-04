@@ -18,11 +18,13 @@ namespace Features.Loot.Scripts.ModView
 
         private bool _isActive;
         private NetworkedStatsBehaviour _localStats;
+        private int _slot;
         
-        public void Initialize(NetworkedStatsBehaviour localStats)
+        public void Initialize(NetworkedStatsBehaviour localStats, int slot)
         {
             _localStats = localStats;
             _isActive = true;
+            _slot = slot;
         }
         
         public void ApplyModToNewInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
@@ -48,10 +50,10 @@ namespace Features.Loot.Scripts.ModView
         public void AddMod(ModBehaviour newModBehaviour)
         {
             ContainedModBehaviour = newModBehaviour;
-
+            
             if (_isActive)
             {
-                newModBehaviour.ContainedMod.EnableMod(_localStats);
+                newModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
             }
             else
             {
@@ -101,7 +103,7 @@ namespace Features.Loot.Scripts.ModView
             
             if (ContainsMod)
             {
-                ContainedModBehaviour.ContainedMod.EnableMod(_localStats);
+                ContainedModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
             }
 
             UpdateSlotColor();

@@ -18,7 +18,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _scaleValue = scaleValue;
         }
 
-        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
+        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
             Debug.Log("SingleStat");
             bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);

@@ -32,7 +32,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             }
         }
 
-        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats)
+        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
