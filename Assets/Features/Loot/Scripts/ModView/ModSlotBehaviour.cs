@@ -7,24 +7,30 @@ namespace Features.Loot.Scripts.ModView
 {
     public class ModSlotBehaviour : MonoBehaviour, IDropHandler, IModContainer
     {
-        [SerializeField] private DragControllerFocus_SO dragControllerFocus;
         [SerializeField] private Image image;
         [SerializeField] private Color freeColor;
         [SerializeField] private Color blockedColor;
 
-        public ModBehaviour ContainedModBehaviour { get; set; }
         public Transform Transform => transform;
-        
-        public bool ContainsMod() => ContainedModBehaviour != null;
-        public bool DisableModOnSwap() => false;
+        public bool ContainsMod => ContainedModBehaviour != null;
+        public bool DisableModOnSwap => false;
+        public ModBehaviour ContainedModBehaviour { get; private set; }
 
         private bool _isActive;
         private NetworkedStatsBehaviour _localStats;
-
-        public void Init(NetworkedStatsBehaviour localStats)
+        
+        public void Initialize(NetworkedStatsBehaviour localStats)
         {
             _localStats = localStats;
             _isActive = true;
+        }
+        
+        public void ApplyModToNewInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        {
+            if (!ContainsMod) return;
+            if (!_isActive) return;
+            
+            ContainedModBehaviour.ContainedMod.ApplyToInstantiatedUnit(instantiatedUnit);
         }
 
         public void OnDrop(PointerEventData eventData)
@@ -33,66 +39,35 @@ namespace Features.Loot.Scripts.ModView
             eventData.pointerDrag.TryGetComponent(out ModBehaviour movingMod);
             if (movingMod == null) return;
 
-            dragControllerFocus.Get().AddOrExchangeMod(movingMod, ContainsMod() ? ContainedModBehaviour : null,
-                movingMod.CurrentModSlotBehaviour, this);
+            ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
+                movingMod.CurrentModContainer, this);
             
-            movingMod.isInHand = false;
+            movingMod.IsSuccessfulDrop = true;
         }
 
-        public void ApplyModToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public void AddMod(ModBehaviour newModBehaviour)
         {
-            if (!ContainsMod()) return;
-            if (!_isActive) return;
-            
-            ContainedModBehaviour.BaseMod.ApplyToInstantiatedUnit(instantiatedUnit);
-        }
+            ContainedModBehaviour = newModBehaviour;
 
-        public void SwapAddMod(ModBehaviour newModBehaviour)
-        {
-            if (!_isActive)
+            if (_isActive)
             {
-                ContainedModBehaviour = newModBehaviour;
-                newModBehaviour.BaseMod.DisableMod(_localStats, false);
+                newModBehaviour.ContainedMod.EnableMod(_localStats);
             }
-            else if (_isActive)
+            else
             {
-                AddMod(newModBehaviour);
+                newModBehaviour.ContainedMod.DisableMod(_localStats, false);
             }
-            
-            UpdateModColor();
-        }
 
-        private void AddMod(ModBehaviour newMod)
-        {
-            ContainedModBehaviour = newMod;
-            
-            if (_isActive) newMod.BaseMod.EnableMod(_localStats);
-            
             UpdateModColor();
         }
         
         public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap)
         {
-            if (_isActive && ContainsMod()) ContainedModBehaviour.BaseMod.DisableMod(_localStats, isSwap);
+            if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_localStats, isSwap);
             
             ContainedModBehaviour = null;
 
-            if (!isSwap)
-            {
-                UpdateModColor();
-            }
-        }
-
-        public void UpdateActiveStatus()
-        {
-            if (_isActive)
-            {
-                ContainedModBehaviour.BaseMod.EnableMod(_localStats);
-            }
-            else
-            {
-                ContainedModBehaviour.BaseMod.DisableMod(_localStats, false);
-            }
+            UpdateModColor();
         }
         
         public void ToggleSlot()
@@ -107,16 +82,16 @@ namespace Features.Loot.Scripts.ModView
             }
         }
 
-        public void DisableSlot()
+        private void DisableSlot()
         {
             _isActive = false;
 
-            if (ContainsMod())
+            if (ContainsMod)
             {
-                ContainedModBehaviour.BaseMod.DisableMod(_localStats, false);
+                ContainedModBehaviour.ContainedMod.DisableMod(_localStats, false);
             }
 
-            UpdateSlot();
+            UpdateSlotColor();
             UpdateModColor();
         }
         
@@ -124,23 +99,23 @@ namespace Features.Loot.Scripts.ModView
         {
             _isActive = true;
             
-            if (ContainsMod())
+            if (ContainsMod)
             {
-                ContainedModBehaviour.BaseMod.EnableMod(_localStats);
+                ContainedModBehaviour.ContainedMod.EnableMod(_localStats);
             }
 
-            UpdateSlot();
+            UpdateSlotColor();
             UpdateModColor();
         }
         
-        private void UpdateSlot()
+        private void UpdateSlotColor()
         {
             image.color = _isActive ? freeColor : blockedColor;
         }
 
         private void UpdateModColor()
         {
-            if (ContainsMod())
+            if (ContainsMod)
             {
                 ContainedModBehaviour.UpdateColor(_isActive ? freeColor : blockedColor);
             }

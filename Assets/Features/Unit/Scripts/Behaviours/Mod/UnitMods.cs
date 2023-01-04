@@ -6,7 +6,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
 {
     public class UnitMods
     {
-        public static Action<ModBehaviour> onMoveToHand;
+        public static Action<ModBehaviour> onDestroyUnit;
         
         private readonly ModSlotBehaviour[] _modSlotBehaviours;
 
@@ -16,11 +16,11 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             
             for (int i = 0; i < modSlotBehaviours.Length; i++)
             {
-                modSlotBehaviours[i].Init(localStats);
+                modSlotBehaviours[i].Initialize(localStats);
 
                 if (i > 2)
                 {
-                    _modSlotBehaviours[i].DisableSlot();
+                    ToggleSlot(i);
                 }
             }
         }
@@ -29,7 +29,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         {
             foreach (ModSlotBehaviour modSlotBehaviour in _modSlotBehaviours)
             {
-                modSlotBehaviour.ApplyModToInstantiatedUnit(instantiatedUnit);
+                modSlotBehaviour.ApplyModToNewInstantiatedUnit(instantiatedUnit);
             }
         }
         
@@ -44,10 +44,10 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             {
                 ModSlotBehaviour modSlotBehaviour = _modSlotBehaviours[index];
 
-                if (modSlotBehaviour.ContainsMod())
+                if (modSlotBehaviour.ContainsMod)
                 {
                     ModBehaviour modBehaviour = modSlotBehaviour.ContainedModBehaviour;
-                    onMoveToHand?.Invoke(modBehaviour);
+                    onDestroyUnit?.Invoke(modBehaviour);
                     modSlotBehaviour.RemoveMod(modBehaviour, false);
                 }
             }

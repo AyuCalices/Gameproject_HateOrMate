@@ -7,11 +7,11 @@ namespace Features.Loot.Scripts.ModView
     {
         public Transform Transform { get; }
 
-        public bool ContainsMod();
+        public bool ContainsMod { get; }
 
-        public bool DisableModOnSwap();
+        public bool DisableModOnSwap { get; }
 
-        public void SwapAddMod(ModBehaviour newModBehaviour);
+        public void AddMod(ModBehaviour newModBehaviour);
         
         public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap);
     }
