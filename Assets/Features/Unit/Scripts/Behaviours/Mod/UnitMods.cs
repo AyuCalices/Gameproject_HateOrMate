@@ -28,6 +28,11 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             }
         }
 
+        public bool SlotIsEnabled(int index)
+        {
+            return _modSlotBehaviours[index].IsActive;
+        }
+
         public void DisableSlot(int index)
         {
             _modSlotBehaviours[index].DisableSlot();

@@ -31,11 +31,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         public void EnableMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
-            if (_isEnabled)
-            {
-                AddOnSwapSlot(moddedLocalStats, slot);
-                return;
-            }
+            if (_isEnabled) { return; }
             
             InternalAddMod(moddedLocalStats, slot);
             _isEnabled = true;
@@ -43,22 +39,15 @@ namespace Features.Loot.Scripts.GeneratedLoot
         
         public void DisableMod(NetworkedStatsBehaviour moddedLocalStats, bool isSwap)
         {
-            if (isSwap)
-            {
-                RemoveOnSwapSlot(moddedLocalStats);
-                return;
-            }
-            
+            if (isSwap) { return; }
             if (!_isEnabled) return;
 
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }
 
-        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit) { return true; }
+        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot) { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
-        public virtual void AddOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats, int slot) {}
-        public virtual void RemoveOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }

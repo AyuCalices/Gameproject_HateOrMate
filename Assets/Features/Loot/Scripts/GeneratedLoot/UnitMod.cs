@@ -27,11 +27,22 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _modUnitRuntimeSet = modUnitRuntimeSet;
         }
 
-        public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit)
+        public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot)
         {
-            if (_instantiatedUnit == null) return true;
+            foreach (ModUnitBehaviour modUnitBehaviour in _modUnitRuntimeSet.GetItems())
+            {
+                if (!modUnitBehaviour.UnitMods.SlotIsEnabled(slot))
+                {
+                    Debug.LogWarning("Unit Mod cant be added on a locked slot!");
+                    return false;
+                }
+            }
 
-            return instantiatedUnit.gameObject.GetInstanceID() != _instantiatedUnit.gameObject.GetInstanceID();
+            if (_instantiatedUnit != null)
+            {
+                Debug.LogWarning("Unit Mod cant be Moved!");
+            }
+            return _instantiatedUnit == null;
         }
 
         public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
@@ -44,16 +55,6 @@ namespace Features.Loot.Scripts.GeneratedLoot
             {
                 modUnitBehaviour.UnitMods.DisableSlot(_slot);
             }
-        }
-
-        public override void AddOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats, int slot)
-        {
-            AddBlockedSlots(moddedLocalStats, slot);
-        }
-
-        public override void RemoveOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats)
-        {
-            RemoveBlockedSlots();
         }
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
@@ -88,9 +89,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private void RemoveBlockedSlots()
         {
             var list = _modUnitRuntimeSet.GetItems();
-            for (int index = list.Count - 1; index >= 0; index--)
+            foreach (ModUnitBehaviour modUnitBehaviour in list)
             {
-                ModUnitBehaviour modUnitBehaviour = list[index];
                 if (_currentUnit == null) return;
                 if (modUnitBehaviour.gameObject.GetInstanceID() == _currentUnit.gameObject.GetInstanceID()) continue;
 

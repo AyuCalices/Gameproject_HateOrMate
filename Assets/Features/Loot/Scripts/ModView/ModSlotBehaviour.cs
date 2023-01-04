@@ -17,6 +17,7 @@ namespace Features.Loot.Scripts.ModView
         public ModBehaviour ContainedModBehaviour { get; private set; }
 
         private bool _isActive;
+        public bool IsActive => _isActive;
         private NetworkedStatsBehaviour _localStats;
         private int _slot;
         
@@ -41,42 +42,13 @@ namespace Features.Loot.Scripts.ModView
             eventData.pointerDrag.TryGetComponent(out ModBehaviour movingMod);
             if (movingMod == null) return;
 
-            if (movingMod.ContainedMod.IsValidAddMod(_localStats))
+            if (movingMod.ContainedMod.IsValidAddMod(_localStats, _slot))
             {
-                if (ContainsMod)
-                {
-                    if (movingMod.CurrentModContainer is ModSlotBehaviour modSlotBehaviour)
-                    {
-                        if (ContainedModBehaviour.ContainedMod.IsValidAddMod(modSlotBehaviour._localStats))
-                        {
-                            ModHelper.AddOrExchangeMod(movingMod, ContainedModBehaviour,
-                                movingMod.CurrentModContainer, this);
-                        }
-                        else
-                        {
-                            Debug.LogWarning("cant add a unit to itself");
-                        }
-                    }
-                    else
-                    {
-                        ModHelper.AddOrExchangeMod(movingMod, ContainedModBehaviour,
-                            movingMod.CurrentModContainer, this);
-                    }
-                }
-                else
-                {
-                    ModHelper.AddOrExchangeMod(movingMod, null,
-                        movingMod.CurrentModContainer, this);
-                }
+                ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
+                    movingMod.CurrentModContainer, this);
+                
+                movingMod.IsSuccessfulDrop = true;
             }
-            else
-            {
-                Debug.LogWarning("cant add a unit to itself");
-            }
-
-            
-            
-            movingMod.IsSuccessfulDrop = true;
         }
 
         public void AddMod(ModBehaviour newModBehaviour)
