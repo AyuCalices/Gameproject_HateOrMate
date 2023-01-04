@@ -27,10 +27,15 @@ namespace Features.Unit.Scripts.Behaviours.Mod
                 modSlotBehaviour.ApplyModToNewInstantiatedUnit(instantiatedUnit);
             }
         }
-        
-        public void ToggleSlot(int index)
+
+        public void DisableSlot(int index)
         {
-            _modSlotBehaviours[index].ToggleSlot();
+            _modSlotBehaviours[index].DisableSlot();
+        }
+        
+        public void EnableSlot(int index)
+        {
+            _modSlotBehaviours[index].EnableSlot();
         }
 
         public void OnDestroy()

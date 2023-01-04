@@ -6,7 +6,7 @@ namespace Features.Loot.Scripts.ModView
         public static void AddOrExchangeMod(ModBehaviour movingMod, ModBehaviour blockedTargetMod, IModContainer movingModOrigin, IModContainer movingModTarget)
         {
             if (movingModTarget == movingModOrigin) return;
-            
+
             movingModOrigin.RemoveMod(movingMod, !movingModTarget.DisableModOnSwap);
             
             //can be null due to hand

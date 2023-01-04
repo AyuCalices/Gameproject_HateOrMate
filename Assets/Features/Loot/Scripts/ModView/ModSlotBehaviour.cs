@@ -41,8 +41,40 @@ namespace Features.Loot.Scripts.ModView
             eventData.pointerDrag.TryGetComponent(out ModBehaviour movingMod);
             if (movingMod == null) return;
 
-            ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
-                movingMod.CurrentModContainer, this);
+            if (movingMod.ContainedMod.IsValidAddMod(_localStats))
+            {
+                if (ContainsMod)
+                {
+                    if (movingMod.CurrentModContainer is ModSlotBehaviour modSlotBehaviour)
+                    {
+                        if (ContainedModBehaviour.ContainedMod.IsValidAddMod(modSlotBehaviour._localStats))
+                        {
+                            ModHelper.AddOrExchangeMod(movingMod, ContainedModBehaviour,
+                                movingMod.CurrentModContainer, this);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("cant add a unit to itself");
+                        }
+                    }
+                    else
+                    {
+                        ModHelper.AddOrExchangeMod(movingMod, ContainedModBehaviour,
+                            movingMod.CurrentModContainer, this);
+                    }
+                }
+                else
+                {
+                    ModHelper.AddOrExchangeMod(movingMod, null,
+                        movingMod.CurrentModContainer, this);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("cant add a unit to itself");
+            }
+
+            
             
             movingMod.IsSuccessfulDrop = true;
         }
@@ -71,21 +103,11 @@ namespace Features.Loot.Scripts.ModView
 
             UpdateModColor();
         }
-        
-        public void ToggleSlot()
-        {
-            if (_isActive)
-            {
-                DisableSlot();
-            }
-            else
-            {
-                EnableSlot();
-            }
-        }
 
-        private void DisableSlot()
+        public void DisableSlot()
         {
+            if (!_isActive) return;
+            
             _isActive = false;
 
             if (ContainsMod)
@@ -97,8 +119,10 @@ namespace Features.Loot.Scripts.ModView
             UpdateModColor();
         }
         
-        private void EnableSlot()
+        public void EnableSlot()
         {
+            if (_isActive) return;
+            
             _isActive = true;
             
             if (ContainsMod)

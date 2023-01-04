@@ -55,7 +55,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _isEnabled = false;
         }
 
-        public virtual bool IsValidAddMod() { return true; }
+        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit) { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
         public virtual void AddOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats, int slot) {}
         public virtual void RemoveOnSwapSlot(NetworkedStatsBehaviour moddedLocalStats) {}

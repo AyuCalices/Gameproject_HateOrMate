@@ -27,6 +27,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _modUnitRuntimeSet = modUnitRuntimeSet;
         }
 
+        public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit)
+        {
+            if (_instantiatedUnit == null) return true;
+
+            return instantiatedUnit.gameObject.GetInstanceID() != _instantiatedUnit.gameObject.GetInstanceID();
+        }
+
         public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
             if (_instantiatedUnit == null) return;
@@ -35,7 +42,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             
             if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
             {
-                modUnitBehaviour.UnitMods.ToggleSlot(_slot);
+                modUnitBehaviour.UnitMods.DisableSlot(_slot);
             }
         }
 
@@ -74,7 +81,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             {
                 if (modUnitBehaviour.gameObject.GetInstanceID() == moddedLocalStats.gameObject.GetInstanceID()) continue;
                 
-                modUnitBehaviour.UnitMods.ToggleSlot(slot);
+                modUnitBehaviour.UnitMods.DisableSlot(slot);
             }
         }
 
@@ -87,7 +94,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
                 if (_currentUnit == null) return;
                 if (modUnitBehaviour.gameObject.GetInstanceID() == _currentUnit.gameObject.GetInstanceID()) continue;
 
-                modUnitBehaviour.UnitMods.ToggleSlot(_slot);
+                modUnitBehaviour.UnitMods.EnableSlot(_slot);
             }
 
             _currentUnit = null;
