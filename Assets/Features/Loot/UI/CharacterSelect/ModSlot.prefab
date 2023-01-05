@@ -128,10 +128,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd2d6e69faa44b1459da32596121014d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
   image: {fileID: 8142305349321449461}
   freeColor: {r: 1, g: 1, b: 1, a: 1}
   blockedColor: {r: 1, g: 0, b: 0, a: 1}
+  errorPopup: {fileID: 6035889565382585920, guid: d13425e085454414da96ee1fd9d63efb, type: 3}
 --- !u!222 &845585198263131927
 CanvasRenderer:
   m_ObjectHideFlags: 0

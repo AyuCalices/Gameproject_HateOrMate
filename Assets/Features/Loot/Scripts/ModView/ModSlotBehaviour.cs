@@ -1,3 +1,4 @@
+using Features.Connection.Scripts;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -10,6 +11,7 @@ namespace Features.Loot.Scripts.ModView
         [SerializeField] private Image image;
         [SerializeField] private Color freeColor;
         [SerializeField] private Color blockedColor;
+        [SerializeField] private ErrorPopup errorPopup;
 
         public Transform Transform => transform;
         public bool ContainsMod => ContainedModBehaviour != null;
@@ -48,6 +50,10 @@ namespace Features.Loot.Scripts.ModView
                     movingMod.CurrentModContainer, this);
                 
                 movingMod.IsSuccessfulDrop = true;
+            }
+            else
+            {
+                errorPopup.Instantiate(transform.root, "This drop cant be performed!");
             }
         }
 
