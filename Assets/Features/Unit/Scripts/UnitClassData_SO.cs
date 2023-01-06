@@ -9,6 +9,7 @@ namespace Features.Unit.Scripts
     public class UnitClassData_SO : NetworkedScriptableObject
     {
         public BattleClassGenerator_SO battleClasses;
+        public Sprite sprite;
         public float range;
         public float movementSpeed;
     }

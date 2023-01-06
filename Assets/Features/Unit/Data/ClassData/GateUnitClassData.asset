@@ -15,5 +15,6 @@ MonoBehaviour:
   internalId: 6493393d-5ee4-48b1-a708-0f57edaaa2b5
   createdAtTicks: 638071552584702786
   battleClasses: {fileID: 11400000, guid: ab5515bdc46412344a0f9f6d816d3ecc, type: 2}
+  sprite: {fileID: 21300000, guid: 4224e0ae60f354990b0b328ad39ecad7, type: 3}
   range: 100
   movementSpeed: 2

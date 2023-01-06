@@ -51,6 +51,7 @@ namespace Features.MovementAndSpawning
             _spawnedUnits.Add(player.PhotonView);
             
             //initialize values
+            player.SetSprite(unitClassData.sprite);
             player.UnitTeamData = unitTeamData;
             player.IsTargetable = isTargetable;
             player.SpawnerInstanceIndex = index;

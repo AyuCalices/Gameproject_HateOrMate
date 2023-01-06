@@ -13,6 +13,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
 
+        [SerializeField] protected SpriteRenderer unitSprite;
+
         protected StateMachine stateMachine;
 
         private UnitTeamData_SO _unitTeamData;
@@ -47,6 +49,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
                 _isTargetable = value;
                 unitBattleView.SetHealthActive(IsTargetable);
             }
+        }
+
+        public void SetSprite(Sprite sprite)
+        {
+            unitSprite.sprite = sprite;
         }
 
         private void AddRuntimeSets()

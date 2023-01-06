@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  unitSprite: {fileID: 5957523550392877198}
 --- !u!114 &8875176428770713088
 MonoBehaviour:
   m_ObjectHideFlags: 0
