@@ -1,4 +1,5 @@
 using System;
+using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -9,17 +10,17 @@ namespace Features.Loot.Scripts.GeneratedLoot
     {
         public static Action<ModBehaviour, BaseMod> onModInstantiated;
         
-        public string ModName { get; }
+        public GameObject SpritePrefab { get; }
         public string Description { get; }
         
         //make sure a mod can't be added twice
         private bool _isEnabled;
         private readonly ModBehaviour _modBehaviourPrefab;
 
-        protected BaseMod(string modName, string description, ModBehaviour modBehaviourPrefab)
+        protected BaseMod(GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab)
         {
             _modBehaviourPrefab = modBehaviourPrefab;
-            ModName = modName;
+            SpritePrefab = spritePrefab;
             Description = description;
             _isEnabled = false;
         }
@@ -46,7 +47,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _isEnabled = false;
         }
 
-        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot) { return true; }
+        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot, ErrorPopup errorPopup, Transform transform) { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);

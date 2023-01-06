@@ -15,7 +15,7 @@ namespace Features.Loot.Scripts.Generator
         
         public override void OnAddInstanceToPlayer()
         {
-            SingleStatMod singleStatMod = new SingleStatMod(statType, baseValue, scaleValue, LootableName, Description, modBehaviourPrefab);
+            SingleStatMod singleStatMod = new SingleStatMod(statType, baseValue, scaleValue, SpritePrefab, Description, modBehaviourPrefab);
             singleStatMod.RaiseOnModInstantiated();
         }
     }

@@ -1,4 +1,5 @@
 using System;
+using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
@@ -20,27 +21,27 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private NetworkedStatsBehaviour _currentUnit;
 
-        public UnitMod(UnitClassData_SO classData, ModUnitRuntimeSet_SO modUnitRuntimeSet, string modName, string description, ModBehaviour modBehaviourPrefab) 
-            : base(modName, description, modBehaviourPrefab)
+        public UnitMod(UnitClassData_SO classData, ModUnitRuntimeSet_SO modUnitRuntimeSet, GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab) 
+            : base(spritePrefab, description, modBehaviourPrefab)
         {
             _classData = classData;
             _modUnitRuntimeSet = modUnitRuntimeSet;
         }
 
-        public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot)
+        public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot, ErrorPopup errorPopup, Transform transform)
         {
             foreach (ModUnitBehaviour modUnitBehaviour in _modUnitRuntimeSet.GetItems())
             {
                 if (!modUnitBehaviour.UnitMods.SlotIsEnabled(slot))
                 {
-                    Debug.LogWarning("Unit Mod cant be added on a locked slot!");
+                    errorPopup.Instantiate(transform, "Unit Mod cant be added on a locked slot!");
                     return false;
                 }
             }
 
             if (_instantiatedUnit != null)
             {
-                Debug.LogWarning("Unit Mod cant be Moved!");
+                errorPopup.Instantiate(transform, "Unit Mod cant be Moved!");
             }
             return _instantiatedUnit == null;
         }

@@ -1,7 +1,6 @@
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
-using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 
@@ -16,7 +15,7 @@ namespace Features.Loot.Scripts.Generator
         
         public override void OnAddInstanceToPlayer()
         {
-            UnitMod unitMod = new UnitMod(classData, modUnitRuntimeSet, LootableName, Description, modBehaviourPrefab);
+            UnitMod unitMod = new UnitMod(classData, modUnitRuntimeSet, SpritePrefab, Description, modBehaviourPrefab);
             unitMod.RaiseOnModInstantiated();
         }
     }

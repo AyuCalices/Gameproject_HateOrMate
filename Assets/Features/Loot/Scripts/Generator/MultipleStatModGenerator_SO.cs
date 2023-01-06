@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Features.Battle.Scripts;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
@@ -13,11 +14,13 @@ namespace Features.Loot.Scripts.Generator
     {
         [SerializeField] private ModBehaviour modBehaviourPrefab;
         [SerializeField] private List<MultipleStatModTarget> multipleStatModTargets;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO ownTeam;
+        [SerializeField] private BattleData_SO battleData;
 
 
         public override void OnAddInstanceToPlayer()
         {
-            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, LootableName, Description, modBehaviourPrefab);
+            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, battleData, ownTeam, SpritePrefab, Description, modBehaviourPrefab);
             multipleStatMod.RaiseOnModInstantiated();
         }
     }
@@ -25,7 +28,7 @@ namespace Features.Loot.Scripts.Generator
     [Serializable]
     public class MultipleStatModTarget
     {
-        public NetworkedUnitRuntimeSet_SO networkedUnitRuntimeSet;
+        public TeamType teamType;
         public StatType statType;
         public float baseValue;
         public float scaleValue;

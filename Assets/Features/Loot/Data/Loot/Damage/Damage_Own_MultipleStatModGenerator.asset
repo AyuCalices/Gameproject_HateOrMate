@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d3767aa85a1efd48b96c4a597f22caf, type: 3}
+  m_Name: Damage_Own_MultipleStatModGenerator
+  m_EditorClassIdentifier: 
+  internalId: 8ef107ed-d2ca-475c-80ba-6408bc71e0bf
+  createdAtTicks: 638085608075319554
+  spritePrefab: {fileID: 252780237247306845, guid: f3d4476c0353009439533881b495f4f1, type: 3}
+  description: Increases Damage for your entire Team
+  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  multipleStatModTargets:
+  - teamType: 0
+    statType: 0
+    baseValue: 10
+    scaleValue: 0
+  ownTeam: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

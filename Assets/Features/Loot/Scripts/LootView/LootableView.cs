@@ -10,7 +10,7 @@ namespace Features.Loot.Scripts.LootView
     public class LootableView : MonoBehaviour
     {
         [SerializeField] private Image image;
-        [SerializeField] private TMP_Text lootableName;
+        [SerializeField] private Transform spritePrefabParent;
         [SerializeField] private TMP_Text description;
 
         public LootableGenerator_SO LootableGenerator { get; private set; }
@@ -25,8 +25,8 @@ namespace Features.Loot.Scripts.LootView
         public void Initialize(LootableGenerator_SO lootableGenerator, Func<bool> action)
         {
             LootableGenerator = lootableGenerator;
-            
-            //lootableName.text = lootableGenerator.LootableName;
+
+            Instantiate(lootableGenerator.SpritePrefab, spritePrefabParent);
             description.text = lootableGenerator.Description;
             
             _button.onClick.AddListener(() =>

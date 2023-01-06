@@ -6,10 +6,10 @@ namespace Features.Loot.Scripts.Generator
 {
     public abstract class LootableGenerator_SO : NetworkedScriptableObject
     {
-        [field: SerializeField] private string lootableName;
+        [field: SerializeField] private GameObject spritePrefab;
         [field: SerializeField] private string description;
 
-        public string LootableName => lootableName;
+        public GameObject SpritePrefab => spritePrefab;
         public string Description => description;
 
         public abstract void OnAddInstanceToPlayer();

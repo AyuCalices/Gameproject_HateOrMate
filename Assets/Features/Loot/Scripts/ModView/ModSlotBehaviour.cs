@@ -44,17 +44,11 @@ namespace Features.Loot.Scripts.ModView
             eventData.pointerDrag.TryGetComponent(out ModBehaviour movingMod);
             if (movingMod == null) return;
 
-            if (movingMod.ContainedMod.IsValidAddMod(_localStats, _slot))
-            {
-                ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
-                    movingMod.CurrentModContainer, this);
-                
-                movingMod.IsSuccessfulDrop = true;
-            }
-            else
-            {
-                errorPopup.Instantiate(transform.root, "This drop cant be performed!");
-            }
+            if (!movingMod.ContainedMod.IsValidAddMod(_localStats, _slot, errorPopup, transform.root)) return;
+            
+            ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
+                movingMod.CurrentModContainer, this);
+            movingMod.IsSuccessfulDrop = true;
         }
 
         public void AddMod(ModBehaviour newModBehaviour)

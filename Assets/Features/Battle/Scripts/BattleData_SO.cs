@@ -1,13 +1,17 @@
+using System.Collections.Generic;
+using System.Linq;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using Features.Loot.Scripts;
 using Features.Tiles;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
 {
+    public enum TeamType{Own, MateElseEnemy, Enemy}
     /// <summary>
     /// Container of all the battle relevant data. By exchanging an instance of this, you can configure a new battle (different Tile Set, Enemy & Player)
     /// </summary>
@@ -23,6 +27,9 @@ namespace Features.Battle.Scripts
         public NetworkedUnitRuntimeSet_SO AllUnitsRuntimeSet => allUnitsRuntimeSet;
         [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
 
+        public NetworkedUnitRuntimeSet_SO NetworkedUnitRuntimeSet => networkedUnitRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO networkedUnitRuntimeSet;
+        
         public TileRuntimeDictionary_SO TileRuntimeDictionary => tileRuntimeDictionary;
         [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         
@@ -48,6 +55,30 @@ namespace Features.Battle.Scripts
             }
             
             Debug.LogError("Please pass a valid Team!");
+            return null;
+        }
+        
+        public List<NetworkedBattleBehaviour> GetTeam(NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet, TeamType teamType)
+        {
+            switch (teamType)
+            {
+                case TeamType.Own:
+                    return ownTeamRuntimeSet.GetItems();
+                case TeamType.MateElseEnemy:
+                    List<NetworkedBattleBehaviour> mateUnitList = new List<NetworkedBattleBehaviour>();
+                    foreach (NetworkedBattleBehaviour enemyUnit in GetEnemyTeam(ownTeamRuntimeSet).GetItems())
+                    {
+                        if (!NetworkedUnitRuntimeSet.GetItems().Contains(enemyUnit))
+                        {
+                            mateUnitList.Add(enemyUnit);
+                        }
+                    }
+                    return mateUnitList.Count == 0 ? GetEnemyTeam(ownTeamRuntimeSet).GetItems() : mateUnitList;
+                    break;
+                case TeamType.Enemy:
+                    return GetEnemyTeam(ownTeamRuntimeSet).GetItems();
+            }
+            
             return null;
         }
         

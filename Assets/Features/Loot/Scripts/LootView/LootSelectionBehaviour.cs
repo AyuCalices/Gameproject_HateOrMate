@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.Generator;
 using Photon.Pun;

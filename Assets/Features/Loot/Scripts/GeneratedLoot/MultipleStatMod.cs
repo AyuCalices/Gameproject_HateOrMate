@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Features.Battle.Scripts;
 using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.ModView;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -10,18 +12,22 @@ namespace Features.Loot.Scripts.GeneratedLoot
     public class MultipleStatMod : BaseMod
     {
         private readonly List<MultipleStatModTarget> _multipleStatModTargets;
-        
-        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, string modName, string description, ModBehaviour modBehaviourPrefab) 
-            : base(modName, description, modBehaviourPrefab)
+        private readonly BattleData_SO _battleData;
+        private readonly NetworkedUnitRuntimeSet_SO _ownTeam;
+
+        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, BattleData_SO battleData, NetworkedUnitRuntimeSet_SO ownTeam, GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab) 
+            : base(spritePrefab, description, modBehaviourPrefab)
         {
             _multipleStatModTargets = multipleStatModTargets;
+            _battleData = battleData;
+            _ownTeam = ownTeam;
         }
 
         public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.GetTeam(_ownTeam, multipleStatModTarget.teamType))
                 {
                     if (manipulatedUnit.NetworkedStatsBehaviour == instantiatedUnit)
                     {
@@ -36,7 +42,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.GetTeam(_ownTeam, multipleStatModTarget.teamType))
                 {
                     Add(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
@@ -47,7 +53,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in multipleStatModTarget.networkedUnitRuntimeSet.GetItems())
+                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.GetTeam(_ownTeam, multipleStatModTarget.teamType))
                 {
                     Remove(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
                 }
