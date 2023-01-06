@@ -52,7 +52,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
                 if (modSlotBehaviour.ContainsMod)
                 {
                     ModBehaviour modBehaviour = modSlotBehaviour.ContainedModBehaviour;
-                    modSlotBehaviour.RemoveMod(modBehaviour, false);
+                    modSlotBehaviour.RemoveMod(modBehaviour);
                     onDestroyUnit?.Invoke(modBehaviour);
                 }
             }

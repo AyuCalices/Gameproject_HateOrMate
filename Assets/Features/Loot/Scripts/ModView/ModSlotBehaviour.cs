@@ -15,7 +15,6 @@ namespace Features.Loot.Scripts.ModView
 
         public Transform Transform => transform;
         public bool ContainsMod => ContainedModBehaviour != null;
-        public bool DisableModOnSwap => false;
         public ModBehaviour ContainedModBehaviour { get; private set; }
 
         private bool _isActive;
@@ -55,25 +54,14 @@ namespace Features.Loot.Scripts.ModView
         {
             ContainedModBehaviour = newModBehaviour;
             
-            if (_isActive)
-            {
-                newModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
-            }
-            else
-            {
-                newModBehaviour.ContainedMod.DisableMod(_localStats, false);
-            }
-
-            UpdateModColor();
+            if (_isActive) newModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
         }
         
-        public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap)
+        public void RemoveMod(ModBehaviour removedModBehaviour)
         {
-            if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_localStats, isSwap);
+            if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
             
             ContainedModBehaviour = null;
-
-            UpdateModColor();
         }
 
         public void DisableSlot()
@@ -84,7 +72,7 @@ namespace Features.Loot.Scripts.ModView
 
             if (ContainsMod)
             {
-                ContainedModBehaviour.ContainedMod.DisableMod(_localStats, false);
+                ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
             }
 
             UpdateSlotColor();

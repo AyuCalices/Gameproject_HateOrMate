@@ -9,10 +9,8 @@ namespace Features.Loot.Scripts.ModView
 
         public bool ContainsMod { get; }
 
-        public bool DisableModOnSwap { get; }
-
         public void AddMod(ModBehaviour newModBehaviour);
         
-        public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap);
+        public void RemoveMod(ModBehaviour removedModBehaviour);
     }
 }

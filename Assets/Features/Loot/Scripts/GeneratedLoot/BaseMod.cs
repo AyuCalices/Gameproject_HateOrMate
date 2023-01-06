@@ -38,9 +38,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _isEnabled = true;
         }
         
-        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats, bool isSwap)
+        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            if (isSwap) { return; }
             if (!_isEnabled) return;
 
             InternalRemoveMod(moddedLocalStats);

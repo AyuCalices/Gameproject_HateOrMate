@@ -7,12 +7,12 @@ namespace Features.Loot.Scripts.ModView
         {
             if (movingModTarget == movingModOrigin) return;
 
-            movingModOrigin.RemoveMod(movingMod, !movingModTarget.DisableModOnSwap);
+            movingModOrigin.RemoveMod(movingMod);
             
             //can be null due to hand
             if (movingModTarget.ContainsMod && blockedTargetMod != null)
             {
-                movingModTarget.RemoveMod(blockedTargetMod, !movingModOrigin.DisableModOnSwap);
+                movingModTarget.RemoveMod(blockedTargetMod);
                 movingModOrigin.AddMod(blockedTargetMod);
                 blockedTargetMod.SetNewOrigin(movingModOrigin);
             }

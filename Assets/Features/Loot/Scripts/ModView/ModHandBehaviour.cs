@@ -14,7 +14,6 @@ namespace Features.Loot.Scripts.ModView
 
         public Transform Transform => contentTransform;
         public bool ContainsMod => ContainedModBehaviours is {Count: > 0};
-        public bool DisableModOnSwap => true;
         private List<ModBehaviour> ContainedModBehaviours { get; set; }
 
         private void Awake()
@@ -64,7 +63,7 @@ namespace Features.Loot.Scripts.ModView
         }
 
         //Called by ModHelper
-        public void RemoveMod(ModBehaviour removedModBehaviour, bool isSwap)
+        public void RemoveMod(ModBehaviour removedModBehaviour)
         {
             removedModBehaviour.IsInHand = false;
             ContainedModBehaviours.Remove(removedModBehaviour);
