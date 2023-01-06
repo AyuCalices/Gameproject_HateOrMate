@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,7 +11,7 @@ namespace Features.Loot.Scripts.ModView
     {
         [SerializeField] private Transform dragTransform;
         [SerializeField] private Transform contentTransform;
-    
+
         public Transform Transform => contentTransform;
         public bool ContainsMod => ContainedModBehaviours is {Count: > 0};
         public bool DisableModOnSwap => true;
@@ -33,6 +34,7 @@ namespace Features.Loot.Scripts.ModView
         {
             ModBehaviour modBehaviour = Instantiate(modBehaviourPrefab, contentTransform);
             modBehaviour.Initialize(baseMod, dragTransform, this);
+
             RegisterModOnHand(modBehaviour);
         }
         

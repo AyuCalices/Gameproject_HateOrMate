@@ -1,4 +1,5 @@
 using Features.Loot.Scripts.GeneratedLoot;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -10,6 +11,8 @@ namespace Features.Loot.Scripts.ModView
     {
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private Image image;
+        [SerializeField] private Transform imageParent;
+        [SerializeField] private TMP_Text description;
         
         public BaseMod ContainedMod { get; private set; }
         public IModContainer CurrentModContainer { get; private set; }
@@ -33,6 +36,9 @@ namespace Features.Loot.Scripts.ModView
             CurrentModContainer = currentModContainer;
             _originTransform = transform.parent;
             _dragTransform = dragTransform;
+            
+            Instantiate(baseMod.SpritePrefab, imageParent);
+            description.text = baseMod.Description;
         }
         
         public void SetNewOrigin(IModContainer targetOrigin)

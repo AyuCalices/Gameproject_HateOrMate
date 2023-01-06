@@ -22,5 +22,5 @@ MonoBehaviour:
     statType: 0
     baseValue: -1
     scaleValue: 0
-  ownTeam: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
+  ownTeam: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

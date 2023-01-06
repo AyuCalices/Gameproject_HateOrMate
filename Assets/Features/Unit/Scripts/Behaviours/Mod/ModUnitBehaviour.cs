@@ -12,16 +12,17 @@ namespace Features.Unit.Scripts.Behaviours.Mod
     
         public UnitMods UnitMods { get; private set; }
     
-        public static Func<GameObject> onInstantiateModSlot;
+        public static Func<NetworkedStatsBehaviour, GameObject> onInstantiateModSlot;
 
         private GameObject _unitModGameObject;
     
         // Start is called before the first frame update
         private void Awake()
         {
-            _unitModGameObject = onInstantiateModSlot.Invoke();
+            NetworkedStatsBehaviour networkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
+            _unitModGameObject = onInstantiateModSlot.Invoke(networkedStatsBehaviour);
             ModSlotBehaviour[] modDropBehaviours = _unitModGameObject.GetComponentsInChildren<ModSlotBehaviour>();
-            UnitMods = new UnitMods(GetComponent<NetworkedStatsBehaviour>(), modDropBehaviours);
+            UnitMods = new UnitMods(networkedStatsBehaviour, modDropBehaviours);
             modUnitRuntimeSet.Add(this);
         }
 

@@ -294,7 +294,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bf091f42d1bd3646bff1c9fde4632be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragControllerFocus: {fileID: 11400000, guid: 518c357a34faaf24b8e291215e7d4917, type: 2}
   dragTransform: {fileID: 1793653488596165881}
   contentTransform: {fileID: 2803553702730449146}
 --- !u!222 &541245900133181534
@@ -465,7 +464,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10b4cd944c3a9844b9d8039a0b069c1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unitModViewPrefab: {fileID: 2897219980390122949, guid: 689f93e51693fb9409d07565725fbef8, type: 3}
+  unitModViewPrefab: {fileID: 380651821939928610, guid: 689f93e51693fb9409d07565725fbef8, type: 3}
   instantiationParent: {fileID: 5493139467476443675}
 --- !u!1 &3680299211154716130
 GameObject:
@@ -983,7 +982,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 960.30927, y: 0}
+  m_AnchoredPosition: {x: 1210.6954, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7858096687922680826
@@ -1516,8 +1515,8 @@ RectTransform:
   m_Father: {fileID: 6046813162216160825}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 311, y: 0}
   m_SizeDelta: {x: 0, y: 68}
   m_Pivot: {x: 1, y: 1}

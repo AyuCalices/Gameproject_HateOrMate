@@ -15,7 +15,7 @@ namespace Features.Unit.Scripts.Behaviours
         
         [Header("References")]
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private GameObject visualObject;
+        [SerializeField] private GameObject unitSpriteGameObject;
         [SerializeField] private CameraFocus_SO cameraFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         
@@ -64,7 +64,7 @@ namespace Features.Unit.Scripts.Behaviours
         {
             if (battleData.CurrentState is not LootingState) return;
             
-            _instantiatedPrefab = Instantiate(visualObject);
+            _instantiatedPrefab = Instantiate(unitSpriteGameObject);
             _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
         }
         
