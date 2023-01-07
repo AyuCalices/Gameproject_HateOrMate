@@ -147,7 +147,7 @@ namespace Features.Unit.Scripts.Class
             {
                 SendFloatToTargetRaiseEvent(
                     attackedNetworkedBattleBehaviour.PhotonView.ViewID,
-                    attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage),
+                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage),
                     ownerBattleBehaviour.UnitClassData.unitType
                 );
             }

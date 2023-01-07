@@ -33,5 +33,6 @@ namespace Features.Loot.Scripts.Generator
         public StatType statType;
         public float baseValue;
         public float scaleValue;
+        public float stageScaleValue;
     }
 }

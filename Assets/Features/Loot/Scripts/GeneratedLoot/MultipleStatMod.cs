@@ -33,7 +33,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
                     if (manipulatedUnit.NetworkedStatsBehaviour == instantiatedUnit)
                     {
                         Add(instantiatedUnit, multipleStatModTarget.statType,
-                            multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                            multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
                     }
                 }
             }
@@ -45,7 +45,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             {
                 foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.GetTeam(_ownTeam, multipleStatModTarget.teamType))
                 {
-                    Add(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                    Add(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
                 }
             }
         }
@@ -56,39 +56,44 @@ namespace Features.Loot.Scripts.GeneratedLoot
             {
                 foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.GetTeam(_ownTeam, multipleStatModTarget.teamType))
                 {
-                    Remove(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue);
+                    Remove(manipulatedUnit.NetworkedStatsBehaviour, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
                 }
             }
         }
 
-        private void Add(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue)
+        private void Add(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, baseValue);
+            bool result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         
-            result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedStats.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.ScalingStat, ScaleByStage(scaleValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         }
 
-        private void Remove(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue)
+        private void Remove(NetworkedStatsBehaviour modifiedStats, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.Stat, baseValue);
+            bool result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         
-            result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedStats.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.ScalingStat, ScaleByStage(scaleValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
+        }
+        
+        private float ScaleByStage(float value, float stageScaleValue)
+        {
+            return value * Mathf.Pow(stageScaleValue, Level);
         }
     }
 }
