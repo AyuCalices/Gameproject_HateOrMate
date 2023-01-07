@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6316f8176c64b2145af56ebd2c531719, type: 3}
+  m_Name: Mage_UnitType
+  m_EditorClassIdentifier: 
+  internalId: 8940706d-eba5-46f9-9417-3f999cb0068a
+  createdAtTicks: 638087330213599223
+  unitRelation:
+  - unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
+    scale: 0.6
+  - unitType: {fileID: 11400000, guid: 8055590e2e9933d409a58c457330be7f, type: 2}
+    scale: 1.4

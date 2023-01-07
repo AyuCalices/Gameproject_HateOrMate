@@ -31,12 +31,13 @@ namespace Features.Unit.Scripts.Class
         /// </summary>
         /// <param name="targetID"></param>
         /// <param name="value"></param>
-        protected void SendFloatToTargetRaiseEvent(int targetID, float value)
+        protected void SendFloatToTargetRaiseEvent(int targetID, float value, UnitType_SO attackerUnitType)
         {
             object[] data = new object[]
             {
                 targetID,
-                value
+                value,
+                attackerUnitType
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -57,8 +58,9 @@ namespace Features.Unit.Scripts.Class
         /// Attacked Unit Receives an attack from the caster. May be an attack or heal.
         /// </summary>
         /// <param name="value"></param>
-        public void OnReceiveFloatActionCallback(float value)
+        public void OnReceiveFloatActionCallback(float value, UnitType_SO unitType)
         {
+            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
 
             float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Health);
@@ -123,18 +125,20 @@ namespace Features.Unit.Scripts.Class
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedBattleBehaviour attackedUnitBattleBehaviour)
+        protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour)
         {
-            NetworkedStatsBehaviour attackedUnitStats = attackedUnitBattleBehaviour.NetworkedStatsBehaviour;
-            if (attackedUnitBattleBehaviour.GetComponent<BattleBehaviour>() != null)
+            NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
+            if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
-                attackedUnitStats.RemovedHealth += ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
+                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage);
+                attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref damage);
+                attackedUnitStats.RemovedHealth += damage;
                 
                 float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Health);
-                ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedUnitBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
+                ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
                 
                 UpdateAllClientsHealthRaiseEvent(
-                    attackedUnitBattleBehaviour.PhotonView.ViewID,
+                    attackedBattleBehaviour.PhotonView.ViewID,
                     attackedUnitStats.RemovedHealth,
                     totalHealth
                 );
@@ -142,8 +146,9 @@ namespace Features.Unit.Scripts.Class
             else
             {
                 SendFloatToTargetRaiseEvent(
-                    attackedUnitBattleBehaviour.PhotonView.ViewID,
-                    attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage)
+                    attackedNetworkedBattleBehaviour.PhotonView.ViewID,
+                    attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue(StatType.Damage),
+                    ownerBattleBehaviour.UnitClassData.unitType
                 );
             }
         }

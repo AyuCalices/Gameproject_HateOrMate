@@ -2,6 +2,7 @@ using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
+using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -55,7 +56,7 @@ namespace Features.Battle.Scripts
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
                     && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
                 {
-                    battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1]);
+                    battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitType_SO) data[2]);
                 }
             }
             
