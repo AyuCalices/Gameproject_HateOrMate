@@ -5,6 +5,7 @@ using Features.Connection.Scripts.Utils;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
@@ -27,6 +28,7 @@ namespace Features.Battle.Scripts
         public void Enter()
         {
             _requestLootPhaseButton.interactable = true;
+            NetworkedStatsBehaviour.onDamageGained += CheckStage;
         }
 
         public void Execute()
@@ -35,6 +37,16 @@ namespace Features.Battle.Scripts
 
         public void Exit()
         {
+            NetworkedStatsBehaviour.onDamageGained -= CheckStage;
+        }
+
+        private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
+        {
+            if (newRemovedHealth >= totalHealth)
+            {
+                networkedBattleBehaviour.TryRequestDeathState();
+                _battleManager.SetStage();
+            }
         }
 
         public void OnEvent(EventData photonEvent)
@@ -49,13 +61,19 @@ namespace Features.Battle.Scripts
                 }
             }
             
-            else if (photonEvent.Code == (int)RaiseEventCode.OnUpdateAllClientsHealth)
+            if (photonEvent.Code == (int)RaiseEventCode.OnUpdateAllClientsHealth)
             {
                 object[] data = (object[]) photonEvent.CustomData;
                 if (_allUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                 {
                     OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
                 }
+            }
+            
+            if (photonEvent.Code == (int)RaiseEventCode.OnEndStage)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                _battleManager.EndStage((bool) data[0]);
             }
         }
         
@@ -70,25 +88,7 @@ namespace Features.Battle.Scripts
             NetworkedStatsBehaviour networkedStatsBehaviour = networkedBattleBehaviour.NetworkedStatsBehaviour;
             networkedStatsBehaviour.RemovedHealth = newRemovedHealth;
         
-            if (networkedStatsBehaviour.RemovedHealth >= totalHealth)
-            {
-                networkedBattleBehaviour.TryRequestDeathState();
-                SetStage();
-            }
-        }
-
-        private void SetStage()
-        {
-            if (!_battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
-            {
-                _battleManager.EndStage(true);
-                return;
-            }
-
-            if (!_battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
-            {
-                _battleManager.EndStage(false);
-            }
+            CheckStage(networkedBattleBehaviour, newRemovedHealth, totalHealth);
         }
     }
 }

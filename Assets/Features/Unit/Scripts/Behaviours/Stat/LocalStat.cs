@@ -95,9 +95,9 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         {
             _statModificationValues.Clear();
             _scalingStatModificationValues.Clear();
-            
-            UpdateStat(StatIdentity, _statModificationValues.ToArray());
-            UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
+
+            PhotonNetwork.LocalPlayer.CustomProperties.Remove(StatIdentity);
+            PhotonNetwork.LocalPlayer.CustomProperties.Remove(ScalingStatIdentity);
         }
     
         private bool TryRemoveStatValueInternal(float value)

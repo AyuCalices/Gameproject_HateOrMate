@@ -1,4 +1,5 @@
 using System;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.View;
 using JetBrains.Annotations;
@@ -11,6 +12,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviour
     {
+        public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
+        
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
 
         private BaseStats _baseStats;
@@ -34,12 +37,16 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             set
             {
                 _removedHealth = value;
-                //TODO: getComponent
                 if (TryGetComponent(out UnitBattleView unitView))
                 {
-                    unitView.SetHealthSlider(RemovedHealth, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
+                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue(StatType.Health));
                 }
             }
+        }
+
+        public void RaiseDamageGained(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
+        {
+            onDamageGained.Invoke(networkedBattleBehaviour, newRemovedHealth, totalHealth);
         }
 
         protected void Awake()
@@ -62,6 +69,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         private void OnDestroy()
         {
+            //TODO: this gets called before a unit disables his mods
             NetworkedStatServiceLocator.RemoveAllValues();
         }
 

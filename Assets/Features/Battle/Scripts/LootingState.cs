@@ -63,7 +63,7 @@ namespace Features.Battle.Scripts
 
             if (!_restartStage)
             {
-                SendLootableByRaiseEvent(lootables);
+                SendLootable_RaiseEvent(lootables);
             }
         }
 
@@ -77,7 +77,7 @@ namespace Features.Battle.Scripts
         {
         }
         
-        private void SendLootableByRaiseEvent(LootableGenerator_SO[] lootable)
+        private void SendLootable_RaiseEvent(LootableGenerator_SO[] lootable)
         {
             object[] data = new object[]
             {

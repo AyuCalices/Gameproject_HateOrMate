@@ -24,13 +24,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
             bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
-                Debug.LogWarning("Removing baseValue from Mod Failed!");
+                Debug.LogWarning("Adding value from Mod Failed!");
             }
             
             result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
-                Debug.LogWarning("Removing baseValue from Mod Failed!");
+                Debug.LogWarning("Adding value from Mod Failed!");
             }
         }
     
@@ -39,13 +39,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
             bool result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
-                Debug.LogWarning("Adding baseValue from Mod Failed!");
+                Debug.LogWarning("Removing value from Mod Failed!");
             }
             
             result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
-                Debug.LogWarning("Adding baseValue from Mod Failed!");
+                Debug.LogWarning("Removing value from Mod Failed!");
             }
         }
     }

@@ -86,6 +86,43 @@ namespace Features.Battle.Scripts
             _stageStateMachine.ChangeState(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, restartState));
         }
 
+        public void SetStage()
+        {
+            if (!PhotonNetwork.IsMasterClient) return;
+            
+            if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
+            {
+                EndStage_RaiseEvent(true);
+                return;
+            }
+
+            if (!battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
+            {
+                EndStage_RaiseEvent(false);
+            }
+        }
+        
+        private void EndStage_RaiseEvent(bool restartStage)
+        {
+            object[] data = new object[]
+            {
+                restartStage
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnEndStage, data, raiseEventOptions, sendOptions);
+        }
+
         public void EndStage(bool restartState)
         {
             if (!restartState)
