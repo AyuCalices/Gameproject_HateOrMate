@@ -70,7 +70,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         internal override bool TryRequestAttackState()
         {
             bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
-            
+         
             if (result)
             {
                 stateMachine.ChangeState(new AttackState(this, _battleClass));
