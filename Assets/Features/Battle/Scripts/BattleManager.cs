@@ -1,10 +1,12 @@
 using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
+using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts.StageProgression;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts;
+using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.LootView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
@@ -26,8 +28,8 @@ namespace Features.Battle.Scripts
 
         [SerializeField] private StageRandomizer_SO stageRandomizer;
         public UnitClassData_SO towerClass;
-        [SerializeField] private LootSelectionBehaviour lootSelectionBehaviour;
         [SerializeField] private BattleData_SO battleData;
+        [SerializeField] private int lootCountOnStageComplete;
         
         [SerializeField] private Button requestLootPhaseButton;
         [SerializeField] private Button continueBattleButton;
@@ -59,7 +61,7 @@ namespace Features.Battle.Scripts
         {
             onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
             
-            _stageStateMachine.Initialize(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, true));
+            _stageStateMachine.Initialize(new LootingState(this, continueBattleButton, true));
             
             battleData.Stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
@@ -78,35 +80,40 @@ namespace Features.Battle.Scripts
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this, battleData, requestLootPhaseButton, battleData.AllUnitsRuntimeSet));
+            _stageStateMachine.ChangeState(new BattleState(this, requestLootPhaseButton, battleData.AllUnitsRuntimeSet));
         }
 
         private void RequestLootingState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new LootingState(this, battleData, lootSelectionBehaviour, continueBattleButton, restartState));
+            _stageStateMachine.ChangeState(new LootingState(this, continueBattleButton, restartState));
         }
 
         public void SetStage()
         {
             if (!PhotonNetwork.IsMasterClient) return;
             
+            bool enterLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(null, x => x);
+            
             if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
             {
-                EndStage_RaiseEvent(true);
+                RestartStage_RaiseEvent(enterLootingState);
                 return;
             }
 
             if (!battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
             {
-                EndStage_RaiseEvent(false);
+                LootableGenerator_SO[] lootables = RandomizeLootables();
+                NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
             }
         }
         
-        private void EndStage_RaiseEvent(bool restartStage)
+        private void NextStage_RaiseEvent(bool enterLootingState, LootableGenerator_SO[] lootable, int currentStageAsLevel)
         {
             object[] data = new object[]
             {
-                restartStage
+                enterLootingState,
+                lootable,
+                currentStageAsLevel
             };
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -120,16 +127,32 @@ namespace Features.Battle.Scripts
                 Reliability = true
             };
             
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnEndStage, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnNextStage, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void RestartStage_RaiseEvent(bool enterLootingState)
+        {
+            object[] data = new object[]
+            {
+                enterLootingState
+            };
+            
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRestartStage, data, raiseEventOptions, sendOptions);
         }
 
-        public void EndStage(bool restartState)
+        public void EndStage(bool restartStage, bool enterLootingState)
         {
-            if (!restartState)
-            {
-                LootingState.LootCount++;
-            }
-            
             onLocalDespawnAllUnits?.Invoke();
             
             foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
@@ -137,12 +160,26 @@ namespace Features.Battle.Scripts
                 networkedUnitBehaviour.OnStageEnd();
                 networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
-
-            bool enteredLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(() => RequestLootingState(restartState));
-            if (!enteredLootingState)
+            
+            if (enterLootingState)
             {
-                RequestStageSetupState(restartState);
+                RequestLootingState(restartStage);
             }
+            else
+            {
+                RequestStageSetupState(restartStage);
+            }
+        }
+
+        private LootableGenerator_SO[] RandomizeLootables()
+        {
+            LootableGenerator_SO[] lootables = new LootableGenerator_SO[lootCountOnStageComplete];
+            for (int index = 0; index < lootCountOnStageComplete; index++)
+            {
+                lootables[index] = battleData.LootTable.RandomizeLootableGenerator();
+            }
+
+            return lootables;
         }
 
         public void OnEvent(EventData photonEvent)

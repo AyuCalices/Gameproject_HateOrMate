@@ -12,8 +12,10 @@ namespace Features.Loot.Scripts.LootView
         [SerializeField] private Image image;
         [SerializeField] private Transform spritePrefabParent;
         [SerializeField] private TMP_Text description;
+        [SerializeField] private TMP_Text level;
 
-        public LootableGenerator_SO LootableGenerator { get; private set; }
+        private LootableGenerator_SO _lootableGenerator;
+        private int _stageAsLevel;
 
         private Button _button;
 
@@ -22,12 +24,14 @@ namespace Features.Loot.Scripts.LootView
             _button = GetComponent<Button>();
         }
 
-        public void Initialize(LootableGenerator_SO lootableGenerator, Func<bool> action)
+        public void Initialize(LootableGenerator_SO lootableGenerator, int stageAsLevel, Func<bool> action)
         {
-            LootableGenerator = lootableGenerator;
+            _lootableGenerator = lootableGenerator;
+            _stageAsLevel = stageAsLevel;
 
             Instantiate(lootableGenerator.SpritePrefab, spritePrefabParent);
             description.text = lootableGenerator.Description;
+            level.text = stageAsLevel.ToString();
             
             _button.onClick.AddListener(() =>
             {
@@ -37,6 +41,11 @@ namespace Features.Loot.Scripts.LootView
                     image.color = Color.grey;
                 }
             });
+        }
+
+        public void GenerateContainedLootable()
+        {
+            _lootableGenerator.OnAddInstanceToPlayer(_stageAsLevel);
         }
     }
 }

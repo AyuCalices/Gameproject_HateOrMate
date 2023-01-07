@@ -14,8 +14,8 @@ namespace Features.Connection.Scripts.Utils
         OnUpdateAllClientsHealth = 10,
         OnRequestBattleState = 11,
         OnEnterUnitIdleState = 12,
-        OnObtainLoot = 13,
+        OnNextStage = 13,
         OnPlayerSynchronizedDespawn = 14,
-        OnEndStage = 15,
+        OnRestartStage = 15,
     }
 }

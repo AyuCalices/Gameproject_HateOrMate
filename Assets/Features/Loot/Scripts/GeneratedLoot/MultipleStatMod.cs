@@ -15,8 +15,9 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly BattleData_SO _battleData;
         private readonly NetworkedUnitRuntimeSet_SO _ownTeam;
 
-        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, BattleData_SO battleData, NetworkedUnitRuntimeSet_SO ownTeam, GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, modBehaviourPrefab)
+        public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, BattleData_SO battleData, NetworkedUnitRuntimeSet_SO ownTeam, 
+            GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
+            : base(spritePrefab, description, level, modBehaviourPrefab)
         {
             _multipleStatModTargets = multipleStatModTargets;
             _battleData = battleData;

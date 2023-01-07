@@ -13,14 +13,12 @@ namespace Features.Battle.Scripts
     public class BattleState : IState
     {
         private readonly BattleManager _battleManager;
-        private readonly BattleData_SO _battleData;
         private readonly Button _requestLootPhaseButton;
         private readonly NetworkedUnitRuntimeSet_SO _allUnitsRuntimeSet;
 
-        public BattleState(BattleManager battleManager, BattleData_SO battleData, Button requestLootPhaseButton, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
+        public BattleState(BattleManager battleManager, Button requestLootPhaseButton, NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet)
         {
             _battleManager = battleManager;
-            _battleData = battleData;
             _requestLootPhaseButton = requestLootPhaseButton;
             _allUnitsRuntimeSet = allUnitsRuntimeSet;
         }
@@ -70,10 +68,18 @@ namespace Features.Battle.Scripts
                 }
             }
             
-            if (photonEvent.Code == (int)RaiseEventCode.OnEndStage)
+            if (photonEvent.Code == (int)RaiseEventCode.OnRestartStage)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                _battleManager.EndStage((bool) data[0]);
+                bool enterLootingState = (bool) data[0];
+                _battleManager.EndStage(true, enterLootingState);
+            }
+            
+            if (photonEvent.Code == (int)RaiseEventCode.OnNextStage)
+            {
+                object[] data = (object[]) photonEvent.CustomData;
+                bool enterLootingState = (bool) data[0];
+                _battleManager.EndStage(false, enterLootingState);
             }
         }
         

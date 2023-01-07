@@ -12,17 +12,19 @@ namespace Features.Loot.Scripts.GeneratedLoot
         
         public GameObject SpritePrefab { get; }
         public string Description { get; }
+        public int Level { get; }
         
         //make sure a mod can't be added twice
         private bool _isEnabled;
         private readonly ModBehaviour _modBehaviourPrefab;
 
-        protected BaseMod(GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab)
+        protected BaseMod(GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab)
         {
             _modBehaviourPrefab = modBehaviourPrefab;
             SpritePrefab = spritePrefab;
             Description = description;
             _isEnabled = false;
+            Level = level;
         }
 
         public void RaiseOnModInstantiated()

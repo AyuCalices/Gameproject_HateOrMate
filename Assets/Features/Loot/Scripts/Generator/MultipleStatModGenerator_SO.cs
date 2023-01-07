@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DataStructures.ReactiveVariable;
 using Features.Battle.Scripts;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
@@ -18,9 +19,9 @@ namespace Features.Loot.Scripts.Generator
         [SerializeField] private BattleData_SO battleData;
 
 
-        public override void OnAddInstanceToPlayer()
+        public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
-            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, battleData, ownTeam, SpritePrefab, Description, modBehaviourPrefab);
+            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, battleData, ownTeam, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
             multipleStatMod.RaiseOnModInstantiated();
         }
     }

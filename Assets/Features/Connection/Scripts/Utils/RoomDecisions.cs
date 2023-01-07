@@ -1,6 +1,7 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Connection.Scripts.Utils
@@ -48,7 +49,7 @@ namespace Features.Connection.Scripts.Utils
             return true;
         }
 
-        public bool UpdateDecision(Action onAllPlayerChose, Predicate<T> predicate = null)
+        public bool UpdateDecision(Action onValidDecision = null, Predicate<T> predicate = null)
         {
             if (_triggerIfOneChose)
             {
@@ -56,10 +57,10 @@ namespace Features.Connection.Scripts.Utils
             }
             else
             {
-                if (!PlayerChose(predicate)) return false;
+                if (!AllPlayerChose(predicate)) return false;
             }
             
-            onAllPlayerChose.Invoke();
+            onValidDecision?.Invoke();
             ResetLocalDecision();
             return true;
         }
@@ -79,7 +80,7 @@ namespace Features.Connection.Scripts.Utils
             return false;
         }
         
-        private bool PlayerChose(Predicate<T> predicate)
+        private bool AllPlayerChose(Predicate<T> predicate)
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             

@@ -13,6 +13,7 @@ namespace Features.Loot.Scripts.ModView
         [SerializeField] private Image image;
         [SerializeField] private Transform imageParent;
         [SerializeField] private TMP_Text description;
+        [SerializeField] private TMP_Text level;
         
         public BaseMod ContainedMod { get; private set; }
         public IModContainer CurrentModContainer { get; private set; }
@@ -39,6 +40,7 @@ namespace Features.Loot.Scripts.ModView
             
             Instantiate(baseMod.SpritePrefab, imageParent);
             description.text = baseMod.Description;
+            level.text = baseMod.Level.ToString();
         }
         
         public void SetNewOrigin(IModContainer targetOrigin)

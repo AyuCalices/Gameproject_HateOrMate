@@ -9,7 +9,7 @@ namespace Features.Loot.Scripts.Generator
         [SerializeField] private IntVariable localMoney;
         [SerializeField] private int amount;
     
-        public override void OnAddInstanceToPlayer()
+        public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
             localMoney.Add(amount);
         }

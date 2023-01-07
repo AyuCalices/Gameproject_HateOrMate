@@ -12,6 +12,6 @@ namespace Features.Loot.Scripts.Generator
         public GameObject SpritePrefab => spritePrefab;
         public string Description => description;
 
-        public abstract void OnAddInstanceToPlayer();
+        public abstract void OnAddInstanceToPlayer(int stageAsLevel);
     }
 }

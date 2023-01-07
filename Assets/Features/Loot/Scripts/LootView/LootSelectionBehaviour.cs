@@ -21,6 +21,7 @@ namespace Features.Loot.Scripts.LootView
         private LootableView[] _instantiatedLootables;
         private RoomDecisions<int> _roomDecisions;
         private readonly List<LootableGenerator_SO> _lootables = new List<LootableGenerator_SO>();
+        private readonly List<int> _lootableStages = new List<int>();
 
         private void Awake()
         {
@@ -80,11 +81,12 @@ namespace Features.Loot.Scripts.LootView
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
                 int localScope = i;
-                lootableView.Initialize(_lootables[i], () => _roomDecisions.SetLocalDecision(localScope));
+                lootableView.Initialize(_lootables[i], _lootableStages[i], () => _roomDecisions.SetLocalDecision(localScope));
                 _instantiatedLootables[i] = lootableView;
             }
             
             _lootables.RemoveRange(0, range);
+            _lootableStages.RemoveRange(0, range);
         }
 
         private void TryTakeSelectedLootable()
@@ -97,7 +99,7 @@ namespace Features.Loot.Scripts.LootView
             int ownDecisionIndex = (int)roomCustomProperties[_roomDecisions.Identifier(localPlayer)];
             if (_instantiatedLootables[ownDecisionIndex] != null)
             {
-                _instantiatedLootables[ownDecisionIndex].LootableGenerator.OnAddInstanceToPlayer();
+                _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
                 RemoveFromLootSlots(ownDecisionIndex);
             }
         }
@@ -129,17 +131,23 @@ namespace Features.Loot.Scripts.LootView
 
         public void OnEvent(EventData photonEvent)
         {
-            if (photonEvent.Code == (int)RaiseEventCode.OnObtainLoot)
+            if (photonEvent.Code == (int)RaiseEventCode.OnNextStage)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[0];
+                bool enterLootingState = (bool) data[0];
+                LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[1];
+                int stageAsLevel = (int) data[2];
 
                 foreach (var lootable in lootables)
                 {
                     _lootables.Add(lootable);
+                    _lootableStages.Add(stageAsLevel);
                 }
-                
-                gameObject.SetActive(true);
+
+                if (enterLootingState)
+                {
+                    gameObject.SetActive(true);
+                }
             }
         }
     }

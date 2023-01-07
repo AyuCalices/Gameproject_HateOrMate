@@ -13,9 +13,9 @@ namespace Features.Loot.Scripts.Generator
         [SerializeField] private float baseValue;
         [SerializeField] private float scaleValue;
         
-        public override void OnAddInstanceToPlayer()
+        public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
-            SingleStatMod singleStatMod = new SingleStatMod(statType, baseValue, scaleValue, SpritePrefab, Description, modBehaviourPrefab);
+            SingleStatMod singleStatMod = new SingleStatMod(statType, baseValue, scaleValue, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
             singleStatMod.RaiseOnModInstantiated();
         }
     }

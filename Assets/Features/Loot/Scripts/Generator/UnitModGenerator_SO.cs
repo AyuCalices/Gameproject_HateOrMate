@@ -1,3 +1,4 @@
+using DataStructures.ReactiveVariable;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
@@ -13,9 +14,9 @@ namespace Features.Loot.Scripts.Generator
         [SerializeField] private UnitClassData_SO classData;
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
         
-        public override void OnAddInstanceToPlayer()
+        public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
-            UnitMod unitMod = new UnitMod(classData, modUnitRuntimeSet, SpritePrefab, Description, modBehaviourPrefab);
+            UnitMod unitMod = new UnitMod(classData, modUnitRuntimeSet, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
             unitMod.RaiseOnModInstantiated();
         }
     }

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 

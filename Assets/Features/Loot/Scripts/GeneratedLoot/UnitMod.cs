@@ -21,8 +21,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private NetworkedStatsBehaviour _currentUnit;
 
-        public UnitMod(UnitClassData_SO classData, ModUnitRuntimeSet_SO modUnitRuntimeSet, GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, modBehaviourPrefab)
+        public UnitMod(UnitClassData_SO classData, ModUnitRuntimeSet_SO modUnitRuntimeSet, GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
+            : base(spritePrefab, description, level, modBehaviourPrefab)
         {
             _classData = classData;
             _modUnitRuntimeSet = modUnitRuntimeSet;

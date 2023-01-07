@@ -10,8 +10,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly float _baseValue;
         private readonly float _scaleValue;
 
-        public SingleStatMod(StatType statType, float baseValue, float scaleValue, GameObject spritePrefab, string description, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, modBehaviourPrefab)
+        public SingleStatMod(StatType statType, float baseValue, float scaleValue, GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
+            : base(spritePrefab, description, level, modBehaviourPrefab)
         {
             _statType = statType;
             _baseValue = baseValue;
@@ -20,7 +20,6 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
-            Debug.Log("SingleStat");
             bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, _baseValue);
             if (!result)
             {
