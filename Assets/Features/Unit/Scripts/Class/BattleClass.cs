@@ -63,7 +63,7 @@ namespace Features.Unit.Scripts.Class
             ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
 
-            float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinValueIs1(StatType.Health);
+            float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health);
             ownerNetworkingStatsBehaviour.RaiseDamageGained(ownerBattleBehaviour, ownerNetworkingStatsBehaviour.RemovedHealth, totalHealth);
                 
             UpdateAllClientsHealthRaiseEvent(
@@ -130,11 +130,11 @@ namespace Features.Unit.Scripts.Class
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
             if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
-                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinValueIs1(StatType.Damage);
+                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Damage);
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref damage);
                 attackedUnitStats.RemovedHealth += damage;
                 
-                float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_MinValueIs1(StatType.Health);
+                float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health);
                 ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
                 
                 UpdateAllClientsHealthRaiseEvent(
@@ -147,7 +147,7 @@ namespace Features.Unit.Scripts.Class
             {
                 SendFloatToTargetRaiseEvent(
                     attackedNetworkedBattleBehaviour.PhotonView.ViewID,
-                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinValueIs1(StatType.Damage),
+                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Damage),
                     ownerBattleBehaviour.UnitClassData.unitType
                 );
             }

@@ -64,7 +64,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             _services.Clear();
         }
 
-        public float GetTotalValue_MinValueIs1(StatType statType)
+        public float GetTotalValue_MinIs1(StatType statType)
         {
             float finalValue = 0;
     

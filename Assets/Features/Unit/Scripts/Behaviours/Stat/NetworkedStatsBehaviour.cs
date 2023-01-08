@@ -39,7 +39,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 _removedHealth = value;
                 if (TryGetComponent(out UnitBattleView unitView))
                 {
-                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue_MinValueIs1(StatType.Health));
+                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health));
                 }
             }
         }
