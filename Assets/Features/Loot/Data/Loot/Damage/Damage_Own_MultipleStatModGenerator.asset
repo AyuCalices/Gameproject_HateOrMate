@@ -22,5 +22,6 @@ MonoBehaviour:
     statType: 0
     baseValue: 10
     scaleValue: 0
+    stageScaleValue: 2
   ownTeam: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

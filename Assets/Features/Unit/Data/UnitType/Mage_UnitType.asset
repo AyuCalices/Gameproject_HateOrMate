@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   internalId: 8940706d-eba5-46f9-9417-3f999cb0068a
   createdAtTicks: 638087330213599223
+  unitName: Mage
   unitRelation:
   - unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
     scale: 0.6

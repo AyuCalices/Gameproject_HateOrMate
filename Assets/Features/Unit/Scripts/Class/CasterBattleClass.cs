@@ -7,18 +7,20 @@ using UnityEngine;
 
 namespace Features.Unit.Scripts.Class
 {
-    public class AiTowerBattleClass : BattleClass
+    public class CasterBattleClass : BattleClass
     {
+        private readonly bool _isAi;
         private readonly DamageProjectileBehaviour _damageProjectilePrefab;
         private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
         private float _attackSpeedDeltaTime;
 
-        public AiTowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
+        public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour,
             UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab) : base(
             ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
+            _isAi = isAi;
             _damageProjectilePrefab = damageProjectilePrefab;
             _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed);
         }
@@ -31,7 +33,7 @@ namespace Features.Unit.Scripts.Class
 
         protected override void InternalUpdateBattleActions()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (_isAi && !PhotonNetwork.IsMasterClient) return;
 
             _attackSpeedDeltaTime -= Time.deltaTime;
             
@@ -46,7 +48,7 @@ namespace Features.Unit.Scripts.Class
 
         protected override void InternalOnPerformAction()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
             NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(

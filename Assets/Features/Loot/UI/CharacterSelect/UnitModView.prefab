@@ -877,6 +877,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d567e6c825a52f944b9db574a0bfd91d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitSprite: {fileID: 4552916568093630943}
+  unitName: {fileID: 5124260335052894825}
   damageText: {fileID: 5261513675205971664}
   healthText: {fileID: 6389905744959159357}
   speedText: {fileID: 3643164149335138088}
@@ -1885,8 +1887,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 11.400002}
-  m_SizeDelta: {x: -88.25, y: -94.89}
+  m_AnchoredPosition: {x: 0, y: 12.3}
+  m_SizeDelta: {x: -94.125, y: -86.045}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4552916568093630942
 CanvasRenderer:

@@ -7,14 +7,15 @@ using UnityEngine;
 namespace Features.Unit.Scripts.ClassGenerator
 {
     [CreateAssetMenu(fileName = "new AiTowerBattleActions", menuName = "Unit/Actions/AiTowerBattleActions")]
-    public class AiTowerBattleClasseGenerator : BattleClassGenerator_SO
+    public class CasterBattleClasseGenerator : BattleClassGenerator_SO
     {
         [SerializeField] private DamageProjectileBehaviour damageProjectileBehaviour;
+        [SerializeField] private bool isAI;
         
         protected override BattleClass InternalGenerate(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitBattleView ownerUnitBattleView)
         {
-            return new AiTowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damageProjectileBehaviour);
+            return new CasterBattleClass(isAI, ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damageProjectileBehaviour);
         }
     }
 }

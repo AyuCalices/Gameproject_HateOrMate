@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   internalId: b3f288c8-5208-438a-b575-680bbedd6f55
   createdAtTicks: 638087330459119492
+  unitName: Archer
   unitRelation:
   - unitType: {fileID: 11400000, guid: 278d763b2019c214eaaf73a451095ec9, type: 2}
     scale: 0.6

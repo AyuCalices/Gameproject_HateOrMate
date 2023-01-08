@@ -10,6 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2777ffe64c08c6b4084f82a2e00799b7, type: 3}
-  m_Name: AiTowerBattleClassGenerator
+  m_Name: AiCasterBattleClassGenerator
   m_EditorClassIdentifier: 
   damageProjectileBehaviour: {fileID: 6686323569435117239, guid: cf6a01ed6b3b4db43aa89b8214ed8d77, type: 3}
+  isAI: 1

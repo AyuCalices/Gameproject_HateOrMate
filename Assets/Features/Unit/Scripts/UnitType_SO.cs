@@ -8,6 +8,8 @@ namespace Features.Unit.Scripts
     [CreateAssetMenu]
     public class UnitType_SO : NetworkedScriptableObject
     {
+        public string unitName;
+        
         [Header("How much damage will this unit get when being attacked by a certain unit type.")]
         [SerializeField] private List<UnitDamageRelation> unitRelation;
 

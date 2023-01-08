@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   internalId: 8f98fb42-9dac-4179-86f6-340f29c2962c
   createdAtTicks: 638085625457429160
-  spritePrefab: {fileID: 252780237247306845, guid: f3d4476c0353009439533881b495f4f1, type: 3}
+  spritePrefab: {fileID: 1586659559990814354, guid: ef22037f38f11784ba26dc17a1689599, type: 3}
   description: Adds an Archer to your Team  (+ Mage,  - Warrior)
   modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
-  classData: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
+  classData: {fileID: 11400000, guid: b56bb42a8dd38ef4cbca749cb682c2ee, type: 2}
   modUnitRuntimeSet: {fileID: 11400000, guid: b123533741e1f1f419800c4c7cb0467b, type: 2}

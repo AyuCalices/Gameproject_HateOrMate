@@ -9,6 +9,7 @@ namespace Features.Unit.Scripts
     public class ClickerManager_SO : ScriptableObject
     {
         [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
+        [SerializeField] private UnitClassData_SO towerClassData;
 
         public void OnClick()
         {
@@ -16,7 +17,8 @@ namespace Features.Unit.Scripts
 
             foreach (NetworkedBattleBehaviour towerBattleAction in towerBattleActions)
             {
-                if (towerBattleAction is BattleBehaviour {CurrentState: AttackState} battleBehaviour)
+                if (towerBattleAction is not BattleBehaviour {CurrentState: AttackState} battleBehaviour) continue;
+                if (battleBehaviour.UnitClassData == towerClassData)
                 {
                     battleBehaviour.BattleClass.OnPerformAction();
                 }

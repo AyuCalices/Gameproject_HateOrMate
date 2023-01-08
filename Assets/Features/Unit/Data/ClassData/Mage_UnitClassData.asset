@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
-  m_Name: aiTowerUnitClassData
+  m_Name: Mage_UnitClassData
   m_EditorClassIdentifier: 
-  internalId: ab3b3e6e-5acb-440d-a05e-0eee116e2c15
-  createdAtTicks: 638071553634101758
-  unitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
-  battleClasses: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
-  sprite: {fileID: 21300000, guid: 4224e0ae60f354990b0b328ad39ecad7, type: 3}
+  internalId: 41f92c36-316c-410f-9aef-294dff537821
+  createdAtTicks: 638087851835243283
+  unitType: {fileID: 11400000, guid: 278d763b2019c214eaaf73a451095ec9, type: 2}
+  battleClasses: {fileID: 11400000, guid: 8e9a55eac15fa824da76802206948db2, type: 2}
+  sprite: {fileID: 21300000, guid: 3945c79dc22284934a40135e66b67458, type: 3}
   range: 100
-  movementSpeed: 2
+  movementSpeed: 1

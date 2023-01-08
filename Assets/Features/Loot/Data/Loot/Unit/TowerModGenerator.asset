@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   internalId: 7ea5a25b-4f5a-4d68-9875-f3fd7f13886b
   createdAtTicks: 638072495256851139
-  spritePrefab: {fileID: 252780237247306845, guid: f3d4476c0353009439533881b495f4f1, type: 3}
+  spritePrefab: {fileID: 1586659559990814354, guid: f3854a43db472cd43b2bc784962066c7, type: 3}
   description: Adds a Tower to your team  (Clicker Damage)
   modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   classData: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}

@@ -38,4 +38,4 @@ MonoBehaviour:
   - modGenerator: {fileID: 11400000, guid: f1a7bf3b1bb02ea4c8274dd72bcad44a, type: 2}
     frequency: 10
   - modGenerator: {fileID: 11400000, guid: e0172d1c3afa3dc4b88bb88434b206db, type: 2}
-    frequency: 10
+    frequency: 100

@@ -20,3 +20,4 @@ MonoBehaviour:
   statType: 0
   baseValue: 50
   scaleValue: 0
+  stageScaleValue: 2

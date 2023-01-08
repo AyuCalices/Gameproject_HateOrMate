@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
-  m_Name: TowerUnitClassData
+  m_Name: AI_Archer_UnitClassData
   m_EditorClassIdentifier: 
-  internalId: b640fa49-af5b-453f-a8dc-24f02a1e6cd6
-  createdAtTicks: 638071552478349474
-  unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
-  battleClasses: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
-  sprite: {fileID: 21300000, guid: 4224e0ae60f354990b0b328ad39ecad7, type: 3}
-  range: 2
+  internalId: c6a3cd3d-24d7-4783-8ca4-890408f8f664
+  createdAtTicks: 638087865842869200
+  unitType: {fileID: 11400000, guid: 8055590e2e9933d409a58c457330be7f, type: 2}
+  battleClasses: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
+  sprite: {fileID: 21300000, guid: e4c5dfff34e304bf89a99c8cda7c8692, type: 3}
+  range: 3
   movementSpeed: 2

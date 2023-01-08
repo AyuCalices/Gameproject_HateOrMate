@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   internalId: b1e77837-7b0b-4de2-a848-29c7c8085f5f
   createdAtTicks: 638087331362664400
+  unitName: Warrior
   unitRelation:
   - unitType: {fileID: 11400000, guid: 8055590e2e9933d409a58c457330be7f, type: 2}
     scale: 0.6

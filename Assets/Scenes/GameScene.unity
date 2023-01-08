@@ -1747,7 +1747,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageRandomizer: {fileID: 11400000, guid: b73bcdb7f212a1049851af14d89c2fa9, type: 2}
   towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
-  lootSelectionBehaviour: {fileID: 2645354790969707797}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   lootCountOnStageComplete: 1
   requestLootPhaseButton: {fileID: 656612391}
@@ -4825,6 +4824,22 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 683468554149805988, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 683468554149805988, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 683468554149805988, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 683468554149805988, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2122946097624789382, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5007,17 +5022,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
---- !u!114 &2645354790969707797 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 6649349442738345036, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
-  m_PrefabInstance: {fileID: 2645354790969707796}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3af19b1054a033f47a756c56fb9b3513, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &7453439380830627820 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4889184657875249912, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}

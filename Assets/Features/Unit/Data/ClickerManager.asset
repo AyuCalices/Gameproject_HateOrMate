@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: ClickerManager
   m_EditorClassIdentifier: 
   localUnitRuntimeSet: {fileID: 11400000, guid: 7966f838787d51b4c881c508e9106960, type: 2}
+  towerClassData: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}

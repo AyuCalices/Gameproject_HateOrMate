@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
+  m_Name: Warrior_UnitClassData
+  m_EditorClassIdentifier: 
+  internalId: c43f3fe7-70f5-49a4-8bfa-c4ba7f956078
+  createdAtTicks: 638087865842391286
+  unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
+  battleClasses: {fileID: 11400000, guid: 8e9a55eac15fa824da76802206948db2, type: 2}
+  sprite: {fileID: 21300000, guid: 104bf404f508a4d25a01073facb9376e, type: 3}
+  range: 1
+  movementSpeed: 3
