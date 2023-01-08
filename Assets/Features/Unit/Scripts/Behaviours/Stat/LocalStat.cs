@@ -29,6 +29,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
         }
 
+        public float BaseStatValue => _baseStatValue;
+
         public void SetBaseStatValue(float newBaseValue)
         {
             _baseStatValue = newBaseValue;

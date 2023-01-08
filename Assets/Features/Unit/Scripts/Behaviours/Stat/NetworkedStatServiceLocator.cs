@@ -64,7 +64,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             _services.Clear();
         }
 
-        public float GetTotalValue(StatType statType)
+        public float GetTotalValue_MinValueIs1(StatType statType)
         {
             float finalValue = 0;
     
@@ -77,6 +77,9 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 //Debug.Log(localStat.GetTotalValue());
                 finalValue += localStat.GetTotalValue();
+
+                //make sure a stat cant get below 1
+                finalValue = Mathf.Max(finalValue, 1);
             }
 
             return finalValue;
