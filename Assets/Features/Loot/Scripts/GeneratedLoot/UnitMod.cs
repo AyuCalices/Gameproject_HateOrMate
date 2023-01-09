@@ -60,6 +60,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
+            //TODO: magic numbers
             _instantiatedUnit = onAddUnit.Invoke("Player", _classData, new BaseStats(10, 50, 3));
 
             AddBlockedSlots(moddedLocalStats, slot);
