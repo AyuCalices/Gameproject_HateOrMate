@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using DataStructures.ReactiveVariable;
 using Features.Loot.Scripts;
 using UnityEngine;
@@ -6,15 +8,25 @@ namespace Features.DevCheats
 {
     public class InputCheats : MonoBehaviour
     {
-        [SerializeField] private LootTable_SO lootTable;
+        [SerializeField] private List<LootableCheatKeyBinding> lootableCheats;
         [SerializeField] private IntReactiveVariable stageVariable;
         
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.G))
+            foreach (LootableCheatKeyBinding lootableCheatKeyBinding in lootableCheats)
             {
-                lootTable.RandomizeLootableGenerator().OnAddInstanceToPlayer(stageVariable.Get());
+                if (Input.GetKeyDown(lootableCheatKeyBinding.keyCode))
+                {
+                    lootableCheatKeyBinding.lootTable.RandomizeLootableGenerator().OnAddInstanceToPlayer(stageVariable.Get());
+                }
             }
         }
+    }
+
+    [Serializable]
+    public class LootableCheatKeyBinding
+    {
+        public LootTable_SO lootTable;
+        public KeyCode keyCode;
     }
 }

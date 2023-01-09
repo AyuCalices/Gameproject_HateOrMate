@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4a84432f6e9598d4b99bef5fde10d3bf, type: 3}
-  m_Name: LootTable
+  m_Name: Game_LootTable
   m_EditorClassIdentifier: 
   baseModGenerators:
   - modGenerator: {fileID: 11400000, guid: 5523ebb8babb04c41ad34b2dedace042, type: 2}
@@ -26,8 +26,6 @@ MonoBehaviour:
   - modGenerator: {fileID: 11400000, guid: 53571c5afea077e469da1379e7777c1c, type: 2}
     frequency: 10
   - modGenerator: {fileID: 11400000, guid: 2cd4d4583127c754aa0ae3808c545cda, type: 2}
-    frequency: 10
-  - modGenerator: {fileID: 11400000, guid: adc5d3a23d1882241aa60f3466d0cdff, type: 2}
     frequency: 10
   - modGenerator: {fileID: 11400000, guid: adc5d3a23d1882241aa60f3466d0cdff, type: 2}
     frequency: 10
