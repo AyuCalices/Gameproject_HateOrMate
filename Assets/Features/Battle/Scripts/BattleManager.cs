@@ -4,6 +4,7 @@ using ExitGames.Client.Photon;
 using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts.StageProgression;
 using Features.Connection;
+using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts;
 using Features.Loot.Scripts.Generator;
@@ -29,6 +30,8 @@ namespace Features.Battle.Scripts
         [SerializeField] private StageRandomizer_SO stageRandomizer;
         public UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;
+        [SerializeField] private ErrorPopup errorPopup;
+        [SerializeField] private Transform errorPopupInstantiationParent;
         [SerializeField] private int lootCountOnStageComplete;
         
         [SerializeField] private Button requestLootPhaseButton;
@@ -61,7 +64,7 @@ namespace Features.Battle.Scripts
         {
             onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
             
-            _stageStateMachine.Initialize(new LootingState(this, continueBattleButton, true));
+            _stageStateMachine.Initialize(new LootingState(this, battleData, errorPopup, errorPopupInstantiationParent, continueBattleButton, true));
             
             battleData.Stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
@@ -85,7 +88,7 @@ namespace Features.Battle.Scripts
 
         private void RequestLootingState(bool restartState)
         {
-            _stageStateMachine.ChangeState(new LootingState(this, continueBattleButton, restartState));
+            _stageStateMachine.ChangeState(new LootingState(this, battleData, errorPopup, errorPopupInstantiationParent, continueBattleButton, restartState));
         }
 
         public void SetStage()

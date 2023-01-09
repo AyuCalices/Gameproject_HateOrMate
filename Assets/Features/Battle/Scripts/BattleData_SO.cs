@@ -30,6 +30,9 @@ namespace Features.Battle.Scripts
         public NetworkedUnitRuntimeSet_SO NetworkedUnitRuntimeSet => networkedUnitRuntimeSet;
         [SerializeField] private NetworkedUnitRuntimeSet_SO networkedUnitRuntimeSet;
         
+        public NetworkedUnitRuntimeSet_SO LocalUnitRuntimeSet => localUnitRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
+        
         public TileRuntimeDictionary_SO TileRuntimeDictionary => tileRuntimeDictionary;
         [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
         

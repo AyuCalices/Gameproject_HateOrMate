@@ -1748,6 +1748,8 @@ MonoBehaviour:
   stageRandomizer: {fileID: 11400000, guid: b73bcdb7f212a1049851af14d89c2fa9, type: 2}
   towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  errorPopup: {fileID: 6035889565382585920, guid: d13425e085454414da96ee1fd9d63efb, type: 3}
+  errorPopupInstantiationParent: {fileID: 969196825}
   lootCountOnStageComplete: 1
   requestLootPhaseButton: {fileID: 656612391}
   continueBattleButton: {fileID: 1371798534}
