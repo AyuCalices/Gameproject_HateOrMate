@@ -8,6 +8,7 @@ using Photon.Realtime;
 using UniRx;
 using UniRx.Triggers;
 using UnityEngine;
+using UnityEngine.UI;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Loot.Scripts.LootView
@@ -16,6 +17,7 @@ namespace Features.Loot.Scripts.LootView
     {
         [SerializeField] private Transform instantiationParent;
         [SerializeField] private LootableView lootableViewPrefab;
+        [SerializeField] private Button passButton;
         [SerializeField] private int lootCount;
 
         private LootableView[] _instantiatedLootables;
@@ -28,7 +30,7 @@ namespace Features.Loot.Scripts.LootView
             _instantiatedLootables = new LootableView[lootCount];
             _roomDecisions = new RoomDecisions<int>("Looting", false);
             gameObject.SetActive(false);
-            
+
             PhotonNetwork.AddCallbackTarget(this);
         }
 
@@ -48,6 +50,7 @@ namespace Features.Loot.Scripts.LootView
                 {
                     _roomDecisions.UpdateDecision(() =>
                     {
+                        passButton.interactable = true;
                         DestroyOtherChoices();
                         TryTakeSelectedLootable();
                     });
@@ -57,6 +60,20 @@ namespace Features.Loot.Scripts.LootView
         public override void OnEnable()
         {
             ShowNewLootablesOrClose();
+            
+            if (PhotonNetwork.PlayerList.Length > 1)
+            {
+                passButton.gameObject.SetActive(true);
+                passButton.onClick.AddListener(() =>
+                {
+                    _roomDecisions.SetLocalDecision(-1);
+                    passButton.interactable = false;
+                });
+            }
+            else
+            {
+                passButton.gameObject.SetActive(false);
+            }
         }
         
         public override void OnDisable()
@@ -64,6 +81,11 @@ namespace Features.Loot.Scripts.LootView
             foreach (LootableView lootable in _instantiatedLootables)
             {
                 Destroy(lootable);
+            }
+            
+            if (passButton.gameObject.activeSelf)
+            {
+                passButton.onClick.RemoveAllListeners();
             }
         }
 
@@ -97,7 +119,7 @@ namespace Features.Loot.Scripts.LootView
             if (!roomCustomProperties.ContainsKey(_roomDecisions.Identifier(localPlayer))) return;
             
             int ownDecisionIndex = (int)roomCustomProperties[_roomDecisions.Identifier(localPlayer)];
-            if (_instantiatedLootables[ownDecisionIndex] != null)
+            if (ownDecisionIndex >= 0 && _instantiatedLootables[ownDecisionIndex] != null)
             {
                 _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
                 RemoveFromLootSlots(ownDecisionIndex);
@@ -119,6 +141,8 @@ namespace Features.Loot.Scripts.LootView
 
         private void RemoveFromLootSlots(int index)
         {
+            if (index < 0) return;
+            
             LootableView lootableViewToBeRemoved = _instantiatedLootables[index];
             Destroy(lootableViewToBeRemoved.gameObject);
             _instantiatedLootables[index] = null;
