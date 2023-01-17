@@ -33,7 +33,7 @@ namespace Features.Connection.Scripts.View
         public void StartGame()
         {
             _isReady = !_isReady;
-            _roomDecisions.SetLocalDecision(_isReady);
+            _roomDecisions.SetDecision(_isReady);
         }
 
         private void UpdatePlayerDecisionVisualisation()
@@ -76,7 +76,7 @@ namespace Features.Connection.Scripts.View
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            _roomDecisions.ResetLocalDecision();
+            _roomDecisions.ResetDecisions();
             PlayerRoomUnitInstanceBehaviour.Destroy(otherPlayer);
         }
 

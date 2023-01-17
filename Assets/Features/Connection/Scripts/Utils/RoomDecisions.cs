@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Connection.Scripts.Utils
@@ -24,7 +26,7 @@ namespace Features.Connection.Scripts.Utils
             _triggerIfOneChose = triggerIfOneChose;
         }
 
-        public void SetLocalDecision(T value)
+        public void SetDecision(T value)
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
             
@@ -43,7 +45,7 @@ namespace Features.Connection.Scripts.Utils
             }
             
             onValidDecision?.Invoke();
-            ResetLocalDecision();
+            ResetDecisions();
             return true;
         }
         
@@ -51,11 +53,11 @@ namespace Features.Connection.Scripts.Utils
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
-            foreach (Player player in PhotonNetwork.PlayerList)
+            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(player))) continue;
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value))) continue;
 
-                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(player)]);
+                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer.Value)]);
             }
 
             return false;
@@ -65,14 +67,14 @@ namespace Features.Connection.Scripts.Utils
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
-            foreach (Player player in PhotonNetwork.PlayerList)
+            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(player)))
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value)))
                 {
                     return false;
                 }
                 
-                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(player)]))
+                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer.Value)]))
                 {
                     return false;
                 }
@@ -81,10 +83,15 @@ namespace Features.Connection.Scripts.Utils
             return true;
         }
 
-        public void ResetLocalDecision()
+        public void ResetDecisions()
         {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
-            PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(localPlayer));
+            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            
+            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
+            {
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value))) continue;
+                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer.Value));
+            }
         }
     }
 }

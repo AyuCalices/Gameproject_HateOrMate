@@ -1,9 +1,12 @@
 using System.Linq;
 using DataStructures.StateLogic;
+using ExitGames.Client.Photon;
 using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.LootView;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Photon.Pun;
+using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -42,7 +45,7 @@ namespace Features.Battle.Scripts
             {
                 if (_battleData.LocalUnitRuntimeSet.GetItems().Any(networkedBattleBehaviour => !networkedBattleBehaviour.IsSpawnedLocally))
                 {
-                    _roomDecision.SetLocalDecision(true);
+                    _roomDecision.SetDecision(true);
                     _continueBattleButton.interactable = false;
                     for (int i = 0; i < _continueBattleButton.transform.childCount; i++)
                     {
@@ -59,7 +62,7 @@ namespace Features.Battle.Scripts
         public void Execute()
         {
             if (_roomDecision == null) return;
-            _roomDecision.IsValidDecision(() => _battleManager.RequestStageSetupState(_restartStage));
+            _roomDecision.IsValidDecision(() => _battleManager.RequestStageSetupState(_restartStage), b => b);
         }
 
         public void Exit()

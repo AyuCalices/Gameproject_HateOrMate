@@ -1,14 +1,10 @@
 using System;
 using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
-using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts.StageProgression;
-using Features.Connection;
 using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts;
 using Features.Loot.Scripts.Generator;
-using Features.Loot.Scripts.LootView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -55,7 +51,7 @@ namespace Features.Battle.Scripts
             _enterLootingPhaseRoomDecision = new RoomDecisions<bool>("EnterLootingPhase", true);
             requestLootPhaseButton.onClick.AddListener(() =>
             {
-                _enterLootingPhaseRoomDecision.SetLocalDecision(true);
+                _enterLootingPhaseRoomDecision.SetDecision(true);
                 requestLootPhaseButton.interactable = false;
             });
         }
@@ -109,7 +105,7 @@ namespace Features.Battle.Scripts
                 NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
             }
         }
-        
+
         private void NextStage_RaiseEvent(bool enterLootingState, LootableGenerator_SO[] lootable, int currentStageAsLevel)
         {
             object[] data = new object[]

@@ -41,6 +41,7 @@ namespace Features.Loot.Scripts.LootView
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
+            Debug.Log(propertiesThatChanged);
             _roomDecisions.IsValidDecision(() =>
             {
                 passButton.interactable = true;
@@ -60,7 +61,7 @@ namespace Features.Loot.Scripts.LootView
             
             passButton.onClick.AddListener(() =>
             {
-                _roomDecisions.SetLocalDecision(-1);
+                _roomDecisions.SetDecision(-1);
                 passButton.interactable = false;
             });
         }
@@ -88,8 +89,8 @@ namespace Features.Loot.Scripts.LootView
             for (int i = 0; i < range; i++)
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
-                int localScope = i;
-                lootableView.Initialize(_lootables[i], _lootableStages[i], () => _roomDecisions.SetLocalDecision(localScope));
+                int lootableIndex = i;
+                lootableView.Initialize(_lootables[lootableIndex], _lootableStages[lootableIndex], () => _roomDecisions.SetDecision(lootableIndex));
                 _instantiatedLootables[i] = lootableView;
             }
             

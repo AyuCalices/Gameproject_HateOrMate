@@ -77,7 +77,6 @@ namespace Features.Battle.Scripts
                         }
                     }
                     return mateUnitList.Count == 0 ? GetEnemyTeam(ownTeamRuntimeSet).GetItems() : mateUnitList;
-                    break;
                 case TeamType.Enemy:
                     return GetEnemyTeam(ownTeamRuntimeSet).GetItems();
             }
