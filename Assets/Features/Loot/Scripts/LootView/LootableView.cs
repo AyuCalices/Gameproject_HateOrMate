@@ -24,7 +24,7 @@ namespace Features.Loot.Scripts.LootView
             _button = GetComponent<Button>();
         }
 
-        public void Initialize(LootableGenerator_SO lootableGenerator, int stageAsLevel, Func<bool> action)
+        public void Initialize(LootableGenerator_SO lootableGenerator, int stageAsLevel, Action action)
         {
             _lootableGenerator = lootableGenerator;
             _stageAsLevel = stageAsLevel;
@@ -35,11 +35,9 @@ namespace Features.Loot.Scripts.LootView
             
             _button.onClick.AddListener(() =>
             {
-                if (action.Invoke())
-                {
-                    _button.interactable = false;
-                    image.color = Color.grey;
-                }
+                action.Invoke();
+                _button.interactable = false;
+                image.color = Color.grey;
             });
         }
 

@@ -95,7 +95,7 @@ namespace Features.Battle.Scripts
         {
             if (!PhotonNetwork.IsMasterClient) return;
             
-            bool enterLootingState = _enterLootingPhaseRoomDecision.UpdateDecision(null, x => x);
+            bool enterLootingState = _enterLootingPhaseRoomDecision.IsValidDecision(null, x => x);
             
             if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
             {

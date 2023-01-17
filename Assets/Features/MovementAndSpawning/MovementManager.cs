@@ -46,6 +46,12 @@ namespace Features.MovementAndSpawning
 
         private void RequestGridStep(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
         {
+            if (battleBehaviour.MovementSpeed <= 0)
+            {
+                Debug.LogWarning("The Movement Speed is to low and thus no movement is applied!");
+                return;
+            }
+            
             if (PhotonNetwork.IsMasterClient)
             {
                 PerformGridStep(battleBehaviour, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
@@ -174,13 +180,6 @@ namespace Features.MovementAndSpawning
 
         private void MoveGameObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed, Action onComplete)
         {
-            if (movementSpeed <= 0)
-            {
-                Debug.LogWarning("The Movement Speed is to low and thus no movement is applied!");
-                onComplete.Invoke();
-                return;
-            }
-            
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
             float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / movementSpeed;
             LeanTween.move(battleBehaviour.gameObject, targetPosition, time).setOnComplete(onComplete.Invoke);

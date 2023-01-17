@@ -1,14 +1,12 @@
 using System;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Connection.Scripts.Utils
 {
     public class RoomDecisions<T>
     {
-        private Hashtable _localDecision;
         private readonly string _identifier;
         private readonly bool _triggerIfOneChose;
 
@@ -25,31 +23,15 @@ namespace Features.Connection.Scripts.Utils
             _identifier = identifier;
             _triggerIfOneChose = triggerIfOneChose;
         }
-        
-        public bool OverwriteLocalDecision(T value)
-        {
-            Player localPlayer = PhotonNetwork.LocalPlayer;
 
-            _localDecision = new Hashtable(){{Identifier(localPlayer), value}};
-            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
-
-            return true;
-        }
-
-        public bool SetLocalDecision(T value)
+        public void SetLocalDecision(T value)
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
             
-            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-            if (roomCustomProperties[Identifier(localPlayer)] != null) return false;
-
-            _localDecision = new Hashtable(){{Identifier(localPlayer), value}};
-            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
-
-            return true;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable(){{Identifier(localPlayer), value}});
         }
-
-        public bool UpdateDecision(Action onValidDecision = null, Predicate<T> predicate = null)
+        
+        public bool IsValidDecision(Action onValidDecision = null, Predicate<T> predicate = null)
         {
             if (_triggerIfOneChose)
             {
@@ -71,8 +53,7 @@ namespace Features.Connection.Scripts.Utils
             
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(player)) ||
-                    roomCustomProperties[Identifier(player)] == null) continue;
+                if (!roomCustomProperties.ContainsKey(Identifier(player))) continue;
 
                 return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(player)]);
             }
@@ -86,12 +67,7 @@ namespace Features.Connection.Scripts.Utils
             
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                if (Equals(player, PhotonNetwork.LocalPlayer) && _localDecision != null && _localDecision[Identifier(player)] == null)
-                {
-                    return false;
-                }
-                
-                if (!roomCustomProperties.ContainsKey(Identifier(player)) || roomCustomProperties[Identifier(player)] == null)
+                if (!roomCustomProperties.ContainsKey(Identifier(player)))
                 {
                     return false;
                 }
@@ -108,8 +84,7 @@ namespace Features.Connection.Scripts.Utils
         public void ResetLocalDecision()
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
-            _localDecision = new Hashtable(){{Identifier(localPlayer), null}};
-            PhotonNetwork.CurrentRoom.SetCustomProperties(_localDecision);
+            PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(localPlayer));
         }
     }
 }

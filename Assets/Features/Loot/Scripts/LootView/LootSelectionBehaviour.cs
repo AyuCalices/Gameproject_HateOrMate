@@ -39,41 +39,30 @@ namespace Features.Loot.Scripts.LootView
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-        private void Start()
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            this.UpdateAsObservable()
-                .Where(_ => !IsLootableRemaining())
-                .Subscribe(_ => ShowNewLootablesOrClose());
-            
-            this.UpdateAsObservable()
-                .Subscribe(_ =>
+            _roomDecisions.IsValidDecision(() =>
+            {
+                passButton.interactable = true;
+                DestroyOtherChoices();
+                TryTakeSelectedLootable();
+
+                if (!IsLootableRemaining())
                 {
-                    _roomDecisions.UpdateDecision(() =>
-                    {
-                        passButton.interactable = true;
-                        DestroyOtherChoices();
-                        TryTakeSelectedLootable();
-                    });
-                });
+                    ShowNewLootablesOrClose();
+                }
+            });
         }
 
         public override void OnEnable()
         {
             ShowNewLootablesOrClose();
             
-            if (PhotonNetwork.PlayerList.Length > 1)
+            passButton.onClick.AddListener(() =>
             {
-                passButton.gameObject.SetActive(true);
-                passButton.onClick.AddListener(() =>
-                {
-                    _roomDecisions.SetLocalDecision(-1);
-                    passButton.interactable = false;
-                });
-            }
-            else
-            {
-                passButton.gameObject.SetActive(false);
-            }
+                _roomDecisions.SetLocalDecision(-1);
+                passButton.interactable = false;
+            });
         }
         
         public override void OnDisable()
@@ -83,10 +72,7 @@ namespace Features.Loot.Scripts.LootView
                 Destroy(lootable);
             }
             
-            if (passButton.gameObject.activeSelf)
-            {
-                passButton.onClick.RemoveAllListeners();
-            }
+            passButton.onClick.RemoveAllListeners();
         }
 
         private void ShowNewLootablesOrClose()

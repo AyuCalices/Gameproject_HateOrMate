@@ -59,7 +59,7 @@ namespace Features.Battle.Scripts
         public void Execute()
         {
             if (_roomDecision == null) return;
-            _roomDecision.UpdateDecision(() => _battleManager.RequestStageSetupState(_restartStage));
+            _roomDecision.IsValidDecision(() => _battleManager.RequestStageSetupState(_restartStage));
         }
 
         public void Exit()

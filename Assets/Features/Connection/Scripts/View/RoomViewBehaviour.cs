@@ -1,11 +1,9 @@
-using System;
 using DataStructures.Event;
+using ExitGames.Client.Photon;
 using Features.Connection.Scripts.Utils;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
-using UniRx;
-using UniRx.Triggers;
 using UnityEngine;
 
 namespace Features.Connection.Scripts.View
@@ -23,34 +21,19 @@ namespace Features.Connection.Scripts.View
         private bool _isInLobby;
         private bool _isReady;
 
-        private IDisposable _updatePlayerDecisionDisposable;
-        private IDisposable _updateDecisions;
-
-        public override void OnEnable()
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            base.OnEnable();
-            _updatePlayerDecisionDisposable = this.UpdateAsObservable()
-                .SampleFrame(4)
-                .Where(_ => _roomDecisions != null)
-                .Subscribe(_ => UpdatePlayerDecisionVisualisation());
+            UpdatePlayerDecisionVisualisation();
             
-            _updateDecisions = this.UpdateAsObservable()
-                .SampleFrame(4)
-                .Where(_ => PhotonNetwork.IsMasterClient && _isReady)
-                .Subscribe(_ => _roomDecisions.UpdateDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b));
-        }
-
-        public override void OnDisable()
-        {
-            base.OnDisable();
-            _updatePlayerDecisionDisposable.Dispose();
-            _updateDecisions.Dispose();
+            if (!PhotonNetwork.IsMasterClient) return;
+            
+            _roomDecisions.IsValidDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b);
         }
 
         public void StartGame()
         {
             _isReady = !_isReady;
-            _roomDecisions.OverwriteLocalDecision(_isReady);
+            _roomDecisions.SetLocalDecision(_isReady);
         }
 
         private void UpdatePlayerDecisionVisualisation()
@@ -59,7 +42,11 @@ namespace Features.Connection.Scripts.View
             {
                 string identifier = _roomDecisions.Identifier(player);
 
-                if (PhotonNetwork.CurrentRoom.CustomProperties[identifier] is bool decisionValue)
+                if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(identifier))
+                {
+                    PlayerRoomUnitInstanceBehaviour.SetReadyButton(player, false);
+                }
+                else if (PhotonNetwork.CurrentRoom.CustomProperties[identifier] is bool decisionValue)
                 {
                     PlayerRoomUnitInstanceBehaviour.SetReadyButton(player, decisionValue);
                 }
