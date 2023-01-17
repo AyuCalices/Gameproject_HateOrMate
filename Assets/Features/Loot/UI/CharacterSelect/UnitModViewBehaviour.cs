@@ -33,7 +33,10 @@ public class UnitModViewBehaviour : MonoBehaviour
 
         if (_unitOwnerBattleBehaviour.UnitClassData != null)
         {
-            unitSprite.sprite = _unitOwnerBattleBehaviour.UnitClassData.sprite;
+            if (_unitOwnerBattleBehaviour.UnitClassData.sprite != null)
+            {
+                unitSprite.sprite = _unitOwnerBattleBehaviour.UnitClassData.sprite;
+            }
             unitName.text = _unitOwnerBattleBehaviour.UnitClassData.unitType.unitName;
         }
         
