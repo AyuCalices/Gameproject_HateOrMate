@@ -1,10 +1,6 @@
 using System;
-using DataStructures.StateLogic;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts.StageProgression;
-using Features.Connection.Scripts;
-using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts.Generator;
+using Features.Battle.StateMachine;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -21,164 +17,62 @@ namespace Features.Battle.Scripts
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         public static Func<string, UnitClassData_SO, BaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
-        public static Action onLocalDespawnAllUnits;
 
-        [SerializeField] private StageRandomizer_SO stageRandomizer;
+        public LootingState lootingState;
+        public StageSetupState stageSetupState;
+        public BattleState battleState;
+
         public UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private ErrorPopup errorPopup;
         [SerializeField] private Transform errorPopupInstantiationParent;
-        [SerializeField] private int lootCountOnStageComplete;
-        
+
         [SerializeField] private Button requestLootPhaseButton;
         [SerializeField] private Button continueBattleButton;
         
         //reactive stage text
         [SerializeField] private TextMeshProUGUI stageText;
     
-        private StateMachine _stageStateMachine;
+        private BattleStateMachine _stageStateMachine;
 
-        public IState CurrentState => _stageStateMachine.CurrentState;
+        public IBattleState CurrentState => _stageStateMachine.CurrentState;
 
-        private RoomDecisions<bool> _enterLootingPhaseRoomDecision;
-
+        
         private void Awake()
         {
-            _stageStateMachine = new StateMachine();
-            battleData.RegisterBattleManager(this);
+            _stageStateMachine = new BattleStateMachine();
+            battleData.Initialize(this);
             continueBattleButton.interactable = false;
-
-            _enterLootingPhaseRoomDecision = new RoomDecisions<bool>("EnterLootingPhase", true);
-            requestLootPhaseButton.onClick.AddListener(() =>
-            {
-                _enterLootingPhaseRoomDecision.SetDecision(true);
-                requestLootPhaseButton.interactable = false;
-            });
         }
 
         private void Start()
         {
             onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
             
-            _stageStateMachine.Initialize(new LootingState(this, battleData, errorPopup, errorPopupInstantiationParent, continueBattleButton, true));
+            _stageStateMachine.Initialize(lootingState.Initialize(this, errorPopupInstantiationParent, continueBattleButton));
             
             battleData.Stage.RuntimeProperty
                 .Select(x => "Stage: " + x)
                 .SubscribeToText(stageText);
         }
 
-        private void Update()
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            _stageStateMachine.Update();
+            _stageStateMachine.OnRoomPropertiesUpdated(propertiesThatChanged);
         }
 
-        internal void RequestStageSetupState(bool restartState)
+        internal void RequestStageSetupState()
         {
-            _stageStateMachine.ChangeState(new StageSetupState(this, restartState, battleData, stageRandomizer));
+            _stageStateMachine.ChangeState(stageSetupState.Initialize(this));
         }
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(new BattleState(this, requestLootPhaseButton, battleData.AllUnitsRuntimeSet));
+            _stageStateMachine.ChangeState(battleState.Initialize(this, requestLootPhaseButton));
         }
 
-        private void RequestLootingState(bool restartState)
+        internal void RequestLootingState()
         {
-            _stageStateMachine.ChangeState(new LootingState(this, battleData, errorPopup, errorPopupInstantiationParent, continueBattleButton, restartState));
-        }
-
-        public void SetStage()
-        {
-            if (!PhotonNetwork.IsMasterClient) return;
-            
-            bool enterLootingState = _enterLootingPhaseRoomDecision.IsValidDecision(null, x => x);
-            
-            if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
-            {
-                RestartStage_RaiseEvent(enterLootingState);
-                return;
-            }
-
-            if (!battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
-            {
-                LootableGenerator_SO[] lootables = RandomizeLootables();
-                NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
-            }
-        }
-
-        private void NextStage_RaiseEvent(bool enterLootingState, LootableGenerator_SO[] lootable, int currentStageAsLevel)
-        {
-            object[] data = new object[]
-            {
-                enterLootingState,
-                lootable,
-                currentStageAsLevel
-            };
-            
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-            
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnNextStage, data, raiseEventOptions, sendOptions);
-        }
-        
-        private void RestartStage_RaiseEvent(bool enterLootingState)
-        {
-            object[] data = new object[]
-            {
-                enterLootingState
-            };
-            
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-            
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRestartStage, data, raiseEventOptions, sendOptions);
-        }
-
-        public void EndStage(bool restartStage, bool enterLootingState)
-        {
-            onLocalDespawnAllUnits?.Invoke();
-            
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
-            }
-            
-            if (enterLootingState)
-            {
-                RequestLootingState(restartStage);
-            }
-            else
-            {
-                RequestStageSetupState(restartStage);
-            }
-        }
-
-        private LootableGenerator_SO[] RandomizeLootables()
-        {
-            LootableGenerator_SO[] lootables = new LootableGenerator_SO[lootCountOnStageComplete];
-            for (int index = 0; index < lootCountOnStageComplete; index++)
-            {
-                lootables[index] = battleData.LootTable.RandomizeLootableGenerator();
-            }
-
-            return lootables;
+            _stageStateMachine.ChangeState(lootingState.Initialize(this, errorPopupInstantiationParent, continueBattleButton));
         }
 
         public void OnEvent(EventData photonEvent)

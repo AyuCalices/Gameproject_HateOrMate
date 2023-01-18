@@ -1,57 +1,66 @@
-using System;
-using DataStructures.StateLogic;
+using System.Collections;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts.StageProgression;
-using Features.Connection;
+using Features.Battle.StateMachine;
 using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
+using UnityEngine;
 
 namespace Features.Battle.Scripts
 {
-    public class StageSetupState : IState
+    [CreateAssetMenu]
+    public class StageSetupState : BaseBattleState_SO
     {
-        private readonly BattleData_SO _battleData;
-        private readonly StageRandomizer_SO _stageRandomizer;
-        private readonly BattleManager _battleManager;
-        private readonly bool _restartStage;
+        public BattleData_SO battleData;
+        public StageRandomizer_SO stageRandomizer;
         
-        public StageSetupState(BattleManager battleManager, bool restartStage, BattleData_SO battleData, StageRandomizer_SO stageRandomizer)
+        private BattleManager _battleManager;
+        private bool _initialized;
+
+        public StageSetupState Initialize(BattleManager battleManager)
         {
+            if (_initialized) return this;
+            
             _battleManager = battleManager;
-            _restartStage = restartStage;
-            _battleData = battleData;
-            _stageRandomizer = stageRandomizer;
+            
+            return this;
         }
-    
-        public void Enter()
+
+        public override IEnumerator Enter()
         {
-            if (!_restartStage)
+            yield return base.Enter();
+            
+            if (!battleData.IsStageRestart)
             {
-                _battleData.Stage.Add(1);
+                battleData.Stage.Add(1);
             }
 
             if (PhotonNetwork.IsMasterClient)
             {
-                _stageRandomizer.GenerateUnits();
+                stageRandomizer.GenerateUnits();
             }
 
             if (PhotonNetwork.IsMasterClient)
             {
                 RequestBattleStateByRaiseEvent();
             }
+            
+            Debug.Log("Enter Stage Setup State - Before");
+            yield return new WaitForSeconds(2f);
+            Debug.Log("Enter Stage Setup State - After");
         }
 
-        public void Execute()
+        public override IEnumerator Exit()
         {
+            yield return base.Exit();
+
+            Debug.Log("Exit Stage Setup State - Before");
+            yield return new WaitForSeconds(2f);
+            Debug.Log("Exit Stage Setup State - After");
         }
 
-        public void Exit()
-        {
-        }
-
-        public void OnEvent(EventData photonEvent)
+        public override void OnEvent(EventData photonEvent)
         {
             if (photonEvent.Code == (int)RaiseEventCode.OnRequestBattleState)
             {

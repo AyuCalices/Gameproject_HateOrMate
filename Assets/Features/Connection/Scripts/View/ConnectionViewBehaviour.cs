@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Features.Connection.Scripts
+namespace Features.Connection.Scripts.View
 {
     public enum JoinType { KeyJoin = 0, CreateRoom = 1, QuickJoin = 2 }
     public class ConnectionViewBehaviour : MonoBehaviourPunCallbacks

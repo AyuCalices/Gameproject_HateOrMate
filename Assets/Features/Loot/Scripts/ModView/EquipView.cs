@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
+using Features.Loot.UI.CharacterSelect;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Behaviours.Stat;
 using TMPro;

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
+using Features.Battle.StateMachine;
 using Features.Loot.Scripts;
 using Features.Tiles;
 using Features.Tiles.Scripts;
@@ -43,8 +44,16 @@ namespace Features.Battle.Scripts
         [SerializeField] private LootTable_SO lootTable;
         
         
-        public IState CurrentState => _battleManager.CurrentState;
+        public bool IsStageRestart { get; set; }
+        
+        public IBattleState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
+        
+        public void Initialize(BattleManager battleManager)
+        {
+            _battleManager = battleManager;
+            IsStageRestart = false;
+        }
 
         public NetworkedUnitRuntimeSet_SO GetEnemyTeam(NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet)
         {
@@ -82,12 +91,6 @@ namespace Features.Battle.Scripts
             }
             
             return null;
-        }
-        
-
-        public void RegisterBattleManager(BattleManager battleManager)
-        {
-            _battleManager = battleManager;
         }
     }
 }

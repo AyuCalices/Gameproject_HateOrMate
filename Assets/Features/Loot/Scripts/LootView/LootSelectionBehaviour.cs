@@ -41,7 +41,6 @@ namespace Features.Loot.Scripts.LootView
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            Debug.Log(propertiesThatChanged);
             _roomDecisions.IsValidDecision(() =>
             {
                 passButton.interactable = true;
