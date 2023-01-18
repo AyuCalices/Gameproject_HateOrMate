@@ -19,13 +19,13 @@ namespace Features.Unit.Scripts
             {
                 if (relation.unitType == attackerUnitType)
                 {
-                    Debug.Log($"Gained Damage Scale by '{attackerUnitType.name}' is '{relation.scale}' resolving into '{(unrelatedDamage * relation.scale)}' damage");
+                    //Debug.Log($"Gained Damage Scale by '{attackerUnitType.name}' is '{relation.scale}' resolving into '{(unrelatedDamage * relation.scale)}' damage");
                     unrelatedDamage *= relation.scale;
                     return;
                 }
             }
             
-            Debug.Log($"Gained Damage Scale by '{attackerUnitType.name}' is '{1}' resolving into '{unrelatedDamage}' damage");
+            //Debug.Log($"Gained Damage Scale by '{attackerUnitType.name}' is '{1}' resolving into '{unrelatedDamage}' damage");
         }
     }
 

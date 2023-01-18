@@ -66,7 +66,7 @@ namespace Features.Battle.Scripts
             
             Debug.Log("Exit Battle State - Before");
             yield return new WaitForSeconds(2f);
-            Debug.Log("Enter Battle State - After");
+            Debug.Log("Exit Battle State - After");
         }
 
         private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)

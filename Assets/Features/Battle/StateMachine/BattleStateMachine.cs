@@ -19,17 +19,13 @@ namespace Features.Battle.StateMachine
             _queue.Add(() => Enter(startingState));
             
             Observable.FromCoroutine(() => _queue.Count > 0 ? _queue[0].Invoke() : Break())
-                .DoOnCompleted(() =>
-                {
-                    if (_queue.Count > 0) _queue.RemoveAt(0);
-                })
                 .Repeat()
                 .Subscribe();
         }
 
         public void ChangeState(IBattleState newState)
         {
-            _queue.Add(() => Exit(CurrentState));
+            _queue.Add(Exit);
             _queue.Add(() => Enter(newState));
         }
 
@@ -41,12 +37,14 @@ namespace Features.Battle.StateMachine
         private IEnumerator Enter(IBattleState newState)
         {
             CurrentState = newState;
+            _queue.RemoveAt(0);
             yield return Observable.FromCoroutine(newState.Enter).ToYieldInstruction();
         }
         
-        private IEnumerator Exit(IBattleState newState)
+        private IEnumerator Exit()
         {
-            yield return Observable.FromCoroutine(newState.Exit).ToYieldInstruction();
+            _queue.RemoveAt(0);
+            yield return Observable.FromCoroutine(CurrentState.Exit).ToYieldInstruction();
         }
 
         public void OnRoomPropertiesUpdated(Hashtable propertiesThatChanged)
