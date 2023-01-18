@@ -4,9 +4,11 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Battle.StateMachine
 {
-    public interface IBattleState
+    public interface ICoroutineState
     {
         IEnumerator Enter();
+
+        IEnumerator Execute();
     
         IEnumerator Exit();
 

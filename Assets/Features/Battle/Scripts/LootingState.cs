@@ -10,7 +10,7 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 namespace Features.Battle.Scripts
 {
     [CreateAssetMenu]
-    public class LootingState : BaseBattleState_SO
+    public class LootingState : BaseCoroutineState
     {
         public BattleData_SO battleData;
         public  ErrorPopup errorPopup;

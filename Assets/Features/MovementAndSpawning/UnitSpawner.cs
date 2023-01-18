@@ -21,14 +21,14 @@ namespace Features.MovementAndSpawning
         {
             base.OnEnable();
             StageRandomizer_SO.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
-            BattleState.onLocalDespawnAllUnits += PlayerDespawnAll;
+            CoroutineState.onLocalDespawnAllUnits += PlayerDespawnAll;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             StageRandomizer_SO.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
-            BattleState.onLocalDespawnAllUnits -= PlayerDespawnAll;
+            CoroutineState.onLocalDespawnAllUnits -= PlayerDespawnAll;
         }
         
         private void PlayerSynchronizedSpawn(string spawnerReference, UnitClassData_SO unitClassData, BaseStats baseStats)

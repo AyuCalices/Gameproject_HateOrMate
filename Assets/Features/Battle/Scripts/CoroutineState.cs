@@ -15,7 +15,7 @@ using UnityEngine.UI;
 namespace Features.Battle.Scripts
 {
     [CreateAssetMenu]
-    public class BattleState : BaseBattleState_SO
+    public class CoroutineState : BaseCoroutineState
     {
         public static Action onLocalDespawnAllUnits;
         
@@ -29,7 +29,7 @@ namespace Features.Battle.Scripts
         
         private bool _initialized;
 
-        public BattleState Initialize(BattleManager battleManager, Button requestLootPhaseButton)
+        public CoroutineState Initialize(BattleManager battleManager, Button requestLootPhaseButton)
         {
             if (_initialized) return this;
             

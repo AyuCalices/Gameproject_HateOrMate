@@ -8,33 +8,33 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Battle.StateMachine
 {
-    public class BattleStateMachine
+    public class CoroutineStateMachine
     {
-        public IBattleState CurrentState { get; private set; }
+        public ICoroutineState CurrentState { get; private set; }
 
         private readonly List<Func<IEnumerator>> _queue = new List<Func<IEnumerator>>();
         
-        public void Initialize(IBattleState startingState)
+        public void Initialize(ICoroutineState startingState)
         {
             _queue.Add(() => Enter(startingState));
             
-            Observable.FromCoroutine(() => _queue.Count > 0 ? _queue[0].Invoke() : Break())
+            Observable.FromCoroutine(() => _queue.Count > 0 ? _queue[0].Invoke() : Execute())
                 .Repeat()
                 .Subscribe();
         }
 
-        public void ChangeState(IBattleState newState)
+        public void ChangeState(ICoroutineState newState)
         {
             _queue.Add(Exit);
             _queue.Add(() => Enter(newState));
         }
 
-        private IEnumerator Break()
+        private IEnumerator Execute()
         {
-            yield return null;
+            yield return Observable.FromCoroutine(CurrentState.Execute).ToYieldInstruction();
         }
         
-        private IEnumerator Enter(IBattleState newState)
+        private IEnumerator Enter(ICoroutineState newState)
         {
             CurrentState = newState;
             _queue.RemoveAt(0);

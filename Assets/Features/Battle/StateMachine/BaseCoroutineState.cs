@@ -1,13 +1,12 @@
 using System.Collections;
 using DataStructures.Event;
 using ExitGames.Client.Photon;
-using Unity.Collections;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Battle.StateMachine
 {
-    public abstract class BaseBattleState_SO : ScriptableObject, IBattleState
+    public abstract class BaseCoroutineState : ScriptableObject, ICoroutineState
     {
         public ActionEvent onEnterState;
         public ActionEvent onExitState;
@@ -18,6 +17,11 @@ namespace Features.Battle.StateMachine
             onEnterState?.Raise();
             isStateActive = true;
             yield break;
+        }
+
+        public virtual IEnumerator Execute()
+        {
+            yield return null;
         }
 
         public virtual IEnumerator Exit()

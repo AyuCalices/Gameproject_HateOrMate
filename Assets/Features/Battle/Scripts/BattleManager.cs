@@ -20,7 +20,7 @@ namespace Features.Battle.Scripts
 
         public LootingState lootingState;
         public StageSetupState stageSetupState;
-        public BattleState battleState;
+        public CoroutineState coroutineState;
 
         public UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;
@@ -32,14 +32,14 @@ namespace Features.Battle.Scripts
         //reactive stage text
         [SerializeField] private TextMeshProUGUI stageText;
     
-        private BattleStateMachine _stageStateMachine;
+        private CoroutineStateMachine _stageStateMachine;
 
-        public IBattleState CurrentState => _stageStateMachine.CurrentState;
+        public ICoroutineState CurrentState => _stageStateMachine.CurrentState;
 
         
         private void Awake()
         {
-            _stageStateMachine = new BattleStateMachine();
+            _stageStateMachine = new CoroutineStateMachine();
             battleData.Initialize(this);
             continueBattleButton.interactable = false;
         }
@@ -67,7 +67,7 @@ namespace Features.Battle.Scripts
 
         internal void RequestBattleState()
         {
-            _stageStateMachine.ChangeState(battleState.Initialize(this, requestLootPhaseButton));
+            _stageStateMachine.ChangeState(coroutineState.Initialize(this, requestLootPhaseButton));
         }
 
         internal void RequestLootingState()

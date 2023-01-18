@@ -46,7 +46,7 @@ namespace Features.Battle.Scripts
         
         public bool IsStageRestart { get; set; }
         
-        public IBattleState CurrentState => _battleManager.CurrentState;
+        public ICoroutineState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
         
         public void Initialize(BattleManager battleManager)

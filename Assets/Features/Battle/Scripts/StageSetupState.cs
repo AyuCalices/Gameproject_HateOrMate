@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Features.Battle.Scripts
 {
     [CreateAssetMenu]
-    public class StageSetupState : BaseBattleState_SO
+    public class StageSetupState : BaseCoroutineState
     {
         public BattleData_SO battleData;
         public StageRandomizer_SO stageRandomizer;
