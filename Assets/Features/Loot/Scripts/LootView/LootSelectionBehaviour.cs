@@ -15,21 +15,19 @@ namespace Features.Loot.Scripts.LootView
 {
     public class LootSelectionBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
+        [SerializeField] private IntRoomDecitions_SO lootIndexRoomDecision;
         [SerializeField] private Transform instantiationParent;
         [SerializeField] private LootableView lootableViewPrefab;
         [SerializeField] private Button passButton;
         [SerializeField] private int lootCount;
 
         private LootableView[] _instantiatedLootables;
-        private RoomDecisions<int> _roomDecisions;
         private readonly List<LootableGenerator_SO> _lootables = new List<LootableGenerator_SO>();
         private readonly List<int> _lootableStages = new List<int>();
 
         private void Awake()
         {
             _instantiatedLootables = new LootableView[lootCount];
-            _roomDecisions = new RoomDecisions<int>("Looting", false);
-            gameObject.SetActive(false);
 
             PhotonNetwork.AddCallbackTarget(this);
         }
@@ -39,28 +37,11 @@ namespace Features.Loot.Scripts.LootView
             PhotonNetwork.RemoveCallbackTarget(this);
         }
 
-        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
-        {
-            _roomDecisions.IsValidDecision(() =>
-            {
-                passButton.interactable = true;
-                DestroyOtherChoices();
-                TryTakeSelectedLootable();
-
-                if (!IsLootableRemaining())
-                {
-                    ShowNewLootablesOrClose();
-                }
-            });
-        }
-
         public override void OnEnable()
         {
-            ShowNewLootablesOrClose();
-            
             passButton.onClick.AddListener(() =>
             {
-                _roomDecisions.SetDecision(-1);
+                lootIndexRoomDecision.SetDecision(-1);
                 passButton.interactable = false;
             });
         }
@@ -74,44 +55,22 @@ namespace Features.Loot.Scripts.LootView
             
             passButton.onClick.RemoveAllListeners();
         }
-
-        private void ShowNewLootablesOrClose()
-        {
-            if (_lootables.Count == 0)
-            {
-                gameObject.SetActive(false);
-                return;
-            }
-            
-            int range = Mathf.Min(lootCount, _lootables.Count);
-            
-            for (int i = 0; i < range; i++)
-            {
-                LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
-                int lootableIndex = i;
-                lootableView.Initialize(_lootables[lootableIndex], _lootableStages[lootableIndex], () => _roomDecisions.SetDecision(lootableIndex));
-                _instantiatedLootables[i] = lootableView;
-            }
-            
-            _lootables.RemoveRange(0, range);
-            _lootableStages.RemoveRange(0, range);
-        }
-
-        private void TryTakeSelectedLootable()
-        {
-            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-            Player localPlayer = PhotonNetwork.LocalPlayer;
         
-            if (!roomCustomProperties.ContainsKey(_roomDecisions.Identifier(localPlayer))) return;
-            
-            int ownDecisionIndex = (int)roomCustomProperties[_roomDecisions.Identifier(localPlayer)];
-            if (ownDecisionIndex >= 0 && _instantiatedLootables[ownDecisionIndex] != null)
+        public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
+        {
+            lootIndexRoomDecision.IsValidDecision(() =>
             {
-                _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
-                RemoveFromLootSlots(ownDecisionIndex);
-            }
-        }
+                passButton.interactable = true;
+                DestroyOtherChoices();
+                TryTakeSelectedLootable();
 
+                if (!IsLootableRemaining())
+                {
+                    ShowNewLootablesOrClose();
+                }
+            });
+        }
+        
         private void DestroyOtherChoices()
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
@@ -120,11 +79,26 @@ namespace Features.Loot.Scripts.LootView
             {
                 if (Equals(player, PhotonNetwork.LocalPlayer)) continue;
 
-                int index = (int) roomCustomProperties[_roomDecisions.Identifier(player)];
+                int index = (int) roomCustomProperties[lootIndexRoomDecision.Identifier(player)];
                 RemoveFromLootSlots(index);
             }
         }
-
+        
+        private void TryTakeSelectedLootable()
+        {
+            Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            Player localPlayer = PhotonNetwork.LocalPlayer;
+        
+            if (!roomCustomProperties.ContainsKey(lootIndexRoomDecision.Identifier(localPlayer))) return;
+            
+            int ownDecisionIndex = (int)roomCustomProperties[lootIndexRoomDecision.Identifier(localPlayer)];
+            if (ownDecisionIndex >= 0 && _instantiatedLootables[ownDecisionIndex] != null)
+            {
+                _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
+                RemoveFromLootSlots(ownDecisionIndex);
+            }
+        }
+        
         private void RemoveFromLootSlots(int index)
         {
             if (index < 0) return;
@@ -133,10 +107,28 @@ namespace Features.Loot.Scripts.LootView
             Destroy(lootableViewToBeRemoved.gameObject);
             _instantiatedLootables[index] = null;
         }
-
+        
         private bool IsLootableRemaining()
         {
             return _instantiatedLootables.Any(t => t != null);
+        }
+
+        private void ShowNewLootablesOrClose()
+        {
+            if (_lootables.Count == 0) return;
+
+            int range = Mathf.Min(lootCount, _lootables.Count);
+            
+            for (int i = 0; i < range; i++)
+            {
+                LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
+                int lootableIndex = i;
+                lootableView.Initialize(_lootables[lootableIndex], _lootableStages[lootableIndex], () => lootIndexRoomDecision.SetDecision(lootableIndex));
+                _instantiatedLootables[i] = lootableView;
+            }
+            
+            _lootables.RemoveRange(0, range);
+            _lootableStages.RemoveRange(0, range);
         }
 
         public void OnEvent(EventData photonEvent)
@@ -144,7 +136,6 @@ namespace Features.Loot.Scripts.LootView
             if (photonEvent.Code == (int)RaiseEventCode.OnNextStage)
             {
                 object[] data = (object[]) photonEvent.CustomData;
-                bool enterLootingState = (bool) data[0];
                 LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[1];
                 int stageAsLevel = (int) data[2];
 
@@ -154,10 +145,7 @@ namespace Features.Loot.Scripts.LootView
                     _lootableStages.Add(stageAsLevel);
                 }
 
-                if (enterLootingState)
-                {
-                    gameObject.SetActive(true);
-                }
+                ShowNewLootablesOrClose();
             }
         }
     }

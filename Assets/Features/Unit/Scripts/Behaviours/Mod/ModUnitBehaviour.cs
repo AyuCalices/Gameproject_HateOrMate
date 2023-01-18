@@ -16,8 +16,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
 
         private GameObject _unitModGameObject;
     
-        // Start is called before the first frame update
-        private void Awake()
+        private void Start()
         {
             NetworkedStatsBehaviour networkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
             _unitModGameObject = onInstantiateModSlot.Invoke(networkedStatsBehaviour);

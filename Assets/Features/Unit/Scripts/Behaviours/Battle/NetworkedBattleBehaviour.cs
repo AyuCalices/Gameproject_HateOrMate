@@ -118,7 +118,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal virtual bool TryRequestDeathState()
         {
-            bool result = battleData.CurrentState is CoroutineState;
+            bool result = battleData.CurrentState is BattleState;
             
             if (result)
             {

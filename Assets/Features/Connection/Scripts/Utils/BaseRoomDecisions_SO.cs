@@ -7,23 +7,17 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Connection.Scripts.Utils
 {
-    public class RoomDecisions<T>
+    public abstract class BaseRoomDecisions_SO<T> : ScriptableObject
     {
-        private readonly string _identifier;
-        private readonly bool _triggerIfOneChose;
+        [field: SerializeField] private string identifier;
+        [field: SerializeField] private bool triggerIfOneChose;
 
-        public string Identifier(Player player) => _identifier + player.ActorNumber;
+        public string Identifier(Player player) => identifier + player.ActorNumber;
 
         public T GetDecisionValue(Player player)
         {
             string identifier = Identifier(player);
             return (T)PhotonNetwork.CurrentRoom.CustomProperties[identifier];
-        }
-
-        public RoomDecisions(string identifier, bool triggerIfOneChose)
-        {
-            _identifier = identifier;
-            _triggerIfOneChose = triggerIfOneChose;
         }
 
         public void SetDecision(T value)
@@ -35,7 +29,7 @@ namespace Features.Connection.Scripts.Utils
         
         public bool IsValidDecision(Action onValidDecision = null, Predicate<T> predicate = null)
         {
-            if (_triggerIfOneChose)
+            if (triggerIfOneChose)
             {
                 if (!AnyPlayerChose(predicate)) return false;
             }

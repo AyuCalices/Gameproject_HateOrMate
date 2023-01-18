@@ -419,6 +419,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1793653488596165881}
+  - component: {fileID: 187152023700253926}
   - component: {fileID: 5113053999870723671}
   m_Layer: 5
   m_Name: Panel_Character
@@ -452,6 +453,20 @@ RectTransform:
   m_AnchoredPosition: {x: 692.7698, y: -429.99506}
   m_SizeDelta: {x: 1385.5393, y: 859.99}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &187152023700253926
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793653488596165880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 010e1275003674bb881e946249e27405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasType: {fileID: 11400000, guid: 49e8e994a46c7e343a3ad1d2eac7b974, type: 2}
+  isStartMenu: 0
 --- !u!114 &5113053999870723671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -982,7 +997,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1210.6954, y: 0}
+  m_AnchoredPosition: {x: 960.001, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &7858096687922680826

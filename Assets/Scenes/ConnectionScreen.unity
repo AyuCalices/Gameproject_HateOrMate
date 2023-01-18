@@ -1030,6 +1030,7 @@ MonoBehaviour:
   playerRoomUnitInstanceBehaviourPrefab: {fileID: 2346917667219226988, guid: 073aa8cbe1f0f8f4783e23ebb6a2a783, type: 3}
   playerRoomBehaviourParent: {fileID: 7614211766554729698}
   roomName: {fileID: 309650938}
+  readyCheckRoomDecision: {fileID: 11400000, guid: 9b33722a3f7e62b4da38acdc3394975c, type: 2}
 --- !u!114 &1664259149
 MonoBehaviour:
   m_ObjectHideFlags: 0

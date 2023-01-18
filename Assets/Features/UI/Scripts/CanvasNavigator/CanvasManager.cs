@@ -9,7 +9,7 @@ namespace Features.UI.Scripts.CanvasNavigator
         private List<CanvasController> _canvasControllerList;
         private CanvasController _lastActiveCanvas;
 
-        private void Awake()
+        private void Start()
         {
             _canvasControllerList = GetComponentsInChildren<CanvasController>().ToList();
             _canvasControllerList.ForEach(x => x.gameObject.SetActive(false));
@@ -24,6 +24,7 @@ namespace Features.UI.Scripts.CanvasNavigator
             {
                 _lastActiveCanvas.gameObject.SetActive(false);
             }
+            
             CanvasController desiredCanvas = _canvasControllerList.Find(x => x.canvasType == type);
             if (desiredCanvas != null)
             {
@@ -34,8 +35,6 @@ namespace Features.UI.Scripts.CanvasNavigator
             {
                 Debug.LogWarning("Desired canvas was not found");
             }
-        
-        
         }
 
         public void CloseCanvas()

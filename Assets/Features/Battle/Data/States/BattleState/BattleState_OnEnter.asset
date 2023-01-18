@@ -9,11 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5cab31604b66e2a45ba2bb4e3f37169d, type: 3}
-  m_Name: Battle_State
+  m_Script: {fileID: 11500000, guid: 9fa19436dbe83e444af70a28875988dd, type: 3}
+  m_Name: BattleState_OnEnter
   m_EditorClassIdentifier: 
-  onEnterState: {fileID: 0}
-  onExitState: {fileID: 0}
-  isStateActive: 0
-  lootCountOnStageComplete: 1
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

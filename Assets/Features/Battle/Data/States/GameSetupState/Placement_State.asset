@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de00b21954255c7438c425926764b70d, type: 3}
+  m_Name: Placement_State
+  m_EditorClassIdentifier: 
+  onEnterState: {fileID: 11400000, guid: 0e73d2f5e80ccf84781e7610e3d6920b, type: 2}
+  onExitState: {fileID: 11400000, guid: 521c3ed3bce33fa4ba40c27746ac0410, type: 2}
+  isStateActive: 1
+  towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
+  continueButtonRoomDecision: {fileID: 11400000, guid: f1fb90714581f854f9005e9cfb458d1e, type: 2}

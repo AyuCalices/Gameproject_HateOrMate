@@ -16,8 +16,8 @@ namespace Features.Connection.Scripts.View
         [SerializeField] private PlayerRoomUnitInstanceBehaviour playerRoomUnitInstanceBehaviourPrefab;
         [SerializeField] private Transform playerRoomBehaviourParent;
         [SerializeField] private TMP_Text roomName;
+        [SerializeField] private BoolRoomDecitions_SO readyCheckRoomDecision;
 
-        private RoomDecisions<bool> _roomDecisions;
         private bool _isInLobby;
         private bool _isReady;
 
@@ -27,20 +27,20 @@ namespace Features.Connection.Scripts.View
             
             if (!PhotonNetwork.IsMasterClient) return;
             
-            _roomDecisions.IsValidDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b);
+            readyCheckRoomDecision.IsValidDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b);
         }
 
         public void StartGame()
         {
             _isReady = !_isReady;
-            _roomDecisions.SetDecision(_isReady);
+            readyCheckRoomDecision.SetDecision(_isReady);
         }
 
         private void UpdatePlayerDecisionVisualisation()
         {
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                string identifier = _roomDecisions.Identifier(player);
+                string identifier = readyCheckRoomDecision.Identifier(player);
 
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(identifier))
                 {
@@ -63,8 +63,6 @@ namespace Features.Connection.Scripts.View
             {
                 playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, player);
             }
-
-            _roomDecisions = new RoomDecisions<bool>("Lobby", false);
         }
     
         public override void OnPlayerEnteredRoom(Player newPlayer)
@@ -76,7 +74,7 @@ namespace Features.Connection.Scripts.View
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            _roomDecisions.ResetDecisions();
+            readyCheckRoomDecision.ResetDecisions();
             PlayerRoomUnitInstanceBehaviour.Destroy(otherPlayer);
         }
 
@@ -84,7 +82,7 @@ namespace Features.Connection.Scripts.View
         {
             onLeftRoom.Raise();
             
-            _roomDecisions = null;
+            readyCheckRoomDecision = null;
             PlayerRoomUnitInstanceBehaviour.DestroyAll();
         }
     }

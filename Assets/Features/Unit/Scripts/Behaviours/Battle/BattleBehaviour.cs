@@ -45,7 +45,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void Update()
         {
-            if (battleData.CurrentState is not CoroutineState) return;
+            if (battleData.CurrentState is not BattleState) return;
             
             HasTarget = UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
@@ -69,7 +69,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal override bool TryRequestAttackState()
         {
-            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is CoroutineState;
+            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
          
             if (result)
             {
@@ -95,7 +95,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         internal override bool TryRequestDeathState()
         {
-            bool result = battleData.CurrentState is CoroutineState;
+            bool result = battleData.CurrentState is BattleState;
             
             if (result)
             {

@@ -17,13 +17,6 @@ namespace Features.Loot.Scripts.LootView
         private LootableGenerator_SO _lootableGenerator;
         private int _stageAsLevel;
 
-        private Button _button;
-
-        private void Awake()
-        {
-            _button = GetComponent<Button>();
-        }
-
         public void Initialize(LootableGenerator_SO lootableGenerator, int stageAsLevel, Action action)
         {
             _lootableGenerator = lootableGenerator;
@@ -33,10 +26,11 @@ namespace Features.Loot.Scripts.LootView
             description.text = lootableGenerator.Description;
             level.text = stageAsLevel.ToString();
             
-            _button.onClick.AddListener(() =>
+            Button button = GetComponent<Button>();
+            button.onClick.AddListener(() =>
             {
                 action.Invoke();
-                _button.interactable = false;
+                button.interactable = false;
                 image.color = Color.grey;
             });
         }

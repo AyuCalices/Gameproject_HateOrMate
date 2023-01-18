@@ -12,11 +12,17 @@ namespace Features.Battle.Scripts
     [CreateAssetMenu]
     public class StageSetupState : BaseCoroutineState
     {
-        public BattleData_SO battleData;
-        public StageRandomizer_SO stageRandomizer;
+        [Header("Derived References")]
+        [SerializeField] private BattleData_SO battleData;
+        [SerializeField] private StageRandomizer_SO stageRandomizer;
         
         private BattleManager _battleManager;
         private bool _initialized;
+        
+        private void OnEnable()
+        {
+            _initialized = false;
+        }
 
         public StageSetupState Initialize(BattleManager battleManager)
         {
@@ -39,10 +45,6 @@ namespace Features.Battle.Scripts
             if (PhotonNetwork.IsMasterClient)
             {
                 stageRandomizer.GenerateUnits();
-            }
-
-            if (PhotonNetwork.IsMasterClient)
-            {
                 RequestBattleStateByRaiseEvent();
             }
             

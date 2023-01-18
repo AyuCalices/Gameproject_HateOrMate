@@ -8,10 +8,11 @@ namespace Features.Battle.StateMachine
 {
     public abstract class BaseCoroutineState : ScriptableObject, ICoroutineState
     {
-        public ActionEvent onEnterState;
-        public ActionEvent onExitState;
-        public bool isStateActive;
-        
+        [Header("Base Coroutine References")]
+        [SerializeField] private ActionEvent onEnterState;
+        [SerializeField] private ActionEvent onExitState;
+        [SerializeField] private bool isStateActive;
+
         public virtual IEnumerator Enter()
         {
             onEnterState?.Raise();

@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.UI.CharacterSelect;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Behaviours.Stat;
-using TMPro;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.ModView
@@ -16,7 +12,6 @@ namespace Features.Loot.Scripts.ModView
 
         private void Awake()
         {
-            gameObject.SetActive(false);
             ModUnitBehaviour.onInstantiateModSlot += InstantiateModView;
         }
 

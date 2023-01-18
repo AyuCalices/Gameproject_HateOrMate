@@ -9,11 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9812034062021ad4c95acc20a6e595b7, type: 3}
-  m_Name: Looting_State
+  m_Script: {fileID: 11500000, guid: e44610c13df368f42aeb3e3294a21214, type: 3}
+  m_Name: StageSetup_State
   m_EditorClassIdentifier: 
-  onEnterState: {fileID: 0}
-  onExitState: {fileID: 0}
+  onEnterState: {fileID: 11400000, guid: 371b9f07490133944880ba6fffbe0077, type: 2}
+  onExitState: {fileID: 11400000, guid: 560a2eb8c30465041838e968ffd4be8c, type: 2}
   isStateActive: 0
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  errorPopup: {fileID: 6035889565382585920, guid: d13425e085454414da96ee1fd9d63efb, type: 3}
+  stageRandomizer: {fileID: 11400000, guid: b73bcdb7f212a1049851af14d89c2fa9, type: 2}

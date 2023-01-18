@@ -461,7 +461,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -203.00043, y: -68.0401}
+  m_AnchoredPosition: {x: -203.00037, y: -68.0401}
   m_SizeDelta: {x: 469, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1497811682201431174
@@ -1328,6 +1328,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4889184657875249912}
+  - component: {fileID: 5019856881137210985}
   - component: {fileID: 6649349442738345036}
   m_Layer: 5
   m_Name: Panel_LootableSelect
@@ -1361,6 +1362,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &5019856881137210985
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4889184657875249913}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 010e1275003674bb881e946249e27405, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canvasType: {fileID: 11400000, guid: 553c19901f79dee4db911ab77cd210d2, type: 2}
+  isStartMenu: 0
 --- !u!114 &6649349442738345036
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1373,6 +1388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af19b1054a033f47a756c56fb9b3513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lootIndexRoomDecision: {fileID: 11400000, guid: 94cfe20a05f73124b85ed61f1dd473af, type: 2}
   instantiationParent: {fileID: 4889184657926200005}
   lootableViewPrefab: {fileID: 8434040053265844059, guid: d865a643470b54a4d8005e38a660ec5a, type: 3}
   passButton: {fileID: 3748130288612687094}
@@ -1412,7 +1428,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.178}
   m_AnchorMax: {x: 0, y: 0.821222}
-  m_AnchoredPosition: {x: 960.6417, y: 0.4621582}
+  m_AnchoredPosition: {x: 960.00085, y: 0.4621582}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4889184657926200007

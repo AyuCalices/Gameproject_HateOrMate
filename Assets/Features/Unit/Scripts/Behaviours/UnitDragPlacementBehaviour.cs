@@ -44,7 +44,8 @@ namespace Features.Unit.Scripts.Behaviours
         
         private void Update()
         {
-            if (battleData.CurrentState is not LootingState) return;
+            //TODO: implement placement phase state
+            if (battleData.CurrentState is not PlacementState) return;
 
             if (_instantiatedPrefab != null && _journeyLength != 0)
             {
@@ -62,7 +63,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not LootingState) return;
+            if (battleData.CurrentState is not PlacementState) return;
             
             _instantiatedPrefab = Instantiate(unitSpriteGameObject);
             _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
@@ -70,7 +71,7 @@ namespace Features.Unit.Scripts.Behaviours
         
         public void OnDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not LootingState) return;
+            if (battleData.CurrentState is not PlacementState) return;
             
             if (canvasFocus.Get() == null) return;
 
@@ -85,7 +86,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not LootingState) return;
+            if (battleData.CurrentState is not PlacementState) return;
             
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;

@@ -10,38 +10,32 @@ using Features.Unit.Scripts.Behaviours.Stat;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Features.Battle.Scripts
 {
     [CreateAssetMenu]
-    public class CoroutineState : BaseCoroutineState
+    public class BattleState : BaseCoroutineState
     {
         public static Action onLocalDespawnAllUnits;
-        
+
+        [Header("Derived References")]
+        [SerializeField] private BoolRoomDecitions_SO requestLootPhaseButtonRoomDecision;
         [SerializeField] private int lootCountOnStageComplete;
-        public BattleData_SO battleData;
+        [SerializeField] private BattleData_SO battleData;
         
         private BattleManager _battleManager;
-        private Button _requestLootPhaseButton;
-        
-        private RoomDecisions<bool> _enterLootingPhaseRoomDecision;
-        
         private bool _initialized;
 
-        public CoroutineState Initialize(BattleManager battleManager, Button requestLootPhaseButton)
+        private void OnEnable()
+        {
+            _initialized = false;
+        }
+
+        public BattleState Initialize(BattleManager battleManager)
         {
             if (_initialized) return this;
             
             _battleManager = battleManager;
-            _requestLootPhaseButton = requestLootPhaseButton;
-            
-            _enterLootingPhaseRoomDecision = new RoomDecisions<bool>("EnterLootingPhase", true);
-            requestLootPhaseButton.onClick.AddListener(() =>
-            {
-                _enterLootingPhaseRoomDecision.SetDecision(true);
-                requestLootPhaseButton.interactable = false;
-            });
 
             return this;
         }
@@ -50,7 +44,6 @@ namespace Features.Battle.Scripts
         {
             yield return base.Enter();
             
-            _requestLootPhaseButton.interactable = true;
             NetworkedStatsBehaviour.onDamageGained += CheckStage;
 
             Debug.Log("Enter Battle State - Before");
@@ -71,18 +64,17 @@ namespace Features.Battle.Scripts
 
         private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
         {
-            if (newRemovedHealth >= totalHealth)
-            {
-                networkedBattleBehaviour.TryRequestDeathState();
-                SetStage();
-            }
+            if (!(newRemovedHealth >= totalHealth)) return;
+            
+            networkedBattleBehaviour.TryRequestDeathState();
+            SetStage();
         }
 
         private void SetStage()
         {
             if (!PhotonNetwork.IsMasterClient) return;
             
-            bool enterLootingState = _enterLootingPhaseRoomDecision.IsValidDecision(null, x => x);
+            bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
             
             if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
             {
@@ -97,6 +89,7 @@ namespace Features.Battle.Scripts
             }
         }
         
+        //out
         private LootableGenerator_SO[] RandomizeLootables()
         {
             LootableGenerator_SO[] lootables = new LootableGenerator_SO[lootCountOnStageComplete];
@@ -182,6 +175,7 @@ namespace Features.Battle.Scripts
                     object[] data = (object[]) photonEvent.CustomData;
                     bool enterLootingState = (bool) data[0];
                     battleData.IsStageRestart = true;
+                    battleData.LootCount = ((LootableGenerator_SO[])data[1]).Length;
                     EndStage(enterLootingState);
                     break;
                 }
@@ -190,6 +184,7 @@ namespace Features.Battle.Scripts
                     object[] data = (object[]) photonEvent.CustomData;
                     bool enterLootingState = (bool) data[0];
                     battleData.IsStageRestart = false;
+                    battleData.LootCount = ((LootableGenerator_SO[])data[1]).Length;
                     EndStage(enterLootingState);
                     break;
                 }

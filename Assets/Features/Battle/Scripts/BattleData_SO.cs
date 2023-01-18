@@ -45,6 +45,7 @@ namespace Features.Battle.Scripts
         
         
         public bool IsStageRestart { get; set; }
+        public int LootCount { get; set; }
         
         public ICoroutineState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
