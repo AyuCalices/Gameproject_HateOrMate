@@ -461,7 +461,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: -203.00037, y: -68.0401}
+  m_AnchoredPosition: {x: -203.0004, y: -68.0401}
   m_SizeDelta: {x: 469, y: 60}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1497811682201431174
@@ -1388,6 +1388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3af19b1054a033f47a756c56fb9b3513, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   lootIndexRoomDecision: {fileID: 11400000, guid: 94cfe20a05f73124b85ed61f1dd473af, type: 2}
   instantiationParent: {fileID: 4889184657926200005}
   lootableViewPrefab: {fileID: 8434040053265844059, guid: d865a643470b54a4d8005e38a660ec5a, type: 3}
@@ -1428,7 +1429,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.178}
   m_AnchorMax: {x: 0, y: 0.821222}
-  m_AnchoredPosition: {x: 960.00085, y: 0.4621582}
+  m_AnchoredPosition: {x: 960.4355, y: 0.4621582}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4889184657926200007

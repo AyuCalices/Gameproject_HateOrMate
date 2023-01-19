@@ -1,6 +1,7 @@
 using System;
 using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
+using Features.Loot.Scripts.LootView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;

@@ -173,18 +173,34 @@ namespace Features.Battle.Scripts
                 case (int)RaiseEventCode.OnRestartStage:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
+                    LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[1];
+                    int stageAsLevel = (int) data[2];
+
+                    foreach (var lootable in lootables)
+                    {
+                        battleData.lootables.Add(lootable);
+                        battleData.lootableStages.Add(stageAsLevel);
+                    }
+                    
                     bool enterLootingState = (bool) data[0];
                     battleData.IsStageRestart = true;
-                    battleData.LootCount = ((LootableGenerator_SO[])data[1]).Length;
                     EndStage(enterLootingState);
                     break;
                 }
                 case (int)RaiseEventCode.OnNextStage:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
+                    LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[1];
+                    int stageAsLevel = (int) data[2];
+
+                    foreach (var lootable in lootables)
+                    {
+                        battleData.lootables.Add(lootable);
+                        battleData.lootableStages.Add(stageAsLevel);
+                    }
+                    
                     bool enterLootingState = (bool) data[0];
                     battleData.IsStageRestart = false;
-                    battleData.LootCount = ((LootableGenerator_SO[])data[1]).Length;
                     EndStage(enterLootingState);
                     break;
                 }

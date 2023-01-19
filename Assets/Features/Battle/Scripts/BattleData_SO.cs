@@ -4,6 +4,7 @@ using DataStructures.ReactiveVariable;
 using DataStructures.StateLogic;
 using Features.Battle.StateMachine;
 using Features.Loot.Scripts;
+using Features.Loot.Scripts.Generator;
 using Features.Tiles;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Behaviours;
@@ -45,7 +46,8 @@ namespace Features.Battle.Scripts
         
         
         public bool IsStageRestart { get; set; }
-        public int LootCount { get; set; }
+        public List<LootableGenerator_SO> lootables { get; set; }
+        public List<int> lootableStages { get; set; }
         
         public ICoroutineState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
@@ -54,6 +56,9 @@ namespace Features.Battle.Scripts
         {
             _battleManager = battleManager;
             IsStageRestart = false;
+
+            lootables = new List<LootableGenerator_SO>();
+            lootableStages = new List<int>();
         }
 
         public NetworkedUnitRuntimeSet_SO GetEnemyTeam(NetworkedUnitRuntimeSet_SO ownTeamRuntimeSet)

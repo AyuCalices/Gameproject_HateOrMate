@@ -1,8 +1,9 @@
+using System;
 using System.Collections;
-using ExitGames.Client.Photon;
+using System.Collections.Generic;
 using Features.Battle.StateMachine;
-using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts.Generator;
+using Features.Loot.Scripts.LootView;
+using UniRx;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
@@ -10,10 +11,13 @@ namespace Features.Battle.Scripts
     [CreateAssetMenu]
     public class LootingState : BaseCoroutineState
     {
+        public static Func<List<LootableView>> onInstantiateLootable;
+        
         [SerializeField] private BattleData_SO battleData;
         
         private BattleManager _battleManager;
         private bool _initialized;
+        private IDisposable _disposable;
         
         private void OnEnable()
         {
@@ -37,15 +41,29 @@ namespace Features.Battle.Scripts
             yield return new WaitForSeconds(2f);
             Debug.Log("Enter Looting State - After");
 
-            if (battleData.LootCount == 0)
+            if (battleData.lootables.Count == 0)
             {
                 _battleManager.RequestPlacementState();
+            }
+            else
+            {
+                List<LootableView> lootables = onInstantiateLootable.Invoke();
+                _disposable = lootables.ObserveEveryValueChanged(list => list.Count)
+                    .Where(count => count == 0)
+                    .Subscribe(_ =>
+                    {
+                        battleData.lootables.Clear();
+                        battleData.lootableStages.Clear();
+                        _battleManager.RequestPlacementState();
+                    });
             }
         }
 
         public override IEnumerator Exit()
         {
             yield return base.Exit();
+            
+            _disposable?.Dispose();
             
             Debug.Log("Exit Looting State - Before");
             yield return new WaitForSeconds(2f);
