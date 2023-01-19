@@ -2,7 +2,6 @@ using UnityEngine;
 
 namespace Features.Unit.Scripts.View
 {
-    //TODO: UniRX
     public class UnitBattleView : MonoBehaviour
     {
         [Header("References")]

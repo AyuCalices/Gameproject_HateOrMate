@@ -16,3 +16,5 @@ MonoBehaviour:
   onExitState: {fileID: 11400000, guid: 5b7416f8f294f704b8081751b4cb7c09, type: 2}
   isStateActive: 1
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  notePopupPrefab: {fileID: 1631948157505463686, guid: 27966faf2c568c84291f9eb02e623c00, type: 3}
+  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}

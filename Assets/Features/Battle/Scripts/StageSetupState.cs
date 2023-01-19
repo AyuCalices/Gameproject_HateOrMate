@@ -47,19 +47,6 @@ namespace Features.Battle.Scripts
                 stageRandomizer.GenerateUnits();
                 RequestBattleStateByRaiseEvent();
             }
-            
-            Debug.Log("Enter Stage Setup State - Before");
-            yield return new WaitForSeconds(2f);
-            Debug.Log("Enter Stage Setup State - After");
-        }
-
-        public override IEnumerator Exit()
-        {
-            yield return base.Exit();
-
-            Debug.Log("Exit Stage Setup State - Before");
-            yield return new WaitForSeconds(2f);
-            Debug.Log("Exit Stage Setup State - After");
         }
 
         public override void OnEvent(EventData photonEvent)

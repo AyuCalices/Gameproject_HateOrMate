@@ -1,5 +1,6 @@
 using System;
 using Features.Battle.Scripts;
+using Features.Battle.StateMachine;
 using Features.Camera.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
@@ -45,7 +46,7 @@ namespace Features.Unit.Scripts.Behaviours
         private void Update()
         {
             //TODO: implement placement phase state
-            if (battleData.CurrentState is not PlacementState) return;
+            if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
 
             if (_instantiatedPrefab != null && _journeyLength != 0)
             {
@@ -63,7 +64,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not PlacementState) return;
+            if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
             
             _instantiatedPrefab = Instantiate(unitSpriteGameObject);
             _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
@@ -71,7 +72,7 @@ namespace Features.Unit.Scripts.Behaviours
         
         public void OnDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not PlacementState) return;
+            if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
             
             if (canvasFocus.Get() == null) return;
 
@@ -86,7 +87,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if (battleData.CurrentState is not PlacementState) return;
+            if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
             
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;

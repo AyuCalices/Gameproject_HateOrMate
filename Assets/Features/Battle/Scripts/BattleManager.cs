@@ -1,7 +1,6 @@
 using System;
 using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
-using Features.Loot.Scripts.LootView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -23,8 +22,7 @@ namespace Features.Battle.Scripts
         [SerializeField] private BattleState battleState;
         
         private CoroutineStateMachine _stageStateMachine;
-        public ICoroutineState CurrentState => _stageStateMachine.CurrentState;
-        
+
         private void Awake()
         {
             _stageStateMachine = new CoroutineStateMachine();
@@ -35,7 +33,13 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.Initialize(placementState.Initialize(this));
             
+            //TODO: magic Numbers
             onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
+        }
+        
+        public bool StateIsValid(Type checkedType, StateProgressType checkedStateProgressType)
+        {
+            return _stageStateMachine.StateIsValid(checkedType, checkedStateProgressType);
         }
 
         internal void RequestStageSetupState()

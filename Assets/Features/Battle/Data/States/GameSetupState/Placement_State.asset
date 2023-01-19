@@ -15,5 +15,6 @@ MonoBehaviour:
   onEnterState: {fileID: 11400000, guid: 0e73d2f5e80ccf84781e7610e3d6920b, type: 2}
   onExitState: {fileID: 11400000, guid: 521c3ed3bce33fa4ba40c27746ac0410, type: 2}
   isStateActive: 1
-  towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
   continueButtonRoomDecision: {fileID: 11400000, guid: f1fb90714581f854f9005e9cfb458d1e, type: 2}
+  notePopupPrefab: {fileID: 1631948157505463686, guid: 27966faf2c568c84291f9eb02e623c00, type: 3}
+  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}

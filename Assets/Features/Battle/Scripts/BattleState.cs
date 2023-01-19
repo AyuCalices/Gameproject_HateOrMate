@@ -2,8 +2,10 @@ using System;
 using System.Collections;
 using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
+using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.Generator;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -22,6 +24,8 @@ namespace Features.Battle.Scripts
         [SerializeField] private BoolRoomDecitions_SO requestLootPhaseButtonRoomDecision;
         [SerializeField] private int lootCountOnStageComplete;
         [SerializeField] private BattleData_SO battleData;
+        [SerializeField] private NotePopup notePopupPrefab;
+        [SerializeField] private CanvasFocus_SO canvasFocus;
         
         private BattleManager _battleManager;
         private bool _initialized;
@@ -46,9 +50,10 @@ namespace Features.Battle.Scripts
             
             NetworkedStatsBehaviour.onDamageGained += CheckStage;
 
-            Debug.Log("Enter Battle State - Before");
-            yield return new WaitForSeconds(2f);
-            Debug.Log("Enter Battle State - After");
+            if (!battleData.IsStageRestart)
+            {
+                yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Next Stage!");
+            }
         }
 
         public override IEnumerator Exit()
@@ -56,10 +61,11 @@ namespace Features.Battle.Scripts
             yield return base.Exit();
             
             NetworkedStatsBehaviour.onDamageGained -= CheckStage;
-            
-            Debug.Log("Exit Battle State - Before");
-            yield return new WaitForSeconds(2f);
-            Debug.Log("Exit Battle State - After");
+
+            if (battleData.IsStageRestart)
+            {
+                yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Stage Failed!");
+            }
         }
 
         private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
@@ -173,15 +179,6 @@ namespace Features.Battle.Scripts
                 case (int)RaiseEventCode.OnRestartStage:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
-                    LootableGenerator_SO[] lootables = (LootableGenerator_SO[]) data[1];
-                    int stageAsLevel = (int) data[2];
-
-                    foreach (var lootable in lootables)
-                    {
-                        battleData.lootables.Add(lootable);
-                        battleData.lootableStages.Add(stageAsLevel);
-                    }
-                    
                     bool enterLootingState = (bool) data[0];
                     battleData.IsStageRestart = true;
                     EndStage(enterLootingState);

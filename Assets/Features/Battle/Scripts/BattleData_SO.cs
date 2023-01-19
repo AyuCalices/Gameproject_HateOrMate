@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.ReactiveVariable;
@@ -49,8 +50,12 @@ namespace Features.Battle.Scripts
         public List<LootableGenerator_SO> lootables { get; set; }
         public List<int> lootableStages { get; set; }
         
-        public ICoroutineState CurrentState => _battleManager.CurrentState;
         private BattleManager _battleManager;
+        
+        public bool StateIsValid(Type checkedType, StateProgressType checkedStateProgressType)
+        {
+            return _battleManager.StateIsValid(checkedType, checkedStateProgressType);
+        }
         
         public void Initialize(BattleManager battleManager)
         {

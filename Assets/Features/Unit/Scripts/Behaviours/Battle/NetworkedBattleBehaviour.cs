@@ -1,5 +1,6 @@
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
+using Features.Battle.StateMachine;
 using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
@@ -118,7 +119,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal virtual bool TryRequestDeathState()
         {
-            bool result = battleData.CurrentState is BattleState;
+            bool result = battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
             
             if (result)
             {

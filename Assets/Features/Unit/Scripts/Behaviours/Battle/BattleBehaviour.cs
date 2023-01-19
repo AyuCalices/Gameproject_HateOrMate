@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Features.Battle.Scripts;
+using Features.Battle.StateMachine;
 using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.View;
@@ -45,7 +46,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void Update()
         {
-            if (battleData.CurrentState is not BattleState) return;
+            if (!battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute)) return;
             
             HasTarget = UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
                     out _closestUnit);
@@ -69,7 +70,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal override bool TryRequestAttackState()
         {
-            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && battleData.CurrentState is BattleState;
+            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && 
+                          battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
          
             if (result)
             {
@@ -95,7 +97,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         internal override bool TryRequestDeathState()
         {
-            bool result = battleData.CurrentState is BattleState;
+            bool result = battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
             
             if (result)
             {
