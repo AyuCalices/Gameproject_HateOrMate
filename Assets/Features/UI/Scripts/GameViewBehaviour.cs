@@ -58,7 +58,7 @@ namespace Features.UI.Scripts
         private void RegisterStageText()
         {
             battleData.Stage.RuntimeProperty
-                .Select(x => "Stage: " + x)
+                .Select(x => x.ToString())
                 .SubscribeToText(stageText);
         }
     
