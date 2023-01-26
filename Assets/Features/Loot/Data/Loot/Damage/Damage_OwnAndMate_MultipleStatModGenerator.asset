@@ -19,15 +19,14 @@ MonoBehaviour:
     own
   modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   multipleStatModTargets:
-  - teamType: 1
+  - teamTagType: 01000000
     statType: 0
     baseValue: -10
     scaleValue: 0
     stageScaleValue: 2
-  - teamType: 0
+  - teamTagType: 00000000
     statType: 0
     baseValue: 20
     scaleValue: 0
     stageScaleValue: 2
-  ownTeam: {fileID: 11400000, guid: 60dbbe9b7b475c94cb3e139fd0ee4351, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
