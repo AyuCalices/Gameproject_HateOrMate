@@ -44,11 +44,11 @@ namespace Features.Loot.Scripts.LootView
         {
             _instantiatedLootables = new List<LootableView>();
             
-            for (int i = 0; i < battleData.lootables.Count; i++)
+            for (int i = 0; i < battleData.Lootables.Count; i++)
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
                 _instantiatedLootables.Add(lootableView);
-                lootableView.Initialize(battleData.lootables[i], battleData.lootableStages[i], () =>
+                lootableView.Initialize(battleData.Lootables[i], battleData.LootableStages[i], () =>
                 {
                     int findIndex = _instantiatedLootables.FindIndex(x => x == lootableView);
                     lootIndexRoomDecision.SetDecision(findIndex);

@@ -8,12 +8,12 @@ namespace Features.Unit.Scripts
     [CreateAssetMenu]
     public class ClickerManager_SO : ScriptableObject
     {
-        [SerializeField] private NetworkedUnitRuntimeSet_SO localUnitRuntimeSet;
+        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
         [SerializeField] private UnitClassData_SO towerClassData;
 
         public void OnClick()
         {
-            List<NetworkedBattleBehaviour> towerBattleActions = localUnitRuntimeSet.GetItems();
+            List<NetworkedBattleBehaviour> towerBattleActions = allUnitsRuntimeSet.GetUnitsByTag(TeamTagType.Own);
 
             foreach (NetworkedBattleBehaviour towerBattleAction in towerBattleActions)
             {

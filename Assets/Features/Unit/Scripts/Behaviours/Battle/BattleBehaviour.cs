@@ -47,11 +47,45 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         private void Update()
         {
             if (!battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute)) return;
-            
-            HasTarget = UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
-                    out _closestUnit);
+
+            List<NetworkedBattleBehaviour> enemyUnits = battleData.AllUnitsRuntimeSet.GetUnitsByTag(OpponentTagType);
+            HasTarget = TryGetClosestTargetableByWorldPosition(enemyUnits, transform.position, out _closestUnit);
 
             stateMachine.Update();
+        }
+        
+        private bool ContainsTargetable(ref List<NetworkedBattleBehaviour> networkedUnitBehaviours)
+        {
+            networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState);
+
+            return networkedUnitBehaviours.Count > 0;
+        }
+        
+        private bool TryGetClosestTargetableByWorldPosition(List<NetworkedBattleBehaviour> networkedUnitBehaviours, Vector3 worldPosition, 
+            out KeyValuePair<NetworkedBattleBehaviour, float> closestUnit)
+        {
+            if (!ContainsTargetable(ref networkedUnitBehaviours))
+            {
+                closestUnit = default;
+                return false;
+            }
+
+            //get closest
+            int closestUnitIndex = 0;
+            float closestDistance = Vector3.Distance(worldPosition, networkedUnitBehaviours[0].transform.position);
+            
+            for (int index = 1; index < networkedUnitBehaviours.Count; index++)
+            {
+                float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviours[index].transform.position);
+                if (distanceNext < closestDistance)
+                {
+                    closestUnitIndex = index;
+                    closestDistance = distanceNext;
+                }
+            }
+
+            closestUnit = new KeyValuePair<NetworkedBattleBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+            return true;
         }
 
         #region Request States
