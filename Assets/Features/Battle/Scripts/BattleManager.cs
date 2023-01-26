@@ -32,7 +32,6 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.Initialize(placementState.Initialize(this));
             
-            //TODO: magic Numbers
             onLocalSpawnUnit.Invoke("Player", towerClass);
         }
         

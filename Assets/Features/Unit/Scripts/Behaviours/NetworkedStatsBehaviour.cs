@@ -10,7 +10,7 @@ using UnityEngine;
 namespace Features.Unit.Scripts.Behaviours.Stat
 {
     [RequireComponent(typeof(PhotonView))]
-    public class NetworkedStatsBehaviour : MonoBehaviour
+    public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
     {
         public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
         
