@@ -1,3 +1,4 @@
+using System;
 using System.Globalization;
 using ExitGames.Client.Photon;
 using Features.Unit.Scripts.Behaviours.Battle;
@@ -26,11 +27,25 @@ namespace Features.Loot.UI.CharacterSelect
         {
             _unitOwnerStats = unitOwnerStats;
             _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<BattleBehaviour>();
+        }
 
+        public override void OnEnable()
+        {
+            base.OnEnable();
+
+            if (_unitOwnerStats == null) return;
+            
             SetUnitVisualization();
             SetAllValues();
         }
 
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            if (!Equals(targetPlayer, PhotonNetwork.LocalPlayer) || _unitOwnerStats == null) return;
+            
+            SetAllValues();
+        }
+        
         private void SetUnitVisualization()
         {
             unitSprite.sprite = _unitOwnerBattleBehaviour.UnitClassData.sprite;
@@ -43,13 +58,6 @@ namespace Features.Loot.UI.CharacterSelect
             healthText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.Health).GetTotalValue().ToString(CultureInfo.CurrentCulture);
             speedText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.Speed).GetTotalValue().ToString(CultureInfo.CurrentCulture);
             movementText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.MovementSpeed).GetTotalValue().ToString(CultureInfo.CurrentCulture);
-        }
-
-        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
-        {
-            if (!Equals(targetPlayer, PhotonNetwork.LocalPlayer) || _unitOwnerStats == null) return;
-            
-            SetAllValues();
         }
     }
 }
