@@ -47,11 +47,11 @@ namespace Features.Connection.Scripts.Utils
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
-            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
+            foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value))) continue;
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
 
-                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer.Value)]);
+                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer)]);
             }
 
             return false;
@@ -61,14 +61,14 @@ namespace Features.Connection.Scripts.Utils
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
-            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
+            foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value)))
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer)))
                 {
                     return false;
                 }
                 
-                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer.Value)]))
+                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer)]))
                 {
                     return false;
                 }
@@ -81,10 +81,10 @@ namespace Features.Connection.Scripts.Utils
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
-            foreach (KeyValuePair<int, Player> currentRoomPlayer in PhotonNetwork.CurrentRoom.Players)
+            foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer.Value))) continue;
-                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer.Value));
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
+                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer));
             }
         }
     }

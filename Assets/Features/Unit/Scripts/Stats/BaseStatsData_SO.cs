@@ -13,10 +13,6 @@ namespace Features.Battle.Scripts.StageProgression
         public float healthBaseValue = 50f;
         public float healthMinValue = 50f;
 
-        [Header("Speed")] 
-        public float speedValue = 3f;
-        public float speedMinValue = 1f;
-    
         [Header("Range")]
         public float rangeValue = 2f;
         public float rangeMinValue = 1f;
@@ -24,8 +20,12 @@ namespace Features.Battle.Scripts.StageProgression
         [Header("MovementSpeed")]
         public float movementSpeedValue = 3f;
         public float movementSpeedMinValue = 1f;
+        
+        [Header("Speed (for Caster)")] 
+        public float speedValue = 3f;
+        public float speedMinValue = 1f;
     
-        [Header("Stamina")]
+        [Header("Stamina (for Towers)")]
         public float staminaValue = 10f;
         public float staminaMinValue = 3f;
         public float staminaRefreshTime = 4f;
