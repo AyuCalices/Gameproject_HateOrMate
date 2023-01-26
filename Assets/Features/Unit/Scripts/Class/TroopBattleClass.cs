@@ -37,7 +37,7 @@ namespace Features.Unit.Scripts.Class
 
         protected override void InternalOnPerformAction()
         {
-            SendAttack(ownerBattleBehaviour.GetTarget.Key);
+            SendAttack(ownerBattleBehaviour.GetTarget.Key, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
         }
         
         public override void OnStageEnd()

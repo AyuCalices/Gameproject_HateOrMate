@@ -9,6 +9,7 @@ namespace Features.Unit.Scripts.Class
     public class TowerBattleClass : BattleClass
     {
         private readonly DamageProjectileBehaviour _damageProjectilePrefab;
+        private readonly float _towerDamageMultiplier;
         private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
         
         private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
@@ -17,10 +18,12 @@ namespace Features.Unit.Scripts.Class
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab) : base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab, float towerDamageMultiplier) : 
+            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;
+            _towerDamageMultiplier = towerDamageMultiplier;
         }
 
         protected override void InternalInitializeBattleActions()
@@ -61,7 +64,7 @@ namespace Features.Unit.Scripts.Class
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>
             {
-                SendAttack(closestStats);
+                SendAttack(closestStats, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage) * _towerDamageMultiplier);
                 _instantiatedProjectiles.Remove(instantiatedProjectile);
             });
         }

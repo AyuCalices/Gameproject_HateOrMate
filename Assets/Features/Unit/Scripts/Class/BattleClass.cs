@@ -125,14 +125,13 @@ namespace Features.Unit.Scripts.Class
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour)
+        protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
         {
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
             if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
-                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage);
-                attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref damage);
-                attackedUnitStats.RemovedHealth += damage;
+                attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
+                attackedUnitStats.RemovedHealth += attackValue;
                 
                 float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health);
                 ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
@@ -147,7 +146,7 @@ namespace Features.Unit.Scripts.Class
             {
                 SendFloatToTargetRaiseEvent(
                     attackedNetworkedBattleBehaviour.PhotonView.ViewID,
-                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage),
+                    attackValue,
                     ownerBattleBehaviour.UnitClassData
                 );
             }

@@ -59,7 +59,7 @@ namespace Features.Unit.Scripts.Class
             _instantiatedProjectiles.Add(instantiatedProjectile);
             instantiatedProjectile.RegisterOnCompleteAction(() =>
             {
-                SendAttack(closestStats);
+                SendAttack(closestStats, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
                 _instantiatedProjectiles.Remove(instantiatedProjectile);
             });
         }
