@@ -14,7 +14,7 @@ namespace Features.Unit.Scripts.ClassGenerator
         protected override BattleClass InternalGenerate(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
             UnitBattleView ownerUnitBattleView)
         {
-            return new TowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damageProjectileBehaviour, 10, 10);
+            return new TowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damageProjectileBehaviour);
         }
     }
 }

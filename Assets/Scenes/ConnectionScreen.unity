@@ -724,23 +724,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 462327262236302051, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 462327262236302051, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442560205754550479, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442560205754550479, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442560205754550479, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
-      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3442560206561090454, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
@@ -830,10 +814,6 @@ PrefabInstance:
     - target: {fileID: 3442560206561090455, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
       propertyPath: m_Name
       value: Panel_LoadingView
-      objectReference: {fileID: 0}
-    - target: {fileID: 3442560206561090455, guid: df346efaadb9d314e8550c4b61b43466, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: df346efaadb9d314e8550c4b61b43466, type: 3}

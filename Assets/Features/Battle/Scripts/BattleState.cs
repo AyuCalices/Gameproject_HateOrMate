@@ -161,7 +161,7 @@ namespace Features.Battle.Scripts
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
                         && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
                     {
-                        battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitType_SO) data[2]);
+                        battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
                     }
 
                     break;

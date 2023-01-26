@@ -29,8 +29,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         public KeyValuePair<NetworkedBattleBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
-        private bool TargetInRange => _closestUnit.Value < UnitClassData.range;
-        public float MovementSpeed => UnitClassData.movementSpeed;
+        private bool TargetInRange => _closestUnit.Value < NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Range);
+        public float MovementSpeed => NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.MovementSpeed);
 
         public override void OnStageEnd()
         {

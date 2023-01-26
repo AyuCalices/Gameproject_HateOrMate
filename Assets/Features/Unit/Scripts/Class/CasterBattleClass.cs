@@ -12,6 +12,8 @@ namespace Features.Unit.Scripts.Class
         private readonly bool _isAi;
         private readonly DamageProjectileBehaviour _damageProjectilePrefab;
         private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
+        
+        private float AttackSpeed => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
@@ -22,13 +24,12 @@ namespace Features.Unit.Scripts.Class
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _isAi = isAi;
             _damageProjectilePrefab = damageProjectilePrefab;
-            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed);
         }
 
         protected override void InternalInitializeBattleActions()
         {
-            _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed);
-            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed));
+            _attackSpeedDeltaTime = AttackSpeed;
+            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
         }
 
         protected override void InternalUpdateBattleActions()
@@ -39,11 +40,11 @@ namespace Features.Unit.Scripts.Class
             
             if (_attackSpeedDeltaTime <= 0)
             {
-                _attackSpeedDeltaTime = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed);
+                _attackSpeedDeltaTime = AttackSpeed;
                 InternalOnPerformAction();
             }
             
-            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Speed));
+            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
         }
 
         protected override void InternalOnPerformAction()

@@ -14,14 +14,16 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     public class LocalStat : NetworkStat
     {
         private float _baseStatValue;
+        public float BaseStatValue => _baseStatValue;
+
+        private float _minStatValue;
+        public float MinStatValue => _minStatValue;
         
         private readonly List<float> _statModificationValues;
         private readonly List<float> _scalingStatModificationValues;
     
         public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
         {
-            _baseStatValue = 0;
-            
             _statModificationValues = new List<float>() {};
             UpdateStat(statIdentity, _statModificationValues.ToArray());
         
@@ -29,11 +31,10 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
         }
 
-        public float BaseStatValue => _baseStatValue;
-
-        public void SetBaseStatValue(float newBaseValue)
+        public void SetBaseStatValue(float baseValue, float minValue)
         {
-            _baseStatValue = newBaseValue;
+            _baseStatValue = baseValue;
+            _minStatValue = minValue;
         }
     
         private void UpdateStat(string identity, float[] value)

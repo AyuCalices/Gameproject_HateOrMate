@@ -1,10 +1,10 @@
 using System;
+using Features.Battle.Scripts.StageProgression;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.View;
 using JetBrains.Annotations;
 using Photon.Pun;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Stat
@@ -15,17 +15,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
         
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
-
-        private BaseStats _baseStats;
-        public BaseStats BaseStats
-        {
-            get => _baseStats;
-            set
-            {
-                _baseStats = value;
-                value.ApplyBaseStats(this);
-            }
-        }
 
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
@@ -39,7 +28,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 _removedHealth = value;
                 if (TryGetComponent(out UnitBattleView unitView))
                 {
-                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health));
+                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health));
                 }
             }
         }
@@ -69,7 +58,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         private void OnDestroy()
         {
-            //TODO: this gets called before a unit disables his mods
             NetworkedStatServiceLocator.RemoveAllValues();
         }
 
@@ -91,6 +79,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
             ApplyModToInstantiatedUnit();
+        }
+        
+        public void SetBaseStats(BaseStatsGenerator_SO baseStatsGenerator, BaseStatsData_SO baseStatsData)
+        {
+            baseStatsGenerator.ApplyBaseStats(this, baseStatsData);
         }
 
         private void ApplyModToInstantiatedUnit()

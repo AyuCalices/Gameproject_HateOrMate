@@ -45,7 +45,6 @@ namespace Features.Unit.Scripts.Behaviours
         
         private void Update()
         {
-            //TODO: implement placement phase state
             if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
 
             if (_instantiatedPrefab != null && _journeyLength != 0)

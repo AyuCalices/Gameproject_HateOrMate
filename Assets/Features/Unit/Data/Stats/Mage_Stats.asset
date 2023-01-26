@@ -9,14 +9,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 77b6d4c722b00064aaa7202b9fc1dca5, type: 3}
-  m_Name: SynchronizedBaseStatsGenerator
+  m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
+  m_Name: Mage_Stats
   m_EditorClassIdentifier: 
-  currentStage: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
   attackBaseValue: 10
-  attackScaling: 1.1
+  attackMinValue: 10
   healthBaseValue: 50
-  healthScaling: 1.1
+  healthMinValue: 50
   speedValue: 3
+  speedMinValue: 1
+  rangeValue: 3
+  rangeMinValue: 1
+  movementSpeedValue: 1
+  movementSpeedMinValue: 1
   staminaValue: 10
-  staminaRefreshTime: 4
+  staminaMinValue: 3
+  staminaRefreshTime: 2
+  staminaRefreshTimeMinValue: 1

@@ -10,27 +10,24 @@ namespace Features.Unit.Scripts.Class
     {
         private readonly DamageProjectileBehaviour _damageProjectilePrefab;
         private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
-        private readonly int _totalStamina;
-        private int _currentStamina;
-        private readonly float _staminaRefreshTime;
+        
+        private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
+        private float _currentStamina;
+        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.StaminaRefreshTime);
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab, int totalStamina,
-            float staminaRefreshTime) : base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab) : base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _damageProjectilePrefab = damageProjectilePrefab;
-            _totalStamina = totalStamina;
-            _currentStamina = totalStamina;
-            _staminaRefreshTime = staminaRefreshTime;
-            _staminaRefreshTimeDelta = staminaRefreshTime;
         }
 
         protected override void InternalInitializeBattleActions()
         {
-            _currentStamina = _totalStamina;
-            ownerUnitBattleView.SetStaminaSlider(_currentStamina, _totalStamina);
+            _currentStamina = TotalStamina;
+            _staminaRefreshTimeDelta = StaminaRefreshTime;
+            ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
         }
 
         protected override void InternalUpdateBattleActions()
@@ -39,11 +36,11 @@ namespace Features.Unit.Scripts.Class
 
             if (_staminaRefreshTimeDelta > 0) return;
         
-            _staminaRefreshTimeDelta = _staminaRefreshTime;
-            if (_currentStamina <= _totalStamina)
+            _staminaRefreshTimeDelta = StaminaRefreshTime;
+            if (_currentStamina <= TotalStamina)
             {
                 _currentStamina++;
-                ownerUnitBattleView.SetStaminaSlider(_currentStamina, _totalStamina);
+                ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
             }
         }
 
@@ -54,7 +51,7 @@ namespace Features.Unit.Scripts.Class
             if (_currentStamina <= 0) return;
 
             _currentStamina--;
-            ownerUnitBattleView.SetStaminaSlider(_currentStamina, _totalStamina);
+            ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
 
             NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
             DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(

@@ -41,7 +41,7 @@ namespace Features.MovementAndSpawning
             return false;
         }
         
-        public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, BaseStats baseStats, Vector3Int gridPosition, int index)
+        public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
         {
             bool isOwner = PhotonNetwork.LocalPlayer.ActorNumber == photonActorNumber;
             NetworkedBattleBehaviour selectedPrefab = isOwner ? localPlayerPrefab : networkedPlayerPrefab;
@@ -58,7 +58,7 @@ namespace Features.MovementAndSpawning
             player.UnitTeamData = unitTeamData;
             player.IsTargetable = isTargetable;
             player.SpawnerInstanceIndex = index;
-            player.NetworkedStatsBehaviour.BaseStats = baseStats;
+            player.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsGenerator, unitClassData.baseStatsData);
             if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;

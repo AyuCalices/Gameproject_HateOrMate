@@ -43,7 +43,7 @@ namespace Features.Loot.UI.CharacterSelect
             damageText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.Damage).GetTotalValue().ToString(CultureInfo.CurrentCulture);
             healthText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.Health).GetTotalValue().ToString(CultureInfo.CurrentCulture);
             speedText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.Speed).GetTotalValue().ToString(CultureInfo.CurrentCulture);
-            movementText.text = _unitOwnerBattleBehaviour.UnitClassData.movementSpeed.ToString(CultureInfo.CurrentCulture);
+            movementText.text = _unitOwnerStats.NetworkedStatServiceLocator.Get<LocalStat>(StatType.MovementSpeed).GetTotalValue().ToString(CultureInfo.CurrentCulture);
 
         }
     }

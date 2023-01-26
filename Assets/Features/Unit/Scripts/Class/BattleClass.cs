@@ -31,13 +31,13 @@ namespace Features.Unit.Scripts.Class
         /// </summary>
         /// <param name="targetID"></param>
         /// <param name="value"></param>
-        protected void SendFloatToTargetRaiseEvent(int targetID, float value, UnitType_SO attackerUnitType)
+        protected void SendFloatToTargetRaiseEvent(int targetID, float value, UnitClassData_SO attackerUnitClassData)
         {
             object[] data = new object[]
             {
                 targetID,
                 value,
-                attackerUnitType
+                attackerUnitClassData
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -58,12 +58,12 @@ namespace Features.Unit.Scripts.Class
         /// Attacked Unit Receives an attack from the caster. May be an attack or heal.
         /// </summary>
         /// <param name="value"></param>
-        public void OnReceiveFloatActionCallback(float value, UnitType_SO unitType)
+        public void OnReceiveFloatActionCallback(float value, UnitClassData_SO unitClassData)
         {
-            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitType, ref value);
+            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
 
-            float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health);
+            float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health);
             ownerNetworkingStatsBehaviour.RaiseDamageGained(ownerBattleBehaviour, ownerNetworkingStatsBehaviour.RemovedHealth, totalHealth);
                 
             UpdateAllClientsHealthRaiseEvent(
@@ -130,11 +130,11 @@ namespace Features.Unit.Scripts.Class
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
             if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
-                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Damage);
+                float damage = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage);
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref damage);
                 attackedUnitStats.RemovedHealth += damage;
                 
-                float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Health);
+                float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health);
                 ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
                 
                 UpdateAllClientsHealthRaiseEvent(
@@ -147,8 +147,8 @@ namespace Features.Unit.Scripts.Class
             {
                 SendFloatToTargetRaiseEvent(
                     attackedNetworkedBattleBehaviour.PhotonView.ViewID,
-                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_MinIs1(StatType.Damage),
-                    ownerBattleBehaviour.UnitClassData.unitType
+                    ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage),
+                    ownerBattleBehaviour.UnitClassData
                 );
             }
         }

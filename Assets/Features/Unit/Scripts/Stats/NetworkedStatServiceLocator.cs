@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Stat
 {
-    public enum StatType { Damage, Health, Speed }
+    public enum StatType { Damage, Health, Speed, Range, MovementSpeed, Stamina, StaminaRefreshTime }
     public enum StatValueType { Stat, ScalingStat }
 
     public class NetworkedStatServiceLocator
@@ -13,16 +13,17 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         public NetworkedStatServiceLocator() { }
 
-        public bool SetBaseValue(StatType statType, float value)
+        public bool SetBaseValue(StatType statType, float baseValue, float minValue)
         {
             string key = nameof(LocalStat) + statType;
     
             if (!_services.ContainsKey(key))
             {
+                Debug.LogError($"{statType} not Contained!");
                 return false;
             }
 
-            ((LocalStat)_services[key]).SetBaseStatValue(value);
+            ((LocalStat)_services[key]).SetBaseStatValue(baseValue, minValue);
             return true;
         }
         
@@ -64,7 +65,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             _services.Clear();
         }
 
-        public float GetTotalValue_MinIs1(StatType statType)
+        public float GetTotalValue_CheckMin(StatType statType)
         {
             float finalValue = 0;
     
@@ -78,14 +79,14 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 //Debug.Log(localStat.GetTotalValue());
                 finalValue += localStat.GetTotalValue();
 
-                //make sure a stat cant get below 1
-                finalValue = Mathf.Max(finalValue, 1);
+                //make sure a stat cant get below min Stat Value
+                finalValue = Mathf.Max(finalValue, localStat.MinStatValue);
             }
 
             return finalValue;
         }
 
-        public bool TryGetService<T>(out T service, StatType statType) where T : IUnitStat
+        private bool TryGetService<T>(out T service, StatType statType) where T : IUnitStat
         {
             string key = typeof(T).Name + statType;
     
