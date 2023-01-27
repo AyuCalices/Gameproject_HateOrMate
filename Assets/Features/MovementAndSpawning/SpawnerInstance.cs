@@ -3,6 +3,7 @@ using Features.Battle.Scripts;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Mod;
 using Photon.Pun;
 using UnityEngine;
 
@@ -62,6 +63,11 @@ namespace Features.MovementAndSpawning
             if (instantiatedUnit.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;
+            }
+
+            if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
+            {
+                modUnitBehaviour.InstantiateModView();
             }
             
             if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))

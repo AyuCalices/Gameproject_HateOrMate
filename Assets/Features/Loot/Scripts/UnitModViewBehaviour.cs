@@ -32,6 +32,9 @@ namespace Features.Loot.UI.CharacterSelect
         {
             _unitOwnerStats = unitOwnerStats;
             _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<BattleBehaviour>();
+            
+            SetUnitVisualization();
+            SetAllValues();
         }
 
         public override void OnEnable()
