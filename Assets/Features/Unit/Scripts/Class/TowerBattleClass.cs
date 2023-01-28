@@ -8,9 +8,9 @@ namespace Features.Unit.Scripts.Class
 {
     public class TowerBattleClass : BattleClass
     {
-        private readonly DamageProjectileBehaviour _damageProjectilePrefab;
+        private readonly ProjectileDamageAnimationBehaviour _projectileDamageAnimationPrefab;
         private readonly float _towerDamageMultiplier;
-        private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
+        private readonly List<ProjectileDamageAnimationBehaviour> _instantiatedProjectiles;
         
         private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
         private float _currentStamina;
@@ -18,11 +18,11 @@ namespace Features.Unit.Scripts.Class
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab, float towerDamageMultiplier) : 
+            UnitBattleView ownerUnitBattleView, ProjectileDamageAnimationBehaviour projectileDamageAnimationPrefab, float towerDamageMultiplier) : 
             base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
-            _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
-            _damageProjectilePrefab = damageProjectilePrefab;
+            _instantiatedProjectiles = new List<ProjectileDamageAnimationBehaviour>();
+            _projectileDamageAnimationPrefab = projectileDamageAnimationPrefab;
             _towerDamageMultiplier = towerDamageMultiplier;
         }
 
@@ -57,15 +57,15 @@ namespace Features.Unit.Scripts.Class
             ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
 
             NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
-            DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
+            ProjectileDamageAnimationBehaviour instantiatedProjectileDamageAnimation = _projectileDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour.transform.position,
                 closestStats.transform.position, closestStats.PhotonView.ViewID);
             
-            _instantiatedProjectiles.Add(instantiatedProjectile);
-            instantiatedProjectile.RegisterOnCompleteAction(() =>
+            _instantiatedProjectiles.Add(instantiatedProjectileDamageAnimation);
+            instantiatedProjectileDamageAnimation.RegisterOnCompleteAction(() =>
             {
                 SendAttack(closestStats, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage) * _towerDamageMultiplier);
-                _instantiatedProjectiles.Remove(instantiatedProjectile);
+                _instantiatedProjectiles.Remove(instantiatedProjectileDamageAnimation);
             });
         }
         
@@ -73,7 +73,7 @@ namespace Features.Unit.Scripts.Class
         {
             ownerUnitBattleView.ResetStaminaSlider();
             
-            foreach (DamageProjectileBehaviour instantiatedProjectile in _instantiatedProjectiles)
+            foreach (ProjectileDamageAnimationBehaviour instantiatedProjectile in _instantiatedProjectiles)
             {
                 instantiatedProjectile.CancelProjectile();
             }

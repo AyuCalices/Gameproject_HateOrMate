@@ -10,20 +10,18 @@ namespace Features.Unit.Scripts.Class
     public class CasterBattleClass : BattleClass
     {
         private readonly bool _isAi;
-        private readonly DamageProjectileBehaviour _damageProjectilePrefab;
-        private readonly List<DamageProjectileBehaviour> _instantiatedProjectiles;
+        private readonly SlashDamageAnimationBehaviour _damageAnimationPrefab;
         
         private float AttackSpeed => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, DamageProjectileBehaviour damageProjectilePrefab) : base(
+            UnitBattleView ownerUnitBattleView, SlashDamageAnimationBehaviour damageAnimationPrefab) : base(
             ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
-            _instantiatedProjectiles = new List<DamageProjectileBehaviour>();
             _isAi = isAi;
-            _damageProjectilePrefab = damageProjectilePrefab;
+            _damageAnimationPrefab = damageAnimationPrefab;
         }
 
         protected override void InternalInitializeBattleActions()
@@ -51,29 +49,14 @@ namespace Features.Unit.Scripts.Class
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
-            DamageProjectileBehaviour instantiatedProjectile = _damageProjectilePrefab.FireProjectile(
-                ownerBattleBehaviour.transform.position,
-                closestStats.transform.position, closestStats.PhotonView.ViewID);
-            
-            _instantiatedProjectiles.Add(instantiatedProjectile);
-            instantiatedProjectile.RegisterOnCompleteAction(() =>
-            {
-                SendAttack(closestStats, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
-                _instantiatedProjectiles.Remove(instantiatedProjectile);
-            });
+            NetworkedBattleBehaviour closestUnit = ownerBattleBehaviour.GetTarget.Key;
+            _damageAnimationPrefab.InstantiateDamageAnimation(closestUnit.transform.position);
+            SendAttack(closestUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
         }
 
         public override void OnStageEnd()
         {
             ownerUnitBattleView.ResetStaminaSlider();
-            
-            foreach (DamageProjectileBehaviour instantiatedProjectile in _instantiatedProjectiles)
-            {
-                instantiatedProjectile.CancelProjectile();
-            }
-                
-            _instantiatedProjectiles.Clear();
         }
     }
 }

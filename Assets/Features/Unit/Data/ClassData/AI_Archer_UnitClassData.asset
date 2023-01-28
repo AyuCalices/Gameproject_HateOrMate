@@ -19,5 +19,3 @@ MonoBehaviour:
   baseStatsGenerator: {fileID: 11400000, guid: 0648fc88fda88114992bc5c4e7bcf5c9, type: 2}
   baseStatsData: {fileID: 11400000, guid: 9ab1a54139bbda8499a8ec9ebe20c951, type: 2}
   sprite: {fileID: 21300000, guid: e4c5dfff34e304bf89a99c8cda7c8692, type: 3}
-  range: 3
-  movementSpeed: 2
