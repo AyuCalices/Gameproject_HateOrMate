@@ -180,7 +180,8 @@ MonoBehaviour:
   unitSpriteGameObject: {fileID: 5694020529261498039}
   cameraFocus: {fileID: 11400000, guid: 053894e007eee164ea29eb71b78e2831, type: 2}
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
-  hoverSpeed: 1.5
+  hoverSpeed: 7
+  leanTweenType: 16
 --- !u!114 &9148525603305500277
 MonoBehaviour:
   m_ObjectHideFlags: 0
