@@ -337,15 +337,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d567e6c825a52f944b9db574a0bfd91d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  teamTagType: 0
+  statTextUpdateBehaviours:
+  - {fileID: 1997437981820043457}
+  - {fileID: 8176126522959339848}
+  - {fileID: 2824720685401992887}
+  - {fileID: 3642320368549693926}
+  - {fileID: 6117327028492708193}
+  - {fileID: 5628393356443568295}
+  nameText: {fileID: 5124260335052894825}
   towerUnitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
   unitSprite: {fileID: 4552916568093630943}
-  unitName: {fileID: 5124260335052894825}
-  damageTextUpdateBehaviour: {fileID: 1997437981820043457}
-  healthTextUpdateBehaviour: {fileID: 8176126522959339848}
-  rangeTextUpdateBehaviour: {fileID: 2824720685401992887}
-  movementSpeedTextUpdateBehaviour: {fileID: 3642320368549693926}
-  staminaTextUpdateBehaviour: {fileID: 6117327028492708193}
-  speedTextUpdateBehaviour: {fileID: 5628393356443568295}
 --- !u!114 &7785868114042273449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1304,6 +1306,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9147049951128370156, guid: 04c221f90683eb54e9db6f6e5c7eeaf7, type: 3}
+      propertyPath: statType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 04c221f90683eb54e9db6f6e5c7eeaf7, type: 3}
 --- !u!224 &4552916568106881856 stripped
@@ -1763,6 +1769,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7448595745367932723, guid: 8a0ca501b4bf77c40af1c2fcd807be24, type: 3}
+      propertyPath: statType
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8a0ca501b4bf77c40af1c2fcd807be24, type: 3}
 --- !u!114 &2824720685401992887 stripped
@@ -1788,6 +1798,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4552916569983596867}
     m_Modifications:
+    - target: {fileID: 2004352260559916482, guid: d5cebc21b4c9d2e429d87a829bbb9667, type: 3}
+      propertyPath: statType
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 2062176457263122203, guid: d5cebc21b4c9d2e429d87a829bbb9667, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1941,6 +1955,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4552916569983596867}
     m_Modifications:
+    - target: {fileID: 1959601345176868317, guid: cb9ccebe9df1bca4ea2c4e1785fa15e4, type: 3}
+      propertyPath: statType
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 7638882985683718313, guid: cb9ccebe9df1bca4ea2c4e1785fa15e4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2094,6 +2112,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 4552916569983596867}
     m_Modifications:
+    - target: {fileID: 4627386643080753230, guid: 3c8f392588f7fc94fa9620bf10bce42c, type: 3}
+      propertyPath: statType
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5590354506575298434, guid: 3c8f392588f7fc94fa9620bf10bce42c, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

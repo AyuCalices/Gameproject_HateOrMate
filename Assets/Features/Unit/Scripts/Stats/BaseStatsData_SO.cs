@@ -21,14 +21,12 @@ namespace Features.Battle.Scripts.StageProgression
         public float movementSpeedValue = 3f;
         public float movementSpeedMinValue = 1f;
         
-        [Header("Speed (for Caster)")] 
+        [Header("Speed")] 
         public float speedValue = 3f;
         public float speedMinValue = 1f;
     
-        [Header("Stamina (for Towers)")]
+        [Header("Stamina (only for Towers)")]
         public float staminaValue = 10f;
         public float staminaMinValue = 3f;
-        public float staminaRefreshTime = 4f;
-        public float staminaRefreshTimeMinValue = 1f;
     }
 }

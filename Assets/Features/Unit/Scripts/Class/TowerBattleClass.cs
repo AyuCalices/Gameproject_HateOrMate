@@ -14,7 +14,7 @@ namespace Features.Unit.Scripts.Class
         
         private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
         private float _currentStamina;
-        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.StaminaRefreshTime);
+        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,

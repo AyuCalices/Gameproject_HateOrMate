@@ -13,12 +13,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     /// </summary>
     public class LocalStat : NetworkStat
     {
-        private float _baseStatValue;
-        public float BaseStatValue => _baseStatValue;
-
-        private float _minStatValue;
-        public float MinStatValue => _minStatValue;
-        
         private readonly List<float> _statModificationValues;
         private readonly List<float> _scalingStatModificationValues;
     
@@ -29,12 +23,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         
             _scalingStatModificationValues = new List<float>() {1};
             UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
-        }
-
-        public void SetBaseStatValue(float baseValue, float minValue)
-        {
-            _baseStatValue = baseValue;
-            _minStatValue = minValue;
         }
     
         private void UpdateStat(string identity, float[] value)
@@ -57,7 +45,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         protected override float GetStat()
         {
-            float finalValue = _baseStatValue;
+            float finalValue = 0;
         
             foreach (var statValue in _statModificationValues)
             {

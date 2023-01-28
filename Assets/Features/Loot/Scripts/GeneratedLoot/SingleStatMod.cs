@@ -1,3 +1,4 @@
+using System;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -6,6 +7,9 @@ namespace Features.Loot.Scripts.GeneratedLoot
 {
     public class SingleStatMod : BaseMod
     {
+        public static Action<NetworkedStatsBehaviour, StatType, float, float> onRegister;
+        public static Action<NetworkedStatsBehaviour, StatType, float, float> onUnregister;
+        
         private readonly StatType _statType;
         private readonly float _baseValue;
         private readonly float _scaleValue;
@@ -28,10 +32,14 @@ namespace Features.Loot.Scripts.GeneratedLoot
                 Debug.LogWarning("Adding value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, ScaleByStage(_scaleValue));
+            result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
+            }
+            else
+            {
+                onRegister?.Invoke(moddedLocalStats, _statType, ScaleByStage(_baseValue), _scaleValue);
             }
         }
     
@@ -43,10 +51,14 @@ namespace Features.Loot.Scripts.GeneratedLoot
                 Debug.LogWarning("Removing value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, ScaleByStage(_scaleValue));
+            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");
+            }
+            else
+            {
+                onUnregister?.Invoke(moddedLocalStats, _statType, -ScaleByStage(_baseValue), -_scaleValue);
             }
         }
         

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Stat
 {
-    public enum StatType { Damage, Health, Speed, Range, MovementSpeed, Stamina, StaminaRefreshTime }
+    public enum StatType { Damage, Health, Speed, Range, MovementSpeed, Stamina }
     public enum StatValueType { Stat, ScalingStat }
 
     public class NetworkedStatServiceLocator
@@ -12,20 +13,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         private readonly Dictionary<string, IUnitStat> _services = new Dictionary<string, IUnitStat>();
 
         public NetworkedStatServiceLocator() { }
-
-        public bool SetBaseValue(StatType statType, float baseValue, float minValue)
-        {
-            string key = nameof(LocalStat) + statType;
-    
-            if (!_services.ContainsKey(key))
-            {
-                Debug.LogError($"{statType} not Contained!");
-                return false;
-            }
-
-            ((LocalStat)_services[key]).SetBaseStatValue(baseValue, minValue);
-            return true;
-        }
         
         public bool TryAddLocalValue(StatType statType, StatValueType statValueType, float value)
         {
@@ -78,9 +65,15 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 //Debug.Log(localStat.GetTotalValue());
                 finalValue += localStat.GetTotalValue();
+            }
+
+            if (TryGetService(out BaseStat baseStat, statType))
+            {
+                //Debug.Log(localStat.GetTotalValue());
+                finalValue += baseStat.GetTotalValue();
 
                 //make sure a stat cant get below min Stat Value
-                finalValue = Mathf.Max(finalValue, localStat.MinStatValue);
+                finalValue = Mathf.Max(finalValue, baseStat.GetMinValue());
             }
 
             return finalValue;

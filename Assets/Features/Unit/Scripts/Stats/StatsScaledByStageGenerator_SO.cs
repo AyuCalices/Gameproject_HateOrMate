@@ -1,5 +1,6 @@
 using DataStructures.ReactiveVariable;
 using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Battle.Scripts.StageProgression
@@ -17,13 +18,12 @@ namespace Features.Battle.Scripts.StageProgression
             float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(attackScalingByStages, currentStage.Get());
             float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(healthScalingByStages, currentStage.Get());
             
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Damage, finalAttack, baseStatsData.attackMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Health, finalHealth, baseStatsData.healthMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue);
-            networkedStatsBehaviour.NetworkedStatServiceLocator.SetBaseValue(StatType.StaminaRefreshTime, baseStatsData.staminaRefreshTime, baseStatsData.staminaRefreshTimeMinValue);
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.Damage, finalAttack, baseStatsData.attackMinValue));
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.Health, finalHealth, baseStatsData.healthMinValue));
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue));
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue));
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue));
+            networkedStatsBehaviour.NetworkedStatServiceLocator.Register(new BaseStat(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue));
         }
     }
 }

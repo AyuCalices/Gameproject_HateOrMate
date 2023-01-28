@@ -9,7 +9,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
     public abstract class BaseMod
     {
         public static Action<ModBehaviour, BaseMod> onModInstantiated;
-        
+
         public GameObject SpritePrefab { get; }
         public string Description { get; }
         public int Level { get; }

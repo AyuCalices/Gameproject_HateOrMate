@@ -1,4 +1,4 @@
-using Features.Loot.UI.CharacterSelect;
+using System.Collections.Generic;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
@@ -7,8 +7,9 @@ namespace Features.Loot.Scripts.ModView
 {
     public class EquipView : MonoBehaviour
     {
-        public UnitModViewBehaviour unitModViewPrefab;
-        public Transform instantiationParent;
+        [SerializeField] private List<TeamViewBehaviour> teamView;
+        [SerializeField] private UnitViewBehaviour unitViewPrefab;
+        [SerializeField] private Transform instantiationParent;
 
         private void Awake()
         {
@@ -22,14 +23,14 @@ namespace Features.Loot.Scripts.ModView
 
         private GameObject InstantiateModView(NetworkedStatsBehaviour networkedStatsBehaviour)
         {
-            UnitModViewBehaviour instantiatedModView = Instantiate(unitModViewPrefab, instantiationParent);
-            instantiatedModView.Initialize(networkedStatsBehaviour);
-            return instantiatedModView.gameObject;
-        }
-        
-        public void ToggleEquipView()
-        {
-            gameObject.SetActive(!gameObject.activeInHierarchy);
+            foreach (TeamViewBehaviour teamViewBehaviour in teamView)
+            {
+                teamViewBehaviour.Initialize();
+            }
+            
+            UnitViewBehaviour instantiatedView = Instantiate(unitViewPrefab, instantiationParent);
+            instantiatedView.Initialize(networkedStatsBehaviour);
+            return instantiatedView.gameObject;
         }
     }
 }
