@@ -16,8 +16,10 @@ namespace Features.Unit.Scripts.DamageAnimation
 
         public override void InstantiateDamageAnimation(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction)
         {
-            object[] data = new object[] {targetUnit.PhotonView.ViewID};
-            ProjectileDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork.Instantiate(gameObject.name, casterUnit.transform.position, Quaternion.identity, 0, data).GetComponent<ProjectileDamageAnimationBehaviour>();
+            object[] data = {targetUnit.PhotonView.ViewID};
+            ProjectileDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
+                .Instantiate(gameObject.name, casterUnit.transform.position, Quaternion.identity, 0, data)
+                .GetComponent<ProjectileDamageAnimationBehaviour>();
             instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.CastAttack(casterUnit, targetUnit, onHitAction));
 
             string identifier = GetIdentifier(casterUnit.PhotonView);
