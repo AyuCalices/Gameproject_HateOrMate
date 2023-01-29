@@ -110,12 +110,11 @@ namespace Features.Loot.Scripts.LootView
             if (!roomCustomProperties.ContainsKey(lootIndexRoomDecision.Identifier(localPlayer))) return;
             
             int lootableIdentifier = (int)roomCustomProperties[lootIndexRoomDecision.Identifier(localPlayer)];
-            if (lootableIdentifier >= 0)
-            {
-                int ownDecisionIndex = GetLootableIndex(lootableIdentifier);
-                _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
-                RemoveFromLootSlots(ownDecisionIndex);
-            }
+            if (lootableIdentifier < 0) return;
+            int ownDecisionIndex = GetLootableIndex(lootableIdentifier);
+            if (ownDecisionIndex < 0) return;
+            _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
+            RemoveFromLootSlots(ownDecisionIndex);
         }
         
         private void RemoveFromLootSlots(int index)
