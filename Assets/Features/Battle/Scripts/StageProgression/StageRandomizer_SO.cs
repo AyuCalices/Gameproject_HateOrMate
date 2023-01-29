@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using DataStructures.ReactiveVariable;
 using Features.Unit.Scripts;
-using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 
 namespace Features.Battle.Scripts.StageProgression
@@ -11,7 +10,7 @@ namespace Features.Battle.Scripts.StageProgression
     [CreateAssetMenu(fileName = "StageRandomizer", menuName = "StageProgression/StageRandomizer")]
     public class StageRandomizer_SO : ScriptableObject
     {
-        public static Action<string, UnitClassData_SO, BaseStats> onNetworkedSpawnUnit;
+        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
         
         [SerializeField] private IntReactiveVariable currentStage;
         
@@ -37,9 +36,7 @@ namespace Features.Battle.Scripts.StageProgression
 
             foreach (UnitDefinition generatedUnit in generatedUnits)
             {
-                BaseStats baseStats =
-                    generatedUnit.synchronizedBaseStatsGenerator.GetSynchronizedStats();
-                onNetworkedSpawnUnit?.Invoke(generatedUnit.spawnerReference, generatedUnit.unitClassData, baseStats);
+                onNetworkedSpawnUnit?.Invoke(generatedUnit.spawnerReference, generatedUnit.unitClassData);
             }
         }
     }

@@ -43,7 +43,7 @@ namespace Features.UI.Scripts
         {
             continueBattleButton.onClick.AddListener(() =>
             {
-                if (battleData.LocalUnitRuntimeSet.GetItems().Any(networkedBattleBehaviour => !networkedBattleBehaviour.IsSpawnedLocally))
+                if (battleData.AllUnitsRuntimeSet.GetUnitsByTag(TeamTagType.Own).Any(networkedBattleBehaviour => !networkedBattleBehaviour.IsSpawnedLocally))
                 {
                     continueButtonRoomDecision.SetDecision(true);
                     SetContinueButtonInteractable(false);
@@ -58,7 +58,7 @@ namespace Features.UI.Scripts
         private void RegisterStageText()
         {
             battleData.Stage.RuntimeProperty
-                .Select(x => "Stage: " + x)
+                .Select(x => x.ToString())
                 .SubscribeToText(stageText);
         }
     

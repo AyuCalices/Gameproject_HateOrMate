@@ -3,7 +3,7 @@ using Features.Battle.Scripts;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Behaviours.Mod;
 using Photon.Pun;
 using UnityEngine;
 
@@ -12,12 +12,13 @@ namespace Features.MovementAndSpawning
     public class SpawnerInstance : MonoBehaviour
     {
         [SerializeField] private BattleData_SO battleData;
-        
+
+        public TeamTagType[] opponentTagType;
         public string reference;
         public NetworkedBattleBehaviour localPlayerPrefab;
-        public UnitTeamData_SO localPlayerTeamData;
+        public TeamTagType[] ownSpawnsTeamTagType;
         public NetworkedBattleBehaviour networkedPlayerPrefab;
-        public UnitTeamData_SO networkedPlayerTeamData;
+        public TeamTagType[] mateSpawnsTeamTagType;
         public bool isTargetable;
 
         public List<SpawnPosition> spawnPositions;
@@ -41,36 +42,41 @@ namespace Features.MovementAndSpawning
             return false;
         }
         
-        public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, BaseStats baseStats, Vector3Int gridPosition, int index)
+        public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index)
         {
             bool isOwner = PhotonNetwork.LocalPlayer.ActorNumber == photonActorNumber;
             NetworkedBattleBehaviour selectedPrefab = isOwner ? localPlayerPrefab : networkedPlayerPrefab;
-            UnitTeamData_SO unitTeamData = isOwner ? localPlayerTeamData : networkedPlayerTeamData;
+            TeamTagType[] teamTagType = isOwner ? ownSpawnsTeamTagType : mateSpawnsTeamTagType;
             
-            NetworkedBattleBehaviour player = Instantiate(selectedPrefab, transform);
-            _spawnedUnits.Add(player.PhotonView);
+            NetworkedBattleBehaviour instantiatedUnit = Instantiate(selectedPrefab, transform);
+            _spawnedUnits.Add(instantiatedUnit.PhotonView);
             
             //initialize values
             if (unitClassData.sprite != null)
             {
-                player.SetSprite(unitClassData.sprite);
+                instantiatedUnit.SetSprite(unitClassData.sprite);
             }
-            player.UnitTeamData = unitTeamData;
-            player.IsTargetable = isTargetable;
-            player.SpawnerInstanceIndex = index;
-            player.NetworkedStatsBehaviour.BaseStats = baseStats;
-            if (player.TryGetComponent(out BattleBehaviour battleBehaviour))
+            instantiatedUnit.SetTeamTagType(teamTagType, opponentTagType);
+            instantiatedUnit.IsTargetable = isTargetable;
+            instantiatedUnit.SpawnerInstanceIndex = index;
+            instantiatedUnit.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsGenerator, unitClassData.baseStatsData);
+            if (instantiatedUnit.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;
+            }
+
+            if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
+            {
+                modUnitBehaviour.InstantiateModView();
             }
             
             if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
             {
-                tileBehaviour.AddUnit(player.gameObject);
+                tileBehaviour.AddUnit(instantiatedUnit.gameObject);
             }
             
-            player.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
-            return player;
+            instantiatedUnit.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
+            return instantiatedUnit;
         }
 
         public void DestroyByReference(PhotonView playerPhotonView)

@@ -3,7 +3,6 @@ using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Func<string, UnitClassData_SO, BaseStats, NetworkedBattleBehaviour> onLocalSpawnUnit;
+        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onLocalSpawnUnit;
         
         [SerializeField] private UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;
@@ -33,8 +32,7 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.Initialize(placementState.Initialize(this));
             
-            //TODO: magic Numbers
-            onLocalSpawnUnit.Invoke("Player", towerClass, new BaseStats(10, 50, 3));
+            onLocalSpawnUnit.Invoke("Player", towerClass);
         }
         
         public bool StateIsValid(Type checkedType, StateProgressType checkedStateProgressType)

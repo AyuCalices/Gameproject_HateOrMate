@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2777ffe64c08c6b4084f82a2e00799b7, type: 3}
   m_Name: CasterBattleClassGenerator
   m_EditorClassIdentifier: 
-  damageProjectileBehaviour: {fileID: 6686323569435117239, guid: cf6a01ed6b3b4db43aa89b8214ed8d77, type: 3}
-  isAI: 1
+  projectileDamageAnimationBehaviour: {fileID: 9175499349743350477, guid: 3ad992d9d7defa14589ea8b48b7c2199, type: 3}
+  isAI: 0

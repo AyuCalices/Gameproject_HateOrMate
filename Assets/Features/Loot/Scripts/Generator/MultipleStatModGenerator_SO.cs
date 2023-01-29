@@ -15,13 +15,12 @@ namespace Features.Loot.Scripts.Generator
     {
         [SerializeField] private ModBehaviour modBehaviourPrefab;
         [SerializeField] private List<MultipleStatModTarget> multipleStatModTargets;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO ownTeam;
         [SerializeField] private BattleData_SO battleData;
 
 
         public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
-            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, battleData, ownTeam, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
+            MultipleStatMod multipleStatMod = new MultipleStatMod(multipleStatModTargets, battleData, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
             multipleStatMod.RaiseOnModInstantiated();
         }
     }
@@ -29,7 +28,7 @@ namespace Features.Loot.Scripts.Generator
     [Serializable]
     public class MultipleStatModTarget
     {
-        public TeamType teamType;
+        public TeamTagType[] teamTagType;
         public StatType statType;
         public float baseValue;
         public float scaleValue;

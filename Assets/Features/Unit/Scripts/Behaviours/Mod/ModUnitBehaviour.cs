@@ -16,7 +16,7 @@ namespace Features.Unit.Scripts.Behaviours.Mod
 
         private GameObject _unitModGameObject;
     
-        private void Start()
+        public void InstantiateModView()
         {
             NetworkedStatsBehaviour networkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
             _unitModGameObject = onInstantiateModSlot.Invoke(networkedStatsBehaviour);

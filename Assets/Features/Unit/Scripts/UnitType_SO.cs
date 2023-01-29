@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Features.Unit.Scripts
 {
     [CreateAssetMenu]
-    public class UnitType_SO : NetworkedScriptableObject
+    public class UnitType_SO : ScriptableObject
     {
         public string unitName;
         

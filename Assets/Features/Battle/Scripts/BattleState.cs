@@ -1,5 +1,7 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts;
@@ -86,17 +88,23 @@ namespace Features.Battle.Scripts
             
             bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
             
-            if (!battleData.PlayerUnitsRuntimeSet.HasUnitAlive())
+            if (!HasUnitAlive(TeamTagType.Mate, TeamTagType.Own))
             {
                 RestartStage_RaiseEvent(enterLootingState);
                 return;
             }
 
-            if (!battleData.EnemyUnitsRuntimeSet.HasUnitAlive())
+            if (!HasUnitAlive(TeamTagType.Enemy))
             {
                 LootableGenerator_SO[] lootables = RandomizeLootables();
                 NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
             }
+        }
+        
+        private bool HasUnitAlive(params TeamTagType[] tagTypes)
+        {
+            return battleData.AllUnitsRuntimeSet.GetUnitsByTag(tagTypes)
+                .Any(e => e.CurrentState is not DeathState && e.IsTargetable);
         }
         
         //out
@@ -165,7 +173,7 @@ namespace Features.Battle.Scripts
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
                         && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
                     {
-                        battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitType_SO) data[2]);
+                        battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
                     }
 
                     break;
@@ -196,8 +204,8 @@ namespace Features.Battle.Scripts
 
                     foreach (var lootable in lootables)
                     {
-                        battleData.lootables.Add(lootable);
-                        battleData.lootableStages.Add(stageAsLevel);
+                        battleData.Lootables.Add(lootable);
+                        battleData.LootableStages.Add(stageAsLevel);
                     }
                     
                     bool enterLootingState = (bool) data[0];

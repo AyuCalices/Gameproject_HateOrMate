@@ -21,7 +21,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             set
             {
                 _unitClassData = value;
-                _battleClass = UnitClassData.battleClasses.Generate(NetworkedStatsBehaviour, this, unitBattleView);
+                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, unitBattleView);
             }
         }
 
@@ -29,8 +29,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         public KeyValuePair<NetworkedBattleBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
-        private bool TargetInRange => _closestUnit.Value < UnitClassData.range;
-        public float MovementSpeed => UnitClassData.movementSpeed;
+        private bool TargetInRange => _closestUnit.Value < NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Range);
+        public float MovementSpeed => NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.MovementSpeed);
 
         public override void OnStageEnd()
         {
@@ -47,11 +47,45 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         private void Update()
         {
             if (!battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute)) return;
-            
-            HasTarget = UnitTeamData.EnemyRuntimeSet.TryGetClosestTargetableByWorldPosition(transform.position,
-                    out _closestUnit);
+
+            List<NetworkedBattleBehaviour> enemyUnits = battleData.AllUnitsRuntimeSet.GetUnitsByTag(OpponentTagType);
+            HasTarget = TryGetClosestTargetableByWorldPosition(enemyUnits, transform.position, out _closestUnit);
 
             stateMachine.Update();
+        }
+        
+        private bool ContainsTargetable(ref List<NetworkedBattleBehaviour> networkedUnitBehaviours)
+        {
+            networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState);
+
+            return networkedUnitBehaviours.Count > 0;
+        }
+        
+        private bool TryGetClosestTargetableByWorldPosition(List<NetworkedBattleBehaviour> networkedUnitBehaviours, Vector3 worldPosition, 
+            out KeyValuePair<NetworkedBattleBehaviour, float> closestUnit)
+        {
+            if (!ContainsTargetable(ref networkedUnitBehaviours))
+            {
+                closestUnit = default;
+                return false;
+            }
+
+            //get closest
+            int closestUnitIndex = 0;
+            float closestDistance = Vector3.Distance(worldPosition, networkedUnitBehaviours[0].transform.position);
+            
+            for (int index = 1; index < networkedUnitBehaviours.Count; index++)
+            {
+                float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviours[index].transform.position);
+                if (distanceNext < closestDistance)
+                {
+                    closestUnitIndex = index;
+                    closestDistance = distanceNext;
+                }
+            }
+
+            closestUnit = new KeyValuePair<NetworkedBattleBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+            return true;
         }
 
         #region Request States

@@ -41,7 +41,7 @@ namespace Features.Battle.Scripts
         {
             yield return base.Enter();
             
-            if (battleData.lootables.Count == 0)
+            if (battleData.Lootables.Count == 0)
             {
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "There are no Lootables!");
                 
@@ -56,8 +56,8 @@ namespace Features.Battle.Scripts
                     .Where(count => count == 0)
                     .Subscribe(_ =>
                     {
-                        battleData.lootables.Clear();
-                        battleData.lootableStages.Clear();
+                        battleData.Lootables.Clear();
+                        battleData.LootableStages.Clear();
                         _battleManager.RequestPlacementState();
                     });
             }

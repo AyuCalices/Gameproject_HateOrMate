@@ -4,13 +4,14 @@ using Features.Battle.StateMachine;
 using Features.Camera.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
+using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Features.Unit.Scripts.Behaviours
 {
     [RequireComponent(typeof(BattleBehaviour))]
-    public class UnitDragPlacementBehaviour : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class UnitDragPlacementBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
         public static Action<BattleBehaviour, Vector3Int> onPerformTeleport;
         
@@ -20,15 +21,13 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private CameraFocus_SO cameraFocus;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         
-        [Header("Balancing")]
-        [SerializeField] private float hoverSpeed = 1.5f;
+        [Header("Movement")]
+        [SerializeField] private float hoverSpeed = 7f;
+        [SerializeField] private LeanTweenType leanTweenType;
         
         private BattleBehaviour _battleBehaviour;
         private GameObject _instantiatedPrefab;
-        private float _startTime;
-        private float _journeyLength;
-        private Vector3 _targetTileWorldPosition;
-        private Vector3Int _targetTileGridPosition;
+        private Vector3 _currentTileWorldPosition;
 
         private void Awake()
         {
@@ -42,24 +41,16 @@ namespace Features.Unit.Scripts.Behaviours
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;
         }
-        
+
         private void Update()
         {
-            //TODO: implement placement phase state
+            if (_instantiatedPrefab == null) return;
             if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
-
-            if (_instantiatedPrefab != null && _journeyLength != 0)
-            {
-                float distCovered = (Time.time - _startTime) * hoverSpeed;
-                float fractionOfJourney = distCovered / _journeyLength;
-
-                _instantiatedPrefab.transform.position = Vector3.Lerp(_instantiatedPrefab.transform.position,
-                    _targetTileWorldPosition, fractionOfJourney);
-            }
-        }
-
-        public void OnPointerDown(PointerEventData eventData)
-        {
+            if (canvasFocus.Get() == null) return;
+            if (!cameraFocus.NotNull()) return;
+            if (LeanTween.isTweening(_instantiatedPrefab)) return;
+            
+            TweenOverGrid();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -67,23 +58,12 @@ namespace Features.Unit.Scripts.Behaviours
             if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
             
             _instantiatedPrefab = Instantiate(unitSpriteGameObject);
-            _instantiatedPrefab.transform.position = SetTileInterpolation(transform.position);
+            
+            _currentTileWorldPosition = GetWorldToCellToWorldPosition(transform.position);
+            _instantiatedPrefab.transform.position = _currentTileWorldPosition;
         }
         
-        public void OnDrag(PointerEventData eventData)
-        {
-            if (!battleData.StateIsValid(typeof(PlacementState), StateProgressType.Execute)) return;
-            
-            if (canvasFocus.Get() == null) return;
-
-            if (cameraFocus.NotNull())
-            {
-                Vector3 screenPoint = Input.mousePosition;
-                screenPoint.z = 10f;
-                Vector3 worldPosition = cameraFocus.Get().ScreenToWorldPoint(screenPoint);
-                SetTileInterpolation(worldPosition);
-            }
-        }
+        public void OnDrag(PointerEventData eventData) { }
 
         public void OnEndDrag(PointerEventData eventData)
         {
@@ -92,25 +72,29 @@ namespace Features.Unit.Scripts.Behaviours
             Destroy(_instantiatedPrefab);
             _instantiatedPrefab = null;
 
-            if (!battleData.TileRuntimeDictionary.ContainsGridPosition(_targetTileGridPosition)) return;
+            if (!battleData.TileRuntimeDictionary.ContainsGridPosition(battleData.TileRuntimeDictionary.GetWorldToCellPosition(_currentTileWorldPosition))) return;
             
-            onPerformTeleport?.Invoke(_battleBehaviour, _targetTileGridPosition);
+            onPerformTeleport?.Invoke(_battleBehaviour, battleData.TileRuntimeDictionary.GetWorldToCellPosition(_currentTileWorldPosition));
         }
         
-        private Vector3 SetTileInterpolation(Vector3 targetWorldPosition)
+        private void TweenOverGrid()
         {
-            Vector3Int targetCellPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(targetWorldPosition);
-            Vector3 targetTileWorldPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(targetCellPosition);
+            Vector3 screenPoint = Input.mousePosition;
+            screenPoint.z = 10f;
+            Vector3 worldPosition = cameraFocus.Get().ScreenToWorldPoint(screenPoint);
+            Vector3 targetTileWorldPosition = GetWorldToCellToWorldPosition(worldPosition);
+            if (targetTileWorldPosition == _currentTileWorldPosition) return;
+            
+            float speed = Vector3.Distance(_currentTileWorldPosition, targetTileWorldPosition) / hoverSpeed;
+            _currentTileWorldPosition = targetTileWorldPosition;
+            LeanTween.move(_instantiatedPrefab, targetTileWorldPosition, speed)
+                .setEase(leanTweenType);
+        }
 
-            if (_targetTileWorldPosition != targetTileWorldPosition)
-            {
-                _targetTileGridPosition = targetCellPosition;   
-                _targetTileWorldPosition = targetTileWorldPosition;
-                _startTime = Time.time;                
-                _journeyLength = Vector3.Distance(_targetTileWorldPosition, transform.position);
-            }
-
-            return targetTileWorldPosition;
+        private Vector3 GetWorldToCellToWorldPosition(Vector3 worldPosition)
+        {
+            Vector3Int targetCellPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(worldPosition);
+            return battleData.TileRuntimeDictionary.GetCellToWorldPosition(targetCellPosition);
         }
     }
 }

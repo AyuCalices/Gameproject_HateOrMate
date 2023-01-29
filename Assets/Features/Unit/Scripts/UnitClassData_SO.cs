@@ -1,6 +1,7 @@
-using Features.Connection;
+using Features.Battle.Scripts.StageProgression;
 using Features.Connection.Scripts.Utils;
 using Features.Unit.Scripts.ClassGenerator;
+using Features.Unit.Scripts.DamageAnimation;
 using UnityEngine;
 
 namespace Features.Unit.Scripts
@@ -10,8 +11,9 @@ namespace Features.Unit.Scripts
     {
         public UnitType_SO unitType;
         public BattleClassGenerator_SO battleClasses;
+        public BaseStatsGenerator_SO baseStatsGenerator;
+        public BaseDamageAnimationBehaviour baseDamageAnimationBehaviour;
+        public BaseStatsData_SO baseStatsData;
         public Sprite sprite;
-        public float range;
-        public float movementSpeed;
     }
 }

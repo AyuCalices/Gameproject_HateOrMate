@@ -35,7 +35,6 @@ namespace Features.Battle.Scripts.StageProgression
         [Header("Unit Data")]
         public string spawnerReference;
         public UnitClassData_SO unitClassData;
-        public SynchronizedBaseStatsGenerator_SO synchronizedBaseStatsGenerator;
 
         [Header("SpawnChance")][Range(0, 100)]
         public int spawnChance;

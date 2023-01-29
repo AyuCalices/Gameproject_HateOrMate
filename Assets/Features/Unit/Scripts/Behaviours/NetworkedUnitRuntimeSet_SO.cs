@@ -1,10 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.RuntimeSet;
-using Features.Loot.Scripts.GeneratedLoot;
-using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours
@@ -13,45 +10,22 @@ namespace Features.Unit.Scripts.Behaviours
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
     public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedBattleBehaviour>
     {
-        //battle
-        private bool ContainsTargetable(out List<NetworkedBattleBehaviour> networkedUnitBehaviours)
+        public List<NetworkedBattleBehaviour> GetUnitsByTag(params TeamTagType[] teamTagTypes)
         {
-            networkedUnitBehaviours = items.Where(t => t.IsTargetable && t.CurrentState is not DeathState).ToList();
+            List<NetworkedBattleBehaviour> foundUnits = new List<NetworkedBattleBehaviour>();
 
-            return networkedUnitBehaviours.Count > 0;
-        }
-
-        //battle
-        public bool TryGetClosestTargetableByWorldPosition(Vector3 worldPosition, out KeyValuePair<NetworkedBattleBehaviour, float> closestUnit)
-        {
-            if (!ContainsTargetable(out List<NetworkedBattleBehaviour> networkedUnitBehaviours))
+            foreach (NetworkedBattleBehaviour networkedBattleBehaviour in items)
             {
-                closestUnit = default;
-                return false;
-            }
-
-            //get closest
-            int closestUnitIndex = 0;
-            float closestDistance = Vector3.Distance(worldPosition, networkedUnitBehaviours[0].transform.position);
-            
-            for (int index = 1; index < networkedUnitBehaviours.Count; index++)
-            {
-                float distanceNext = Vector3.Distance(worldPosition, networkedUnitBehaviours[index].transform.position);
-                if (distanceNext < closestDistance)
+                foreach (var teamTagType in teamTagTypes)
                 {
-                    closestUnitIndex = index;
-                    closestDistance = distanceNext;
+                    if (networkedBattleBehaviour.TeamTagTypes.Any(e => e == teamTagType))
+                    {
+                        foundUnits.Add(networkedBattleBehaviour);
+                    }
                 }
             }
 
-            closestUnit = new KeyValuePair<NetworkedBattleBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
-            return true;
-        }
-        
-        //battle
-        public bool HasUnitAlive()
-        {
-            return GetItems().Any(networkedUnitBehaviour => networkedUnitBehaviour.CurrentState is not DeathState && networkedUnitBehaviour.IsTargetable);
+            return foundUnits;
         }
 
         public bool TryGetUnitByViewID(int requestedViewID, out NetworkedBattleBehaviour networkedStatsBehaviour)

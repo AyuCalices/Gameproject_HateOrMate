@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
@@ -6,6 +7,8 @@ using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
 
+
+public enum TeamTagType {Own, Mate, Enemy}
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
@@ -13,25 +16,13 @@ namespace Features.Unit.Scripts.Behaviours.Battle
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
-
         [SerializeField] protected SpriteRenderer unitSprite;
 
         protected StateMachine stateMachine;
-
-        private UnitTeamData_SO _unitTeamData;
-
-        public UnitTeamData_SO UnitTeamData
-        {
-            get => _unitTeamData;
-            set
-            {
-                _unitTeamData = value;
-                AddRuntimeSets();
-            }
-        }
         
+        public TeamTagType[] TeamTagTypes { get; private set; }
+        public TeamTagType[] OpponentTagType { get; private set; }
         public bool IsSpawnedLocally { get; set; }
-        
         public int SpawnerInstanceIndex { get; set; }
         
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
@@ -57,25 +48,20 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             unitSprite.sprite = sprite;
         }
 
+        public void SetTeamTagType(TeamTagType[] teamTagType, TeamTagType[] opponentTagType)
+        {
+            TeamTagTypes = teamTagType;
+            OpponentTagType = opponentTagType;
+            AddRuntimeSets();
+        }
+
         private void AddRuntimeSets()
         {
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Add(this);
-            }
-            UnitTeamData.ownTeamRuntimeSet.Add(this);
             battleData.AllUnitsRuntimeSet.Add(this);
         }
         
         private void ClearRuntimeSets()
         {
-            if (UnitTeamData.ownerNetworkedPlayerUnits != null)
-            {
-                UnitTeamData.ownerNetworkedPlayerUnits.Remove(this);
-            }
-
-            UnitTeamData.ownTeamRuntimeSet.Remove(this);
-            
             battleData.AllUnitsRuntimeSet.Remove(this);
         }
     
