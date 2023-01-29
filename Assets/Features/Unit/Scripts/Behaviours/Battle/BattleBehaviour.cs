@@ -21,7 +21,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             set
             {
                 _unitClassData = value;
-                _battleClass = UnitClassData.battleClasses.Generate(NetworkedStatsBehaviour, this, unitBattleView);
+                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, unitBattleView);
             }
         }
 

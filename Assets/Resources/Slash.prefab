@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8aa9a8bf4fbda4cb3aed809fb03839, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  destroyOnStageClear: 0
+  animationClip: {fileID: 7400000, guid: 4a96bac377bcf814d90aa5caa1209aa7, type: 2}
 --- !u!212 &4845477978839078580
 SpriteRenderer:
   m_ObjectHideFlags: 0

@@ -17,5 +17,6 @@ MonoBehaviour:
   unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
   battleClasses: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
   baseStatsGenerator: {fileID: 11400000, guid: 0648fc88fda88114992bc5c4e7bcf5c9, type: 2}
+  baseDamageAnimationBehaviour: {fileID: 9175499349743350477, guid: 3ad992d9d7defa14589ea8b48b7c2199, type: 3}
   baseStatsData: {fileID: 11400000, guid: 9d3eb96afba3c9142a8b4ac93249cb26, type: 2}
   sprite: {fileID: 21300000, guid: 36ccc5a0788794f68b0957fa584e45a1, type: 3}

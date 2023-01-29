@@ -1,57 +1,54 @@
 using System;
+using System.Collections;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Class
+namespace Features.Unit.Scripts.DamageAnimation
 {
-    public class ProjectileDamageAnimationBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
+    public class ProjectileDamageAnimationBehaviour : BaseDamageAnimationBehaviour, IPunInstantiateMagicCallback
     {
         [SerializeField] private float speed;
 
-        private Action _onCompleteAction;
         private bool _onCompleteActionCanceled;
-        
-        public ProjectileDamageAnimationBehaviour InstantiateDamageAnimation(Vector3 startPosition, Vector3 targetPosition, int targetID)
+        private string _identifier;
+
+        public override void InstantiateDamageAnimation(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction)
         {
-            object[] data = new object[] {targetPosition, targetID};
-            return PhotonNetwork.Instantiate("Projectile", startPosition, Quaternion.identity, 0, data).GetComponent<ProjectileDamageAnimationBehaviour>();
+            object[] data = new object[] {targetUnit.PhotonView.ViewID};
+            ProjectileDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork.Instantiate(gameObject.name, casterUnit.transform.position, Quaternion.identity, 0, data).GetComponent<ProjectileDamageAnimationBehaviour>();
+            instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.CastAttack(casterUnit, targetUnit, onHitAction));
+
+            string identifier = GetIdentifier(casterUnit.PhotonView);
+            instantiatedDamageAnimatorBehaviour._identifier = identifier;
+            AddToLookup(identifier, instantiatedDamageAnimatorBehaviour);
         }
 
-        public void RegisterOnCompleteAction(Action onCompleteAction)
+        private IEnumerator CastAttack(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction)
         {
-            _onCompleteAction = onCompleteAction;
+            float time = Vector3.Distance(casterUnit.transform.position, targetUnit.transform.position) / speed;
+            yield return new WaitForSeconds(time);
+            onHitAction.Invoke();
+            Destroy();
         }
 
-        public void CancelProjectile()
+        private void Destroy()
         {
-            _onCompleteActionCanceled = true;
-            LeanTween.cancel(gameObject, true);
+            RemoveFromLookup(_identifier, this);
+            PhotonNetwork.Destroy(gameObject);
         }
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             object[] instantiationData = info.photonView.InstantiationData;
-            Vector3 targetPosition = (Vector3) instantiationData[0];
+            PhotonView targetPhotonView = PhotonView.Find((int) instantiationData[0]);
             
-            float time = Vector3.Distance(transform.position, targetPosition) / speed;
-            PhotonView targetPhotonView = PhotonView.Find((int) instantiationData[1]);
-
             if (targetPhotonView == null) return;
             
             Transform targetTransform = targetPhotonView.transform;
-            LeanTween.move(gameObject, targetTransform, time).setTryMoveToTransform()
-                .setOnComplete(() =>
-                {
-                    if (!info.photonView.IsMine) return;
-                    
-                    if (!_onCompleteActionCanceled)
-                    {
-                        _onCompleteAction.Invoke();
-                    }
-                    
-                    PhotonNetwork.Destroy(gameObject);
-                });
+            float time = Vector3.Distance(transform.position, targetTransform.position) / speed;
+            LeanTween.move(gameObject, targetTransform, time).setTryMoveToTransform();
         }
     }
 }

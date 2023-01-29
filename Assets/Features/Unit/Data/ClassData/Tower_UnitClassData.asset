@@ -17,7 +17,6 @@ MonoBehaviour:
   unitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
   battleClasses: {fileID: 11400000, guid: 8bbd1511d31cf9f479284d3d3703e8a6, type: 2}
   baseStatsGenerator: {fileID: 11400000, guid: 46cb15c5b05231348be3b5bedec1c1e3, type: 2}
+  baseDamageAnimationBehaviour: {fileID: 6686323569435117239, guid: cf6a01ed6b3b4db43aa89b8214ed8d77, type: 3}
   baseStatsData: {fileID: 11400000, guid: 8dc5921ae52566b47af24b30a1c3195b, type: 2}
   sprite: {fileID: 21300000, guid: c0e0adefbefd34bd79877fa6636cfc26, type: 3}
-  range: 100
-  movementSpeed: 1

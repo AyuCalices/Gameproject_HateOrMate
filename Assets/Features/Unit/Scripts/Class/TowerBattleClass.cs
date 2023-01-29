@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.DamageAnimation;
 using Features.Unit.Scripts.View;
 using UnityEngine;
 
@@ -8,9 +8,8 @@ namespace Features.Unit.Scripts.Class
 {
     public class TowerBattleClass : BattleClass
     {
-        private readonly ProjectileDamageAnimationBehaviour _projectileDamageAnimationPrefab;
+        private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         private readonly float _towerDamageMultiplier;
-        private readonly List<ProjectileDamageAnimationBehaviour> _instantiatedProjectiles;
         
         private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
         private float _currentStamina;
@@ -18,11 +17,10 @@ namespace Features.Unit.Scripts.Class
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, ProjectileDamageAnimationBehaviour projectileDamageAnimationPrefab, float towerDamageMultiplier) : 
+            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab, float towerDamageMultiplier) : 
             base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
-            _instantiatedProjectiles = new List<ProjectileDamageAnimationBehaviour>();
-            _projectileDamageAnimationPrefab = projectileDamageAnimationPrefab;
+            _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
             _towerDamageMultiplier = towerDamageMultiplier;
         }
 
@@ -56,29 +54,19 @@ namespace Features.Unit.Scripts.Class
             _currentStamina--;
             ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
 
-            NetworkedBattleBehaviour closestStats = ownerBattleBehaviour.GetTarget.Key;
-            ProjectileDamageAnimationBehaviour instantiatedProjectileDamageAnimation = _projectileDamageAnimationPrefab.InstantiateDamageAnimation(
-                ownerBattleBehaviour.transform.position,
-                closestStats.transform.position, closestStats.PhotonView.ViewID);
-            
-            _instantiatedProjectiles.Add(instantiatedProjectileDamageAnimation);
-            instantiatedProjectileDamageAnimation.RegisterOnCompleteAction(() =>
-            {
-                SendAttack(closestStats, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage) * _towerDamageMultiplier);
-                _instantiatedProjectiles.Remove(instantiatedProjectileDamageAnimation);
-            });
+            NetworkedBattleBehaviour targetUnit = ownerBattleBehaviour.GetTarget.Key;
+            _baseDamageAnimationPrefab.InstantiateDamageAnimation(
+                ownerBattleBehaviour, targetUnit, () =>
+                {
+                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage) * _towerDamageMultiplier);
+                });
         }
         
         public override void OnStageEnd()
         {
             ownerUnitBattleView.ResetStaminaSlider();
-            
-            foreach (ProjectileDamageAnimationBehaviour instantiatedProjectile in _instantiatedProjectiles)
-            {
-                instantiatedProjectile.CancelProjectile();
-            }
-                
-            _instantiatedProjectiles.Clear();
+
+            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerBattleBehaviour.PhotonView);
         }
     }
 }

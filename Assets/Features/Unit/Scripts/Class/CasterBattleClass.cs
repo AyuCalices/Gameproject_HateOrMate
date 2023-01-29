@@ -1,6 +1,6 @@
-using System.Collections.Generic;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.DamageAnimation;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
@@ -10,18 +10,18 @@ namespace Features.Unit.Scripts.Class
     public class CasterBattleClass : BattleClass
     {
         private readonly bool _isAi;
-        private readonly SlashDamageAnimationBehaviour _damageAnimationPrefab;
+        private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
         private float AttackSpeed => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
             BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, SlashDamageAnimationBehaviour damageAnimationPrefab) : base(
+            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
             ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _isAi = isAi;
-            _damageAnimationPrefab = damageAnimationPrefab;
+            _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
         }
 
         protected override void InternalInitializeBattleActions()
@@ -49,14 +49,19 @@ namespace Features.Unit.Scripts.Class
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            NetworkedBattleBehaviour closestUnit = ownerBattleBehaviour.GetTarget.Key;
-            _damageAnimationPrefab.InstantiateDamageAnimation(closestUnit.transform.position);
-            SendAttack(closestUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
+            NetworkedBattleBehaviour targetUnit = ownerBattleBehaviour.GetTarget.Key;
+            _baseDamageAnimationPrefab.InstantiateDamageAnimation(
+                ownerBattleBehaviour, targetUnit, () =>
+                {
+                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
+                });
         }
 
         public override void OnStageEnd()
         {
-            ownerUnitBattleView.ResetStaminaSlider();
+            if (_isAi && !PhotonNetwork.IsMasterClient) return;
+            
+            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerBattleBehaviour.PhotonView);
         }
     }
 }
