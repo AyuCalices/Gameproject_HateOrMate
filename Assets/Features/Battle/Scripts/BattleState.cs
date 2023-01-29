@@ -54,6 +54,10 @@ namespace Features.Battle.Scripts
             {
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Next Stage!");
             }
+            else
+            {
+                yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Stage Starts!");
+            }
         }
 
         public override IEnumerator Exit()

@@ -48,11 +48,7 @@ namespace Features.Loot.Scripts.LootView
             {
                 LootableView lootableView = Instantiate(lootableViewPrefab, instantiationParent);
                 _instantiatedLootables.Add(lootableView);
-                lootableView.Initialize(battleData.lootables[i], battleData.lootableStages[i], () =>
-                {
-                    int findIndex = _instantiatedLootables.FindIndex(x => x == lootableView);
-                    lootIndexRoomDecision.SetDecision(findIndex);
-                });
+                lootableView.Initialize(battleData.lootables[i], battleData.lootableStages[i], i,lootIndexRoomDecision.SetDecision);
                 
                 if (i > lootCount)
                 {
@@ -92,13 +88,18 @@ namespace Features.Loot.Scripts.LootView
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
 
-            foreach (Player player in PhotonNetwork.PlayerList)
+            foreach (KeyValuePair<int, Player> player in PhotonNetwork.CurrentRoom.Players)
             {
-                if (Equals(player, PhotonNetwork.LocalPlayer)) continue;
+                if (Equals(player.Value, PhotonNetwork.LocalPlayer)) continue;
 
-                int index = (int) roomCustomProperties[lootIndexRoomDecision.Identifier(player)];
-                RemoveFromLootSlots(index);
+                int lootableIdentifier = (int) roomCustomProperties[lootIndexRoomDecision.Identifier(player.Value)];
+                RemoveFromLootSlots(GetLootableIndex(lootableIdentifier));
             }
+        }
+
+        private int GetLootableIndex(int identifier)
+        {
+            return _instantiatedLootables.FindIndex(x => x.Identifier == identifier);
         }
         
         private void TryTakeSelectedLootable()
@@ -108,9 +109,10 @@ namespace Features.Loot.Scripts.LootView
         
             if (!roomCustomProperties.ContainsKey(lootIndexRoomDecision.Identifier(localPlayer))) return;
             
-            int ownDecisionIndex = (int)roomCustomProperties[lootIndexRoomDecision.Identifier(localPlayer)];
-            if (ownDecisionIndex >= 0 && _instantiatedLootables[ownDecisionIndex] != null)
+            int lootableIdentifier = (int)roomCustomProperties[lootIndexRoomDecision.Identifier(localPlayer)];
+            if (lootableIdentifier >= 0)
             {
+                int ownDecisionIndex = GetLootableIndex(lootableIdentifier);
                 _instantiatedLootables[ownDecisionIndex].GenerateContainedLootable();
                 RemoveFromLootSlots(ownDecisionIndex);
             }
