@@ -56,7 +56,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         private bool ContainsTargetable(ref List<NetworkedBattleBehaviour> networkedUnitBehaviours)
         {
-            networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState);
+            networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState || e.IsSpawnedLocally);
 
             return networkedUnitBehaviours.Count > 0;
         }
@@ -104,7 +104,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal override bool TryRequestAttackState()
         {
-            bool result = HasTarget && TargetInRange && CurrentState is not DeathState && 
+            bool result = HasTarget && TargetInRange && !IsSpawnedLocally && CurrentState is IdleState && 
                           battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
          
             if (result)

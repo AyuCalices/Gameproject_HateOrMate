@@ -104,7 +104,7 @@ namespace Features.Battle.Scripts
         private bool HasUnitAlive(params TeamTagType[] tagTypes)
         {
             return battleData.AllUnitsRuntimeSet.GetUnitsByTag(tagTypes)
-                .Any(e => e.CurrentState is not DeathState && e.IsTargetable);
+                .Any(e => e.CurrentState is not DeathState && e.IsTargetable && !e.IsSpawnedLocally);
         }
         
         //out
