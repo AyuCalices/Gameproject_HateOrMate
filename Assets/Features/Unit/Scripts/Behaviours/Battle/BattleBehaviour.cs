@@ -117,12 +117,13 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal override bool TryRequestMovementStateByClosestUnit()
         {
-            bool result = HasTarget && !TargetInRange && CurrentState is not DeathState && CurrentState is not MovementState;
+            bool result = HasTarget && !TargetInRange && CurrentState is IdleState && MovementSpeed > 0;
 
             if (result)
             {
                 NetworkedBattleBehaviour closestStats = GetTarget.Key;
                 Vector3Int enemyPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
+                //TODO: magic number
                 stateMachine.ChangeState(new MovementState( this, enemyPosition, 1, battleData.TileRuntimeDictionary));
             }
 

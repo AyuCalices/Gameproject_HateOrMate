@@ -46,12 +46,6 @@ namespace Features.MovementAndSpawning
 
         private void RequestGridStep(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
         {
-            if (battleBehaviour.MovementSpeed <= 0)
-            {
-                Debug.LogWarning("The Movement Speed is to low and thus no movement is applied!");
-                return;
-            }
-            
             if (PhotonNetwork.IsMasterClient)
             {
                 PerformGridStep(battleBehaviour, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
