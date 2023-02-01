@@ -12,9 +12,9 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
     {
-        public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
-        
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
+        
+        public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
 
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
@@ -50,10 +50,18 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
             }
         }
-
+        
         private void Start()
         {
             ApplyModToInstantiatedUnit();
+        }
+        
+        private void ApplyModToInstantiatedUnit()
+        {
+            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
+            {
+                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
+            }
         }
 
         private void OnDestroy()
@@ -78,20 +86,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
-            ApplyModToInstantiatedUnit();
         }
         
         public void SetBaseStats(BaseStatsGenerator_SO baseStatsGenerator, BaseStatsData_SO baseStatsData)
         {
             baseStatsGenerator.ApplyBaseStats(this, baseStatsData);
-        }
-
-        private void ApplyModToInstantiatedUnit()
-        {
-            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
-            {
-                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
-            }
         }
     }
 }

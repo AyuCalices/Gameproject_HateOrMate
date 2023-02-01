@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
@@ -6,13 +5,14 @@ using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 
 public enum TeamTagType {Own, Mate, Enemy}
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
-    public class NetworkedBattleBehaviour : MonoBehaviour
+    public class NetworkedBattleBehaviour : MonoBehaviour, IPointerClickHandler
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
@@ -43,11 +43,13 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             }
         }
 
+        //TODO: move else
         public void SetSprite(Sprite sprite)
         {
             unitSprite.sprite = sprite;
         }
 
+        //TODO: move else
         public void SetTeamTagType(TeamTagType[] teamTagType, TeamTagType[] opponentTagType)
         {
             TeamTagTypes = teamTagType;
@@ -117,6 +119,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             }
 
             return false;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            Debug.Log(NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health));
         }
     }
 }

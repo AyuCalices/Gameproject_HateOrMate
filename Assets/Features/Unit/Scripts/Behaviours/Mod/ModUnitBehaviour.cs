@@ -15,13 +15,14 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         public static Func<NetworkedStatsBehaviour, GameObject> onInstantiateModSlot;
 
         private GameObject _unitModGameObject;
+        private NetworkedStatsBehaviour _networkedStatsBehaviour;
     
         public void InstantiateModView()
         {
-            NetworkedStatsBehaviour networkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
-            _unitModGameObject = onInstantiateModSlot.Invoke(networkedStatsBehaviour);
+            _networkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
+            _unitModGameObject = onInstantiateModSlot.Invoke(_networkedStatsBehaviour);
             ModSlotBehaviour[] modDropBehaviours = _unitModGameObject.GetComponentsInChildren<ModSlotBehaviour>();
-            UnitMods = new UnitMods(networkedStatsBehaviour, modDropBehaviours);
+            UnitMods = new UnitMods(_networkedStatsBehaviour, modDropBehaviours);
             modUnitRuntimeSet.Add(this);
         }
 

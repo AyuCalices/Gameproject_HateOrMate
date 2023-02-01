@@ -26,6 +26,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
         {
             _classData = classData;
             _modUnitRuntimeSet = modUnitRuntimeSet;
+            _slot = -1;
         }
 
         public override bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot, ErrorPopup errorPopup, Transform transform)
@@ -45,36 +46,31 @@ namespace Features.Loot.Scripts.GeneratedLoot
             }
             return _instantiatedUnit == null;
         }
-
+        
         public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
-            if (_instantiatedUnit == null) return;
-            
-            if (_instantiatedUnit.gameObject.GetInstanceID() == instantiatedUnit.gameObject.GetInstanceID()) return;
-            
+            if (_instantiatedUnit == null || _slot == -1) return;
+
             if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
             {
                 modUnitBehaviour.UnitMods.DisableSlot(_slot);
             }
         }
-
+        
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
-            _instantiatedUnit = onAddUnit.Invoke("Player", _classData);
-
             AddBlockedSlots(moddedLocalStats, slot);
+            
+            _instantiatedUnit = onAddUnit.Invoke("Player", _classData);
         }
 
         protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            if (_instantiatedUnit != null)
-            {
-                onRemoveUnit.Invoke("Player", _instantiatedUnit.PhotonView.ViewID);
-                _instantiatedUnit = null;
-                RemoveBlockedSlots();
-            }
+            onRemoveUnit.Invoke("Player", _instantiatedUnit.PhotonView.ViewID);
+            
+            RemoveBlockedSlots();
         }
-
+        
         private void AddBlockedSlots(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
             _slot = slot;
@@ -98,6 +94,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
                 modUnitBehaviour.UnitMods.EnableSlot(_slot);
             }
 
+            _slot = -1;
             _currentUnit = null;
         }
     }

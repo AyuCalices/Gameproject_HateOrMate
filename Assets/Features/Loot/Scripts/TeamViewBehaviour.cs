@@ -16,6 +16,10 @@ namespace Features.Loot.Scripts
         [SerializeField] protected List<StatTextUpdateBehaviour> statTextUpdateBehaviours;
         [SerializeField] protected TMP_Text nameText;
 
+        //TODO: create class, that contains multiple stats on which units grab modifiers when instantiating/adding
+        protected virtual void UpdateStatText(StatTextUpdateBehaviour statTextUpdateBehaviour, StatType statType, 
+            float modifierValue, float scaleValue) => statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue);
+
         protected virtual void Awake()
         {
             MultipleStatMod.onRegisterGlobally += UpdateMultipleStatText;
@@ -36,7 +40,7 @@ namespace Features.Loot.Scripts
             {
                 if (statTextUpdateBehaviour.StatType == statType)
                 {
-                    statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue);
+                    UpdateStatText(statTextUpdateBehaviour, statType, modifierValue, scaleValue);
                 }
             }
         }
