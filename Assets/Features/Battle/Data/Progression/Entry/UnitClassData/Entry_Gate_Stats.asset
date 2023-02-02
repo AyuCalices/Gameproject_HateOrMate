@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
-  m_Name: Gate_Stats
+  m_Name: Entry_Gate_Stats
   m_EditorClassIdentifier: 
-  attackBaseValue: 10
-  attackMinValue: 10
-  healthBaseValue: 50
-  healthMinValue: 50
-  speedValue: 3
-  speedMinValue: 1
+  attackBaseValue: 12
+  attackMinValue: 12
+  healthBaseValue: 160
+  healthMinValue: 160
   rangeValue: 1
   rangeMinValue: 1
   movementSpeedValue: 0
   movementSpeedMinValue: 0
+  speedValue: 4
+  speedMinValue: 1
   staminaValue: 10
   staminaMinValue: 3
-  staminaRefreshTime: 2
-  staminaRefreshTimeMinValue: 1
+  orientationHealth: 60
+  orientationKillTime: 15
+  expectedEnemyClientSize: 2

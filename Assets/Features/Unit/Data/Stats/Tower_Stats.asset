@@ -12,17 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
   m_Name: Tower_Stats
   m_EditorClassIdentifier: 
-  attackBaseValue: 10
-  attackMinValue: 10
-  healthBaseValue: 50
-  healthMinValue: 50
-  speedValue: 3
-  speedMinValue: 1
+  attackBaseValue: 24
+  attackMinValue: 24
+  healthBaseValue: 30
+  healthMinValue: 30
   rangeValue: 10
   rangeMinValue: 1
   movementSpeedValue: 1
   movementSpeedMinValue: 1
+  speedValue: 3
+  speedMinValue: 1
   staminaValue: 10
   staminaMinValue: 3
-  staminaRefreshTime: 2
-  staminaRefreshTimeMinValue: 1
+  orientationHealth: 60
+  orientationKillTime: 15

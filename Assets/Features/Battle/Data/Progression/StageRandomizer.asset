@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentStage: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
   stageRangeList:
-  - stageCount: 2
+  - stageCount: 5
     stageRandomizeData:
     - stageRandomizeData: {fileID: 11400000, guid: fd6ebc8c5cfe5d64c984adb36d960002, type: 2}
       frequency: 10

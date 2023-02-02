@@ -16,10 +16,11 @@ namespace Features.Unit.Scripts.DamageAnimation
             Action onHitAction)
         {
             SlashDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
-                .Instantiate(gameObject.name, casterUnit.transform.position, Quaternion.identity)
+                .Instantiate(gameObject.name, targetUnit.transform.position, Quaternion.identity)
                 .GetComponent<SlashDamageAnimationBehaviour>();
             instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.DestroyOnAnimationEnd());
         
+            onHitAction.Invoke();
             string identifier = GetIdentifier(casterUnit.PhotonView);
             instantiatedDamageAnimatorBehaviour._identifier = identifier;
             AddToLookup(identifier, instantiatedDamageAnimatorBehaviour);

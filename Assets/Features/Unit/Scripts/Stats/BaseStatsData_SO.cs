@@ -28,5 +28,10 @@ namespace Features.Battle.Scripts.StageProgression
         [Header("Stamina (only for Towers)")]
         public float staminaValue = 10f;
         public float staminaMinValue = 3f;
+
+        [Header("Balancing: Attack - Health - Speed")] 
+        public float orientationHealth = 60f;
+        public float orientationKillTime = 15f;
+        public int expectedEnemyClientSize = 1;
     }
 }

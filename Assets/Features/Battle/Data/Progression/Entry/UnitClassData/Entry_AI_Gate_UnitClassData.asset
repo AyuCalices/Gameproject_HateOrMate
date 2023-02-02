@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
-  m_Name: AI_Gate_UnitClassData
+  m_Name: Entry_AI_Gate_UnitClassData
   m_EditorClassIdentifier: 
   internalId: 6493393d-5ee4-48b1-a708-0f57edaaa2b5
   createdAtTicks: 638071552584702786
