@@ -11,7 +11,7 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onLocalSpawnUnit;
+        public static Func<string, UnitClassData_SO, int, NetworkedBattleBehaviour> onLocalSpawnUnit;
         
         [SerializeField] private UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;
@@ -32,7 +32,7 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.Initialize(placementState.Initialize(this));
             
-            onLocalSpawnUnit.Invoke("Player", towerClass);
+            onLocalSpawnUnit.Invoke("Player", towerClass, 0);
         }
         
         public bool StateIsValid(Type checkedType, StateProgressType checkedStateProgressType)

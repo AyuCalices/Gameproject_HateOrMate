@@ -3,6 +3,7 @@ using ExitGames.Client.Photon;
 using Features.Battle.Scripts.StageProgression;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts.Utils;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
@@ -40,6 +41,14 @@ namespace Features.Battle.Scripts
             if (!battleData.IsStageRestart)
             {
                 battleData.Stage.Add(1);
+
+                foreach (NetworkedBattleBehaviour networkedBattleBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+                {
+                    if (networkedBattleBehaviour is BattleBehaviour battleBehaviour && battleBehaviour.UnitClassData.levelUpOnStageClear)
+                    {
+                        networkedBattleBehaviour.NetworkedStatsBehaviour.OverrideBaseStats(battleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
+                    }
+                }
             }
 
             if (PhotonNetwork.IsMasterClient)

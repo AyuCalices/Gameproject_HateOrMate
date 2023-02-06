@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.ReactiveVariable;
+using ExitGames.Client.Photon.StructWrapping;
 using Features.Unit.Scripts;
 using UnityEngine;
 
@@ -10,7 +11,7 @@ namespace Features.Battle.Scripts.StageProgression
     [CreateAssetMenu(fileName = "StageRandomizer", menuName = "StageProgression/StageRandomizer")]
     public class StageRandomizer_SO : ScriptableObject
     {
-        public static Action<string, UnitClassData_SO> onNetworkedSpawnUnit;
+        public static Action<string, UnitClassData_SO, int> onNetworkedSpawnUnit;
         
         [SerializeField] private IntReactiveVariable currentStage;
         
@@ -36,7 +37,7 @@ namespace Features.Battle.Scripts.StageProgression
 
             foreach (UnitDefinition generatedUnit in generatedUnits)
             {
-                onNetworkedSpawnUnit?.Invoke(generatedUnit.spawnerReference, generatedUnit.unitClassData);
+                onNetworkedSpawnUnit?.Invoke(generatedUnit.spawnerReference, generatedUnit.unitClassData, currentStage.Get());
             }
         }
     }

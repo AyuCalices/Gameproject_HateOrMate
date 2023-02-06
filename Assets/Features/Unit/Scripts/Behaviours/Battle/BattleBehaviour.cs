@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
 using Features.Unit.Scripts.Behaviours.Stat;
@@ -40,7 +41,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             {
                 ForceIdleState();
             }
-            
+
             _battleClass.OnStageEnd();
         }
 

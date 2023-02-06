@@ -11,7 +11,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 {
     public class UnitMod : BaseMod
     {
-        public static Func<string, UnitClassData_SO, NetworkedBattleBehaviour> onAddUnit;
+        public static Func<string, UnitClassData_SO, int, NetworkedBattleBehaviour> onAddUnit;
         public static Action<string, int> onRemoveUnit;
         
         private readonly UnitClassData_SO _classData;
@@ -61,7 +61,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
         {
             AddBlockedSlots(moddedLocalStats, slot);
             
-            _instantiatedUnit = onAddUnit.Invoke("Player", _classData);
+            _instantiatedUnit = onAddUnit.Invoke("Player", _classData, Level);
         }
 
         protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)

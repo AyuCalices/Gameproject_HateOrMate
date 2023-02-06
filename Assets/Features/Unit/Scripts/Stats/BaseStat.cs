@@ -4,7 +4,7 @@ namespace Features.Unit.Scripts.Stats
 {
     public class BaseStat : IUnitStat
     {
-        private readonly float _baseValue;
+        private float _baseValue;
         private readonly float _minValue;
         public StatType StatType { get; }
 
@@ -13,6 +13,11 @@ namespace Features.Unit.Scripts.Stats
             StatType = statType;
             _baseValue = baseValue;
             _minValue = minValue;
+        }
+        
+        public void SetBaseValue(float value)
+        {
+            _baseValue = value;
         }
 
         public float GetMinValue()

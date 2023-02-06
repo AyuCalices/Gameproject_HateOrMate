@@ -17,7 +17,8 @@ namespace Features.MovementAndSpawning
             spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
         }
         
-        public static NetworkedBattleBehaviour SpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, UnitClassData_SO unitClassData, Action<NetworkedBattleBehaviour, Vector3Int> onSpawnSuccessful)
+        public static NetworkedBattleBehaviour SpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, 
+            UnitClassData_SO unitClassData, int level, Action<NetworkedBattleBehaviour, Vector3Int> onSpawnSuccessful)
         {
             int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
             
@@ -25,7 +26,7 @@ namespace Features.MovementAndSpawning
                 .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return null;
 
             SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(photonActorNumber, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex);
+            NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(photonActorNumber, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex, level);
 
             if (PhotonNetwork.AllocateViewID(player.PhotonView))
             {

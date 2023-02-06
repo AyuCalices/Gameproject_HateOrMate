@@ -11,9 +11,9 @@ namespace Features.Unit.Scripts
     {
         public UnitType_SO unitType;
         public BattleClassGenerator_SO battleClasses;
-        public BaseStatsGenerator_SO baseStatsGenerator;
         public BaseDamageAnimationBehaviour baseDamageAnimationBehaviour;
         public BaseStatsData_SO baseStatsData;
         public Sprite sprite;
+        public bool levelUpOnStageClear;
     }
 }

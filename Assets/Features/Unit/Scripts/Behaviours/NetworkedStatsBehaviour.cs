@@ -2,6 +2,7 @@ using System;
 using Features.Battle.Scripts.StageProgression;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using JetBrains.Annotations;
 using Photon.Pun;
@@ -20,6 +21,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         public PhotonView PhotonView { get; private set; }
 
         private float _removedHealth;
+        public int Level { get; private set; }
         public float RemovedHealth
         {
             get => _removedHealth;
@@ -88,9 +90,28 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
         }
         
-        public void SetBaseStats(BaseStatsGenerator_SO baseStatsGenerator, BaseStatsData_SO baseStatsData)
+        public void SetBaseStats(BaseStatsData_SO baseStatsData, int level)
         {
-            baseStatsGenerator.ApplyBaseStats(this, baseStatsData);
+            Level = level;
+            
+            float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
+            float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
+            
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Damage, finalAttack, baseStatsData.attackMinValue));
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Health, finalHealth, baseStatsData.healthMinValue));
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue));
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue));
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue));
+            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue));
+        }
+
+        public void OverrideBaseStats(BaseStatsData_SO baseStatsData, int level)
+        {
+            float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
+            NetworkedStatServiceLocator.Get<BaseStat>(StatType.Damage).SetBaseValue(finalAttack);
+            
+            float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
+            NetworkedStatServiceLocator.Get<BaseStat>(StatType.Health).SetBaseValue(finalHealth);
         }
     }
 }
