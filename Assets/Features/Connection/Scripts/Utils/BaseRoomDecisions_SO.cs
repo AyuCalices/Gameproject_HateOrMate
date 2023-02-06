@@ -14,17 +14,35 @@ namespace Features.Connection.Scripts.Utils
 
         public string Identifier(Player player) => identifier + player.ActorNumber;
 
-        public T GetDecisionValue(Player player)
+        public bool TryGetDecisionValue(Player player, out T value)
         {
             string identifier = Identifier(player);
-            return (T)PhotonNetwork.CurrentRoom.CustomProperties[identifier];
+
+            if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(identifier))
+            {
+                value = (T) PhotonNetwork.CurrentRoom.CustomProperties[identifier];
+                return true;
+            }
+
+            value = default;
+            return false;
         }
 
         public void SetDecision(T value)
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
-            
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable(){{Identifier(localPlayer), value}});
+
+            Hashtable currentRoomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
+            if (currentRoomCustomProperties.ContainsKey(Identifier(localPlayer)))
+            {
+                currentRoomCustomProperties[Identifier(localPlayer)] = value;
+            }
+            else
+            {
+                currentRoomCustomProperties.Add(Identifier(localPlayer), value);
+            }
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(currentRoomCustomProperties);
         }
         
         public bool IsValidDecision(Action onValidDecision = null, Predicate<T> predicate = null)
@@ -84,8 +102,10 @@ namespace Features.Connection.Scripts.Utils
             foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
                 if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
-                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer));
+                roomCustomProperties.Remove(Identifier(currentRoomPlayer));
             }
+
+            PhotonNetwork.CurrentRoom.SetCustomProperties(roomCustomProperties);
         }
     }
 }

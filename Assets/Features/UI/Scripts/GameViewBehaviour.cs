@@ -75,7 +75,5 @@ namespace Features.UI.Scripts
                 continueBattleButton.transform.GetChild(i).gameObject.SetActive(value);
             }
         }
-
-    
     }
 }

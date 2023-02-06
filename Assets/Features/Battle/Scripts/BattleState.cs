@@ -85,17 +85,17 @@ namespace Features.Battle.Scripts
         private void SetStage()
         {
             if (!PhotonNetwork.IsMasterClient) return;
-            
-            bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
-            
+
             if (!HasUnitAlive(TeamTagType.Mate, TeamTagType.Own))
             {
+                bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
                 RestartStage_RaiseEvent(enterLootingState);
                 return;
             }
 
             if (!HasUnitAlive(TeamTagType.Enemy))
             {
+                bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
                 LootableGenerator_SO[] lootables = RandomizeLootables();
                 NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
             }
@@ -144,6 +144,7 @@ namespace Features.Battle.Scripts
         
         private void RestartStage_RaiseEvent(bool enterLootingState)
         {
+            Debug.Log(enterLootingState);
             object[] data = new object[]
             {
                 enterLootingState
@@ -192,6 +193,7 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     bool enterLootingState = (bool) data[0];
+                    Debug.Log(enterLootingState);
                     battleData.IsStageRestart = true;
                     EndStage(enterLootingState);
                     break;
@@ -228,6 +230,7 @@ namespace Features.Battle.Scripts
             
             if (enterLootingState)
             {
+                Debug.Log("loot phase");
                 _battleManager.RequestLootingState();
             }
             else
