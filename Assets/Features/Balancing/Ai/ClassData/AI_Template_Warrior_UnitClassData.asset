@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42f1d3a44b8677940928381831d868e8, type: 3}
+  m_Name: AI_Template_Warrior_UnitClassData
+  m_EditorClassIdentifier: 
+  internalId: 99889753-bf0b-423c-a146-335a24b91440
+  createdAtTicks: 638087851200310044
+  unitType: {fileID: 11400000, guid: 6e64489e569ce924b80161a5bca2c8b4, type: 2}
+  battleClasses: {fileID: 11400000, guid: 815e3294db1964544b7eedeeee2d545e, type: 2}
+  baseDamageAnimationBehaviour: {fileID: 9175499349743350477, guid: 3ad992d9d7defa14589ea8b48b7c2199, type: 3}
+  baseStatsData: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 36ccc5a0788794f68b0957fa584e45a1, type: 3}
+  levelUpOnStageClear: 0

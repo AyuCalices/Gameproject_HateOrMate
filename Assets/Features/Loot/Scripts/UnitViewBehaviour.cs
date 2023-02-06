@@ -1,3 +1,4 @@
+using System;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
@@ -48,7 +49,7 @@ namespace Features.Loot.Scripts
                 }
             }
         }
-        
+
         public void Initialize(NetworkedStatsBehaviour unitOwnerStats)
         {
             _unitOwnerStats = unitOwnerStats;

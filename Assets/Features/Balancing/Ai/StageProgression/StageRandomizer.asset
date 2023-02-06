@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7d66e5386aeb6c40a406acc8498dcdc, type: 3}
+  m_Name: StageRandomizer
+  m_EditorClassIdentifier: 
+  currentStage: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
+  stageRangeList:
+  - stageCount: 5
+    stageRandomizeData:
+    - stageRandomizeData: {fileID: 11400000, guid: fd6ebc8c5cfe5d64c984adb36d960002, type: 2}
+      frequency: 10
+  - stageCount: 45
+    stageRandomizeData:
+    - stageRandomizeData: {fileID: 11400000, guid: e1e4aa1f925c25e428c1acc14ad85cd2, type: 2}
+      frequency: 10

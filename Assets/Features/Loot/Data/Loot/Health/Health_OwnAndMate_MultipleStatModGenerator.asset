@@ -21,12 +21,12 @@ MonoBehaviour:
   multipleStatModTargets:
   - teamTagType: 01000000
     statType: 1
-    baseValue: -10
+    baseValue: -5
     scaleValue: 0
-    stageScaleValue: 2
+    stageScaleValue: 1.05
   - teamTagType: 00000000
     statType: 1
-    baseValue: 20
+    baseValue: 10
     scaleValue: 0
-    stageScaleValue: 2
+    stageScaleValue: 1.05
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
