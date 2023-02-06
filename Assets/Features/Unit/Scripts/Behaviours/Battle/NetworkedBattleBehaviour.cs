@@ -1,3 +1,4 @@
+using System;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
@@ -12,7 +13,7 @@ public enum TeamTagType {Own, Mate, Enemy}
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
-    public class NetworkedBattleBehaviour : MonoBehaviour, IPointerClickHandler
+    public class NetworkedBattleBehaviour : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
@@ -121,7 +122,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             return false;
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        private void OnMouseDown()
         {
             Debug.Log(NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health));
         }

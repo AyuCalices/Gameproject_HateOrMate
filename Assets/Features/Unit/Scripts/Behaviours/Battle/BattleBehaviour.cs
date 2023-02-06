@@ -6,6 +6,7 @@ using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.View;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
@@ -118,7 +119,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         internal override bool TryRequestMovementStateByClosestUnit()
         {
-            bool result = HasTarget && !TargetInRange && CurrentState is IdleState && MovementSpeed > 0;
+            bool result = HasTarget && !TargetInRange && CurrentState is IdleState or AttackState && MovementSpeed > 0;
 
             if (result)
             {

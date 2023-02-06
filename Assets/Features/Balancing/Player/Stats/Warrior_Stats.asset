@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
   m_Name: Warrior_Stats
   m_EditorClassIdentifier: 
-  attackBaseValue: 6.666667
-  attackMinValue: 6.666667
+  attackBaseValue: 6
+  attackMinValue: 6
   attackLevelScaling: 1.05
-  healthBaseValue: 72
-  healthMinValue: 72
+  healthBaseValue: 80
+  healthMinValue: 80
   healthLevelScaling: 1.05
   rangeValue: 1
   rangeMinValue: 1
