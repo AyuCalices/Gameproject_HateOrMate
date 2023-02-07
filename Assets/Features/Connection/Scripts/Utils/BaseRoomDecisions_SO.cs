@@ -31,18 +31,8 @@ namespace Features.Connection.Scripts.Utils
         public void SetDecision(T value)
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
-
-            Hashtable currentRoomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
-            if (currentRoomCustomProperties.ContainsKey(Identifier(localPlayer)))
-            {
-                currentRoomCustomProperties[Identifier(localPlayer)] = value;
-            }
-            else
-            {
-                currentRoomCustomProperties.Add(Identifier(localPlayer), value);
-            }
-
-            PhotonNetwork.CurrentRoom.SetCustomProperties(currentRoomCustomProperties);
+            
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable(){{Identifier(localPlayer), value}});
         }
         
         public bool IsValidDecision(Action onValidDecision = null, Predicate<T> predicate = null)
@@ -102,10 +92,8 @@ namespace Features.Connection.Scripts.Utils
             foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
                 if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
-                roomCustomProperties.Remove(Identifier(currentRoomPlayer));
+                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer));
             }
-
-            PhotonNetwork.CurrentRoom.SetCustomProperties(roomCustomProperties);
         }
     }
 }
