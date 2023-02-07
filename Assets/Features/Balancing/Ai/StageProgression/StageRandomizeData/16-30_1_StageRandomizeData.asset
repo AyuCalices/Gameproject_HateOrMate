@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff9b4d163b3a2a44e861312494eed9db, type: 3}
+  m_Name: 16-30_1_StageRandomizeData
+  m_EditorClassIdentifier: 
+  unitPool:
+  - spawnerReference: Gate
+    unitClassData: {fileID: 11400000, guid: 80c38e6641e6cfc41bcbe2318c7b03e6, type: 2}
+    spawnChance: 100
+    tries: 1
+  - spawnerReference: AiUnit
+    unitClassData: {fileID: 11400000, guid: 4ec0a94b1b565f04d9094d5f9dc35908, type: 2}
+    spawnChance: 100
+    tries: 1
+  - spawnerReference: AiUnit
+    unitClassData: {fileID: 11400000, guid: 24233278c91a506489397c0e0682cbba, type: 2}
+    spawnChance: 100
+    tries: 2

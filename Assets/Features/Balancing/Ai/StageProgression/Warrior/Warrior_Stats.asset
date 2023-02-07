@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
-  m_Name: Tower_Stats
+  m_Name: Warrior_Stats
   m_EditorClassIdentifier: 
-  attackBaseValue: 15
-  attackMinValue: 15
-  attackLevelScaling: 1.05
-  healthBaseValue: 48
-  healthMinValue: 48
-  healthLevelScaling: 1.05
-  rangeValue: 10
+  attackBaseValue: 6
+  attackMinValue: 6
+  attackLevelScaling: 1.1
+  healthBaseValue: 160
+  healthMinValue: 160
+  healthLevelScaling: 1.1
+  rangeValue: 1
   rangeMinValue: 1
-  movementSpeedValue: 1
+  movementSpeedValue: 3
   movementSpeedMinValue: 1
-  speedValue: 5
+  speedValue: 2
   speedMinValue: 1
-  staminaValue: 6
+  staminaValue: 10
   staminaMinValue: 3
   orientationHealth: 60
   orientationKillTime: 15
-  expectedEnemyClientSize: 1
+  expectedEnemyClientSize: 2

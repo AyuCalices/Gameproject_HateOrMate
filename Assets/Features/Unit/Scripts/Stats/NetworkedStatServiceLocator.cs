@@ -99,8 +99,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             string key = typeof(T).Name + statType;
             if (!_services.ContainsKey(key))
             {
-                //Debug.LogWarning($"{key} not registered with {GetType().Name}");
-                throw new InvalidOperationException();
+                Debug.LogWarning($"{key} not registered with {GetType().Name}");
+                //throw new InvalidOperationException();
             }
 
             return (T)_services[key];

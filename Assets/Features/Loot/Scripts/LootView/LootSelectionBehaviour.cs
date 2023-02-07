@@ -50,7 +50,7 @@ namespace Features.Loot.Scripts.LootView
                 _instantiatedLootables.Add(lootableView);
                 lootableView.Initialize(battleData.Lootables[i], battleData.LootableStages[i], i,lootIndexRoomDecision.SetDecision);
                 
-                if (i > lootCount)
+                if (i >= lootCount)
                 {
                     _instantiatedLootables[i].gameObject.SetActive(false);
                 }
@@ -131,7 +131,7 @@ namespace Features.Loot.Scripts.LootView
         
         private bool IsLootableRemaining()
         {
-            return _instantiatedLootables.Any(t => t != null);
+            return _instantiatedLootables.Any(t => t.gameObject.activeSelf);
         }
     }
 }

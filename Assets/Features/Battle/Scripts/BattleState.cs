@@ -144,7 +144,6 @@ namespace Features.Battle.Scripts
         
         private void RestartStage_RaiseEvent(bool enterLootingState)
         {
-            Debug.Log(enterLootingState);
             object[] data = new object[]
             {
                 enterLootingState
@@ -193,7 +192,6 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     bool enterLootingState = (bool) data[0];
-                    Debug.Log(enterLootingState);
                     battleData.IsStageRestart = true;
                     EndStage(enterLootingState);
                     break;
@@ -230,7 +228,6 @@ namespace Features.Battle.Scripts
             
             if (enterLootingState)
             {
-                Debug.Log("loot phase");
                 _battleManager.RequestLootingState();
             }
             else
