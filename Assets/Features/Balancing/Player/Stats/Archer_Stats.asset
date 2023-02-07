@@ -13,11 +13,13 @@ MonoBehaviour:
   m_Name: Archer_Stats
   m_EditorClassIdentifier: 
   attackBaseValue: 12
+  attackMultiplier: 1
   attackMinValue: 12
-  attackLevelScaling: 1.05
+  attackLevelScaling: 1.06
   healthBaseValue: 60
+  healthMultiplier: 1
   healthMinValue: 60
-  healthLevelScaling: 1.05
+  healthLevelScaling: 1.06
   rangeValue: 2
   rangeMinValue: 1
   movementSpeedValue: 2

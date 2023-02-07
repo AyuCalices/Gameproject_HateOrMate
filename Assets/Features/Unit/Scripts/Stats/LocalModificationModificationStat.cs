@@ -18,10 +18,10 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     
         public LocalModificationModificationStat(StatType statType, string multiplierStatIdentity, string statIdentity) : base(statType, multiplierStatIdentity, statIdentity)
         {
-            _statModificationValues = new List<float>() {};
+            _statModificationValues = new List<float>();
             UpdateStat(statIdentity, _statModificationValues.ToArray());
         
-            _multiplierStatModificationValues = new List<float>() {1};
+            _multiplierStatModificationValues = new List<float>();
             UpdateStat(multiplierStatIdentity, _multiplierStatModificationValues.ToArray());
         }
     
