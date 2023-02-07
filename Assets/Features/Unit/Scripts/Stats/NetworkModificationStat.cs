@@ -4,25 +4,20 @@ using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Stat
 {
-    public class NetworkStat : IUnitStat
+    public class NetworkModificationStat : IUnitStat
     {
         public string StatIdentity { get; }
         public StatType StatType { get; }
-        public string ScalingStatIdentity { get; }
+        public string MultiplierStatIdentity { get; }
     
-        public NetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
+        public NetworkModificationStat(StatType statType, string multiplierStatIdentity, string statIdentity)
         {
             StatType = statType;
             StatIdentity = statIdentity;
-            ScalingStatIdentity = scalingStatIdentity;
+            MultiplierStatIdentity = multiplierStatIdentity;
         }
 
-        public float GetTotalValue()
-        {
-            return GetStat() * GetScalingStat();
-        }
-
-        protected virtual float GetScalingStat()
+        public virtual float GetMultiplierStat()
         {
             float finalValue = 0;
             
@@ -31,9 +26,9 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 if (player == PhotonNetwork.LocalPlayer) continue;
                 
-                if (player.CustomProperties.ContainsKey(ScalingStatIdentity))
+                if (player.CustomProperties.ContainsKey(MultiplierStatIdentity))
                 {
-                    float[] value = (float[])player.CustomProperties[ScalingStatIdentity];
+                    float[] value = (float[])player.CustomProperties[MultiplierStatIdentity];
                     finalValue = value.Sum();
                     found = true;
                 }
@@ -47,7 +42,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             return finalValue;
         }
 
-        protected virtual float GetStat()
+        public virtual float GetBaseStat()
         {
             float finalValue = 0;
 

@@ -18,8 +18,12 @@ namespace Features.Loot.Scripts
         private NetworkedStatsBehaviour _unitOwnerStats;
         private BattleBehaviour _unitOwnerBattleBehaviour;
 
-        protected override void UpdateStatText(StatTextUpdateBehaviour statTextUpdateBehaviour, StatType statType, float modifierValue, float scaleValue) => 
+        protected override void UpdateStatText(StatTextUpdateBehaviour statTextUpdateBehaviour, StatType statType,
+            float modifierValue, float scaleValue)
+        {
             statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue, _unitOwnerStats.NetworkedStatServiceLocator.Get<BaseStat>(statType).GetTotalValue());
+        }
+            
 
         protected override void Awake()
         {

@@ -11,18 +11,18 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     /// pushing values to statValues will change speed by seconds (1f == 1 second)
     /// you need to add negative values to scaling Stat to perform this (scale 1f - 0.3f = 0,7f attack speed)
     /// </summary>
-    public class LocalStat : NetworkStat
+    public class LocalModificationModificationStat : NetworkModificationStat
     {
         private readonly List<float> _statModificationValues;
-        private readonly List<float> _scalingStatModificationValues;
+        private readonly List<float> _multiplierStatModificationValues;
     
-        public LocalStat(StatType statType, string scalingStatIdentity, string statIdentity) : base(statType, scalingStatIdentity, statIdentity)
+        public LocalModificationModificationStat(StatType statType, string multiplierStatIdentity, string statIdentity) : base(statType, multiplierStatIdentity, statIdentity)
         {
             _statModificationValues = new List<float>() {};
             UpdateStat(statIdentity, _statModificationValues.ToArray());
         
-            _scalingStatModificationValues = new List<float>() {1};
-            UpdateStat(scalingStatIdentity, _scalingStatModificationValues.ToArray());
+            _multiplierStatModificationValues = new List<float>() {1};
+            UpdateStat(multiplierStatIdentity, _multiplierStatModificationValues.ToArray());
         }
     
         private void UpdateStat(string identity, float[] value)
@@ -31,11 +31,11 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             PhotonNetwork.LocalPlayer.SetCustomProperties(hash);
         }
     
-        protected override float GetScalingStat()
+        public override float GetMultiplierStat()
         {
             float finalValue = 0;
 
-            foreach (var scalingStatValue in _scalingStatModificationValues)
+            foreach (var scalingStatValue in _multiplierStatModificationValues)
             {
                 finalValue += scalingStatValue;
             }
@@ -43,7 +43,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             return finalValue;
         }
 
-        protected override float GetStat()
+        public override float GetBaseStat()
         {
             float finalValue = 0;
         
@@ -64,8 +64,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                     UpdateStat(StatIdentity, _statModificationValues.ToArray());
                     break;
                 case StatValueType.ScalingStat:
-                    _scalingStatModificationValues.Add(value);
-                    UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
+                    _multiplierStatModificationValues.Add(value);
+                    UpdateStat(MultiplierStatIdentity, _multiplierStatModificationValues.ToArray());
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
@@ -85,10 +85,10 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         public void RemoveFromNetwork()
         {
             _statModificationValues.Clear();
-            _scalingStatModificationValues.Clear();
+            _multiplierStatModificationValues.Clear();
 
             PhotonNetwork.LocalPlayer.CustomProperties.Remove(StatIdentity);
-            PhotonNetwork.LocalPlayer.CustomProperties.Remove(ScalingStatIdentity);
+            PhotonNetwork.LocalPlayer.CustomProperties.Remove(MultiplierStatIdentity);
         }
     
         private bool TryRemoveStatValueInternal(float value)
@@ -109,7 +109,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     
         private bool TryRemoveScalingStatValueInternal(float value)
         {
-            bool result = this._scalingStatModificationValues.Remove(value);
+            bool result = this._multiplierStatModificationValues.Remove(value);
 
             if (!result)
             {
@@ -117,7 +117,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             }
             else
             {
-                UpdateStat(ScalingStatIdentity, _scalingStatModificationValues.ToArray());
+                UpdateStat(MultiplierStatIdentity, _multiplierStatModificationValues.ToArray());
             }
 
             return result;

@@ -10,12 +10,10 @@ namespace Features.Unit.Scripts.ClassGenerator
     [CreateAssetMenu(fileName = "new TowerBattleActions", menuName = "Unit/Actions/TowerBattleActions")]
     public class TowerBattleClassGenerator_SO : BattleClassGenerator_SO
     {
-        [SerializeField] private float towerDamageMultiplier = 0.5f;
-        
         protected override BattleClass InternalGenerate(BaseDamageAnimationBehaviour baseDamageAnimationBehaviour, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, 
             BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
         {
-            return new TowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, baseDamageAnimationBehaviour, towerDamageMultiplier);
+            return new TowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, baseDamageAnimationBehaviour);
         }
     }
 }

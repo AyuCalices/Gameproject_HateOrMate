@@ -9,7 +9,6 @@ namespace Features.Unit.Scripts.Class
     public class TowerBattleClass : BattleClass
     {
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
-        private readonly float _towerDamageMultiplier;
         
         private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
         private float _currentStamina;
@@ -17,11 +16,10 @@ namespace Features.Unit.Scripts.Class
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab, float towerDamageMultiplier) : 
+            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
             base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
-            _towerDamageMultiplier = towerDamageMultiplier;
         }
 
         protected override void InternalInitializeBattleActions()
@@ -58,7 +56,7 @@ namespace Features.Unit.Scripts.Class
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage) * _towerDamageMultiplier);
+                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
                 });
         }
         

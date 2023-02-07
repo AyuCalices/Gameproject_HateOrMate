@@ -63,17 +63,17 @@ namespace Features.Loot.Scripts.GeneratedLoot
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
-                {
-                    Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
-                }
-                
                 onUnregisterGlobally?.Invoke(
                     multipleStatModTarget.teamTagType, 
                     multipleStatModTarget.statType, 
                     -ScaleByStage(multipleStatModTarget.baseValue, multipleStatModTarget.stageScaleValue), 
                     -multipleStatModTarget.scaleValue
                 );
+                
+                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
+                {
+                    Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
+                }
             }
         }
 

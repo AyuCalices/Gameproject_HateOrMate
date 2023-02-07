@@ -46,7 +46,7 @@ namespace Features.Battle.Scripts
                 {
                     if (networkedBattleBehaviour is BattleBehaviour battleBehaviour && battleBehaviour.UnitClassData.levelUpOnStageClear)
                     {
-                        networkedBattleBehaviour.NetworkedStatsBehaviour.OverrideBaseStats(battleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
+                        networkedBattleBehaviour.NetworkedStatsBehaviour.SetBaseStats(battleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
                     }
                 }
             }

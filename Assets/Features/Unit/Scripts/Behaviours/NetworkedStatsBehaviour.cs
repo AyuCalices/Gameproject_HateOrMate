@@ -49,7 +49,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 string scalingStatIdentity = Guid.NewGuid().ToString();
                 string statIdentity = Guid.NewGuid().ToString();
-                NetworkedStatServiceLocator.Register(new LocalStat((StatType)value, scalingStatIdentity, statIdentity));
+                NetworkedStatServiceLocator.Register(new LocalModificationModificationStat((StatType)value, scalingStatIdentity, statIdentity));
             }
         }
         
@@ -79,15 +79,15 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         {
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
-                LocalStat selectedStat = NetworkedStatServiceLocator.Get<LocalStat>((StatType)value);
-                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedStat.StatType, selectedStat.ScalingStatIdentity, selectedStat.StatIdentity);
+                LocalModificationModificationStat selectedModificationModificationStat = NetworkedStatServiceLocator.Get<LocalModificationModificationStat>((StatType)value);
+                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationModificationStat.StatType, selectedModificationModificationStat.MultiplierStatIdentity, selectedModificationModificationStat.StatIdentity);
             }
         }
         
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {
-            NetworkedStatServiceLocator.Register(new NetworkStat(statType, scalingStatIdentity, statIdentity));
+            NetworkedStatServiceLocator.Register(new NetworkModificationStat(statType, scalingStatIdentity, statIdentity));
         }
         
         public void SetBaseStats(BaseStatsData_SO baseStatsData, int level)
@@ -97,21 +97,12 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
             float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
             
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Damage, finalAttack, baseStatsData.attackMinValue));
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Health, finalHealth, baseStatsData.healthMinValue));
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue));
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue));
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue));
-            NetworkedStatServiceLocator.Register(new BaseStat(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue));
-        }
-
-        public void OverrideBaseStats(BaseStatsData_SO baseStatsData, int level)
-        {
-            float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
-            NetworkedStatServiceLocator.Get<BaseStat>(StatType.Damage).SetBaseValue(finalAttack);
-            
-            float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
-            NetworkedStatServiceLocator.Get<BaseStat>(StatType.Health).SetBaseValue(finalHealth);
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Damage, finalAttack, baseStatsData.attackMinValue, baseStatsData.attackMultiplier));
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Health, finalHealth, baseStatsData.healthMinValue, baseStatsData.healthMultiplier));
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue));
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue));
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue));
+            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue));
         }
     }
 }

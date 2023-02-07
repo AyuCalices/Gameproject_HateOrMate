@@ -16,34 +16,34 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         
         public bool TryAddLocalValue(StatType statType, StatValueType statValueType, float value)
         {
-            string key = nameof(LocalStat) + statType;
+            string key = nameof(LocalModificationModificationStat) + statType;
     
             if (!_services.ContainsKey(key))
             {
                 return false;
             }
 
-            ((LocalStat)_services[key]).AddStatModificationValue(statValueType, value);
+            ((LocalModificationModificationStat)_services[key]).AddStatModificationValue(statValueType, value);
             return true;
         }
         
         public bool TryRemoveLocalValue(StatType statType, StatValueType statValueType, float value)
         {
-            string key = nameof(LocalStat) + statType;
+            string key = nameof(LocalModificationModificationStat) + statType;
     
             if (!_services.ContainsKey(key))
             {
                 return false;
             }
 
-            return ((LocalStat)_services[key]).TryRemoveStatModificationValue(statValueType, value);
+            return ((LocalModificationModificationStat)_services[key]).TryRemoveStatModificationValue(statValueType, value);
         }
 
         public void RemoveAllValues()
         {
             foreach (KeyValuePair<string, IUnitStat> service in _services)
             {
-                if (service.Value is LocalStat localStat)
+                if (service.Value is LocalModificationModificationStat localStat)
                 {
                     localStat.RemoveFromNetwork();
                 }
@@ -54,29 +54,32 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         public float GetTotalValue_CheckMin(StatType statType)
         {
-            float finalValue = 0;
+            float finalBaseValue = 0;
+            float finalScaleValue = 0;
     
-            if (TryGetService(out NetworkStat networkStat, statType))
+            if (TryGetService(out NetworkModificationStat networkStat, statType))
             {
-                //Debug.Log(networkStat.GetTotalValue());
-                finalValue += networkStat.GetTotalValue();
+                finalBaseValue += networkStat.GetBaseStat();
+                finalScaleValue += networkStat.GetMultiplierStat();
             }
-            if (TryGetService(out LocalStat localStat, statType))
+            
+            if (TryGetService(out LocalModificationModificationStat localStat, statType))
             {
-                //Debug.Log(localStat.GetTotalValue());
-                finalValue += localStat.GetTotalValue();
+                finalBaseValue += localStat.GetBaseStat();
+                finalScaleValue += localStat.GetMultiplierStat();
             }
 
             if (TryGetService(out BaseStat baseStat, statType))
             {
-                //Debug.Log(localStat.GetTotalValue());
-                finalValue += baseStat.GetTotalValue();
+                finalBaseValue += baseStat.GetBaseStat();
+                finalScaleValue += baseStat.GetMultiplierStat();
 
                 //make sure a stat cant get below min Stat Value
-                finalValue = Mathf.Max(finalValue, baseStat.GetMinValue());
+                return Mathf.Max(finalBaseValue * finalScaleValue, baseStat.GetMinValue());
             }
-
-            return finalValue;
+            
+            Debug.LogWarning($"There is no {typeof(BaseStat)} Registered inside the {this}");
+            return finalBaseValue * finalScaleValue;
         }
 
         private bool TryGetService<T>(out T service, StatType statType) where T : IUnitStat
@@ -100,7 +103,6 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             if (!_services.ContainsKey(key))
             {
                 Debug.LogWarning($"{key} not registered with {GetType().Name}");
-                //throw new InvalidOperationException();
             }
 
             return (T)_services[key];
@@ -132,16 +134,15 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         public void Exchange<T>(T service) where T : IUnitStat
         {
-            string oldKey = typeof(T).Name + service.StatType;
-            if (_services.ContainsKey(oldKey))
+            string key = typeof(T).Name + service.StatType;
+            if (_services.ContainsKey(key))
             {
-                _services.Remove(oldKey);
+                _services.Remove(key);
             }
 
-            string newKey = typeof(T).Name;
-            if (!_services.ContainsKey(newKey))
+            if (!_services.ContainsKey(key))
             {
-                _services.Add(newKey, service);
+                _services.Add(key, service);
             }
         }
     }

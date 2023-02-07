@@ -4,6 +4,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
     { 
         StatType StatType { get; }
 
-        float GetTotalValue();
+        float GetBaseStat();
+        
+        float GetMultiplierStat();
     }
 }
