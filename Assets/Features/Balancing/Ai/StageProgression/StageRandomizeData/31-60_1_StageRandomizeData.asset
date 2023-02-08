@@ -10,17 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff9b4d163b3a2a44e861312494eed9db, type: 3}
-  m_Name: 31-50_0_StageRandomizeData
+  m_Name: 31-60_1_StageRandomizeData
   m_EditorClassIdentifier: 
   unitPool:
   - spawnerReference: Gate
     unitClassData: {fileID: 11400000, guid: 80c38e6641e6cfc41bcbe2318c7b03e6, type: 2}
     spawnChance: 100
     tries: 1
-  - spawnerReference: AiTower
-    unitClassData: {fileID: 11400000, guid: 6958d33c8d7a7e544b61034ac73f5474, type: 2}
-    spawnChance: 100
-    tries: 2
   - spawnerReference: AiUnit
     unitClassData: {fileID: 11400000, guid: 4ec0a94b1b565f04d9094d5f9dc35908, type: 2}
     spawnChance: 100
@@ -28,4 +24,4 @@ MonoBehaviour:
   - spawnerReference: AiUnit
     unitClassData: {fileID: 11400000, guid: 24233278c91a506489397c0e0682cbba, type: 2}
     spawnChance: 100
-    tries: 1
+    tries: 2

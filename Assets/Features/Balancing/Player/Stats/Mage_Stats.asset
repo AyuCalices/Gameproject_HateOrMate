@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Mage_Stats
   m_EditorClassIdentifier: 
   attackBaseValue: 24
-  attackMultiplier: 1
+  attackMultiplierValue: 1
   attackMinValue: 24
-  attackLevelScaling: 1.06
+  attackLevelScaling: 1.08
   healthBaseValue: 40
-  healthMultiplier: 1
+  healthMultiplierValue: 1
   healthMinValue: 40
-  healthLevelScaling: 1.06
+  healthLevelScaling: 1.08
   rangeValue: 3
   rangeMinValue: 1
   movementSpeedValue: 1

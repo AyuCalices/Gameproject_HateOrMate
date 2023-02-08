@@ -30,7 +30,7 @@ namespace Features.Loot.Scripts
             MultipleStatMod.onUnregisterGlobally -= UpdateMultipleStatText;
         }
         
-        private void UpdateMultipleStatText(TeamTagType[] teamTagTypes, StatType statType, float modifierValue, float scaleValue)
+        private void UpdateMultipleStatText(TeamTagType[] teamTagTypes, StatType statType, float percent)
         {
             if (!teamTagTypes.Contains(teamTagType)) return;
 
@@ -38,7 +38,7 @@ namespace Features.Loot.Scripts
             {
                 if (statTextUpdateBehaviour.StatType == statType)
                 {
-                    statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue);
+                    statTextUpdateBehaviour.UpdateText(percent);
                 }
             }
         }
@@ -46,12 +46,12 @@ namespace Features.Loot.Scripts
         private void Initialize()
         {
             InitializeVisualization();
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Damage, 0, 0);
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Health, 0, 0);
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Range, 0, 0);
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Speed, 0, 0);
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Stamina, 0, 0);
-            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.MovementSpeed, 0, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Damage, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Health, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Range, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Speed, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Stamina, 0);
+            UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.MovementSpeed, 0);
         }
 
         private void InitializeVisualization()

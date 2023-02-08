@@ -1972,6 +1972,8 @@ MonoBehaviour:
     keyCode: 104
   - lootTable: {fileID: 11400000, guid: 7628fffc8ee5db94a9d3a9f1d4e23eb3, type: 2}
     keyCode: 117
+  - lootTable: {fileID: 11400000, guid: 24a4d889f0fb1d042902a5a3c08cdd8e, type: 2}
+    keyCode: 103
   stageVariable: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
 --- !u!4 &1221129563
 Transform:
@@ -4984,7 +4986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.00006
+      value: 960.27515
       objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5354,7 +5356,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.00006
+      value: 960.27515
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y

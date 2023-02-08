@@ -13,8 +13,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
     public class MultipleStatMod : BaseMod
     {
         //events for registering stats, that arent bound to instantiated units (e.g. UI need them even though units aren't instantiated)
-        public static Action<TeamTagType[], StatType, float, float> onRegisterGlobally;
-        public static Action<TeamTagType[], StatType, float, float> onUnregisterGlobally;
+        public static Action<TeamTagType[], StatType, float> onRegisterGlobally;
+        public static Action<TeamTagType[], StatType, float> onUnregisterGlobally;
         
         private readonly List<MultipleStatModTarget> _multipleStatModTargets;
         private readonly BattleData_SO _battleData;
@@ -53,8 +53,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
                 
                 onRegisterGlobally?.Invoke(
                     multipleStatModTarget.teamTagType, 
-                    multipleStatModTarget.statType, 
-                    ScaleByStage(multipleStatModTarget.baseValue, multipleStatModTarget.stageScaleValue), 
+                    multipleStatModTarget.statType,
                     multipleStatModTarget.scaleValue
                     );
             }
@@ -66,8 +65,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             {
                 onUnregisterGlobally?.Invoke(
                     multipleStatModTarget.teamTagType, 
-                    multipleStatModTarget.statType, 
-                    -ScaleByStage(multipleStatModTarget.baseValue, multipleStatModTarget.stageScaleValue), 
+                    multipleStatModTarget.statType,
                     -multipleStatModTarget.scaleValue
                 );
                 
