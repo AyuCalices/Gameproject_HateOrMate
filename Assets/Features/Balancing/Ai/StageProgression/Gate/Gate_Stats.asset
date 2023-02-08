@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attackBaseValue: 12
   attackMinValue: 12
+  attackMultiplierValue: 1
+  attackMultiplierMinValue: 0.4
   attackLevelScaling: 1.1
   healthBaseValue: 160
   healthMinValue: 160
+  healthMultiplierValue: 1
+  healthMultiplierMinValue: 0.4
   healthLevelScaling: 1.1
   rangeValue: 1
   rangeMinValue: 1
