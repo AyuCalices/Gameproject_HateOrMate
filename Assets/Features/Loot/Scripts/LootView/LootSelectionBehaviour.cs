@@ -29,7 +29,6 @@ namespace Features.Loot.Scripts.LootView
             passButton.onClick.AddListener(() =>
             {
                 lootIndexRoomDecision.SetDecision(-1);
-                passButton.interactable = false;
             });
         }
 
@@ -73,7 +72,7 @@ namespace Features.Loot.Scripts.LootView
         {
             lootIndexRoomDecision.IsValidDecision(() =>
             {
-                passButton.interactable = true;
+                passButton.GetComponent<SingleSelectionBehaviour>().DisableCurrentSelection();
                 DestroyOtherChoices();
                 TryTakeSelectedLootable();
 

@@ -9,7 +9,6 @@ namespace Features.Loot.Scripts.LootView
     [RequireComponent(typeof(Button))]
     public class LootableView : MonoBehaviour
     {
-        [SerializeField] private Image image;
         [SerializeField] private Transform spritePrefabParent;
         [SerializeField] private TMP_Text description;
         [SerializeField] private TMP_Text level;
@@ -18,7 +17,7 @@ namespace Features.Loot.Scripts.LootView
 
         private LootableGenerator_SO _lootableGenerator;
         private int _stageAsLevel;
-
+        
         public void Initialize(LootableGenerator_SO lootableGenerator, int stageAsLevel, int identifier, Action<int> action)
         {
             _lootableGenerator = lootableGenerator;
@@ -34,8 +33,6 @@ namespace Features.Loot.Scripts.LootView
             button.onClick.AddListener(() =>
             {
                 action.Invoke(identifier);
-                button.interactable = false;
-                image.color = Color.grey;
             });
         }
 
