@@ -12,12 +12,12 @@ namespace Features.UI.Scripts
 
         public StatType StatType => statType;
         
-        private float _scaleValue = 1f;
+        private float _scaleValue;
 
         public void UpdateText(float percent)
         {
             _scaleValue += percent;
-            tmpText.text = (_scaleValue * 10).ToString(CultureInfo.CurrentCulture) + " %";
+            tmpText.text = (_scaleValue * 100).ToString(CultureInfo.CurrentCulture) + " %";
         }
 
         public void UpdateText(string text)
