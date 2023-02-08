@@ -23,7 +23,6 @@ namespace Features.Connection.Scripts.View
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
-            Debug.Log("o/");
             UpdatePlayerDecisionVisualisation();
             
             if (!PhotonNetwork.IsMasterClient) return;

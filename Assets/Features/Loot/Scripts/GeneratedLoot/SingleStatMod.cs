@@ -1,6 +1,7 @@
 using System;
 using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot
@@ -26,13 +27,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
         {
-            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = moddedLocalStats.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TryAddLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalStats.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
@@ -45,13 +46,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
     
         protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveLocalValue(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");

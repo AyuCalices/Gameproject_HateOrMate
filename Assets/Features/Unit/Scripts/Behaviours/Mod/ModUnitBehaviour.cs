@@ -1,6 +1,5 @@
 using System;
 using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Mod

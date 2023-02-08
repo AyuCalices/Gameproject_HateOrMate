@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using Features.Battle.Scripts;
 using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.ModView;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot
@@ -79,13 +80,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private void Add(NetworkedBattleBehaviour networkedBattleBehaviour, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         
-            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryAddLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
@@ -94,13 +95,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private void Remove(NetworkedBattleBehaviour networkedBattleBehaviour, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         
-            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveLocalValue(statType, StatValueType.ScalingStat, scaleValue);
+            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");

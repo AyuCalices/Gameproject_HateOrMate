@@ -4,19 +4,19 @@ using ExitGames.Client.Photon;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Stat
+namespace Features.Unit.Scripts.Stats
 {
     /// <summary>
     /// Edge Case Speed:
     /// pushing values to statValues will change speed by seconds (1f == 1 second)
     /// you need to add negative values to scaling Stat to perform this (scale 1f - 0.3f = 0,7f attack speed)
     /// </summary>
-    public class LocalModificationModificationStat : NetworkModificationStat
+    public class LocalModificationStat : NetworkModificationStat, IChangeableStat
     {
         private readonly List<float> _statModificationValues;
         private readonly List<float> _multiplierStatModificationValues;
     
-        public LocalModificationModificationStat(StatType statType, string multiplierStatIdentity, string statIdentity) : base(statType, multiplierStatIdentity, statIdentity)
+        public LocalModificationStat(StatType statType, string multiplierStatIdentity, string statIdentity) : base(statType, multiplierStatIdentity, statIdentity)
         {
             _statModificationValues = new List<float>();
             UpdateStat(statIdentity, _statModificationValues.ToArray());
@@ -55,7 +55,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             return finalValue;
         }
 
-        public void AddStatModificationValue(StatValueType statValueType, float value)
+        public void SetStatValue(StatValueType statValueType, float value)
         {
             switch (statValueType)
             {
@@ -67,17 +67,20 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                     _multiplierStatModificationValues.Add(value);
                     UpdateStat(MultiplierStatIdentity, _multiplierStatModificationValues.ToArray());
                     break;
+                case StatValueType.MinStat:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
             }
         }
 
-        public bool TryRemoveStatModificationValue(StatValueType statValueType, float value)
+        public bool TryRemoveStatValue(StatValueType statValueType, float value)
         {
             return statValueType switch
             {
                 StatValueType.Stat => TryRemoveStatValueInternal(value),
                 StatValueType.ScalingStat => TryRemoveScalingStatValueInternal(value),
+                StatValueType.MinStat => false,
                 _ => throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null)
             };
         }

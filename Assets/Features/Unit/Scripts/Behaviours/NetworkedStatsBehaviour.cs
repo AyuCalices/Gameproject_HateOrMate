@@ -1,5 +1,4 @@
 using System;
-using Features.Battle.Scripts.StageProgression;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Stats;
@@ -8,7 +7,7 @@ using JetBrains.Annotations;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Stat
+namespace Features.Unit.Scripts.Behaviours
 {
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
@@ -30,7 +29,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
                 _removedHealth = value;
                 if (TryGetComponent(out UnitBattleView unitView))
                 {
-                    unitView.SetHealthSlider(value, NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health));
+                    unitView.SetHealthSlider(value, GetFinalStat(StatType.Health));
                 }
             }
         }
@@ -49,8 +48,22 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             {
                 string scalingStatIdentity = Guid.NewGuid().ToString();
                 string statIdentity = Guid.NewGuid().ToString();
-                NetworkedStatServiceLocator.Register(new LocalModificationModificationStat((StatType)value, scalingStatIdentity, statIdentity));
+                NetworkedStatServiceLocator.Register(new LocalModificationStat((StatType)value, scalingStatIdentity, statIdentity));
+                NetworkedStatServiceLocator.Register(new BaseStat((StatType)value));
             }
+        }
+        
+        public float GetFinalStat(StatType statType)
+        {
+            float totalValue = NetworkedStatServiceLocator.GetTotalValue(statType);
+
+            if (NetworkedStatServiceLocator.TryGetService(out BaseStat baseStat, statType))
+            {
+                return Mathf.Max(totalValue, baseStat.GetMinValue());
+            }
+            
+            Debug.LogWarning($"There is no {typeof(BaseStat)} Registered inside the {NetworkedStatServiceLocator}");
+            return totalValue;
         }
         
         private void Start()
@@ -68,7 +81,7 @@ namespace Features.Unit.Scripts.Behaviours.Stat
 
         private void OnDestroy()
         {
-            NetworkedStatServiceLocator.RemoveAllValues();
+            NetworkedStatServiceLocator.UnregisterAll();
         }
 
         /// <summary>
@@ -79,8 +92,8 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         {
             foreach (object value in Enum.GetValues(typeof(StatType)))
             {
-                LocalModificationModificationStat selectedModificationModificationStat = NetworkedStatServiceLocator.Get<LocalModificationModificationStat>((StatType)value);
-                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationModificationStat.StatType, selectedModificationModificationStat.MultiplierStatIdentity, selectedModificationModificationStat.StatIdentity);
+                LocalModificationStat selectedModificationStat = NetworkedStatServiceLocator.Get<LocalModificationStat>((StatType)value);
+                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
             }
         }
         
@@ -96,13 +109,26 @@ namespace Features.Unit.Scripts.Behaviours.Stat
             
             float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
             float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
+
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.Stat, finalAttack);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.ScalingStat, baseStatsData.attackMultiplierValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.MinStat, baseStatsData.attackMinValue);
             
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Damage, finalAttack, baseStatsData.attackMinValue, baseStatsData.attackMultiplier));
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Health, finalHealth, baseStatsData.healthMinValue, baseStatsData.healthMultiplier));
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Speed, baseStatsData.speedValue, baseStatsData.speedMinValue));
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Range, baseStatsData.rangeValue, baseStatsData.rangeMinValue));
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.MovementSpeed, baseStatsData.movementSpeedValue, baseStatsData.movementSpeedMinValue));
-            NetworkedStatServiceLocator.Exchange(new BaseStat(StatType.Stamina, baseStatsData.staminaValue, baseStatsData.staminaMinValue));
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.Stat, finalHealth);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.ScalingStat, baseStatsData.healthMultiplierValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.MinStat, baseStatsData.healthMinValue);
+            
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Speed, StatValueType.Stat, baseStatsData.speedValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Speed, StatValueType.MinStat, baseStatsData.speedMinValue);
+            
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Range, StatValueType.Stat, baseStatsData.rangeValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Range, StatValueType.MinStat, baseStatsData.rangeMinValue);
+            
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.MovementSpeed, StatValueType.Stat, baseStatsData.movementSpeedValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.MovementSpeed, StatValueType.MinStat, baseStatsData.movementSpeedMinValue);
+            
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Stamina, StatValueType.Stat, baseStatsData.staminaValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Stamina, StatValueType.MinStat, baseStatsData.staminaMinValue);
         }
     }
 }

@@ -2,16 +2,16 @@ using System;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-
-public enum TeamTagType {Own, Mate, Enemy}
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
+    public enum TeamTagType {Own, Mate, Enemy}
+
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
     public class NetworkedBattleBehaviour : MonoBehaviour
     {
@@ -124,7 +124,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void OnMouseDown()
         {
-            Debug.Log(NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health));
+            Debug.Log(NetworkedStatsBehaviour.GetFinalStat(StatType.Health));
         }
     }
 }

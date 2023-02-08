@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Photon.Pun;
 using UnityEngine;
 

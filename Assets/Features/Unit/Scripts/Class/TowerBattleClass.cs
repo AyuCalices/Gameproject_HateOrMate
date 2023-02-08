@@ -1,6 +1,7 @@
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.DamageAnimation;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using UnityEngine;
 
@@ -10,9 +11,9 @@ namespace Features.Unit.Scripts.Class
     {
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float TotalStamina => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Stamina);
+        private float TotalStamina => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Stamina);
         private float _currentStamina;
-        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
+        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Speed);
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
@@ -56,7 +57,7 @@ namespace Features.Unit.Scripts.Class
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
+                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Damage));
                 });
         }
         

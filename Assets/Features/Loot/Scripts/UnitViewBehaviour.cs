@@ -1,56 +1,40 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.Stats;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Features.Loot.Scripts
 {
-    public class UnitViewBehaviour : TeamViewBehaviour
+    public class UnitViewBehaviour : MonoBehaviour
     {
         [SerializeField] private UnitType_SO towerUnitType;
         [SerializeField] private Image unitSprite;
+        [SerializeField] protected List<StatTextUpdateBehaviour> statTextUpdateBehaviours;
+        [SerializeField] protected TMP_Text nameText;
     
         private NetworkedStatsBehaviour _unitOwnerStats;
         private BattleBehaviour _unitOwnerBattleBehaviour;
 
-        protected override void UpdateStatText(StatTextUpdateBehaviour statTextUpdateBehaviour, StatType statType,
-            float modifierValue, float scaleValue)
+        private void OnDestroy()
         {
-            statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue, _unitOwnerStats.NetworkedStatServiceLocator.Get<BaseStat>(statType).GetTotalValue());
-        }
-            
-
-        protected override void Awake()
-        {
-            base.Awake();
-            
-            SingleStatMod.onRegister += UpdateSingleStatText;
-            SingleStatMod.onUnregister += UpdateSingleStatText;
-        }
-
-        protected override void OnDestroy()
-        {
-            base.OnDestroy();
-            
-            SingleStatMod.onRegister -= UpdateSingleStatText;
-            SingleStatMod.onUnregister -= UpdateSingleStatText;
+            _unitOwnerStats.NetworkedStatServiceLocator.onUpdateStat -= UpdateSingleStatText;
         }
         
-        private void UpdateSingleStatText(NetworkedStatsBehaviour networkedStatsBehaviour, StatType statType, float modifierValue, float scaleValue)
+        private void UpdateSingleStatText(StatType statType)
         {
-            if (_unitOwnerStats != networkedStatsBehaviour) return;
-
-            foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours)
+            foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours
+                .Where(statTextUpdateBehaviour => statTextUpdateBehaviour.StatType == statType))
             {
-                if (statTextUpdateBehaviour.StatType == statType)
-                {
-                    UpdateStatText(statTextUpdateBehaviour, statType, modifierValue, scaleValue);
-                }
+                statTextUpdateBehaviour.UpdateText(_unitOwnerStats.GetFinalStat(statType).ToString());
+                return;
             }
         }
 
@@ -59,11 +43,13 @@ namespace Features.Loot.Scripts
             _unitOwnerStats = unitOwnerStats;
             _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<BattleBehaviour>();
             
+            _unitOwnerStats.NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
+            
             InitializeVisualization();
             InitializeAllText();
         }
-        
-        protected override void InitializeVisualization()
+
+        private void InitializeVisualization()
         {
             unitSprite.sprite = _unitOwnerBattleBehaviour.UnitClassData.sprite;
             nameText.text = _unitOwnerBattleBehaviour.UnitClassData.unitType.unitName;
@@ -72,24 +58,8 @@ namespace Features.Loot.Scripts
         private void InitializeAllText()
         {
             UnitType_SO unitType = _unitOwnerBattleBehaviour.UnitClassData.unitType;
-
-            UpdateSingleStatText(_unitOwnerStats, StatType.Damage, 0, 0);
-            UpdateSingleStatText(_unitOwnerStats, StatType.Health, 0, 0);
-            UpdateSingleStatText(_unitOwnerStats, StatType.Range, 0, 0);
-            UpdateSingleStatText(_unitOwnerStats, StatType.MovementSpeed, 0, 0);
-
             StatTextUpdateBehaviour staminaStatTextUpdateBehaviours = statTextUpdateBehaviours.Find(x => x.StatType == StatType.Stamina);
-            if (towerUnitType == unitType)
-            {
-                staminaStatTextUpdateBehaviours.gameObject.SetActive(true);
-                UpdateSingleStatText(_unitOwnerStats, StatType.Stamina, 0, 0);
-            }
-            else
-            {
-                staminaStatTextUpdateBehaviours.gameObject.SetActive(false);
-            }
-            
-            UpdateSingleStatText(_unitOwnerStats, StatType.Speed, 0, 0);
+            staminaStatTextUpdateBehaviours.gameObject.SetActive(towerUnitType == unitType);
         }
     }
 }

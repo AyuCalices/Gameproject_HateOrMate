@@ -1,7 +1,7 @@
 using System;
 using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Behaviours;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot

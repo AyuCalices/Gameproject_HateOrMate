@@ -2,6 +2,7 @@ using Features.Battle.Scripts.StageProgression;
 using Features.Connection.Scripts.Utils;
 using Features.Unit.Scripts.ClassGenerator;
 using Features.Unit.Scripts.DamageAnimation;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Unit.Scripts

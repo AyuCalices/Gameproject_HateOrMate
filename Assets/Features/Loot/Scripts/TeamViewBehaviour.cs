@@ -1,32 +1,30 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.UI.Scripts;
-using Features.Unit.Scripts.Behaviours.Stat;
-using Photon.Pun;
+using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Stats;
 using TMPro;
 using UnityEngine;
 
 namespace Features.Loot.Scripts
 {
-    public class TeamViewBehaviour : MonoBehaviourPunCallbacks
+    //TODO: create class, that contains multiple stats on which units grab modifiers when instantiating/adding
+    public class TeamViewBehaviour : MonoBehaviour
     {
         [SerializeField] private TeamTagType teamTagType;
         [SerializeField] protected List<StatTextUpdateBehaviour> statTextUpdateBehaviours;
         [SerializeField] protected TMP_Text nameText;
 
-        //TODO: create class, that contains multiple stats on which units grab modifiers when instantiating/adding
-        protected virtual void UpdateStatText(StatTextUpdateBehaviour statTextUpdateBehaviour, StatType statType, 
-            float modifierValue, float scaleValue) => statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue);
-
-        protected virtual void Awake()
+        private void Awake()
         {
             MultipleStatMod.onRegisterGlobally += UpdateMultipleStatText;
             MultipleStatMod.onUnregisterGlobally += UpdateMultipleStatText;
+
+            Initialize();
         }
 
-        protected virtual void OnDestroy()
+        private void OnDestroy()
         {
             MultipleStatMod.onRegisterGlobally -= UpdateMultipleStatText;
             MultipleStatMod.onUnregisterGlobally -= UpdateMultipleStatText;
@@ -40,12 +38,12 @@ namespace Features.Loot.Scripts
             {
                 if (statTextUpdateBehaviour.StatType == statType)
                 {
-                    UpdateStatText(statTextUpdateBehaviour, statType, modifierValue, scaleValue);
+                    statTextUpdateBehaviour.UpdateText(modifierValue, scaleValue);
                 }
             }
         }
         
-        public void Initialize()
+        private void Initialize()
         {
             InitializeVisualization();
             UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.Damage, 0, 0);
@@ -56,7 +54,7 @@ namespace Features.Loot.Scripts
             UpdateMultipleStatText(new TeamTagType[] {teamTagType}, StatType.MovementSpeed, 0, 0);
         }
 
-        protected virtual void InitializeVisualization()
+        private void InitializeVisualization()
         {
             nameText.text = teamTagType.ToString();
         }

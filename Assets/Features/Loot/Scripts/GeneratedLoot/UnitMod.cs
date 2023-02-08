@@ -2,9 +2,9 @@ using System;
 using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
-using Features.Unit.Scripts.Behaviours.Stat;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot

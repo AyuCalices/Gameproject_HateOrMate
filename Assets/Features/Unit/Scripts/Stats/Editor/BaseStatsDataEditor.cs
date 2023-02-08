@@ -1,5 +1,6 @@
 using System;
 using Features.Battle.Scripts.StageProgression;
+using Features.Unit.Scripts.Stats;
 using UnityEditor;
 using UnityEngine;
 

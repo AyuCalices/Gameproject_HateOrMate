@@ -1,26 +1,21 @@
-using Features.Unit.Scripts.Behaviours.Stat;
+using System;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Stats
 {
-    public class BaseStat : IUnitStat
+    public class BaseStat : IUnitStat, IChangeableStat
     {
-        private readonly float _baseValue;
-        private readonly float _scaleValue;
-        private readonly float _minValue;
+        private float _baseValue;
+        private float _multiplierValue;
+        private float _minValue;
         public StatType StatType { get; }
 
-        public BaseStat(StatType statType, float baseValue, float minValue, float scaleValue = 1f)
+        public BaseStat(StatType statType)
         {
             StatType = statType;
-            _baseValue = baseValue;
-            _minValue = minValue;
-            _scaleValue = scaleValue;
-        }
-
-        public float GetTotalValue()
-        {
-            return Mathf.Max(_baseValue * _scaleValue, _minValue);
+            _baseValue = 1f;
+            _multiplierValue = 1f;
+            _minValue = 1f;
         }
 
         public float GetMinValue()
@@ -30,12 +25,48 @@ namespace Features.Unit.Scripts.Stats
 
         public float GetMultiplierStat()
         {
-            return _scaleValue;
+            return _multiplierValue;
         }
     
         public float GetBaseStat()
         {
             return _baseValue;
+        }
+
+        public void SetStatValue(StatValueType statValueType, float value)
+        {
+            switch (statValueType)
+            {
+                case StatValueType.Stat:
+                    _baseValue = value;
+                    break;
+                case StatValueType.ScalingStat:
+                    _multiplierValue = value;
+                    break;
+                case StatValueType.MinStat:
+                    _minValue = value;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
+            }
+        }
+
+        public bool TryRemoveStatValue(StatValueType statValueType, float value = 0)
+        {
+            switch (statValueType)
+            {
+                case StatValueType.Stat:
+                    _baseValue = value;
+                    return true;
+                case StatValueType.ScalingStat:
+                    _multiplierValue = value;
+                    return true;
+                case StatValueType.MinStat:
+                    _minValue = value;
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
 }

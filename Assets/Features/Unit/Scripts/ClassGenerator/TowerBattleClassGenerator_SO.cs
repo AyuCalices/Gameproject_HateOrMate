@@ -1,5 +1,5 @@
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.DamageAnimation;
 using Features.Unit.Scripts.View;

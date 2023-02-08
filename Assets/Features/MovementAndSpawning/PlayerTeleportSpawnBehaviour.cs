@@ -8,7 +8,6 @@ using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;

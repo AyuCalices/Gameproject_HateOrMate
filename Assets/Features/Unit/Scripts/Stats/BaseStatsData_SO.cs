@@ -1,19 +1,19 @@
 using UnityEngine;
 
-namespace Features.Battle.Scripts.StageProgression
+namespace Features.Unit.Scripts.Stats
 {
     [CreateAssetMenu(fileName = "BaseStats", menuName = "StageProgression/BaseStats")]
     public class BaseStatsData_SO : ScriptableObject
     {
         [Header("Attack")]
         public float attackBaseValue = 10f;
-        public float attackMultiplier = 1f;
+        public float attackMultiplierValue = 1f;
         public float attackMinValue = 10f;
         public float attackLevelScaling = 1.1f;
 
         [Header("Health")]
         public float healthBaseValue = 50f;
-        public float healthMultiplier = 1f;
+        public float healthMultiplierValue = 1f;
         public float healthMinValue = 50f;
         public float healthLevelScaling = 1.1f;
 

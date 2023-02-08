@@ -2,6 +2,7 @@ using System.Linq;
 using Features.Battle.Scripts;
 using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Plugins.UniRx.Extensions;
 using TMPro;
 using UniRx;

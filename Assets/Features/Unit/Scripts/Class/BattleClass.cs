@@ -2,8 +2,9 @@ using System;
 using ExitGames.Client.Photon;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using Photon.Realtime;
@@ -63,7 +64,7 @@ namespace Features.Unit.Scripts.Class
             ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
 
-            float totalHealth = ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health);
+            float totalHealth = ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Health);
             ownerNetworkingStatsBehaviour.RaiseDamageGained(ownerBattleBehaviour, ownerNetworkingStatsBehaviour.RemovedHealth, totalHealth);
                 
             UpdateAllClientsHealthRaiseEvent(
@@ -133,7 +134,7 @@ namespace Features.Unit.Scripts.Class
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
                 attackedUnitStats.RemovedHealth += attackValue;
                 
-                float totalHealth = attackedUnitStats.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Health);
+                float totalHealth = attackedUnitStats.GetFinalStat(StatType.Health);
                 ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
                 
                 UpdateAllClientsHealthRaiseEvent(

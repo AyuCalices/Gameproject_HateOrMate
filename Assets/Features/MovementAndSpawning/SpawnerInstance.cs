@@ -59,16 +59,20 @@ namespace Features.MovementAndSpawning
             instantiatedUnit.SetTeamTagType(teamTagType, opponentTagType);
             instantiatedUnit.IsTargetable = isTargetable;
             instantiatedUnit.SpawnerInstanceIndex = index;
-            instantiatedUnit.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
+            
+            
             if (instantiatedUnit.TryGetComponent(out BattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;
             }
 
+
             if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
             {
                 modUnitBehaviour.InstantiateModView();
             }
+            instantiatedUnit.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
+            
             
             if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
             {

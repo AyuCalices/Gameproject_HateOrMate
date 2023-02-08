@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Tower_Stats
   m_EditorClassIdentifier: 
   attackBaseValue: 12
-  attackMultiplier: 0.6
+  attackMultiplierValue: 0.6
   attackMinValue: 12
   attackLevelScaling: 1.06
   healthBaseValue: 60
-  healthMultiplier: 1
+  healthMultiplierValue: 1
   healthMinValue: 60
   healthLevelScaling: 1.06
   rangeValue: 10

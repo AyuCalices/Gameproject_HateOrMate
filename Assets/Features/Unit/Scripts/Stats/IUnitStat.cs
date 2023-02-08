@@ -1,4 +1,4 @@
-namespace Features.Unit.Scripts.Behaviours.Stat
+namespace Features.Unit.Scripts.Stats
 {
     public interface IUnitStat
     { 
@@ -7,5 +7,12 @@ namespace Features.Unit.Scripts.Behaviours.Stat
         float GetBaseStat();
         
         float GetMultiplierStat();
+    }
+
+    public interface IChangeableStat
+    {
+        void SetStatValue(StatValueType statValueType, float value);
+
+        bool TryRemoveStatValue(StatValueType statValueType, float value = 0);
     }
 }

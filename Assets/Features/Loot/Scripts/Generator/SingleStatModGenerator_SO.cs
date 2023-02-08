@@ -1,6 +1,6 @@
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.Generator

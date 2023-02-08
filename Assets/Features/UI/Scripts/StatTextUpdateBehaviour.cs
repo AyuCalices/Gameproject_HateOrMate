@@ -1,5 +1,5 @@
 using System.Globalization;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Stats;
 using TMPro;
 using UnityEngine;
 
@@ -20,6 +20,12 @@ namespace Features.UI.Scripts
             _modifierValue += modifierValueAdditive;
             _scaleValue += scaleValueAdditive;
             tmpText.text = (baseValue + _modifierValue * _scaleValue).ToString(CultureInfo.CurrentCulture);
+        }
+
+        public void UpdateText(string text)
+        {
+            Debug.Log(text);
+            tmpText.text = text;
         }
     }
 }

@@ -5,7 +5,8 @@ using Features.Battle.Scripts;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Stat;
+using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.Generator

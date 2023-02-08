@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.Class;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -31,8 +31,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         public KeyValuePair<NetworkedBattleBehaviour, float> GetTarget => _closestUnit;
         private bool HasTarget { get; set; }
-        private bool TargetInRange => _closestUnit.Value < NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Range);
-        public float MovementSpeed => NetworkedStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.MovementSpeed);
+        private bool TargetInRange => _closestUnit.Value < NetworkedStatsBehaviour.GetFinalStat(StatType.Range);
+        public float MovementSpeed => NetworkedStatsBehaviour.GetFinalStat(StatType.MovementSpeed);
 
         public override void OnStageEnd()
         {

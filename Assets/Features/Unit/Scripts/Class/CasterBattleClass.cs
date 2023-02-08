@@ -1,6 +1,7 @@
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Stat;
 using Features.Unit.Scripts.DamageAnimation;
+using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
@@ -12,7 +13,7 @@ namespace Features.Unit.Scripts.Class
         private readonly bool _isAi;
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float AttackSpeed => ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Speed);
+        private float AttackSpeed => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
@@ -53,7 +54,7 @@ namespace Features.Unit.Scripts.Class
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.NetworkedStatServiceLocator.GetTotalValue_CheckMin(StatType.Damage));
+                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Damage));
                 });
         }
 
