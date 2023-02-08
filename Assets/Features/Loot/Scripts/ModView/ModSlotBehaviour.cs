@@ -53,44 +53,36 @@ namespace Features.Loot.Scripts.ModView
         public void AddMod(ModBehaviour newModBehaviour)
         {
             ContainedModBehaviour = newModBehaviour;
-            
+            UpdateModColor();
             if (_isActive) newModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
         }
         
         public void RemoveMod(ModBehaviour removedModBehaviour)
         {
             if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
-            
+            UpdateModColor();
             ContainedModBehaviour = null;
         }
 
         public void DisableSlot()
         {
             if (!_isActive) return;
-            
             _isActive = false;
-
-            if (ContainsMod)
-            {
-                ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
-            }
-
             UpdateSlotColor();
+
+            if (!ContainsMod) return;
+            ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
             UpdateModColor();
         }
         
         public void EnableSlot()
         {
             if (_isActive) return;
-            
             _isActive = true;
-            
-            if (ContainsMod)
-            {
-                ContainedModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
-            }
-
             UpdateSlotColor();
+
+            if (!ContainsMod) return;
+            ContainedModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
             UpdateModColor();
         }
         
