@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Features.Unit.Scripts.Stats
 {
     public enum StatType { Damage, Health, Speed, Range, MovementSpeed, Stamina }
-    public enum StatValueType { Stat, ScalingStat, MinStat }
+    public enum StatValueType { Stat, ScalingStat, MinStat, MinScalingStat }
 
     //TODO: some methods are not generic enough
     public class NetworkedStatServiceLocator
@@ -84,20 +84,18 @@ namespace Features.Unit.Scripts.Stats
             _services.Clear();
         }
 
-        public float GetTotalValue(StatType statType)
+        public float GetTotalBaseValue(StatType statType)
         {
-            float finalBaseValue = 0;
-            float finalMultiplierValue = 0;
-            
-            foreach (IUnitStat unitStat in _services
-                .Select(keyValuePair => keyValuePair.Value)
-                .Where(unitStat => unitStat.StatType == statType))
-            {
-                finalBaseValue += unitStat.GetBaseStat();
-                finalMultiplierValue += unitStat.GetMultiplierStat();
-            }
-            
-            return finalBaseValue * finalMultiplierValue;
+            return _services.Select(keyValuePair => keyValuePair.Value)
+                .Where(unitStat => unitStat.StatType == statType)
+                .Sum(unitStat => unitStat.GetBaseStat());
+        }
+        
+        public float GetTotalMultiplierValue(StatType statType)
+        {
+            return _services.Select(keyValuePair => keyValuePair.Value)
+                .Where(unitStat => unitStat.StatType == statType)
+                .Sum(unitStat => unitStat.GetMultiplierStat());
         }
 
         public bool TryGetService<T>(out T service, StatType statType) where T : IUnitStat

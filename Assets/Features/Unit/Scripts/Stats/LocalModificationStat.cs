@@ -67,8 +67,6 @@ namespace Features.Unit.Scripts.Stats
                     _multiplierStatModificationValues.Add(value);
                     UpdateStat(MultiplierStatIdentity, _multiplierStatModificationValues.ToArray());
                     break;
-                case StatValueType.MinStat:
-                    break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
             }
@@ -80,7 +78,6 @@ namespace Features.Unit.Scripts.Stats
             {
                 StatValueType.Stat => TryRemoveStatValueInternal(value),
                 StatValueType.ScalingStat => TryRemoveScalingStatValueInternal(value),
-                StatValueType.MinStat => false,
                 _ => throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null)
             };
         }

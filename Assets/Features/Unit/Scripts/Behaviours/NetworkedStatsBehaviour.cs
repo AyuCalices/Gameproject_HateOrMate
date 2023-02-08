@@ -55,15 +55,16 @@ namespace Features.Unit.Scripts.Behaviours
         
         public float GetFinalStat(StatType statType)
         {
-            float totalValue = NetworkedStatServiceLocator.GetTotalValue(statType);
+            float totalBaseValue = NetworkedStatServiceLocator.GetTotalBaseValue(statType);
+            float totalMultiplierValue = NetworkedStatServiceLocator.GetTotalMultiplierValue(statType);
 
             if (NetworkedStatServiceLocator.TryGetService(out BaseStat baseStat, statType))
             {
-                return Mathf.Max(totalValue, baseStat.GetMinValue());
+                return Mathf.Max(totalBaseValue * Mathf.Max(totalMultiplierValue, baseStat.GetMultiplierMinValue()), baseStat.GetBaseMinValue());
             }
             
             Debug.LogWarning($"There is no {typeof(BaseStat)} Registered inside the {NetworkedStatServiceLocator}");
-            return totalValue;
+            return totalBaseValue;
         }
         
         private void Start()
@@ -113,10 +114,12 @@ namespace Features.Unit.Scripts.Behaviours
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.Stat, finalAttack);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.ScalingStat, baseStatsData.attackMultiplierValue);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.MinStat, baseStatsData.attackMinValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.MinScalingStat, baseStatsData.attackMultiplierMinValue);
             
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.Stat, finalHealth);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.ScalingStat, baseStatsData.healthMultiplierValue);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.MinStat, baseStatsData.healthMinValue);
+            NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Health, StatValueType.MinScalingStat, baseStatsData.healthMultiplierMinValue);
             
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Speed, StatValueType.Stat, baseStatsData.speedValue);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Speed, StatValueType.MinStat, baseStatsData.speedMinValue);

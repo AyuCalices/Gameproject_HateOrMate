@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Warrior_Stats
   m_EditorClassIdentifier: 
   attackBaseValue: 6
-  attackMultiplierValue: 1
   attackMinValue: 6
+  attackMultiplierValue: 1
+  attackMultiplierMinValue: 0.4
   attackLevelScaling: 1.08
   healthBaseValue: 80
-  healthMultiplierValue: 1
   healthMinValue: 80
+  healthMultiplierValue: 1
+  healthMultiplierMinValue: 0.4
   healthLevelScaling: 1.08
   rangeValue: 1
   rangeMinValue: 1

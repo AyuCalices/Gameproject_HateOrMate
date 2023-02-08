@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ExitGames.Client.Photon;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Stats;
+using Photon.Pun;
+using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Features.Loot.Scripts
 {
-    public class UnitViewBehaviour : MonoBehaviour
+    public class UnitViewBehaviour : MonoBehaviourPunCallbacks
     {
         [SerializeField] private UnitType_SO towerUnitType;
         [SerializeField] private Image unitSprite;
@@ -35,6 +38,16 @@ namespace Features.Loot.Scripts
             {
                 statTextUpdateBehaviour.UpdateText(_unitOwnerStats.GetFinalStat(statType).ToString());
                 return;
+            }
+        }
+
+        public override void OnPlayerPropertiesUpdate(Player targetPlayer, Hashtable changedProps)
+        {
+            if (Equals(targetPlayer, PhotonNetwork.LocalPlayer)) return;
+
+            foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours)
+            {
+                UpdateSingleStatText(statTextUpdateBehaviour.StatType);
             }
         }
 

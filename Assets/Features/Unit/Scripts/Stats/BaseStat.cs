@@ -6,21 +6,29 @@ namespace Features.Unit.Scripts.Stats
     public class BaseStat : IUnitStat, IChangeableStat
     {
         private float _baseValue;
+        private float _baseMinValue;
         private float _multiplierValue;
-        private float _minValue;
+        private float _minMultiplierValue;
+        
         public StatType StatType { get; }
 
         public BaseStat(StatType statType)
         {
             StatType = statType;
             _baseValue = 1f;
+            _baseMinValue = 1f;
             _multiplierValue = 1f;
-            _minValue = 1f;
+            _minMultiplierValue = 0.4f;
         }
 
-        public float GetMinValue()
+        public float GetBaseMinValue()
         {
-            return _minValue;
+            return _baseMinValue;
+        }
+        
+        public float GetMultiplierMinValue()
+        {
+            return _minMultiplierValue;
         }
 
         public float GetMultiplierStat()
@@ -40,11 +48,14 @@ namespace Features.Unit.Scripts.Stats
                 case StatValueType.Stat:
                     _baseValue = value;
                     break;
+                case StatValueType.MinStat:
+                    _baseMinValue = value;
+                    break;
                 case StatValueType.ScalingStat:
                     _multiplierValue = value;
                     break;
-                case StatValueType.MinStat:
-                    _minValue = value;
+                case StatValueType.MinScalingStat:
+                    _minMultiplierValue = value;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(statValueType), statValueType, null);
@@ -56,13 +67,16 @@ namespace Features.Unit.Scripts.Stats
             switch (statValueType)
             {
                 case StatValueType.Stat:
-                    _baseValue = value;
+                    _baseValue = 1;
                     return true;
                 case StatValueType.ScalingStat:
-                    _multiplierValue = value;
+                    _multiplierValue = 1;
                     return true;
                 case StatValueType.MinStat:
-                    _minValue = value;
+                    _baseMinValue = 1;
+                    return true;
+                case StatValueType.MinScalingStat:
+                    _minMultiplierValue = 0.4f;
                     return true;
                 default:
                     return false;

@@ -22,7 +22,6 @@ namespace Features.UI.Scripts
 
         public void UpdateText(string text)
         {
-            Debug.Log(text);
             tmpText.text = text;
         }
     }

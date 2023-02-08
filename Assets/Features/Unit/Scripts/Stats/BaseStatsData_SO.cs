@@ -7,14 +7,16 @@ namespace Features.Unit.Scripts.Stats
     {
         [Header("Attack")]
         public float attackBaseValue = 10f;
-        public float attackMultiplierValue = 1f;
         public float attackMinValue = 10f;
+        public float attackMultiplierValue = 1f;
+        public float attackMultiplierMinValue = 1f;
         public float attackLevelScaling = 1.1f;
 
         [Header("Health")]
         public float healthBaseValue = 50f;
-        public float healthMultiplierValue = 1f;
         public float healthMinValue = 50f;
+        public float healthMultiplierValue = 1f;
+        public float healthMultiplierMinValue = 1f;
         public float healthLevelScaling = 1.1f;
 
         [Header("Range")]
