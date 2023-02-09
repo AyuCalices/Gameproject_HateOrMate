@@ -19,9 +19,8 @@ namespace Features.Unit.Scripts.Class
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab, 
-            DamagePopup damagePopupPrefab, CanvasFocus_SO canvasFocus) : 
-            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damagePopupPrefab, canvasFocus)
+            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
+            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
         }

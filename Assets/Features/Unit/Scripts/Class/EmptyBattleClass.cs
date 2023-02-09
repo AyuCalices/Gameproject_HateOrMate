@@ -9,8 +9,8 @@ namespace Features.Unit.Scripts.Class
     public class EmptyBattleClass : BattleClass
     {
         public EmptyBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
-            UnitBattleView ownerUnitBattleView, DamagePopup damagePopupPrefab, CanvasFocus_SO canvasFocus) : 
-            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damagePopupPrefab, canvasFocus)
+            UnitBattleView ownerUnitBattleView) : 
+            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
         }
 

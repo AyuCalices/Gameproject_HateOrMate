@@ -24,7 +24,7 @@ namespace Features.Unit.Scripts.Class
         protected readonly UnitBattleView ownerUnitBattleView;
 
         protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
-            UnitBattleView ownerUnitBattleView, DamagePopup damagePopupPrefab, CanvasFocus_SO canvasFocus)
+            UnitBattleView ownerUnitBattleView)
         {
             this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
             this.ownerUnitBattleView = ownerUnitBattleView;
