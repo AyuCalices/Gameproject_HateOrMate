@@ -127,20 +127,17 @@ namespace Features.Loot.Scripts.ModView
                 transform.SetAsLastSibling();
                 _scrollRect.horizontalNormalizedPosition = 1f;
             }
-            else if (CurrentModContainer is ModSlotBehaviour currentModSlotBehaviour)
+            else if (CurrentModContainer is ModSlotBehaviour)
             {
-                if (_modSelection != null && _modSelection.CurrentModContainer is ModSlotBehaviour newModSlotBehaviour)
+                if (_modSelection != null && _modSelection.CurrentModContainer is ModSlotBehaviour)
                 {
                     if (_modSelection != this)
                     {
                         _modSelection.ExpandBehaviour.SetExpanded(false);
                     }
-                        
-                    newModSlotBehaviour.Highlight(false);
                 }
 
                 _modSelection = this;
-                currentModSlotBehaviour.Highlight(true);
             }
         }
     }

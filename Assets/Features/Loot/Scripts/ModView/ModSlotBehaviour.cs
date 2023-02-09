@@ -12,12 +12,8 @@ namespace Features.Loot.Scripts.ModView
         [SerializeField] private Color freeColor;
         [SerializeField] private Color blockedColor;
         [SerializeField] private ErrorPopup errorPopup;
-        [SerializeField] private Transform modParent;
-        [SerializeField] private Canvas canvas;
-        [SerializeField] private int unFocusedValue;
-        [SerializeField] private int focusedValue;
 
-        public Transform Transform => modParent;
+        public Transform Transform => transform;
         public bool ContainsMod => ContainedModBehaviour != null;
         public ModBehaviour ContainedModBehaviour { get; private set; }
 
@@ -31,12 +27,6 @@ namespace Features.Loot.Scripts.ModView
             _localStats = localStats;
             _isActive = true;
             _slot = slot;
-            Highlight(false);
-        }
-
-        public void Highlight(bool focused)
-        {
-            canvas.sortingOrder = focused ? focusedValue : unFocusedValue;
         }
         
         public void ApplyModToNewInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
