@@ -22,8 +22,6 @@ namespace Features.Unit.Scripts.Class
         protected readonly NetworkedStatsBehaviour ownerNetworkingStatsBehaviour;
         protected readonly BattleBehaviour ownerBattleBehaviour;
         protected readonly UnitBattleView ownerUnitBattleView;
-        protected readonly DamagePopup damagePopupPrefab;
-        protected readonly CanvasFocus_SO canvasFocus;
 
         protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
             UnitBattleView ownerUnitBattleView, DamagePopup damagePopupPrefab, CanvasFocus_SO canvasFocus)
@@ -31,8 +29,6 @@ namespace Features.Unit.Scripts.Class
             this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
             this.ownerUnitBattleView = ownerUnitBattleView;
             this.ownerBattleBehaviour = ownerBattleBehaviour;
-            this.damagePopupPrefab = damagePopupPrefab;
-            this.canvasFocus = canvasFocus;
         }
         
         /// <summary>
@@ -69,8 +65,6 @@ namespace Features.Unit.Scripts.Class
         /// <param name="value"></param>
         public void OnReceiveFloatActionCallback(float value, UnitClassData_SO unitClassData)
         {
-            damagePopupPrefab.Create(canvasFocus.Get().transform, Mathf.FloorToInt(value).ToString(CultureInfo.CurrentCulture), Color.yellow, 20, ownerBattleBehaviour.transform.position);
-            
             ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
 
@@ -142,7 +136,6 @@ namespace Features.Unit.Scripts.Class
             if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
-                damagePopupPrefab.Create(canvasFocus.Get().transform, Mathf.FloorToInt(attackValue).ToString(CultureInfo.InvariantCulture), Color.yellow, 20, attackedBattleBehaviour.transform.position);
                 attackedUnitStats.RemovedHealth += attackValue;
                 
                 float totalHealth = attackedUnitStats.GetFinalStat(StatType.Health);

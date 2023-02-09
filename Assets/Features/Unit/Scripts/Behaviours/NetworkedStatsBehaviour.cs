@@ -1,4 +1,8 @@
 using System;
+using System.Globalization;
+using Features.Battle.Scripts;
+using Features.Battle.StateMachine;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Stats;
@@ -12,7 +16,10 @@ namespace Features.Unit.Scripts.Behaviours
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
     {
+        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
+        [SerializeField] private CanvasFocus_SO canvasFocus;
+        [SerializeField] private DamagePopup damagePopupPrefab;
         
         public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
 
@@ -26,6 +33,16 @@ namespace Features.Unit.Scripts.Behaviours
             get => _removedHealth;
             set
             {
+                if (battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute))
+                {
+                    damagePopupPrefab.Create(
+                        canvasFocus.Get().transform, 
+                        Mathf.FloorToInt(value - _removedHealth).ToString(CultureInfo.CurrentCulture), 
+                        Color.yellow, 
+                        20, 
+                        transform.position);
+                }
+
                 _removedHealth = value;
                 if (TryGetComponent(out UnitBattleView unitView))
                 {

@@ -37,6 +37,12 @@ namespace Features.Battle.Scripts
         public override IEnumerator Enter()
         {
             yield return base.Enter();
+
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+            {
+                networkedUnitBehaviour.OnStageEnd();
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
+            }
             
             if (!battleData.IsStageRestart)
             {

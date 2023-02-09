@@ -221,12 +221,6 @@ namespace Features.Battle.Scripts
         {
             onLocalDespawnAllUnits?.Invoke();
             
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
-            }
-            
             if (enterLootingState)
             {
                 _battleManager.RequestLootingState();
