@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c76986b6a08b6b544b4903d14f8e8a62, type: 3}
   m_Name: TowerBattleClassGenerator
   m_EditorClassIdentifier: 
-  towerDamageMultiplier: 1
+  damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
+  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Stage_IntReactiveVariable
   m_EditorClassIdentifier: 
   runtimeProperty:
-    value: 53
-  storedValue: 0
+    value: 50
+  storedValue: 50

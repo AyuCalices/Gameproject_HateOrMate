@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2777ffe64c08c6b4084f82a2e00799b7, type: 3}
   m_Name: AiCasterBattleClassGenerator
   m_EditorClassIdentifier: 
-  projectileDamageAnimationBehaviour: {fileID: 9175499349743350477, guid: 3ad992d9d7defa14589ea8b48b7c2199, type: 3}
   isAI: 1
+  damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
+  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}

@@ -69,7 +69,7 @@ namespace Features.Unit.Scripts.Class
         /// <param name="value"></param>
         public void OnReceiveFloatActionCallback(float value, UnitClassData_SO unitClassData)
         {
-            damagePopupPrefab.Create(canvasFocus.Get().transform, value.ToString(CultureInfo.CurrentCulture), Color.yellow, 20, ownerBattleBehaviour.transform.position);
+            damagePopupPrefab.Create(canvasFocus.Get().transform, Mathf.FloorToInt(value).ToString(CultureInfo.CurrentCulture), Color.yellow, 20, ownerBattleBehaviour.transform.position);
             
             ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);
             ownerNetworkingStatsBehaviour.RemovedHealth += value;
@@ -142,7 +142,7 @@ namespace Features.Unit.Scripts.Class
             if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
             {
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
-                damagePopupPrefab.Create(canvasFocus.Get().transform, attackValue.ToString(CultureInfo.InvariantCulture), Color.yellow, 20, attackedBattleBehaviour.transform.position);
+                damagePopupPrefab.Create(canvasFocus.Get().transform, Mathf.FloorToInt(attackValue).ToString(CultureInfo.InvariantCulture), Color.yellow, 20, attackedBattleBehaviour.transform.position);
                 attackedUnitStats.RemovedHealth += attackValue;
                 
                 float totalHealth = attackedUnitStats.GetFinalStat(StatType.Health);

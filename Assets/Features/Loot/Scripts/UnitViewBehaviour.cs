@@ -1,8 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Features.Loot.Scripts.GeneratedLoot;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
@@ -36,7 +34,7 @@ namespace Features.Loot.Scripts
             foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours
                 .Where(statTextUpdateBehaviour => statTextUpdateBehaviour.StatType == statType))
             {
-                statTextUpdateBehaviour.UpdateText(_unitOwnerStats.GetFinalStat(statType).ToString());
+                statTextUpdateBehaviour.UpdateText(Mathf.Floor(_unitOwnerStats.GetFinalStat(statType)).ToString());
                 return;
             }
         }
