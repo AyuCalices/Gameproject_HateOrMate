@@ -47,13 +47,12 @@ namespace Features.Unit.Scripts.Class
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.Others
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSendFloatToTarget, data, raiseEventOptions, sendOptions);
@@ -95,13 +94,12 @@ namespace Features.Unit.Scripts.Class
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.Others
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUpdateAllClientsHealth, data, raiseEventOptions, sendOptions);

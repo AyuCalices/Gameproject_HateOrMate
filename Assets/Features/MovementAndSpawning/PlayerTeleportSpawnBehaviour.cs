@@ -89,13 +89,12 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.All
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPlayerSynchronizedDespawn, data, raiseEventOptions, sendOptions);
@@ -179,13 +178,12 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.All
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformTeleportThenSpawn, data, raiseEventOptions, sendOptions);
@@ -201,13 +199,12 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.All
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformSpawnThenTeleport, data, raiseEventOptions, sendOptions);
@@ -227,13 +224,12 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.MasterClient,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.MasterClient
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestTeleport, data, raiseEventOptions, sendOptions);
@@ -254,13 +250,12 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.MasterClient,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.MasterClient
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestSpawnThenTeleport, data, raiseEventOptions, sendOptions);

@@ -76,13 +76,12 @@ namespace Features.Battle.Scripts
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
+                Receivers = ReceiverGroup.All
             };
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = true
+                Reliability = false
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestBattleState, null, raiseEventOptions, sendOptions);
