@@ -1,3 +1,5 @@
+using Features.Battle.Scripts;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.DamageAnimation;
@@ -17,9 +19,9 @@ namespace Features.Unit.Scripts.Class
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
-            BattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
-            ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+            BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab, 
+            DamagePopup damagePopupPrefab, CanvasFocus_SO canvasFocus) : base(
+            ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, damagePopupPrefab, canvasFocus)
         {
             _isAi = isAi;
             _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
