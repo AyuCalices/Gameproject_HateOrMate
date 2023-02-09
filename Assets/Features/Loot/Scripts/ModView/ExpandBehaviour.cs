@@ -5,68 +5,46 @@ using UnityEngine.EventSystems;
 
 namespace Features.Loot.Scripts.ModView
 {
-    public enum ExpandType { OnClick, OnHover }
     public enum AxisType { Horizontal, Vertical}
-    public class ExpandBehaviour : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
+    public class ExpandBehaviour : MonoBehaviour, IPointerClickHandler
     {
         public AxisType axisType;
-        public ExpandType expandType;
-        public bool enabledAtAwake;
         public bool expandOnAwake;
         public float expanded = 1430;
         public float normal = 390;
         public float time = 0.2f;
         public LeanTweenType easeType;
 
-        private bool _isExpanded;
+        public bool IsExpanded { get; private set; }
         private RectTransform _rectTransform;
-        
-        public bool IsActive { get; set; }
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
-            IsActive = enabledAtAwake;
             SetExpandedWithoutTween(expandOnAwake);
         }
         
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (expandType != ExpandType.OnClick || !IsActive) return;
-            
-            SetExpanded(_isExpanded);
-        }
-        
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            if (expandType != ExpandType.OnHover || !IsActive) return;
-            
-            SetExpanded(_isExpanded);
+            SetExpanded(!IsExpanded);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public void SetExpanded(bool expand)
         {
-            if (expandType != ExpandType.OnHover || !IsActive) return;
-            
-            SetExpanded(_isExpanded);
-        }
-
-        public void SetExpanded(bool expanded)
-        {
-            if (expanded)
+            if (expand)
             {
                 if (axisType == AxisType.Horizontal)
                 {
-                    LeanTween.size(_rectTransform, new Vector2(this.expanded, _rectTransform.sizeDelta.y), time)
+                    LeanTween.size(_rectTransform, new Vector2(expanded, _rectTransform.sizeDelta.y), time)
                         .setEase(easeType);
                 }
                 else
                 {
-                    LeanTween.size(_rectTransform, new Vector2(_rectTransform.sizeDelta.x, this.expanded), time)
+                    LeanTween.size(_rectTransform, new Vector2(_rectTransform.sizeDelta.x, expanded), time)
                         .setEase(easeType);
                 }
                 
-                _isExpanded = false;
+                IsExpanded = true;
             }
             else
             {
@@ -81,24 +59,24 @@ namespace Features.Loot.Scripts.ModView
                         .setEase(easeType);
                 }
                 
-                _isExpanded = true;
+                IsExpanded = false;
             }
         }
 
-        private void SetExpandedWithoutTween(bool expanded)
+        private void SetExpandedWithoutTween(bool expand)
         {
-            if (expanded)
+            if (expand)
             {
                 if (axisType == AxisType.Horizontal)
                 {
-                    _rectTransform.sizeDelta = new Vector2(this.expanded, _rectTransform.sizeDelta.y);
+                    _rectTransform.sizeDelta = new Vector2(expanded, _rectTransform.sizeDelta.y);
                 }
                 else
                 {
-                    _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, this.expanded);
+                    _rectTransform.sizeDelta = new Vector2(_rectTransform.sizeDelta.x, expanded);
                 }
                 
-                _isExpanded = false;
+                IsExpanded = true;
             }
             else
             {
@@ -111,7 +89,7 @@ namespace Features.Loot.Scripts.ModView
                     _rectTransform.sizeDelta =  new Vector2(_rectTransform.sizeDelta.x, normal);
                 }
                 
-                _isExpanded = true;
+                IsExpanded = false;
             }
         }
     }

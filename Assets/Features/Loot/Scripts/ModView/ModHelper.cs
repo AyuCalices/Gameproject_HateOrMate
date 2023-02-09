@@ -3,22 +3,22 @@ namespace Features.Loot.Scripts.ModView
 {
     public static class ModHelper
     {
-        public static void AddOrExchangeMod(ModBehaviour movingMod, ModBehaviour blockedTargetMod, IModContainer movingModOrigin, IModContainer movingModTarget)
+        public static void AddOrExchangeMod(ModBehaviour movingMod, ModBehaviour targetMod, IModContainer movingModOrigin, IModContainer movingModTarget)
         {
             if (movingModTarget == movingModOrigin) return;
 
             movingModOrigin.RemoveMod(movingMod);
             
             //can be null due to hand
-            if (movingModTarget.ContainsMod && blockedTargetMod != null)
+            if (movingModTarget.ContainsMod && targetMod != null)
             {
-                movingModTarget.RemoveMod(blockedTargetMod);
-                movingModOrigin.AddMod(blockedTargetMod);
-                blockedTargetMod.SetNewOrigin(movingModOrigin);
+                movingModTarget.RemoveMod(targetMod);
+                movingModOrigin.AddMod(targetMod);
+                targetMod.InitializeNewOrigin(movingModOrigin);
             }
 
             movingModTarget.AddMod(movingMod);
-            movingMod.SetNewOrigin(movingModTarget);
+            movingMod.InitializeNewOrigin(movingModTarget);
         }
     }
 }

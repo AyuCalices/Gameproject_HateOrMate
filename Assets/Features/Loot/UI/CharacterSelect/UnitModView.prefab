@@ -337,7 +337,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d567e6c825a52f944b9db574a0bfd91d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  teamTagType: 0
+  towerUnitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
+  unitSprite: {fileID: 4552916568093630943}
   statTextUpdateBehaviours:
   - {fileID: 1997437981820043457}
   - {fileID: 8176126522959339848}
@@ -346,8 +347,6 @@ MonoBehaviour:
   - {fileID: 6117327028492708193}
   - {fileID: 5628393356443568295}
   nameText: {fileID: 5124260335052894825}
-  towerUnitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
-  unitSprite: {fileID: 4552916568093630943}
 --- !u!114 &7785868114042273449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -361,8 +360,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   axisType: 0
-  expandType: 0
-  enabledAtAwake: 1
   expandOnAwake: 0
   expanded: 1144
   normal: 312

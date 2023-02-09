@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Features.Loot.Scripts.GeneratedLoot;
 using Features.Unit.Scripts.Behaviours.Mod;
@@ -27,7 +28,7 @@ namespace Features.Loot.Scripts.ModView
             BaseMod.onModInstantiated -= InstantiateModToHand;
             UnitMods.onDestroyUnit -= MoveToHandOnDestroyUnit;
         }
-        
+
         private void InstantiateModToHand(ModBehaviour modBehaviourPrefab, BaseMod baseMod)
         {
             ModBehaviour modBehaviour = Instantiate(modBehaviourPrefab, contentTransform);
@@ -38,7 +39,6 @@ namespace Features.Loot.Scripts.ModView
         
         private void RegisterModOnHand(ModBehaviour newModBehaviour)
         {
-            newModBehaviour.IsInHand = true;
             ContainedModBehaviours.Add(newModBehaviour);
         }
 
@@ -49,37 +49,26 @@ namespace Features.Loot.Scripts.ModView
             if (movingMod == null) return;
         
             ModHelper.AddOrExchangeMod(movingMod, null, movingMod.CurrentModContainer, this);
-            
-            movingMod.IsSuccessfulDrop = true;
-            SetModHandBehaviour(movingMod);
         }
 
         //Called by ModHelper
         public void AddMod(ModBehaviour newModBehaviour)
         {
             RegisterModOnHand(newModBehaviour);
-            SetModHandBehaviour(newModBehaviour);
+            newModBehaviour.UpdateColor(Color.white);
         }
 
         //Called by ModHelper
         public void RemoveMod(ModBehaviour removedModBehaviour)
         {
-            removedModBehaviour.IsInHand = false;
             ContainedModBehaviours.Remove(removedModBehaviour);
         }
 
         private void MoveToHandOnDestroyUnit(ModBehaviour newModBehaviour)
         {
             AddMod(newModBehaviour);
-            SetModHandBehaviour(newModBehaviour);
-            newModBehaviour.SetNewOrigin(this);
-        }
-
-        private void SetModHandBehaviour(ModBehaviour modBehaviour)
-        {
-            modBehaviour.ExpandBehaviour.SetExpanded(true);
-            modBehaviour.ExpandBehaviour.IsActive = false;
-            modBehaviour.UpdateColor(Color.white);
+            newModBehaviour.UpdateColor(Color.white);
+            newModBehaviour.InitializeNewOrigin(this);
         }
     }
 }

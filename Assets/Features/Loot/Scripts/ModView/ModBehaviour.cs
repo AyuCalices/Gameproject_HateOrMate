@@ -1,3 +1,4 @@
+using System;
 using Features.Loot.Scripts.GeneratedLoot;
 using TMPro;
 using UnityEngine;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 namespace Features.Loot.Scripts.ModView
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class ModBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+    public class ModBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler, IPointerClickHandler
     {
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private Image image;
@@ -17,25 +18,34 @@ namespace Features.Loot.Scripts.ModView
         
         public BaseMod ContainedMod { get; private set; }
         public IModContainer CurrentModContainer { get; private set; }
-        public bool IsSuccessfulDrop { get; set; }
-        public bool IsInHand { get; set; }
         public ExpandBehaviour ExpandBehaviour { get; private set; }
-        
+
         private CanvasGroup _canvasGroup;
         private RectTransform _rectTransform;
-        private Vector3 _dragBeginPosition;
-        private Transform _originTransform;
         private Transform _dragTransform;
-        
-        public void Initialize(BaseMod baseMod, Transform dragTransform, IModContainer currentModContainer)
+        private ScrollRect _scrollRect;
+        private static ModBehaviour _modSelection;
+
+        private bool _isSelected;
+
+        private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
             _rectTransform = GetComponent<RectTransform>();
+            _scrollRect = GetComponentInParent<ScrollRect>();
             ExpandBehaviour = GetComponent<ExpandBehaviour>();
+        }
+
+        private void Start()
+        {
+            SetExpanded();
+        }
+
+        public void Initialize(BaseMod baseMod, Transform dragTransform, IModContainer currentModContainer)
+        {
             ContainedMod = baseMod;
 
-            CurrentModContainer = currentModContainer;
-            _originTransform = transform.parent;
+            SetNewOrigin(currentModContainer);
             _dragTransform = dragTransform;
             
             Instantiate(baseMod.SpritePrefab, imageParent);
@@ -43,12 +53,24 @@ namespace Features.Loot.Scripts.ModView
             level.text = baseMod.Level.ToString();
         }
         
-        public void SetNewOrigin(IModContainer targetOrigin)
+        public void InitializeNewOrigin(IModContainer targetOrigin)
+        {
+            SetNewOrigin(targetOrigin);
+            SetExpanded();
+        }
+
+        private void SetNewOrigin(IModContainer targetOrigin)
         {
             CurrentModContainer = targetOrigin;
-            _originTransform = targetOrigin.Transform;
-            transform.position = _originTransform.position;
-            transform.SetParent(_originTransform);
+            transform.SetParent(CurrentModContainer.Transform);
+            transform.position = CurrentModContainer.Transform.position;
+        }
+
+        private void SetExpanded() 
+        {
+            bool isInHand = CurrentModContainer is ModHandBehaviour;
+            ExpandBehaviour.SetExpanded(isInHand);
+            ExpandBehaviour.enabled = !isInHand;
         }
 
         public void UpdateColor(Color newColor)
@@ -58,17 +80,22 @@ namespace Features.Loot.Scripts.ModView
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            transform.SetParent(_dragTransform);
-            _canvasGroup.alpha = 0.5f;
-            _canvasGroup.blocksRaycasts = false;
-
-            if (IsInHand)
+            int siblingIndex = transform.GetSiblingIndex();
+            if (CurrentModContainer.Transform.childCount - 1 == siblingIndex)
             {
-                ExpandBehaviour.IsActive = true;
+                transform.SetParent(_dragTransform);
+                _canvasGroup.alpha = 0.5f;
+                _canvasGroup.blocksRaycasts = false;
+
+                ExpandBehaviour.SetExpanded(false);
             }
-            
-            IsSuccessfulDrop = false;
-            _dragBeginPosition = _dragTransform.position;
+            else
+            {
+                eventData.pointerDrag = _scrollRect.gameObject;
+                EventSystem.current.SetSelectedGameObject(_scrollRect.gameObject);
+                _scrollRect.OnInitializePotentialDrag(eventData);    
+                _scrollRect.OnBeginDrag(eventData);
+            }
         }
     
         public void OnDrag(PointerEventData eventData)
@@ -85,18 +112,36 @@ namespace Features.Loot.Scripts.ModView
             _canvasGroup.alpha = 1f;
             _canvasGroup.blocksRaycasts = true;
 
-            if (!IsSuccessfulDrop)
-            {
-                if (IsInHand)
-                {
-                    ExpandBehaviour.SetExpanded(true);
-                    ExpandBehaviour.IsActive = false;
-                }
-                transform.position = _dragBeginPosition;
-            }
+            if (transform.parent == CurrentModContainer.Transform) return;
             
-            transform.position = _originTransform.position;
-            transform.SetParent(_originTransform);
+            transform.SetParent(CurrentModContainer.Transform);
+            transform.position = CurrentModContainer.Transform.position;
+            
+            SetExpanded();
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (CurrentModContainer is ModHandBehaviour)
+            {
+                transform.SetAsLastSibling();
+                _scrollRect.horizontalNormalizedPosition = 1f;
+            }
+            else if (CurrentModContainer is ModSlotBehaviour currentModSlotBehaviour)
+            {
+                if (_modSelection != null && _modSelection.CurrentModContainer is ModSlotBehaviour newModSlotBehaviour)
+                {
+                    if (_modSelection != this)
+                    {
+                        _modSelection.ExpandBehaviour.SetExpanded(false);
+                    }
+                        
+                    newModSlotBehaviour.Highlight(false);
+                }
+
+                _modSelection = this;
+                currentModSlotBehaviour.Highlight(true);
+            }
         }
     }
 }
