@@ -15,8 +15,8 @@ namespace Features.Tiles.Scripts
 
         private void Awake()
         {
-            battleData.TileRuntimeDictionary.ClearContainedUnits();
-            battleData.TileRuntimeDictionary.Initialize(tilemap, tileReferences, PopulateTileRuntimeDictionary);
+            battleData.TileRuntimeDictionary.Restore();
+            battleData.TileRuntimeDictionary.Initialize(tilemap, PopulateTileRuntimeDictionary);
         }
 
         private void PopulateTileRuntimeDictionary(Dictionary<Vector3Int, RuntimeTile> tileDictionary)

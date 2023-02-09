@@ -86,6 +86,12 @@ namespace Features.Battle.Scripts
         private void SetStage()
         {
             if (!PhotonNetwork.IsMasterClient) return;
+            
+            if (battleData.Stage.Get() >= battleData.CompletedStage.Get())
+            {
+                EndGame_RaiseEvent();
+                return;
+            }
 
             if (!HasUnitAlive(TeamTagType.Mate, TeamTagType.Own))
             {
@@ -140,6 +146,21 @@ namespace Features.Battle.Scripts
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnNextStage, data, raiseEventOptions, sendOptions);
+        }
+        
+        private void EndGame_RaiseEvent()
+        {
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = false
+            };
+            
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnEndGame, null, raiseEventOptions, sendOptions);
         }
         
         private void RestartStage_RaiseEvent(bool enterLootingState)
@@ -212,6 +233,9 @@ namespace Features.Battle.Scripts
                     EndStage(enterLootingState);
                     break;
                 }
+                case (int)RaiseEventCode.OnEndGame:
+                    _battleManager.RequestEndGameState();
+                    break;
             }
         }
 

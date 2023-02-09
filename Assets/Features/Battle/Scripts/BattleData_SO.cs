@@ -29,6 +29,9 @@ namespace Features.Battle.Scripts
         public IntReactiveVariable Stage => stage;
         [SerializeField] private IntReactiveVariable stage;
 
+        public IntReactiveVariable CompletedStage => completedStage;
+        [SerializeField] private IntReactiveVariable completedStage;
+        
         public LootTable_SO LootTable => lootTable;
         [SerializeField] private LootTable_SO lootTable;
         
@@ -47,6 +50,7 @@ namespace Features.Battle.Scripts
         {
             _battleManager = battleManager;
             IsStageRestart = false;
+            Stage.Restore(true);
 
             Lootables = new List<LootableGenerator_SO>();
             LootableStages = new List<int>();

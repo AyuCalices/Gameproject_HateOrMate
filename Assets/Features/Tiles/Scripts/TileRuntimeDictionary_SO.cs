@@ -17,8 +17,8 @@ namespace Features.Tiles.Scripts
         private Tilemap _tilemap;
         private Pathfinder<Vector3Int> _pathfinder;
         private Vector3Int _targetNode;
-        
-        public void Initialize(Tilemap tilemap, TileLookup[] tileReferences, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
+
+        public void Initialize(Tilemap tilemap, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
         {
             _tilemap = tilemap;
             _pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
@@ -56,14 +56,6 @@ namespace Features.Tiles.Scripts
         public Vector3Int GetWorldToCellPosition(Vector3 worldPosition)
         {
             return _tilemap.WorldToCell(worldPosition);
-        }
-        
-        public void ClearContainedUnits()
-        {
-            foreach (var item in items)
-            {
-                item.Value.RemoveUnit();
-            }
         }
         
         private Dictionary<Vector3Int, RuntimeTile> GetPlaceableTileBehaviours()

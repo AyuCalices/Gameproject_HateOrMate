@@ -53,7 +53,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void RaiseDamageGained(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
         {
-            onDamageGained.Invoke(networkedBattleBehaviour, newRemovedHealth, totalHealth);
+            onDamageGained?.Invoke(networkedBattleBehaviour, newRemovedHealth, totalHealth);
         }
 
         protected void Awake()

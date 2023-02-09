@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -24,6 +26,12 @@ namespace Features.Connection.Scripts
             _playerRoomBehaviours.Add(playerRoomUnitInstanceBehaviour);
         }
 
+        private void OnDisable()
+        {
+            _playerRoomBehaviours.Remove(this);
+            Destroy(gameObject);
+        }
+
         public static void Destroy(Player playerReference)
         {
             for (int index = _playerRoomBehaviours.Count - 1; index >= 0; index--)
@@ -35,16 +43,7 @@ namespace Features.Connection.Scripts
                     Destroy(playerRoomUnitInstanceBehaviour.gameObject);
                 }
             }
-        }
-
-        public static void DestroyAll()
-        {
-            for (int index = _playerRoomBehaviours.Count - 1; index >= 0; index--)
-            {
-                PlayerRoomUnitInstanceBehaviour playerRoomUnitInstanceBehaviour = _playerRoomBehaviours[index];
-                Destroy(playerRoomUnitInstanceBehaviour.gameObject);
-            }
-        
+            
             _playerRoomBehaviours.Clear();
         }
 

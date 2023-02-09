@@ -25,7 +25,7 @@ namespace Features.Connection.Scripts.View
         {
             UpdatePlayerDecisionVisualisation();
             
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount < 2) return;
             
             readyCheckRoomDecision.IsValidDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b);
         }
@@ -67,8 +67,7 @@ namespace Features.Connection.Scripts.View
     
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            base.OnPlayerEnteredRoom(newPlayer);
-            
+            readyCheckRoomDecision.ResetDecisions();
             playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, newPlayer);
         }
 
@@ -81,9 +80,6 @@ namespace Features.Connection.Scripts.View
         public override void OnLeftRoom()
         {
             onLeftRoom.Raise();
-            
-            readyCheckRoomDecision = null;
-            PlayerRoomUnitInstanceBehaviour.DestroyAll();
         }
     }
 }

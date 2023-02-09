@@ -17,5 +17,6 @@ namespace Features.Connection.Scripts.Utils
         OnNextStage = 13,
         OnPlayerSynchronizedDespawn = 14,
         OnRestartStage = 15,
+        OnEndGame = 16
     }
 }

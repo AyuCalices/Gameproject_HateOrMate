@@ -6,6 +6,7 @@ using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Features.Battle.Scripts
 {
@@ -19,6 +20,7 @@ namespace Features.Battle.Scripts
         [SerializeField] private LootingState lootingState;
         [SerializeField] private StageSetupState stageSetupState;
         [SerializeField] private BattleState battleState;
+        [SerializeField] private EndGameState endGameState;
         
         private CoroutineStateMachine _stageStateMachine;
 
@@ -59,6 +61,11 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine.ChangeState(placementState.Initialize(this));
         }
+        
+        internal void RequestEndGameState()
+        {
+            _stageStateMachine.ChangeState(endGameState.Initialize(this));
+        }
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
         {
@@ -68,6 +75,16 @@ namespace Features.Battle.Scripts
         public void OnEvent(EventData photonEvent)
         {
             _stageStateMachine.OnEvent(photonEvent);
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            SceneManager.LoadScene("ConnectionScreen");
+        }
+
+        public override void OnPlayerLeftRoom(Player otherPlayer)
+        {
+            SceneManager.LoadScene("ConnectionScreen");
         }
     }
 }

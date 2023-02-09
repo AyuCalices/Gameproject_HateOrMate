@@ -34,12 +34,11 @@ namespace Features.Connection.Scripts.View
 
         public void OnClickDisconnect()
         {
-            PhotonNetwork.Disconnect();
-
             if (SceneManager.GetActiveScene().name == "GameScene")
             {
                 SceneManager.LoadScene("ConnectionScreen");
             }
+            PhotonNetwork.Disconnect();
         }
 
         public override void OnConnectedToMaster()

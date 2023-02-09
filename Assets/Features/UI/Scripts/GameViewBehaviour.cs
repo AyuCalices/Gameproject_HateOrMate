@@ -59,7 +59,7 @@ namespace Features.UI.Scripts
         private void RegisterStageText()
         {
             battleData.Stage.RuntimeProperty
-                .Select(x => x.ToString())
+                .Select(x => x + "/" + battleData.CompletedStage.Get())
                 .SubscribeToText(stageText);
         }
     
