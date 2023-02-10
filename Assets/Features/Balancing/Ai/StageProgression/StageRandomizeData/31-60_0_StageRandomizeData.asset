@@ -20,7 +20,7 @@ MonoBehaviour:
   - spawnerReference: AiTower
     unitClassData: {fileID: 11400000, guid: 6958d33c8d7a7e544b61034ac73f5474, type: 2}
     spawnChance: 100
-    tries: 1
+    tries: 2
   - spawnerReference: AiUnit
     unitClassData: {fileID: 11400000, guid: 4ec0a94b1b565f04d9094d5f9dc35908, type: 2}
     spawnChance: 100

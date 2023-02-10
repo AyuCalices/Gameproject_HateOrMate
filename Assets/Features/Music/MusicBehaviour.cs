@@ -13,7 +13,6 @@ public class MusicBehaviour : MonoBehaviour
     
     public void Disable()
     {
-        Debug.Log("Disable");
         StartCoroutine(FadeOutTrack(soundTracks[_currentTrackIndex], 0, musicFadeTime));
     }
     
@@ -59,7 +58,6 @@ public class MusicBehaviour : MonoBehaviour
                 counter += Time.deltaTime;
             
             audioSource.volume = Mathf.Lerp(startVolume, toVal, counter / duration);
-            Debug.Log(audioSource.volume);
             yield return null;
         }
         

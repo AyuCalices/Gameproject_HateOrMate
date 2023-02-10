@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using DataStructures.Event;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
 using Features.Loot.Scripts.ModView;
@@ -20,6 +21,7 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private DamagePopup damagePopupPrefab;
+        [SerializeField] private GameEvent onHit;
         
         public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
 
@@ -41,6 +43,8 @@ namespace Features.Unit.Scripts.Behaviours
                         Color.yellow, 
                         20, 
                         transform.position);
+                    
+                    onHit.Raise();
                 }
 
                 _removedHealth = value;

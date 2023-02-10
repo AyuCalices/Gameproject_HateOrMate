@@ -16,12 +16,12 @@ MonoBehaviour:
   attackMinValue: 24
   attackMultiplierValue: 1
   attackMultiplierMinValue: 0.4
-  attackLevelScaling: 1.08
+  attackLevelScaling: 1.1
   healthBaseValue: 40
   healthMinValue: 40
   healthMultiplierValue: 1
   healthMultiplierMinValue: 0.4
-  healthLevelScaling: 1.08
+  healthLevelScaling: 1.1
   rangeValue: 3
   rangeMinValue: 1
   movementSpeedValue: 1
