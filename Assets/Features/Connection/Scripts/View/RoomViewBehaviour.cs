@@ -1,10 +1,11 @@
+using System.Collections;
 using DataStructures.Event;
-using ExitGames.Client.Photon;
 using Features.Connection.Scripts.Utils;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Connection.Scripts.View
 {
@@ -17,6 +18,7 @@ namespace Features.Connection.Scripts.View
         [SerializeField] private Transform playerRoomBehaviourParent;
         [SerializeField] private TMP_Text roomName;
         [SerializeField] private BoolRoomDecitions_SO readyCheckRoomDecision;
+        [SerializeField] private MusicBehaviour musicBehaviour;
 
         private bool _isInLobby;
         private bool _isReady;
@@ -25,9 +27,20 @@ namespace Features.Connection.Scripts.View
         {
             UpdatePlayerDecisionVisualisation();
             
-            if (!PhotonNetwork.IsMasterClient && PhotonNetwork.CurrentRoom.PlayerCount < 2) return;
+            if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount < 2) return;
             
-            readyCheckRoomDecision.IsValidDecision(() => PhotonNetwork.LoadLevel("GameScene"), b => b);
+            readyCheckRoomDecision.IsValidDecision(() =>
+            {
+                musicBehaviour.Disable();
+                StartCoroutine(OnStartGame());
+            }, b => b);
+        }
+
+        private IEnumerator OnStartGame()
+        {
+            yield return new WaitForSeconds(musicBehaviour.MusicFadeTime);
+            PhotonNetwork.LoadLevel("GameScene");
+            PhotonNetwork.CurrentRoom.IsOpen = false;
         }
 
         public void StartGame()
@@ -63,17 +76,17 @@ namespace Features.Connection.Scripts.View
             {
                 playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, player);
             }
+
+            UpdatePlayerDecisionVisualisation();
         }
     
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
-            readyCheckRoomDecision.ResetDecisions();
             playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, newPlayer);
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            readyCheckRoomDecision.ResetDecisions();
             PlayerRoomUnitInstanceBehaviour.Destroy(otherPlayer);
         }
 

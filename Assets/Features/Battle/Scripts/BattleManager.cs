@@ -1,12 +1,15 @@
 using System;
 using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
+using Features.Connection.Scripts;
+using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Hashtable = ExitGames.Client.Photon.Hashtable;
 
 namespace Features.Battle.Scripts
 {
@@ -21,6 +24,9 @@ namespace Features.Battle.Scripts
         [SerializeField] private StageSetupState stageSetupState;
         [SerializeField] private BattleState battleState;
         [SerializeField] private EndGameState endGameState;
+        [SerializeField] private ErrorPopup errorPopupPrefab;
+        [SerializeField] private CanvasFocus_SO canvasFocus;
+        [SerializeField] private MusicBehaviour musicBehaviour;
         
         private CoroutineStateMachine _stageStateMachine;
 
@@ -28,6 +34,7 @@ namespace Features.Battle.Scripts
         {
             _stageStateMachine = new CoroutineStateMachine();
             battleData.Initialize(this);
+            musicBehaviour.Enable();
         }
 
         private void Start()
@@ -62,9 +69,9 @@ namespace Features.Battle.Scripts
             _stageStateMachine.ChangeState(placementState.Initialize(this));
         }
         
-        internal void RequestEndGameState()
+        public void RequestEndGameState()
         {
-            _stageStateMachine.ChangeState(endGameState.Initialize(this));
+            _stageStateMachine.ChangeState(endGameState.Initialize(musicBehaviour));
         }
 
         public override void OnRoomPropertiesUpdate(Hashtable propertiesThatChanged)
@@ -79,12 +86,26 @@ namespace Features.Battle.Scripts
 
         public override void OnDisconnected(DisconnectCause cause)
         {
-            SceneManager.LoadScene("ConnectionScreen");
+            if (cause == DisconnectCause.DisconnectByClientLogic)
+            {
+                SceneManager.LoadScene("ConnectionScreen");
+            }
+            else
+            {
+                errorPopupPrefab.Instantiate(canvasFocus.Get().transform, "Error: " + cause, RequestEndGameState);
+            }
         }
-
+        
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
-            SceneManager.LoadScene("ConnectionScreen");
+            if (StateIsValid(typeof(EndGameState), StateProgressType.All)) return;
+            
+            errorPopupPrefab.Instantiate(canvasFocus.Get().transform, "Error: Your Mate left the Room!", RequestEndGameState);
+        }
+
+        public void ExitGame()
+        {
+            Application.Quit();
         }
     }
 }

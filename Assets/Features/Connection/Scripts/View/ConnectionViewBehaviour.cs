@@ -4,6 +4,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace Features.Connection.Scripts.View
@@ -14,14 +15,21 @@ namespace Features.Connection.Scripts.View
         [SerializeField] private ErrorPopup errorPopup;
         [SerializeField] private Transform errorPopupParent;
         [SerializeField] private TMP_InputField roomKeyInput;
+        [SerializeField] private MusicBehaviour musicBehaviour;
+        [SerializeField] private UnityEvent onDisconnect;
 
         private JoinType _selectedJoinType;
+
+        private void Awake()
+        {
+            musicBehaviour.Enable();
+        }
 
         public void OnClickConnect(int joinType)
         {
             if (roomKeyInput.text.Length == 0 && (JoinType) joinType is JoinType.KeyJoin)
             {
-                errorPopup.Instantiate(errorPopupParent, "You need to add a Room Code to do that!");
+                errorPopup.Instantiate(errorPopupParent, "You need to add a Room Code to do that!", OnClickDisconnect);
                 return;
             }
             
@@ -30,6 +38,11 @@ namespace Features.Connection.Scripts.View
             PhotonNetwork.AutomaticallySyncScene = true;
             PhotonNetwork.NickName = LobbyRoomNameRandomizer.RandomString(5);
             PhotonNetwork.ConnectUsingSettings();
+        }
+
+        public override void OnDisconnected(DisconnectCause cause)
+        {
+            onDisconnect.Invoke();
         }
 
         public void OnClickDisconnect()
@@ -86,6 +99,11 @@ namespace Features.Connection.Scripts.View
         {
             base.OnJoinRandomFailed(returnCode, message);
             errorPopup.Instantiate(errorPopupParent, returnCode + ": " + message);
+        }
+
+        public void QuitGame()
+        {
+            Application.Quit();
         }
 
         public override void OnErrorInfo(ErrorInfo errorInfo)

@@ -1,10 +1,7 @@
 using System.Collections;
-using DataStructures.Event;
-using DataStructures.ReactiveVariable;
 using Features.Battle.StateMachine;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Features.Battle.Scripts
 {
@@ -13,7 +10,7 @@ namespace Features.Battle.Scripts
     {
         [SerializeField] private float endScreenTime;
         
-        private BattleManager _battleManager;
+        private MusicBehaviour _musicBehaviour;
         private bool _initialized;
     
         private void OnEnable()
@@ -21,11 +18,11 @@ namespace Features.Battle.Scripts
             _initialized = false;
         }
 
-        public EndGameState Initialize(BattleManager battleManager)
+        public EndGameState Initialize(MusicBehaviour musicBehaviour)
         {
             if (_initialized) return this;
             
-            _battleManager = battleManager;
+            _musicBehaviour = musicBehaviour;
 
             return this;
         }
@@ -34,8 +31,14 @@ namespace Features.Battle.Scripts
         {
             yield return base.Enter();
 
-            yield return new WaitForSeconds(endScreenTime);
+            if (endScreenTime >= _musicBehaviour.MusicFadeTime)
+            {
+                yield return new WaitForSeconds(endScreenTime - _musicBehaviour.MusicFadeTime);
+            }
             
+            _musicBehaviour.Disable();
+            yield return new WaitForSeconds(_musicBehaviour.MusicFadeTime);
+
             PhotonNetwork.Disconnect();
         }
     }
