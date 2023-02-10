@@ -144,7 +144,8 @@ namespace Features.Battle.Scripts
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
             };
 
             SendOptions sendOptions = new SendOptions
@@ -159,7 +160,8 @@ namespace Features.Battle.Scripts
         {
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
             };
 
             SendOptions sendOptions = new SendOptions
@@ -179,7 +181,8 @@ namespace Features.Battle.Scripts
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.All
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
             };
 
             SendOptions sendOptions = new SendOptions

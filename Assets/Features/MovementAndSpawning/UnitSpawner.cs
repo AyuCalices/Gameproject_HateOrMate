@@ -115,7 +115,8 @@ namespace Features.MovementAndSpawning
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.Others
+                Receivers = ReceiverGroup.Others,
+                CachingOption = EventCaching.AddToRoomCache
             };
 
             SendOptions sendOptions = new SendOptions
@@ -143,7 +144,8 @@ namespace Features.MovementAndSpawning
             
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.MasterClient
+                Receivers = ReceiverGroup.MasterClient,
+                CachingOption = EventCaching.AddToRoomCache
             };
 
             SendOptions sendOptions = new SendOptions
