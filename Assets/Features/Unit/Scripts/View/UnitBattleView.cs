@@ -1,4 +1,5 @@
 using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.View
@@ -11,7 +12,7 @@ namespace Features.Unit.Scripts.View
 
         private void Awake()
         {
-            SetStaminaActive(GetComponent<BattleBehaviour>() != null);
+            SetStaminaActive(GetComponent<ModUnitBehaviour>() != null);
         }
 
         public void SetHealthActive(bool value)

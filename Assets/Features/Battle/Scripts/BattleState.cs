@@ -72,6 +72,14 @@ namespace Features.Battle.Scripts
             {
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Stage Failed!");
             }
+            
+            onLocalDespawnAllUnits?.Invoke();
+            
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+            {
+                networkedUnitBehaviour.OnStageEnd();
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
+            }
         }
 
         private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
@@ -247,14 +255,6 @@ namespace Features.Battle.Scripts
             else
             {
                 _battleManager.RequestStageSetupState();
-            }
-            
-            onLocalDespawnAllUnits?.Invoke();
-            
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
         }
         

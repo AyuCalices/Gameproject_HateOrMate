@@ -22,5 +22,5 @@ MonoBehaviour:
     statType: 1
     baseValue: 40
     scaleValue: 0
-    stageScaleValue: 1.1
+    stageScaleValue: 1.09
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
