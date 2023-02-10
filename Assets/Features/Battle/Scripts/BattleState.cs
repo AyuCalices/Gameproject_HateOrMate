@@ -31,6 +31,7 @@ namespace Features.Battle.Scripts
         
         private BattleManager _battleManager;
         private bool _initialized;
+        private bool _stageIsCompleted;
 
         private void OnEnable()
         {
@@ -49,6 +50,8 @@ namespace Features.Battle.Scripts
         public override IEnumerator Enter()
         {
             yield return base.Enter();
+            
+            _stageIsCompleted = false;
             
             NetworkedStatsBehaviour.onDamageGained += CheckStage;
 
@@ -92,7 +95,7 @@ namespace Features.Battle.Scripts
 
         private void SetStage()
         {
-            if (!PhotonNetwork.IsMasterClient) return;
+            if (!PhotonNetwork.IsMasterClient && _stageIsCompleted) return;
             
             if (battleData.Stage.Get() >= battleData.CompletedStage.Get())
             {
@@ -102,6 +105,7 @@ namespace Features.Battle.Scripts
 
             if (!HasUnitAlive(TeamTagType.Mate, TeamTagType.Own))
             {
+                _stageIsCompleted = true;
                 bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
                 RestartStage_RaiseEvent(enterLootingState);
                 return;
@@ -109,6 +113,7 @@ namespace Features.Battle.Scripts
 
             if (!HasUnitAlive(TeamTagType.Enemy))
             {
+                _stageIsCompleted = true;
                 bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
                 LootableGenerator_SO[] lootables = RandomizeLootables();
                 NextStage_RaiseEvent(enterLootingState, lootables, battleData.Stage.Get());
