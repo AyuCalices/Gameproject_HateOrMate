@@ -843,7 +843,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &832243802 stripped
 MonoBehaviour:
@@ -1297,7 +1297,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -1351,6 +1351,7 @@ MonoBehaviour:
   roomName: {fileID: 309650938}
   readyCheckRoomDecision: {fileID: 11400000, guid: 9b33722a3f7e62b4da38acdc3394975c, type: 2}
   musicBehaviour: {fileID: 2125445129}
+  playerCount: {fileID: 7614211766554729699}
 --- !u!114 &1664259149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2156,3 +2157,14 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 3772695038813858037, guid: 9582a8df012896140900e6519709f2a8, type: 3}
   m_PrefabInstance: {fileID: 7614211766554729697}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7614211766554729699 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2689383925363715071, guid: 9582a8df012896140900e6519709f2a8, type: 3}
+  m_PrefabInstance: {fileID: 7614211766554729697}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

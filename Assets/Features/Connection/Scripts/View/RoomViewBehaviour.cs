@@ -19,6 +19,7 @@ namespace Features.Connection.Scripts.View
         [SerializeField] private TMP_Text roomName;
         [SerializeField] private BoolRoomDecitions_SO readyCheckRoomDecision;
         [SerializeField] private MusicBehaviour musicBehaviour;
+        [SerializeField] private TMP_Text playerCount;
 
         private bool _isInLobby;
         private bool _isReady;
@@ -51,6 +52,8 @@ namespace Features.Connection.Scripts.View
 
         private void UpdatePlayerDecisionVisualisation()
         {
+            playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / 2"; 
+            
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 string identifier = readyCheckRoomDecision.Identifier(player);
