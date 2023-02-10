@@ -545,7 +545,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 95da9b96e9f37c94f8f25cf95c3c1de3, type: 2}
   m_audioClip: {fileID: 8300000, guid: c04625ab9229387489c3f395f0f8d122, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -1404,7 +1404,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &803132166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2376,7 +2376,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1221129562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4703,7 +4703,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 860b87ad9831ac945a36f34029e385c2, type: 2}
   m_audioClip: {fileID: 8300000, guid: 75c8c76c2be8d5343a3d0674d455973f, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4876,7 +4876,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 24300002, guid: 860b87ad9831ac945a36f34029e385c2, type: 2}
   m_audioClip: {fileID: 8300000, guid: ab16e18c2c1392742a2bf7e87f60f3fd, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.8
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4981,7 +4981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 365237932807478090, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 311
       objectReference: {fileID: 0}
     - target: {fileID: 486929791517998828, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6087,7 +6087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 311
       objectReference: {fileID: 0}
     - target: {fileID: 6917578677737203262, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x

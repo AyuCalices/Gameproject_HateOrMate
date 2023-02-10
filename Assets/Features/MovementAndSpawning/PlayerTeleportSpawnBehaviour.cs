@@ -94,7 +94,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPlayerSynchronizedDespawn, data, raiseEventOptions, sendOptions);
@@ -183,7 +183,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformTeleportThenSpawn, data, raiseEventOptions, sendOptions);
@@ -204,7 +204,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformSpawnThenTeleport, data, raiseEventOptions, sendOptions);
@@ -229,7 +229,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestTeleport, data, raiseEventOptions, sendOptions);
@@ -255,7 +255,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestSpawnThenTeleport, data, raiseEventOptions, sendOptions);

@@ -38,12 +38,6 @@ namespace Features.Battle.Scripts
         {
             yield return base.Enter();
 
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
-            {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
-            }
-            
             if (!battleData.IsStageRestart)
             {
                 battleData.Stage.Add(1);
@@ -81,7 +75,7 @@ namespace Features.Battle.Scripts
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestBattleState, null, raiseEventOptions, sendOptions);

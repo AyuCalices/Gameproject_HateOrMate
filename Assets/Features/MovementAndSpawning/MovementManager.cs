@@ -100,7 +100,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestGridStep, data, raiseEventOptions, sendOptions);
@@ -126,7 +126,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridStep, data, raiseEventOptions, sendOptions);
@@ -146,7 +146,7 @@ namespace Features.MovementAndSpawning
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnEnterUnitIdleState, data, raiseEventOptions, sendOptions);

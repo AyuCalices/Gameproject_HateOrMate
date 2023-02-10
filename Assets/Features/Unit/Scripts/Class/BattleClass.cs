@@ -52,7 +52,7 @@ namespace Features.Unit.Scripts.Class
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSendFloatToTarget, data, raiseEventOptions, sendOptions);
@@ -99,7 +99,7 @@ namespace Features.Unit.Scripts.Class
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUpdateAllClientsHealth, data, raiseEventOptions, sendOptions);

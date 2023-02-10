@@ -13,7 +13,6 @@ using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Features.Battle.Scripts
@@ -142,7 +141,7 @@ namespace Features.Battle.Scripts
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnNextStage, data, raiseEventOptions, sendOptions);
@@ -157,7 +156,7 @@ namespace Features.Battle.Scripts
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnEndGame, null, raiseEventOptions, sendOptions);
@@ -177,7 +176,7 @@ namespace Features.Battle.Scripts
 
             SendOptions sendOptions = new SendOptions
             {
-                Reliability = false
+                Reliability = true
             };
             
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRestartStage, data, raiseEventOptions, sendOptions);
@@ -241,8 +240,6 @@ namespace Features.Battle.Scripts
 
         private void EndStage(bool enterLootingState)
         {
-            onLocalDespawnAllUnits?.Invoke();
-            
             if (enterLootingState)
             {
                 _battleManager.RequestLootingState();
@@ -250,6 +247,14 @@ namespace Features.Battle.Scripts
             else
             {
                 _battleManager.RequestStageSetupState();
+            }
+            
+            onLocalDespawnAllUnits?.Invoke();
+            
+            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+            {
+                networkedUnitBehaviour.OnStageEnd();
+                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
         }
         

@@ -16,7 +16,7 @@ MonoBehaviour:
   onExitState: {fileID: 11400000, guid: 743e160f240c9174fab5193b94670285, type: 2}
   isStateActive: 0
   requestLootPhaseButtonRoomDecision: {fileID: 11400000, guid: d2c41296930c3364c9b0314c9ee87ccb, type: 2}
-  lootCountOnStageComplete: 2
+  lootCountOnStageComplete: 1
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   notePopupPrefab: {fileID: 1631948157505463686, guid: 27966faf2c568c84291f9eb02e623c00, type: 3}
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
