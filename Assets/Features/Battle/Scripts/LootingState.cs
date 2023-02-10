@@ -21,7 +21,7 @@ namespace Features.Battle.Scripts
         
         private BattleManager _battleManager;
         private bool _initialized;
-        private IDisposable _disposable;
+        private List<LootableView> _lootables;
         
         private void OnEnable()
         {
@@ -51,23 +51,24 @@ namespace Features.Battle.Scripts
             {
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Take Your Items!");
                 
-                List<LootableView> lootables = onInstantiateLootable.Invoke();
-                _disposable = lootables.ObserveEveryValueChanged(list => list.Count)
-                    .Where(count => count == 0)
-                    .Subscribe(_ =>
-                    {
-                        battleData.Lootables.Clear();
-                        battleData.LootableStages.Clear();
-                        _battleManager.RequestPlacementState();
-                    });
+                _lootables = onInstantiateLootable.Invoke();
             }
+        }
+
+        public override IEnumerator Execute()
+        {
+            yield return base.Execute();
+
+            if (_lootables.Count != 0 && _battleManager.StateIsValid(typeof(LootingState), StateProgressType.Execute)) yield break;
+            
+            battleData.Lootables.Clear();
+            battleData.LootableStages.Clear();
+            _battleManager.RequestPlacementState();
         }
 
         public override IEnumerator Exit()
         {
             yield return base.Exit();
-            
-            _disposable?.Dispose();
         }
     }
 }
