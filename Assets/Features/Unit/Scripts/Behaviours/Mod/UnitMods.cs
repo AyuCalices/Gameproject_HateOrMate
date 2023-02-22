@@ -1,4 +1,5 @@
 using System;
+using Features.Loot.Scripts;
 using Features.Loot.Scripts.ModView;
 
 namespace Features.Unit.Scripts.Behaviours.Mod
@@ -19,11 +20,19 @@ namespace Features.Unit.Scripts.Behaviours.Mod
             }
         }
 
-        public void AddModToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
             foreach (ModSlotBehaviour modSlotBehaviour in _modSlotBehaviours)
             {
-                modSlotBehaviour.ApplyModToNewInstantiatedUnit(instantiatedUnit);
+                modSlotBehaviour.ApplyToInstantiatedUnit(instantiatedUnit);
+            }
+        }
+        
+        public void ApplyOnUnitViewInstantiated(UnitViewBehaviour instantiatedView)
+        {
+            foreach (ModSlotBehaviour modSlotBehaviour in _modSlotBehaviours)
+            {
+                modSlotBehaviour.ApplyOnUnitViewInstantiated(instantiatedView);
             }
         }
 

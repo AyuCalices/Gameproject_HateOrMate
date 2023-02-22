@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
+using Features.Loot.Scripts.ModView;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Stats;
 using Photon.Pun;
 using Photon.Realtime;
@@ -16,17 +19,30 @@ namespace Features.Loot.Scripts
 {
     public class UnitViewBehaviour : MonoBehaviourPunCallbacks
     {
+        [SerializeField] private UnitViewRuntimeSet_SO unitViewRuntimeSet;
         [SerializeField] private UnitType_SO towerUnitType;
         [SerializeField] private Image unitSprite;
         [SerializeField] protected List<StatTextUpdateBehaviour> statTextUpdateBehaviours;
         [SerializeField] protected TMP_Text nameText;
+        
+        public UnitMods UnitMods { get; private set; }
     
-        private NetworkedStatsBehaviour _unitOwnerStats;
+        public NetworkedStatsBehaviour UnitOwnerStats { get; private set; }
         private BattleBehaviour _unitOwnerBattleBehaviour;
+        private ModSlotBehaviour[] _modSlotBehaviour;
+
+        private void Awake()
+        {
+            _modSlotBehaviour = GetComponentsInChildren<ModSlotBehaviour>();
+            unitViewRuntimeSet.Add(this);
+        }
 
         private void OnDestroy()
         {
-            _unitOwnerStats.NetworkedStatServiceLocator.onUpdateStat -= UpdateSingleStatText;
+            UnitMods.OnDestroy();
+            unitViewRuntimeSet.Remove(this);
+            
+            UnitOwnerStats.NetworkedStatServiceLocator.onUpdateStat -= UpdateSingleStatText;
         }
         
         private void UpdateSingleStatText(StatType statType)
@@ -34,7 +50,7 @@ namespace Features.Loot.Scripts
             foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours
                 .Where(statTextUpdateBehaviour => statTextUpdateBehaviour.StatType == statType))
             {
-                statTextUpdateBehaviour.UpdateText(Mathf.Floor(_unitOwnerStats.GetFinalStat(statType)).ToString());
+                statTextUpdateBehaviour.UpdateText(Mathf.Floor(UnitOwnerStats.GetFinalStat(statType)).ToString());
                 return;
             }
         }
@@ -51,10 +67,12 @@ namespace Features.Loot.Scripts
 
         public void Initialize(NetworkedStatsBehaviour unitOwnerStats)
         {
-            _unitOwnerStats = unitOwnerStats;
+            UnitMods = new UnitMods(unitOwnerStats, _modSlotBehaviour);
+            
+            UnitOwnerStats = unitOwnerStats;
             _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<BattleBehaviour>();
             
-            _unitOwnerStats.NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
+            UnitOwnerStats.NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
             
             InitializeVisualization();
             InitializeAllText();

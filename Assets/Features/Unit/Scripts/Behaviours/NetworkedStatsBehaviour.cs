@@ -3,6 +3,7 @@ using System.Globalization;
 using DataStructures.Event;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
+using Features.Loot.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
@@ -18,7 +19,7 @@ namespace Features.Unit.Scripts.Behaviours
     public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
     {
         [SerializeField] private BattleData_SO battleData;
-        [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
+        [SerializeField] private UnitViewRuntimeSet_SO unitViewRuntimeSet;
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private DamagePopup damagePopupPrefab;
         [SerializeField] private GameEvent onHit;
@@ -95,9 +96,9 @@ namespace Features.Unit.Scripts.Behaviours
         
         private void ApplyModToInstantiatedUnit()
         {
-            foreach (ModUnitBehaviour unitModBehaviour in modUnitRuntimeSet.GetItems())
+            foreach (UnitViewBehaviour unitModBehaviour in unitViewRuntimeSet.GetItems())
             {
-                unitModBehaviour.UnitMods.AddModToInstantiatedUnit(this);
+                unitModBehaviour.UnitMods.ApplyToInstantiatedUnit(this);
             }
         }
 

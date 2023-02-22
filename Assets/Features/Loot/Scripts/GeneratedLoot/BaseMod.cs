@@ -50,6 +50,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot, ErrorPopup errorPopup, Transform transform) { return true; }
         public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
+        public virtual void ApplyOnUnitViewInstantiated(UnitViewBehaviour instantiatedView) {}
         protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot);
         protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
     }

@@ -295,7 +295,7 @@ GameObject:
   - component: {fileID: 5238307755776949831}
   - component: {fileID: 3335792981270545195}
   m_Layer: 5
-  m_Name: UnitModView
+  m_Name: UnitView
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -337,6 +337,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d567e6c825a52f944b9db574a0bfd91d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  unitViewRuntimeSet: {fileID: 11400000, guid: b123533741e1f1f419800c4c7cb0467b, type: 2}
   towerUnitType: {fileID: 11400000, guid: 442a43b38870e4342afbaa6c20874259, type: 2}
   unitSprite: {fileID: 4552916568093630943}
   statTextUpdateBehaviours:

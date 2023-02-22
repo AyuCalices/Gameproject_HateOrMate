@@ -13,6 +13,7 @@ namespace Features.Connection.Scripts.View
     {
         [SerializeField] private GameEvent onJoinedRoom;
         [SerializeField] private GameEvent onLeftRoom;
+        [SerializeField] private int expectedPlayerCount = 1;
     
         [SerializeField] private PlayerRoomUnitInstanceBehaviour playerRoomUnitInstanceBehaviourPrefab;
         [SerializeField] private Transform playerRoomBehaviourParent;
@@ -28,7 +29,7 @@ namespace Features.Connection.Scripts.View
         {
             UpdatePlayerDecisionVisualisation();
             
-            if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount < 2) return;
+            if (!PhotonNetwork.IsMasterClient || PhotonNetwork.CurrentRoom.PlayerCount < expectedPlayerCount) return;
             
             readyCheckRoomDecision.IsValidDecision(() =>
             {
@@ -52,8 +53,6 @@ namespace Features.Connection.Scripts.View
 
         private void UpdatePlayerDecisionVisualisation()
         {
-            playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / 2"; 
-            
             foreach (Player player in PhotonNetwork.PlayerList)
             {
                 string identifier = readyCheckRoomDecision.Identifier(player);
@@ -80,16 +79,19 @@ namespace Features.Connection.Scripts.View
                 playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, player);
             }
 
+            playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + expectedPlayerCount;
             UpdatePlayerDecisionVisualisation();
         }
     
         public override void OnPlayerEnteredRoom(Player newPlayer)
         {
+            playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + expectedPlayerCount;
             playerRoomUnitInstanceBehaviourPrefab.Instantiate(playerRoomBehaviourParent, newPlayer);
         }
 
         public override void OnPlayerLeftRoom(Player otherPlayer)
         {
+            playerCount.text = PhotonNetwork.CurrentRoom.PlayerCount + " / " + expectedPlayerCount;
             PlayerRoomUnitInstanceBehaviour.Destroy(otherPlayer);
         }
 

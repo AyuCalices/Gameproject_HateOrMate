@@ -12,11 +12,11 @@ namespace Features.Loot.Scripts.Generator
     {
         [SerializeField] private ModBehaviour modBehaviourPrefab;
         [SerializeField] private UnitClassData_SO classData;
-        [SerializeField] private ModUnitRuntimeSet_SO modUnitRuntimeSet;
+        [SerializeField] private UnitViewRuntimeSet_SO unitViewRuntimeSet;
         
         public override void OnAddInstanceToPlayer(int stageAsLevel)
         {
-            UnitMod unitMod = new UnitMod(classData, modUnitRuntimeSet, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
+            UnitMod unitMod = new UnitMod(classData, unitViewRuntimeSet, SpritePrefab, Description, stageAsLevel, modBehaviourPrefab);
             unitMod.RaiseOnModInstantiated();
         }
     }

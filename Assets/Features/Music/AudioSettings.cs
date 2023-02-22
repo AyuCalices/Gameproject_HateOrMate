@@ -56,7 +56,6 @@ namespace Features.Audio_Namespace.Logic
             volumeMixer.SetFloat("Vol", dbMusic);
         
             musicSlider.value = volume.Get();
-            Debug.Log(musicSlider.value);
         }
 
         private void SetVolume(float value)

@@ -10,11 +10,6 @@ namespace Features.Unit.Scripts.View
         [SerializeField] private Transform healthTransform;
         [SerializeField] private Transform staminaTransform;
 
-        private void Awake()
-        {
-            SetStaminaActive(GetComponent<ModUnitBehaviour>() != null);
-        }
-
         public void SetHealthActive(bool value)
         {
             healthTransform.gameObject.SetActive(value);

@@ -65,12 +65,7 @@ namespace Features.MovementAndSpawning
             {
                 battleBehaviour.UnitClassData = unitClassData;
             }
-
-
-            if (instantiatedUnit.TryGetComponent(out ModUnitBehaviour modUnitBehaviour))
-            {
-                modUnitBehaviour.InstantiateModView();
-            }
+            
             instantiatedUnit.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
             
             

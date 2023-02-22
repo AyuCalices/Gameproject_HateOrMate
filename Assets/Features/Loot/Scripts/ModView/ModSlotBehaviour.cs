@@ -29,12 +29,20 @@ namespace Features.Loot.Scripts.ModView
             _slot = slot;
         }
         
-        public void ApplyModToNewInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
         {
             if (!ContainsMod) return;
             if (!_isActive) return;
             
             ContainedModBehaviour.ContainedMod.ApplyToInstantiatedUnit(instantiatedUnit);
+        }
+        
+        public void ApplyOnUnitViewInstantiated(UnitViewBehaviour instantiatedView)
+        {
+            if (!ContainsMod) return;
+            if (!_isActive) return;
+            
+            ContainedModBehaviour.ContainedMod.ApplyOnUnitViewInstantiated(instantiatedView);
         }
 
         public void OnDrop(PointerEventData eventData)
