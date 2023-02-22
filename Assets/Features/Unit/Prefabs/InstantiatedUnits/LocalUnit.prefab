@@ -94,11 +94,12 @@ GameObject:
   m_Component:
   - component: {fileID: 7663717459320071767}
   - component: {fileID: 6917733689108929931}
-  - component: {fileID: 2996986347998787957}
+  - component: {fileID: 7463803209756924334}
   - component: {fileID: 3126989503899845422}
   - component: {fileID: 9148525603305500277}
   - component: {fileID: 2691383368057905019}
   - component: {fileID: 6978381750867251333}
+  - component: {fileID: 1307127105412461347}
   m_Layer: 0
   m_Name: LocalUnit
   m_TagString: Untagged
@@ -140,7 +141,7 @@ MonoBehaviour:
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
   damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
   onHit: {fileID: 11400000, guid: a73743ef6ec6bbb4fbd94ef5e0ffd03e, type: 2}
---- !u!114 &2996986347998787957
+--- !u!114 &7463803209756924334
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,7 +150,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7663717459320071761}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fbc14778b6c237458fcbddb88fb81f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
@@ -234,6 +235,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1307127105412461347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7663717459320071761}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fbc14778b6c237458fcbddb88fb81f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  battleData: {fileID: 0}
+  unitSprite: {fileID: 0}
 --- !u!1001 &6370668864377057323
 PrefabInstance:
   m_ObjectHideFlags: 0

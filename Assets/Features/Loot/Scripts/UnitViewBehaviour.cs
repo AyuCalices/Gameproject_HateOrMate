@@ -28,7 +28,7 @@ namespace Features.Loot.Scripts
         public UnitMods UnitMods { get; private set; }
     
         public NetworkedStatsBehaviour UnitOwnerStats { get; private set; }
-        private BattleBehaviour _unitOwnerBattleBehaviour;
+        private NetworkedBattleBehaviour _unitOwnerBattleBehaviour;
         private ModSlotBehaviour[] _modSlotBehaviour;
 
         private void Awake()
@@ -70,7 +70,7 @@ namespace Features.Loot.Scripts
             UnitMods = new UnitMods(unitOwnerStats, _modSlotBehaviour);
             
             UnitOwnerStats = unitOwnerStats;
-            _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<BattleBehaviour>();
+            _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<NetworkedBattleBehaviour>();
             
             UnitOwnerStats.NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
             

@@ -10,10 +10,10 @@ using UnityEngine.EventSystems;
 
 namespace Features.Unit.Scripts.Behaviours
 {
-    [RequireComponent(typeof(BattleBehaviour))]
+    [RequireComponent(typeof(NetworkedBattleBehaviour))]
     public class UnitDragPlacementBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        public static Action<BattleBehaviour, Vector3Int> onPerformTeleport;
+        public static Action<NetworkedBattleBehaviour, Vector3Int> onPerformTeleport;
         
         [Header("References")]
         [SerializeField] private BattleData_SO battleData;
@@ -25,13 +25,13 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private float hoverSpeed = 7f;
         [SerializeField] private LeanTweenType leanTweenType;
         
-        private BattleBehaviour _battleBehaviour;
+        private NetworkedBattleBehaviour _battleBehaviour;
         private GameObject _instantiatedPrefab;
         private Vector3 _currentTileWorldPosition;
 
         private void Awake()
         {
-            _battleBehaviour = GetComponent<BattleBehaviour>();
+            _battleBehaviour = GetComponent<NetworkedBattleBehaviour>();
         }
 
         public void OnDisable()

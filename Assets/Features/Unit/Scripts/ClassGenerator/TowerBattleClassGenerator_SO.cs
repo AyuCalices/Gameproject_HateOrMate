@@ -11,7 +11,7 @@ namespace Features.Unit.Scripts.ClassGenerator
     public class TowerBattleClassGenerator_SO : BattleClassGenerator_SO
     {
         protected override BattleClass InternalGenerate(BaseDamageAnimationBehaviour baseDamageAnimationBehaviour, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, 
-            BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
+            NetworkedBattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
         {
             return new TowerBattleClass(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, baseDamageAnimationBehaviour);
         }

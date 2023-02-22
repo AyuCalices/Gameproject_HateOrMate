@@ -20,10 +20,10 @@ namespace Features.Unit.Scripts.Class
     public abstract class BattleClass
     {
         protected readonly NetworkedStatsBehaviour ownerNetworkingStatsBehaviour;
-        protected readonly BattleBehaviour ownerBattleBehaviour;
+        protected readonly NetworkedBattleBehaviour ownerBattleBehaviour;
         protected readonly UnitBattleView ownerUnitBattleView;
 
-        protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
+        protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour, 
             UnitBattleView ownerUnitBattleView)
         {
             this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
@@ -133,7 +133,7 @@ namespace Features.Unit.Scripts.Class
         protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
         {
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
-            if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
+            if (attackedNetworkedBattleBehaviour is NetworkedBattleBehaviour attackedBattleBehaviour)
             {
                 attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
                 attackedUnitStats.RemovedHealth += attackValue;

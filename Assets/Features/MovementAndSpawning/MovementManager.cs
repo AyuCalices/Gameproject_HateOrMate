@@ -44,7 +44,7 @@ namespace Features.MovementAndSpawning
             MovementState.onPerformMovement -= RequestGridStep;
         }
 
-        private void RequestGridStep(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
+        private void RequestGridStep(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -235,7 +235,7 @@ namespace Features.MovementAndSpawning
                     int viewID = (int) data[0];
 
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
-                        out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
+                        out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour is NetworkedBattleBehaviour battleBehaviour)
                     {
                         battleBehaviour.ForceIdleState();
                     }

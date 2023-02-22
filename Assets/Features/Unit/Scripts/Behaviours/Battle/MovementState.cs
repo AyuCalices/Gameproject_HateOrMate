@@ -7,14 +7,14 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 {
     public class MovementState : IState
     {
-        public static Action<BattleBehaviour, Vector3Int, int> onPerformMovement;
+        public static Action<NetworkedBattleBehaviour, Vector3Int, int> onPerformMovement;
         
-        private readonly BattleBehaviour _battleBehaviour;
+        private readonly NetworkedBattleBehaviour _battleBehaviour;
         private readonly Vector3Int _targetPosition;
         private readonly int _skipLastMovementsCount;
         private readonly TileRuntimeDictionary_SO _tileRuntimeDictionary;
 
-        public MovementState(BattleBehaviour battleBehaviour, Vector3Int targetPosition, int skipLastMovementsCount, TileRuntimeDictionary_SO tileRuntimeDictionary)
+        public MovementState(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetPosition, int skipLastMovementsCount, TileRuntimeDictionary_SO tileRuntimeDictionary)
         {
             _battleBehaviour = battleBehaviour;
             _targetPosition = targetPosition;

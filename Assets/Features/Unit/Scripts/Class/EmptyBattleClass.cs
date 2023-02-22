@@ -8,7 +8,7 @@ namespace Features.Unit.Scripts.Class
 {
     public class EmptyBattleClass : BattleClass
     {
-        public EmptyBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
+        public EmptyBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour, 
             UnitBattleView ownerUnitBattleView) : 
             base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {

@@ -17,7 +17,7 @@ namespace Features.Unit.Scripts
 
             foreach (NetworkedBattleBehaviour towerBattleAction in towerBattleActions)
             {
-                if (towerBattleAction is not BattleBehaviour {CurrentState: AttackState} battleBehaviour) continue;
+                if (towerBattleAction is not NetworkedBattleBehaviour {CurrentState: AttackState} battleBehaviour) continue;
                 if (battleBehaviour.UnitClassData == towerClassData)
                 {
                     battleBehaviour.BattleClass.OnPerformAction();

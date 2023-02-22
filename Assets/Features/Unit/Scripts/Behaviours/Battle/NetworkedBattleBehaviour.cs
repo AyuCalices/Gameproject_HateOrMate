@@ -2,6 +2,7 @@ using System;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
+using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
@@ -18,8 +19,26 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
         [SerializeField] protected SpriteRenderer unitSprite;
+        
+        
+        public IBattleBehaviour BattleBehaviour { get; set; }
+        public IState CurrentState => BattleBehaviour.StateMachine.CurrentState;
+        public float MovementSpeed => NetworkedStatsBehaviour.GetFinalStat(StatType.MovementSpeed);
+        
+        private BattleClass _battleClass;
+        public BattleClass BattleClass => _battleClass;
 
-        protected StateMachine stateMachine;
+        private UnitClassData_SO _unitClassData;
+        public UnitClassData_SO UnitClassData
+        {
+            get => _unitClassData;
+            set
+            {
+                _unitClassData = value;
+                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, unitBattleView);
+            }
+        }
+        
         
         public TeamTagType[] TeamTagTypes { get; private set; }
         public TeamTagType[] OpponentTagType { get; private set; }
@@ -27,7 +46,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         public int SpawnerInstanceIndex { get; set; }
         
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
-        public IState CurrentState => stateMachine.CurrentState;
+        
+        
         
         public PhotonView PhotonView { get; private set; }
         
@@ -70,9 +90,6 @@ namespace Features.Unit.Scripts.Behaviours.Battle
     
         protected virtual void Awake()
         {
-            stateMachine = new StateMachine();
-            stateMachine.Initialize(new IdleState(this));
-            
             PhotonView = GetComponent<PhotonView>();
             unitBattleView = GetComponent<UnitBattleView>();
             NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
@@ -83,43 +100,39 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             ClearRuntimeSets();
         }
 
-        public virtual void OnStageEnd()
+        private void Update()
         {
-            if (CurrentState is DeathState)
-            {
-                ForceIdleState();
-            }
+            BattleBehaviour.Update();
+        }
+
+        public void OnStageEnd()
+        {
+            BattleBehaviour.OnStageEnd();
         }
 
         internal void ForceIdleState()
         {
-            stateMachine.ChangeState(new IdleState(this));
+            BattleBehaviour.ForceIdleState();
+        }
+        
+        internal bool TryRequestIdleState()
+        {
+            return BattleBehaviour.TryRequestIdleState();
         }
 
-        internal virtual bool TryRequestAttackState()
+        internal bool TryRequestAttackState()
         {
-            return false;
+            return BattleBehaviour.TryRequestAttackState();
         }
 
-        internal virtual bool TryRequestMovementStateByClosestUnit()
+        internal bool TryRequestMovementStateByClosestUnit()
         {
-            return false;
+            return BattleBehaviour.TryRequestMovementStateByClosestUnit();
         }
 
-        internal virtual bool TryRequestDeathState()
+        internal bool TryRequestDeathState()
         {
-            bool result = battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
-            
-            if (result)
-            {
-                stateMachine.ChangeState(new DeathState(this));
-            }
-            else
-            {
-                Debug.LogWarning("Requesting Death is only possible during Battle!");
-            }
-
-            return false;
+            return BattleBehaviour.TryRequestDeathState();
         }
 
         private void OnMouseDown()

@@ -94,7 +94,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6238822348637795685}
   - component: {fileID: -9089128588497070421}
-  - component: {fileID: 4585056453339632491}
+  - component: {fileID: 8968656196307198858}
   - component: {fileID: 1119605207248732696}
   - component: {fileID: 1844214538914090057}
   - component: {fileID: -6307357758927477977}
@@ -139,7 +139,7 @@ MonoBehaviour:
   canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
   damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
   onHit: {fileID: 11400000, guid: a73743ef6ec6bbb4fbd94ef5e0ffd03e, type: 2}
---- !u!114 &4585056453339632491
+--- !u!114 &8968656196307198858
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -148,7 +148,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6238822348637795683}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aec55d7fc193914c92fa739d543225d, type: 3}
+  m_Script: {fileID: 11500000, guid: 7fbc14778b6c237458fcbddb88fb81f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

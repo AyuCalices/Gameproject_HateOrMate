@@ -18,7 +18,7 @@ namespace Features.Unit.Scripts.Class
         private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Speed);
         private float _staminaRefreshTimeDelta;
 
-        public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour,
+        public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour,
             UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
             base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
@@ -55,7 +55,13 @@ namespace Features.Unit.Scripts.Class
             _currentStamina--;
             ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
 
-            NetworkedBattleBehaviour targetUnit = ownerBattleBehaviour.GetTarget.Key;
+            if (ownerBattleBehaviour.BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            {
+                Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerBattleBehaviour.name} doesnt have an ActiveBattleBehaviour!");
+                return;
+            }
+
+            NetworkedBattleBehaviour targetUnit = activeBattleBehaviour.GetTarget.Key;
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour, targetUnit, () =>
                 {

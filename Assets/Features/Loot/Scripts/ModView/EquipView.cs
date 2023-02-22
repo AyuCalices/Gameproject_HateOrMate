@@ -45,7 +45,6 @@ namespace Features.Loot.Scripts.ModView
 
         private void TryAddUnitViews()
         {
-            Debug.Log("o/");
             foreach (NetworkedBattleBehaviour networkedBattleBehaviour in unitRuntimeSet.GetItems())
             {
                 if (!networkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) || 

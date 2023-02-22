@@ -61,7 +61,7 @@ namespace Features.MovementAndSpawning
             instantiatedUnit.SpawnerInstanceIndex = index;
             
             
-            if (instantiatedUnit.TryGetComponent(out BattleBehaviour battleBehaviour))
+            if (instantiatedUnit.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
             {
                 battleBehaviour.UnitClassData = unitClassData;
             }

@@ -13,7 +13,7 @@ namespace Features.Unit.Scripts.ClassGenerator
         [SerializeField] private bool isAI;
         
         protected override BattleClass InternalGenerate(BaseDamageAnimationBehaviour baseDamageAnimationBehaviour, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, 
-            BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
+            NetworkedBattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
         {
             return new CasterBattleClass(isAI, ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView, baseDamageAnimationBehaviour);
         }

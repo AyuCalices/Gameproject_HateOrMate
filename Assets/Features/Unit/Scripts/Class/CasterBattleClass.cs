@@ -17,7 +17,7 @@ namespace Features.Unit.Scripts.Class
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
-            BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
+            NetworkedBattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
             ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
         {
             _isAi = isAi;
@@ -49,7 +49,13 @@ namespace Features.Unit.Scripts.Class
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            NetworkedBattleBehaviour targetUnit = ownerBattleBehaviour.GetTarget.Key;
+            if (ownerBattleBehaviour.BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            {
+                Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerBattleBehaviour.name} doesnt have an ActiveBattleBehaviour!");
+                return;
+            }
+            
+            NetworkedBattleBehaviour targetUnit = activeBattleBehaviour.GetTarget.Key;
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerBattleBehaviour, targetUnit, () =>
                 {

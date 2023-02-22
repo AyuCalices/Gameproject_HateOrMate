@@ -5,11 +5,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 {
     public class AttackState : IState
     {
-        private readonly BattleBehaviour _battleBehaviour;
+        private readonly NetworkedBattleBehaviour _battleBehaviour;
         private readonly BattleClass _battleClass;
         
         
-        public AttackState(BattleBehaviour battleBehaviour, BattleClass battleClass)
+        public AttackState(NetworkedBattleBehaviour battleBehaviour, BattleClass battleClass)
         {
             _battleBehaviour = battleBehaviour;
             _battleClass = battleClass;

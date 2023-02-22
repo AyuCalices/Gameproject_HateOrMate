@@ -4,7 +4,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 {
     public class DeathState : IState
     {
-        private NetworkedBattleBehaviour _battleBehaviour;
+        private readonly NetworkedBattleBehaviour _battleBehaviour;
         
         public DeathState(NetworkedBattleBehaviour battleBehaviour)
         {

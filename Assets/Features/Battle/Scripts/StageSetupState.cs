@@ -44,7 +44,7 @@ namespace Features.Battle.Scripts
 
                 foreach (NetworkedBattleBehaviour networkedBattleBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
                 {
-                    if (networkedBattleBehaviour is BattleBehaviour battleBehaviour && battleBehaviour.UnitClassData.levelUpOnStageClear)
+                    if (networkedBattleBehaviour is NetworkedBattleBehaviour battleBehaviour && battleBehaviour.UnitClassData.levelUpOnStageClear)
                     {
                         networkedBattleBehaviour.NetworkedStatsBehaviour.SetBaseStats(battleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
                     }

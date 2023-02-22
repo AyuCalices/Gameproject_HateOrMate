@@ -50,7 +50,7 @@ namespace Features.MovementAndSpawning
             });
         }
         
-        private void RequestTeleport(BattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition)
+        private void RequestTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition)
         {
             if (PhotonNetwork.IsMasterClient)
             {
@@ -298,7 +298,7 @@ namespace Features.MovementAndSpawning
                     if (PhotonNetwork.IsMasterClient)
                     {
                         PhotonView photonView = PhotonView.Find(viewID);
-                        photonView.GetComponent<BattleBehaviour>().IsSpawnedLocally = false;
+                        photonView.GetComponent<NetworkedBattleBehaviour>().IsSpawnedLocally = false;
                         photonView.GetComponent<NetworkedStatsBehaviour>().OnPhotonViewIdAllocated();
                     }
                     else

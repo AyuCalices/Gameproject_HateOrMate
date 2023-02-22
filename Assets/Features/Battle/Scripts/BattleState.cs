@@ -203,7 +203,7 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
-                        && networkedUnitBehaviour is BattleBehaviour battleBehaviour)
+                        && networkedUnitBehaviour is NetworkedBattleBehaviour battleBehaviour)
                     {
                         battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
                     }
