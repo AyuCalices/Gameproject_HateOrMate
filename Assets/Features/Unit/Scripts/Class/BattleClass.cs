@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Linq;
 using ExitGames.Client.Photon;
 using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts;
@@ -133,16 +134,17 @@ namespace Features.Unit.Scripts.Class
         protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
         {
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
-            if (attackedNetworkedBattleBehaviour is NetworkedBattleBehaviour attackedBattleBehaviour)
+            if (PhotonNetwork.IsMasterClient && (attackedNetworkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Enemy) ||
+                attackedNetworkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own)))
             {
-                attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
+                attackedNetworkedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
                 attackedUnitStats.RemovedHealth += attackValue;
                 
                 float totalHealth = attackedUnitStats.GetFinalStat(StatType.Health);
                 ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
                 
                 UpdateAllClientsHealthRaiseEvent(
-                    attackedBattleBehaviour.PhotonView.ViewID,
+                    attackedNetworkedBattleBehaviour.PhotonView.ViewID,
                     attackedUnitStats.RemovedHealth,
                     totalHealth
                 );

@@ -202,10 +202,11 @@ namespace Features.Battle.Scripts
                 case (int)RaiseEventCode.OnSendFloatToTarget:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
+                    
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
-                        && networkedUnitBehaviour is NetworkedBattleBehaviour battleBehaviour)
+                        && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
                     {
-                        battleBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
+                        networkedUnitBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
                     }
 
                     break;

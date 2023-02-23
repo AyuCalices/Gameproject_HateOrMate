@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts.StageProgression;
 using Features.Battle.StateMachine;
@@ -44,9 +45,9 @@ namespace Features.Battle.Scripts
 
                 foreach (NetworkedBattleBehaviour networkedBattleBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
                 {
-                    if (networkedBattleBehaviour is NetworkedBattleBehaviour battleBehaviour && battleBehaviour.UnitClassData.levelUpOnStageClear)
+                    if (networkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) && networkedBattleBehaviour.UnitClassData.levelUpOnStageClear)
                     {
-                        networkedBattleBehaviour.NetworkedStatsBehaviour.SetBaseStats(battleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
+                        networkedBattleBehaviour.NetworkedStatsBehaviour.SetBaseStats(networkedBattleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
                     }
                 }
             }

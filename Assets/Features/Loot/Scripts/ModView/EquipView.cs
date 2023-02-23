@@ -27,7 +27,7 @@ namespace Features.Loot.Scripts.ModView
         {
             foreach (var unitViewBehaviour in _unitViewLookup)
             {
-                Destroy(unitViewBehaviour.Value);
+                Destroy(unitViewBehaviour.Value.gameObject);
             }
             _unitViewLookup.Clear();
         }
@@ -35,12 +35,26 @@ namespace Features.Loot.Scripts.ModView
         private void OnEnable()
         {
             _updateUnitViewsDisposable = unitRuntimeSet.ObserveEveryValueChanged(x => x.GetItems().Count)
-                .Subscribe(_ => TryAddUnitViews());
+                .Subscribe(_ =>
+                {
+                    TryRemoveUnitViews();
+                    TryAddUnitViews();
+                });
         }
 
         private void OnDisable()
         {
             _updateUnitViewsDisposable.Dispose();
+        }
+
+        private void TryRemoveUnitViews()
+        {
+            var itemsToRemove = _unitViewLookup.Where(x => !unitRuntimeSet.GetItems().Contains(x.Key)).ToArray();
+            foreach (var itemToRemove in itemsToRemove)
+            {
+                Destroy(itemToRemove.Value.gameObject);
+                _unitViewLookup.Remove(itemToRemove.Key);
+            }
         }
 
         private void TryAddUnitViews()

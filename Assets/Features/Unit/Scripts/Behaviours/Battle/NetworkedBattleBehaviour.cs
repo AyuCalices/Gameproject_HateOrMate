@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
@@ -35,7 +36,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             set
             {
                 _unitClassData = value;
-                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, unitBattleView);
+                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, _unitBattleView);
             }
         }
         
@@ -50,8 +51,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         
         public PhotonView PhotonView { get; private set; }
-        
-        protected UnitBattleView unitBattleView;
+
+        private UnitBattleView _unitBattleView;
 
         private bool _isTargetable;
         public bool IsTargetable
@@ -60,22 +61,29 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             set
             {
                 _isTargetable = value;
-                unitBattleView.SetHealthActive(IsTargetable);
+                _unitBattleView.SetHealthActive(IsTargetable);
             }
         }
 
-        //TODO: move else
         public void SetSprite(Sprite sprite)
         {
             unitSprite.sprite = sprite;
         }
 
-        //TODO: move else
         public void SetTeamTagType(TeamTagType[] teamTagType, TeamTagType[] opponentTagType)
         {
             TeamTagTypes = teamTagType;
             OpponentTagType = opponentTagType;
             AddRuntimeSets();
+
+            if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.Enemy)))
+            {
+                BattleBehaviour = new ActiveBattleBehaviour(battleData, this);
+            }
+            else
+            {
+                BattleBehaviour = new PassiveBattleBehaviour(battleData, this);
+            }
         }
 
         private void AddRuntimeSets()
@@ -91,7 +99,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         protected virtual void Awake()
         {
             PhotonView = GetComponent<PhotonView>();
-            unitBattleView = GetComponent<UnitBattleView>();
+            _unitBattleView = GetComponent<UnitBattleView>();
             NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
         }
 
@@ -102,17 +110,17 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void Update()
         {
-            BattleBehaviour.Update();
+            BattleBehaviour?.Update();
         }
 
         public void OnStageEnd()
         {
-            BattleBehaviour.OnStageEnd();
+            BattleBehaviour?.OnStageEnd();
         }
 
         internal void ForceIdleState()
         {
-            BattleBehaviour.ForceIdleState();
+            BattleBehaviour?.ForceIdleState();
         }
         
         internal bool TryRequestIdleState()

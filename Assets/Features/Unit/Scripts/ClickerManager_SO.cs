@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
@@ -15,9 +16,10 @@ namespace Features.Unit.Scripts
         {
             List<NetworkedBattleBehaviour> towerBattleActions = allUnitsRuntimeSet.GetUnitsByTag(TeamTagType.Own);
 
-            foreach (NetworkedBattleBehaviour towerBattleAction in towerBattleActions)
+            foreach (NetworkedBattleBehaviour battleBehaviour in towerBattleActions)
             {
-                if (towerBattleAction is not NetworkedBattleBehaviour {CurrentState: AttackState} battleBehaviour) continue;
+                if (!battleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) || battleBehaviour.CurrentState is not AttackState) continue;
+                
                 if (battleBehaviour.UnitClassData == towerClassData)
                 {
                     battleBehaviour.BattleClass.OnPerformAction();

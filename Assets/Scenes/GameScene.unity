@@ -834,7 +834,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiUnit
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
   networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
@@ -896,7 +896,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: Gate
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
   networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
@@ -1931,7 +1931,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 02000000
   reference: Player
-  localPlayerPrefab: {fileID: 2996986347998787957, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
+  localPlayerPrefab: {fileID: 7463803209756924334, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
   ownSpawnsTeamTagType: 00000000
   networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 01000000
@@ -2601,7 +2601,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiTower
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
   networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
@@ -5761,7 +5761,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.0001
+      value: 960.1016
       objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6131,7 +6131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 959.9998
+      value: 960.1016
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y

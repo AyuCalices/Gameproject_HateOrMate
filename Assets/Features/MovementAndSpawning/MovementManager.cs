@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
 using Features.Connection;
@@ -235,9 +236,9 @@ namespace Features.MovementAndSpawning
                     int viewID = (int) data[0];
 
                     if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
-                        out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour is NetworkedBattleBehaviour battleBehaviour)
+                        out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
                     {
-                        battleBehaviour.ForceIdleState();
+                        networkedUnitBehaviour.ForceIdleState();
                     }
 
                     break;
