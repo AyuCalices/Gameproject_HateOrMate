@@ -192,7 +192,7 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         Vector3Int nextCellPosition = (Vector3Int) data[1];
                         float movementSpeed = (float) data[2];
@@ -219,7 +219,7 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         Vector3Int targetCellPosition = (Vector3Int) data[1];
                         int skipLastMovementsCount = (int) data[2];
@@ -235,7 +235,7 @@ namespace Features.MovementAndSpawning
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
 
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID,
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID,
                         out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
                     {
                         networkedUnitBehaviour.ForceIdleState();

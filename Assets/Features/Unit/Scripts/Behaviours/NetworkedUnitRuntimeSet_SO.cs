@@ -34,7 +34,7 @@ namespace Features.Unit.Scripts.Behaviours
             return foundUnits;
         }
 
-        public bool TryGetUnitByViewID(int requestedViewID, out NetworkedBattleBehaviour networkedStatsBehaviour)
+        public bool GetUnitByViewID(int requestedViewID, out NetworkedBattleBehaviour networkedStatsBehaviour)
         {
             foreach (NetworkedBattleBehaviour item in items)
             {

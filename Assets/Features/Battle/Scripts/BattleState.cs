@@ -20,8 +20,6 @@ namespace Features.Battle.Scripts
     [CreateAssetMenu]
     public class BattleState : BaseCoroutineState
     {
-        public static Action onLocalDespawnAllUnits;
-
         [Header("Derived References")]
         [SerializeField] private BoolRoomDecitions_SO requestLootPhaseButtonRoomDecision;
         [SerializeField] private int lootCountOnStageComplete;
@@ -72,8 +70,13 @@ namespace Features.Battle.Scripts
             {
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Stage Failed!");
             }
-            
-            onLocalDespawnAllUnits?.Invoke();
+
+            var aiUnits = battleData.AllUnitsRuntimeSet.GetUnitsByTag(TeamTagType.AI);
+            for (int index = aiUnits.Count - 1; index >= 0; index--)
+            {
+                NetworkedBattleBehaviour networkedBattleBehaviour = aiUnits[index];
+                networkedBattleBehaviour.Destroy();
+            }
             
             foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
             {
@@ -107,7 +110,7 @@ namespace Features.Battle.Scripts
                 return;
             }
 
-            if (!HasUnitAlive(TeamTagType.Enemy))
+            if (!HasUnitAlive(TeamTagType.AI))
             {
                 bool enterLootingState = requestLootPhaseButtonRoomDecision.IsValidDecision(null, x => x);
                 LootableGenerator_SO[] lootables = RandomizeLootables();
@@ -203,7 +206,7 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
                         && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
                     {
                         networkedUnitBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
@@ -214,7 +217,7 @@ namespace Features.Battle.Scripts
                 case (int)RaiseEventCode.OnUpdateAllClientsHealth:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
                     }

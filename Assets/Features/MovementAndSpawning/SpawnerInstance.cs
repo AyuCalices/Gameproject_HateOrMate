@@ -23,9 +23,6 @@ namespace Features.MovementAndSpawning
         public bool isTargetable;
 
         public List<SpawnPosition> spawnPositions;
-        
-
-        private readonly List<PhotonView> _spawnedUnits = new List<PhotonView>();
 
 
         public bool TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
@@ -43,17 +40,18 @@ namespace Features.MovementAndSpawning
             return false;
         }
 
-        public NetworkedBattleBehaviour PhotonInstantiate(UnitClassData_SO unitClassData, Vector3Int gridPosition, int index, 
-            int level, TeamTagType[] teamTagType, TeamTagType[] opponentTagTypes)
+        public NetworkedBattleBehaviour PhotonInstantiate(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index, int level)
         {
             object[] data =
             {
+                photonActorNumber,
                 unitClassData,
                 gridPosition,
                 index,
                 level,
-                Array.ConvertAll(teamTagType, value => (int) value),
-                Array.ConvertAll(opponentTagTypes, value => (int) value),
+                Array.ConvertAll(ownSpawnsTeamTagType, value => (int) value),
+                Array.ConvertAll(mateSpawnsTeamTagType, value => (int) value),
+                Array.ConvertAll(opponentTagType, value => (int) value),
                 isTargetable
             };
             NetworkedBattleBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
@@ -70,7 +68,6 @@ namespace Features.MovementAndSpawning
             TeamTagType[] teamTagType = isOwner ? ownSpawnsTeamTagType : mateSpawnsTeamTagType;
             
             NetworkedBattleBehaviour instantiatedUnit = Instantiate(selectedPrefab, transform);
-            _spawnedUnits.Add(instantiatedUnit.PhotonView);
             
             //initialize values
             if (unitClassData.sprite != null)
@@ -94,46 +91,6 @@ namespace Features.MovementAndSpawning
             
             instantiatedUnit.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(gridPosition);
             return instantiatedUnit;
-        }
-
-        public void DestroyByReference(PhotonView playerPhotonView)
-        {
-            if (!_spawnedUnits.Contains(playerPhotonView)) return;
-
-            Destroy(playerPhotonView);
-        }
-
-        private void Destroy(PhotonView playerPhotonView)
-        {
-            Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(playerPhotonView.transform.position);
-            if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
-            {
-                tileBehaviour.RemoveUnit();
-            }
-            
-            _spawnedUnits.Remove(playerPhotonView);
-            Destroy(playerPhotonView.gameObject);
-        }
-
-        public bool TryDestroy(int viewID)
-        {
-            PhotonView photonView = _spawnedUnits.Find(x => x.ViewID == viewID);
-            if (photonView == null)
-            {
-                return false;
-            }
-
-            Destroy(photonView);
-            return true;
-        }
-
-        public void DestroyAll()
-        {
-            for (int index = _spawnedUnits.Count - 1; index >= 0; index--)
-            {
-                PhotonView spawnedUnit = _spawnedUnits[index];
-                Destroy(spawnedUnit);
-            }
         }
     }
 }

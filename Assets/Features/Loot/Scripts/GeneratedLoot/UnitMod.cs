@@ -5,6 +5,7 @@ using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.GeneratedLoot
@@ -63,7 +64,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
         {
-            onRemoveUnit.Invoke("Player", _instantiatedUnit.PhotonView.ViewID);
+            PhotonNetwork.Destroy(_instantiatedUnit.gameObject);
             
             RemoveBlockedSlots();
         }

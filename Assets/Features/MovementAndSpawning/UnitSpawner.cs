@@ -20,38 +20,25 @@ namespace Features.MovementAndSpawning
         {
             base.OnEnable();
             StageRandomizer_SO.onNetworkedSpawnUnit += PlayerSynchronizedSpawn;
-            BattleState.onLocalDespawnAllUnits += PlayerDespawnAll;
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             StageRandomizer_SO.onNetworkedSpawnUnit -= PlayerSynchronizedSpawn;
-            BattleState.onLocalDespawnAllUnits -= PlayerDespawnAll;
         }
         
         private void PlayerSynchronizedSpawn(string spawnerReference, UnitClassData_SO unitClassData, int level)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                SpawnHelper.SpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, 
-                    unitClassData, level, (unit, position) =>
-                {
-                    int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-                    PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(unit.PhotonView.ViewID, position, PhotonNetwork.LocalPlayer.ActorNumber,
-                        spawnerInstanceIndex, unitClassData, level);
-                    unit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-                });
+                SpawnHelper.PhotonSpawnUnit(spawnerInstances, PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, 
+                    unitClassData, level);
             }
             else
             {
                 RequestPlayerSynchronizedUnitInstantiation_RaiseEvent(PhotonNetwork.LocalPlayer.ActorNumber, spawnerReference, unitClassData, level);
             }
-        }
-        
-        private void PlayerDespawnAll()
-        {
-            SpawnHelper.PlayerSynchronizedDespawnAll(spawnerInstances);
         }
 
         #region RaiseEvent Callbacks
@@ -84,47 +71,10 @@ namespace Features.MovementAndSpawning
                     UnitClassData_SO unitClassData = (UnitClassData_SO) data[2];
                     int level = (int) data[3];
                 
-                    SpawnHelper.SpawnUnit(spawnerInstances, actorNumber, spawnerReference, unitClassData, level, (unit, position) =>
-                    {
-                        int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-                        PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(unit.PhotonView.ViewID, position, actorNumber,
-                            spawnerInstanceIndex, unitClassData, level);
-                        unit.NetworkedStatsBehaviour.OnPhotonViewIdAllocated();
-                    });
+                    SpawnHelper.PhotonSpawnUnit(spawnerInstances, actorNumber, spawnerReference, unitClassData, level);
                     break;
                 }
             }
-        }
-        
-        #endregion
-        
-        #region RaiseEvents: MasterClient sends result to all
-
-        private static void PerformPlayerSynchronizedUnitInstantiation_RaiseEvent(int viewID, Vector3Int targetGridPosition, int photonActorNumber, 
-            int spawnerInstanceIndex, UnitClassData_SO unitClassData, int level)
-        {
-            object[] data = new object[]
-            {
-                viewID,
-                targetGridPosition,
-                photonActorNumber,
-                spawnerInstanceIndex,
-                unitClassData,
-                level
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformUnitInstantiation, data, raiseEventOptions, sendOptions);
         }
         
         #endregion

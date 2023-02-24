@@ -834,9 +834,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiUnit
-  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -896,9 +896,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: Gate
-  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -2601,9 +2601,9 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiTower
-  localPlayerPrefab: {fileID: 8968656196307198858, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
+  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
+  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 0
   spawnPositions:

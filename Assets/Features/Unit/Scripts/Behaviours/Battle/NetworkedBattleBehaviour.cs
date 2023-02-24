@@ -13,7 +13,7 @@ using UnityEngine.EventSystems;
 
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
-    public enum TeamTagType {Own, Mate, Enemy}
+    public enum TeamTagType {Own, Mate, AI}
 
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
     public class NetworkedBattleBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
@@ -78,7 +78,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             AddRuntimeSets();
 
             //TODO: add movement to own Units
-            if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.Enemy)))
+            if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.AI)))
             {
                 BattleBehaviour = new ActiveBattleBehaviour(battleData, this);
             }
@@ -107,6 +107,12 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void OnDestroy()
         {
+            Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+            if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
+            {
+                tileBehaviour.RemoveUnit();
+            }
+            
             ClearRuntimeSets();
         }
 
@@ -150,19 +156,28 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             Debug.Log(NetworkedStatsBehaviour.GetFinalStat(StatType.Health));
         }
 
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
         public void OnPhotonInstantiate(PhotonMessageInfo info)
         {
             object[] instantiationData = info.photonView.InstantiationData;
-            UnitClassData_SO unitClassData = (UnitClassData_SO)instantiationData[0];
-            Vector3Int gridPosition = (Vector3Int)instantiationData[1];
-            int index = (int)instantiationData[2];
-            int level = (int)instantiationData[3];
-            TeamTagType[] teamTagTypes = Array.ConvertAll((int[]) instantiationData[4], value => (TeamTagType) value);
-            TeamTagType[] opponentTagTypes = Array.ConvertAll((int[]) instantiationData[5], value => (TeamTagType) value);
-            bool isTargetable = (bool) instantiationData[6];
             
-            SetTeamTagType(teamTagTypes, opponentTagTypes);
-            //TODO: add to spawner reference
+            int ownerActorNumber = (int)instantiationData[0];
+            UnitClassData_SO unitClassData = (UnitClassData_SO)instantiationData[1];
+            Vector3Int gridPosition = (Vector3Int)instantiationData[2];
+            int index = (int)instantiationData[3];
+            int level = (int)instantiationData[4];
+            TeamTagType[] ownerTeamTagTypes = Array.ConvertAll((int[]) instantiationData[5], value => (TeamTagType) value);
+            TeamTagType[] ownerMateTagTypes = Array.ConvertAll((int[]) instantiationData[6], value => (TeamTagType) value);
+            TeamTagType[] opponentTagTypes = Array.ConvertAll((int[]) instantiationData[7], value => (TeamTagType) value);
+            bool isTargetable = (bool) instantiationData[8];
+            
+            bool isOwner = PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber;
+            TeamTagType[] teamTagType = isOwner ? ownerTeamTagTypes : ownerMateTagTypes;
+            SetTeamTagType(teamTagType, opponentTagTypes);
             
             if (unitClassData.sprite != null)
             {

@@ -10,10 +10,16 @@ namespace Features.MovementAndSpawning
 {
     public static class SpawnHelper
     {
-        public static void LocalDespawn(List<SpawnerInstance> spawnerInstances, string spawnerReference, PhotonView photonView)
+        public static NetworkedBattleBehaviour PhotonSpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, 
+            UnitClassData_SO unitClassData, int level)
         {
             int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-            spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
+            
+            if (!spawnerInstances[spawnerInstanceIndex]
+                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return null;
+
+            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
+            return spawnerInstance.PhotonInstantiate(photonActorNumber, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex, level);
         }
         
         public static NetworkedBattleBehaviour SpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, 
@@ -34,7 +40,7 @@ namespace Features.MovementAndSpawning
             }
             
             Debug.LogError("Failed to allocate a ViewId.");
-            spawnerInstances[spawnerInstanceIndex].DestroyByReference(player.PhotonView);
+            player.Destroy();
             return null;
         }
         
@@ -48,17 +54,6 @@ namespace Features.MovementAndSpawning
             }
 
             return spawnerInstanceIndex;
-        }
-        
-        public static void PlayerSynchronizedDespawnAll(List<SpawnerInstance> spawnerInstances)
-        {
-            spawnerInstances.ForEach(x => x.DestroyAll());
-        }
-        
-        public static void PlayerSynchronizedDespawn(List<SpawnerInstance> spawnerInstances, string spawnerReference, PhotonView photonView)
-        {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-            spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
         }
     }
 }

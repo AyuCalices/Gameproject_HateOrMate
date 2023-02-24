@@ -27,7 +27,6 @@ namespace Features.MovementAndSpawning
             BattleManager.onLocalSpawnUnit += SpawnLocal;
             UnitMod.onAddUnit += SpawnLocal;
             UnitDragPlacementBehaviour.onPerformTeleport += RequestTeleport;
-            UnitMod.onRemoveUnit += PlayerSynchronizedDespawn_RaiseEvent;
         }
 
         public override void OnDisable()
@@ -38,7 +37,6 @@ namespace Features.MovementAndSpawning
             BattleManager.onLocalSpawnUnit -= SpawnLocal;
             UnitMod.onAddUnit -= SpawnLocal;
             UnitDragPlacementBehaviour.onPerformTeleport -= RequestTeleport;
-            UnitMod.onRemoveUnit -= PlayerSynchronizedDespawn_RaiseEvent;
         }
         
         private NetworkedBattleBehaviour SpawnLocal(string spawnerReference, UnitClassData_SO unitClassData, int level)
@@ -76,32 +74,6 @@ namespace Features.MovementAndSpawning
                 }
             }
         }
-        
-        #region AllClients RaiseEvent
-        
-        private void PlayerSynchronizedDespawn_RaiseEvent(string spawnerReference, int viewID)
-        {
-            object[] data = new object[]
-            {
-                viewID,
-                spawnerReference
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPlayerSynchronizedDespawn, data, raiseEventOptions, sendOptions);
-        }
-        
-        #endregion
 
         #region MasterClient Perform Methods
     
@@ -313,7 +285,7 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         Vector3Int nextCellPosition = (Vector3Int) data[1];
 
@@ -340,7 +312,7 @@ namespace Features.MovementAndSpawning
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
 
-                    if (battleData.AllUnitsRuntimeSet.TryGetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         Vector3Int targetCellPosition = (Vector3Int) data[1];
                         PerformGridTeleport(networkedUnitBehaviour, targetCellPosition);
@@ -359,20 +331,6 @@ namespace Features.MovementAndSpawning
                     int level = (int) data[5];
                 
                     PerformSpawnThenTeleport(spawnerInstanceIndex, actorNumber, unitClassData, targetGridPosition, viewID, level);
-                    break;
-                }
-                case (int) RaiseEventCode.OnPlayerSynchronizedDespawn:
-                {
-                    object[] data = (object[]) photonEvent.CustomData;
-                    int viewID = (int) data[0];
-                    string spawnerReference = (string) data[1];
-
-                    int spawnerInstanceIndex = SpawnHelper.GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-                    PhotonView photonView = PhotonView.Find(viewID);
-                    if (photonView != null)
-                    {
-                        spawnerInstances[spawnerInstanceIndex].DestroyByReference(photonView);
-                    }
                     break;
                 }
             }

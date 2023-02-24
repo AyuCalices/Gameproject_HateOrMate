@@ -134,7 +134,7 @@ namespace Features.Unit.Scripts.Class
         protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
         {
             NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
-            if (PhotonNetwork.IsMasterClient && (attackedNetworkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Enemy) ||
+            if (PhotonNetwork.IsMasterClient && (attackedNetworkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.AI) ||
                 attackedNetworkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own)))
             {
                 attackedNetworkedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
