@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Features.Battle.Scripts;
 using Features.Tiles.Scripts;
@@ -41,6 +42,26 @@ namespace Features.MovementAndSpawning
             tileKeyValuePair = default;
             return false;
         }
+
+        public NetworkedBattleBehaviour PhotonInstantiate(UnitClassData_SO unitClassData, Vector3Int gridPosition, int index, 
+            int level, TeamTagType[] teamTagType, TeamTagType[] opponentTagTypes)
+        {
+            object[] data =
+            {
+                unitClassData,
+                gridPosition,
+                index,
+                level,
+                Array.ConvertAll(teamTagType, value => (int) value),
+                Array.ConvertAll(opponentTagTypes, value => (int) value),
+                isTargetable
+            };
+            NetworkedBattleBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
+                .Instantiate("Unit", battleData.TileRuntimeDictionary.GetCellToWorldPosition(gridPosition), Quaternion.identity, 0, data)
+                .GetComponent<NetworkedBattleBehaviour>();
+            
+            return instantiatedDamageAnimatorBehaviour;
+        }
         
         public NetworkedBattleBehaviour InstantiateAndInitialize(int photonActorNumber, UnitClassData_SO unitClassData, Vector3Int gridPosition, int index, int level)
         {
@@ -59,12 +80,9 @@ namespace Features.MovementAndSpawning
             instantiatedUnit.SetTeamTagType(teamTagType, opponentTagType);
             instantiatedUnit.IsTargetable = isTargetable;
             instantiatedUnit.SpawnerInstanceIndex = index;
-            
-            
-            if (instantiatedUnit.TryGetComponent(out NetworkedBattleBehaviour battleBehaviour))
-            {
-                battleBehaviour.UnitClassData = unitClassData;
-            }
+
+
+            instantiatedUnit.UnitClassData = unitClassData;
             
             instantiatedUnit.NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
             

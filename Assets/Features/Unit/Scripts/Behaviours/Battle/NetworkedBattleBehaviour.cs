@@ -3,6 +3,7 @@ using System.Linq;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
+using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
@@ -15,7 +16,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
     public enum TeamTagType {Own, Mate, Enemy}
 
     [RequireComponent(typeof(NetworkedStatsBehaviour), typeof(UnitBattleView))]
-    public class NetworkedBattleBehaviour : MonoBehaviour
+    public class NetworkedBattleBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     {
         [Header("References")]
         [SerializeField] protected BattleData_SO battleData;
@@ -76,6 +77,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             OpponentTagType = opponentTagType;
             AddRuntimeSets();
 
+            //TODO: add movement to own Units
             if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.Enemy)))
             {
                 BattleBehaviour = new ActiveBattleBehaviour(battleData, this);
@@ -146,6 +148,36 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         private void OnMouseDown()
         {
             Debug.Log(NetworkedStatsBehaviour.GetFinalStat(StatType.Health));
+        }
+
+        public void OnPhotonInstantiate(PhotonMessageInfo info)
+        {
+            object[] instantiationData = info.photonView.InstantiationData;
+            UnitClassData_SO unitClassData = (UnitClassData_SO)instantiationData[0];
+            Vector3Int gridPosition = (Vector3Int)instantiationData[1];
+            int index = (int)instantiationData[2];
+            int level = (int)instantiationData[3];
+            TeamTagType[] teamTagTypes = Array.ConvertAll((int[]) instantiationData[4], value => (TeamTagType) value);
+            TeamTagType[] opponentTagTypes = Array.ConvertAll((int[]) instantiationData[5], value => (TeamTagType) value);
+            bool isTargetable = (bool) instantiationData[6];
+            
+            SetTeamTagType(teamTagTypes, opponentTagTypes);
+            //TODO: add to spawner reference
+            
+            if (unitClassData.sprite != null)
+            {
+                SetSprite(unitClassData.sprite);
+            }
+            
+            IsTargetable = isTargetable;
+            SpawnerInstanceIndex = index;
+            UnitClassData = unitClassData;
+            NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
+            
+            if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
+            {
+                tileBehaviour.AddUnit(gameObject);
+            }
         }
     }
 }
