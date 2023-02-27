@@ -48,7 +48,7 @@ namespace Features.Battle.Scripts
         {
             yield return base.Enter();
             
-            NetworkedStatsBehaviour.onDamageGained += CheckStage;
+            DeathState.onUnitEnterDeathState += SetStage;
 
             if (!battleData.IsStageRestart)
             {
@@ -64,7 +64,7 @@ namespace Features.Battle.Scripts
         {
             yield return base.Exit();
             
-            NetworkedStatsBehaviour.onDamageGained -= CheckStage;
+            DeathState.onUnitEnterDeathState -= SetStage;
 
             if (battleData.IsStageRestart)
             {
@@ -83,14 +83,6 @@ namespace Features.Battle.Scripts
                 networkedUnitBehaviour.OnStageEnd();
                 networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
             }
-        }
-
-        private void CheckStage(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
-        {
-            if (!(newRemovedHealth >= totalHealth)) return;
-            
-            networkedBattleBehaviour.TryRequestDeathState();
-            SetStage();
         }
 
         private void SetStage()
@@ -202,23 +194,13 @@ namespace Features.Battle.Scripts
 
             switch (photonEvent.Code)
             {
-                case (int)RaiseEventCode.OnSendFloatToTarget:
+                case (int)RaiseEventCode.OnAttack:
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     
                     if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
-                        networkedUnitBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
-                    }
-
-                    break;
-                }
-                case (int)RaiseEventCode.OnUpdateAllClientsHealth:
-                {
-                    object[] data = (object[]) photonEvent.CustomData;
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
-                    {
-                        OnUpdateAllClientsHealthCallback(networkedUnitBehaviour, (float) data[1], (float) data[2]);
+                        networkedUnitBehaviour.BattleClass.AttackCallback((float) data[1], (float) data[2], (UnitClassData_SO) data[3]);
                     }
 
                     break;
@@ -264,20 +246,6 @@ namespace Features.Battle.Scripts
             {
                 _battleManager.RequestStageSetupState();
             }
-        }
-        
-        /// <summary>
-        /// All players update this units health
-        /// </summary>
-        /// <param name="newRemovedHealth"></param>
-        /// <param name="totalHealth"></param>
-        private void OnUpdateAllClientsHealthCallback(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth,
-            float totalHealth)
-        {
-            NetworkedStatsBehaviour networkedStatsBehaviour = networkedBattleBehaviour.NetworkedStatsBehaviour;
-            networkedStatsBehaviour.RemovedHealth = newRemovedHealth;
-        
-            CheckStage(networkedBattleBehaviour, newRemovedHealth, totalHealth);
         }
     }
 }

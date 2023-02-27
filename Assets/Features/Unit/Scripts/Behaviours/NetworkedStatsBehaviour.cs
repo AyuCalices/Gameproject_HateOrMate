@@ -23,8 +23,6 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private CanvasFocus_SO canvasFocus;
         [SerializeField] private DamagePopup damagePopupPrefab;
         [SerializeField] private GameEvent onHit;
-        
-        public static Action<NetworkedBattleBehaviour, float, float> onDamageGained;
 
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
         public PhotonView PhotonView { get; private set; }
@@ -54,11 +52,6 @@ namespace Features.Unit.Scripts.Behaviours
                     unitView.SetHealthSlider(value, GetFinalStat(StatType.Health));
                 }
             }
-        }
-
-        public void RaiseDamageGained(NetworkedBattleBehaviour networkedBattleBehaviour, float newRemovedHealth, float totalHealth)
-        {
-            onDamageGained?.Invoke(networkedBattleBehaviour, newRemovedHealth, totalHealth);
         }
 
         protected void Awake()
