@@ -2,8 +2,10 @@ using System.Collections;
 using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts.StageProgression;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts.Utils;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
@@ -43,11 +45,11 @@ namespace Features.Battle.Scripts
             {
                 battleData.Stage.Add(1);
 
-                foreach (NetworkedBattleBehaviour networkedBattleBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+                foreach (UnitServiceProvider unitServiceProvider in battleData.AllUnitsRuntimeSet.GetItems())
                 {
-                    if (networkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) && networkedBattleBehaviour.UnitClassData.levelUpOnStageClear)
+                    if (unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own) && unitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.levelUpOnStageClear)
                     {
-                        networkedBattleBehaviour.NetworkedStatsBehaviour.SetBaseStats(networkedBattleBehaviour.UnitClassData.baseStatsData, battleData.Stage.Get());
+                        unitServiceProvider.GetService<NetworkedStatsBehaviour>().SetBaseStats(unitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.baseStatsData, battleData.Stage.Get());
                     }
                 }
             }

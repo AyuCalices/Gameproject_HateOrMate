@@ -1,4 +1,5 @@
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
@@ -8,9 +9,7 @@ namespace Features.Unit.Scripts.Class
 {
     public class EmptyBattleClass : BattleClass
     {
-        public EmptyBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour, 
-            UnitBattleView ownerUnitBattleView) : 
-            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+        public EmptyBattleClass(UnitServiceProvider ownerUnitServiceProvider) : base(ownerUnitServiceProvider)
         {
         }
 

@@ -1,5 +1,3 @@
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Mod;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.View

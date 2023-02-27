@@ -1,5 +1,6 @@
 using System;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Camera.Scripts;
 using Features.Loot.Scripts.ModView;
@@ -13,7 +14,7 @@ namespace Features.Unit.Scripts.Behaviours
     [RequireComponent(typeof(NetworkedBattleBehaviour))]
     public class UnitDragPlacementBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
     {
-        public static Action<NetworkedBattleBehaviour, Vector3Int> onPerformTeleport;
+        public static Action<UnitServiceProvider, Vector3Int> onPerformTeleport;
         
         [Header("References")]
         [SerializeField] private BattleData_SO battleData;
@@ -25,13 +26,13 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private float hoverSpeed = 7f;
         [SerializeField] private LeanTweenType leanTweenType;
         
-        private NetworkedBattleBehaviour _battleBehaviour;
+        private UnitServiceProvider _unitServiceProvider;
         private GameObject _instantiatedPrefab;
         private Vector3 _currentTileWorldPosition;
 
         private void Awake()
         {
-            _battleBehaviour = GetComponent<NetworkedBattleBehaviour>();
+            _unitServiceProvider = GetComponent<UnitServiceProvider>();
         }
 
         public void OnDisable()
@@ -74,7 +75,7 @@ namespace Features.Unit.Scripts.Behaviours
 
             if (!battleData.TileRuntimeDictionary.ContainsGridPosition(battleData.TileRuntimeDictionary.GetWorldToCellPosition(_currentTileWorldPosition))) return;
             
-            onPerformTeleport?.Invoke(_battleBehaviour, battleData.TileRuntimeDictionary.GetWorldToCellPosition(_currentTileWorldPosition));
+            onPerformTeleport?.Invoke(_unitServiceProvider, battleData.TileRuntimeDictionary.GetWorldToCellPosition(_currentTileWorldPosition));
         }
         
         private void TweenOverGrid()

@@ -1,5 +1,6 @@
 using DataStructures.StateLogic;
 using Features.Tiles.Scripts;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours.Battle
@@ -15,7 +16,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         public void Enter()
         {
-            if (!_battleBehaviour.PhotonView.IsMine)
+            if (!_battleBehaviour.UnitServiceProvider.GetService<PhotonView>().IsMine)
             {
                 _battleBehaviour.gameObject.SetActive(false);
             }

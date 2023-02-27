@@ -1,4 +1,5 @@
 using System;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts;
 using Features.Loot.Scripts.ModView;
 
@@ -10,21 +11,21 @@ namespace Features.Unit.Scripts.Behaviours.Mod
         
         private readonly ModSlotBehaviour[] _modSlotBehaviours;
 
-        public UnitMods(NetworkedStatsBehaviour localStats, ModSlotBehaviour[] modSlotBehaviours)
+        public UnitMods(UnitServiceProvider instantiatedUnitServiceProvider, ModSlotBehaviour[] modSlotBehaviours)
         {
             _modSlotBehaviours = modSlotBehaviours;
             
             for (int i = 0; i < modSlotBehaviours.Length; i++)
             {
-                modSlotBehaviours[i].Initialize(localStats, i);
+                modSlotBehaviours[i].Initialize(instantiatedUnitServiceProvider, i);
             }
         }
 
-        public void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public void ApplyToInstantiatedUnit(UnitServiceProvider instantiatedUnitServiceProvider)
         {
             foreach (ModSlotBehaviour modSlotBehaviour in _modSlotBehaviours)
             {
-                modSlotBehaviour.ApplyToInstantiatedUnit(instantiatedUnit);
+                modSlotBehaviour.ApplyToInstantiatedUnit(instantiatedUnitServiceProvider);
             }
         }
         

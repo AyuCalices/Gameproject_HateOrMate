@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
@@ -27,13 +28,14 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _battleData = battleData;
         }
 
-        public override void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public override void ApplyToInstantiatedUnit(UnitServiceProvider instantiatedUnitServiceProvider)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
+                //TODO: this is weird - maybe shorten
+                foreach (UnitServiceProvider manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
                 {
-                    if (manipulatedUnit.NetworkedStatsBehaviour == instantiatedUnit)
+                    if (manipulatedUnit == instantiatedUnitServiceProvider)
                     {
                         Add(manipulatedUnit, multipleStatModTarget.statType,
                             multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
@@ -42,11 +44,11 @@ namespace Features.Loot.Scripts.GeneratedLoot
             }
         }
 
-        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
+        protected override void InternalAddMod(UnitServiceProvider modifiedUnitServiceProvider, int slot)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
-                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
+                foreach (UnitServiceProvider manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
                 {
                     Add(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
                 }
@@ -59,7 +61,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
             }
         }
     
-        protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
+        protected override void InternalRemoveMod(UnitServiceProvider modifiedUnitServiceProvider)
         {
             foreach (MultipleStatModTarget multipleStatModTarget in _multipleStatModTargets)
             {
@@ -69,37 +71,37 @@ namespace Features.Loot.Scripts.GeneratedLoot
                     -multipleStatModTarget.scaleValue
                 );
                 
-                foreach (NetworkedBattleBehaviour manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
+                foreach (UnitServiceProvider manipulatedUnit in _battleData.AllUnitsRuntimeSet.GetUnitsByTag(multipleStatModTarget.teamTagType))
                 {
                     Remove(manipulatedUnit, multipleStatModTarget.statType, multipleStatModTarget.baseValue, multipleStatModTarget.scaleValue, multipleStatModTarget.stageScaleValue);
                 }
             }
         }
 
-        private void Add(NetworkedBattleBehaviour networkedBattleBehaviour, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
+        private void Add(UnitServiceProvider modifiedUnitServiceProvider, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         
-            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         }
 
-        private void Remove(NetworkedBattleBehaviour networkedBattleBehaviour, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
+        private void Remove(UnitServiceProvider modifiedUnitServiceProvider, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         
-            result = networkedBattleBehaviour.NetworkedStatsBehaviour.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");

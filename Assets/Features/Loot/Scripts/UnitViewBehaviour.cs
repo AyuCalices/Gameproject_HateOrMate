@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
@@ -27,7 +28,7 @@ namespace Features.Loot.Scripts
         
         public UnitMods UnitMods { get; private set; }
     
-        public NetworkedStatsBehaviour UnitOwnerStats { get; private set; }
+        public UnitServiceProvider UnitServiceProvider { get; private set; }
         private NetworkedBattleBehaviour _unitOwnerBattleBehaviour;
         private ModSlotBehaviour[] _modSlotBehaviour;
 
@@ -42,7 +43,7 @@ namespace Features.Loot.Scripts
             UnitMods.OnDestroy();
             unitViewRuntimeSet.Remove(this);
             
-            UnitOwnerStats.NetworkedStatServiceLocator.onUpdateStat -= UpdateSingleStatText;
+            UnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.onUpdateStat -= UpdateSingleStatText;
         }
         
         private void UpdateSingleStatText(StatType statType)
@@ -50,7 +51,7 @@ namespace Features.Loot.Scripts
             foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours
                 .Where(statTextUpdateBehaviour => statTextUpdateBehaviour.StatType == statType))
             {
-                statTextUpdateBehaviour.UpdateText(Mathf.Floor(UnitOwnerStats.GetFinalStat(statType)).ToString());
+                statTextUpdateBehaviour.UpdateText(Mathf.Floor(UnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(statType)).ToString());
                 return;
             }
         }
@@ -65,14 +66,14 @@ namespace Features.Loot.Scripts
             }
         }
 
-        public void Initialize(NetworkedStatsBehaviour unitOwnerStats)
+        public void Initialize(UnitServiceProvider unitServiceProvider)
         {
-            UnitMods = new UnitMods(unitOwnerStats, _modSlotBehaviour);
+            UnitMods = new UnitMods(unitServiceProvider, _modSlotBehaviour);
             
-            UnitOwnerStats = unitOwnerStats;
-            _unitOwnerBattleBehaviour = unitOwnerStats.GetComponent<NetworkedBattleBehaviour>();
+            UnitServiceProvider = unitServiceProvider;
+            _unitOwnerBattleBehaviour = unitServiceProvider.GetComponent<NetworkedBattleBehaviour>();
             
-            UnitOwnerStats.NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
+            UnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
             
             InitializeVisualization();
             InitializeAllText();

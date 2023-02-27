@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UniRx;
@@ -15,12 +16,12 @@ namespace Features.Loot.Scripts.ModView
         [SerializeField] private UnitViewBehaviour unitViewPrefab;
         [SerializeField] private Transform instantiationParent;
 
-        private Dictionary<NetworkedBattleBehaviour, UnitViewBehaviour> _unitViewLookup;
+        private Dictionary<UnitServiceProvider, UnitViewBehaviour> _unitViewLookup;
         private IDisposable _updateUnitViewsDisposable;
 
         private void Awake()
         {
-            _unitViewLookup = new Dictionary<NetworkedBattleBehaviour, UnitViewBehaviour>();
+            _unitViewLookup = new Dictionary<UnitServiceProvider, UnitViewBehaviour>();
         }
 
         private void OnDestroy()
@@ -59,16 +60,16 @@ namespace Features.Loot.Scripts.ModView
 
         private void TryAddUnitViews()
         {
-            foreach (NetworkedBattleBehaviour networkedBattleBehaviour in unitRuntimeSet.GetItems())
+            foreach (UnitServiceProvider unitServiceProvider in unitRuntimeSet.GetItems())
             {
-                if (!networkedBattleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) || 
-                    _unitViewLookup.ContainsKey(networkedBattleBehaviour)) continue;
+                if (!unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own) || 
+                    _unitViewLookup.ContainsKey(unitServiceProvider)) continue;
 
                 UnitViewBehaviour instantiatedView = Instantiate(unitViewPrefab, instantiationParent);
-                instantiatedView.Initialize(networkedBattleBehaviour.NetworkedStatsBehaviour);
+                instantiatedView.Initialize(unitServiceProvider);
                 ApplyOnUnitViewInstantiated(instantiatedView);
                 
-                _unitViewLookup.Add(networkedBattleBehaviour, instantiatedView);
+                _unitViewLookup.Add(unitServiceProvider, instantiatedView);
             }
         }
 

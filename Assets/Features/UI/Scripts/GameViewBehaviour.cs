@@ -44,7 +44,8 @@ namespace Features.UI.Scripts
         {
             continueBattleButton.onClick.AddListener(() =>
             {
-                if (battleData.AllUnitsRuntimeSet.GetUnitsByTag(TeamTagType.Own).Any(networkedBattleBehaviour => networkedBattleBehaviour.CurrentState is not BenchedState))
+                if (battleData.AllUnitsRuntimeSet.GetUnitsByTag(TeamTagType.Own).Any(
+                    unitServiceProvider => unitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not BenchedState))
                 {
                     continueButtonRoomDecision.SetDecision(true);
                     SetContinueButtonInteractable(false);

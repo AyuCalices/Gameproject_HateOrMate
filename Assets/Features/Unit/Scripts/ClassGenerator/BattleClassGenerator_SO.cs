@@ -1,3 +1,4 @@
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Class;
@@ -9,13 +10,11 @@ namespace Features.Unit.Scripts.ClassGenerator
 {
     public abstract class BattleClassGenerator_SO : ScriptableObject
     {
-        public BattleClass Generate(BaseDamageAnimationBehaviour baseDamageAnimationBehaviour, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, 
-            NetworkedBattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView)
+        public BattleClass Generate(UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationBehaviour)
         {
-            return InternalGenerate(baseDamageAnimationBehaviour, ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView);
+            return InternalGenerate(ownerUnitServiceProvider, baseDamageAnimationBehaviour);
         }
 
-        protected abstract BattleClass InternalGenerate(BaseDamageAnimationBehaviour baseDamageAnimationBehaviour, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, 
-            NetworkedBattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView);
+        protected abstract BattleClass InternalGenerate(UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationBehaviour);
     }
 }

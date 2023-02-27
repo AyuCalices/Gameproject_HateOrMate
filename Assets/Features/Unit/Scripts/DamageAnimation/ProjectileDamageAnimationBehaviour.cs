@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DataStructures.Event;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using ThirdParty.LeanTween.Framework;
@@ -15,22 +16,22 @@ namespace Features.Unit.Scripts.DamageAnimation
         private bool _onCompleteActionCanceled;
         private string _identifier;
 
-        public override void InstantiateDamageAnimation(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction)
+        public override void InstantiateDamageAnimation(UnitServiceProvider casterUnitServiceProvider, UnitServiceProvider targetUnitServiceProvider, Action onHitAction)
         {
-            object[] data = {targetUnit.PhotonView.ViewID};
+            object[] data = {targetUnitServiceProvider.GetService<PhotonView>().ViewID};
             ProjectileDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
-                .Instantiate(gameObject.name, casterUnit.transform.position, Quaternion.identity, 0, data)
+                .Instantiate(gameObject.name, casterUnitServiceProvider.transform.position, Quaternion.identity, 0, data)
                 .GetComponent<ProjectileDamageAnimationBehaviour>();
-            instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.CastAttack(casterUnit, targetUnit, onHitAction));
+            instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.CastAttack(casterUnitServiceProvider, targetUnitServiceProvider, onHitAction));
 
-            string identifier = GetIdentifier(casterUnit.PhotonView);
+            string identifier = GetIdentifier(casterUnitServiceProvider.GetService<PhotonView>());
             instantiatedDamageAnimatorBehaviour._identifier = identifier;
             AddToLookup(identifier, instantiatedDamageAnimatorBehaviour);
         }
 
-        private IEnumerator CastAttack(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction)
+        private IEnumerator CastAttack(UnitServiceProvider casterUnitServiceProvider, UnitServiceProvider targetUnitServiceProvider, Action onHitAction)
         {
-            float time = Vector3.Distance(casterUnit.transform.position, targetUnit.transform.position) / speed;
+            float time = Vector3.Distance(casterUnitServiceProvider.transform.position, targetUnitServiceProvider.transform.position) / speed;
             yield return new WaitForSeconds(time);
             onHitAction.Invoke();
             Destroy();

@@ -1,4 +1,5 @@
 using System;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
@@ -32,15 +33,15 @@ namespace Features.Loot.Scripts.GeneratedLoot
             onModInstantiated?.Invoke(_modBehaviourPrefab, this);
         }
 
-        public void EnableMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
+        public void EnableMod(UnitServiceProvider modifiedUnitServiceProvider, int slot)
         {
             if (_isEnabled) { return; }
             
-            InternalAddMod(moddedLocalStats, slot);
+            InternalAddMod(modifiedUnitServiceProvider, slot);
             _isEnabled = true;
         }
         
-        public void DisableMod(NetworkedStatsBehaviour moddedLocalStats)
+        public void DisableMod(UnitServiceProvider moddedLocalStats)
         {
             if (!_isEnabled) return;
 
@@ -48,10 +49,10 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _isEnabled = false;
         }
 
-        public virtual bool IsValidAddMod(NetworkedStatsBehaviour instantiatedUnit, int slot, ErrorPopup errorPopup, Transform transform) { return true; }
-        public virtual void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit) {}
+        public virtual bool IsValidAddMod(UnitServiceProvider requestedUnitServiceProvider, int slot, ErrorPopup errorPopup, Transform transform) { return true; }
+        public virtual void ApplyToInstantiatedUnit(UnitServiceProvider instantiatedUnitServiceProvider) {}
         public virtual void ApplyOnUnitViewInstantiated(UnitViewBehaviour instantiatedView) {}
-        protected abstract void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot);
-        protected abstract void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats);
+        protected abstract void InternalAddMod(UnitServiceProvider modifiedUnitServiceProvider, int slot);
+        protected abstract void InternalRemoveMod(UnitServiceProvider modifiedUnitServiceProvider);
     }
 }

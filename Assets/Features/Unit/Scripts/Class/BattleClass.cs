@@ -4,6 +4,7 @@ using System.Linq;
 using ExitGames.Client.Photon;
 using ExitGames.Client.Photon.StructWrapping;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.ModView;
@@ -20,16 +21,11 @@ namespace Features.Unit.Scripts.Class
     [Serializable]
     public abstract class BattleClass
     {
-        protected readonly NetworkedStatsBehaviour ownerNetworkingStatsBehaviour;
-        protected readonly NetworkedBattleBehaviour ownerBattleBehaviour;
-        protected readonly UnitBattleView ownerUnitBattleView;
+        protected readonly UnitServiceProvider ownerUnitServiceProvider;
 
-        protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour, 
-            UnitBattleView ownerUnitBattleView)
+        protected BattleClass(UnitServiceProvider ownerUnitServiceProvider)
         {
-            this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
-            this.ownerUnitBattleView = ownerUnitBattleView;
-            this.ownerBattleBehaviour = ownerBattleBehaviour;
+            this.ownerUnitServiceProvider = ownerUnitServiceProvider;
         }
         
         protected void Attack_RaiseEvent(int targetID, float attackValue, float targetHealth, UnitClassData_SO attackerUnitClassData)
@@ -58,12 +54,12 @@ namespace Features.Unit.Scripts.Class
         
         public void AttackCallback(float attackValue, float targetHealth, UnitClassData_SO unitClassData)
         {
-            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
-            ownerNetworkingStatsBehaviour.RemovedHealth += attackValue;
+            ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
+            ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().RemovedHealth += attackValue;
 
-            if (ownerNetworkingStatsBehaviour.RemovedHealth >= targetHealth && ownerBattleBehaviour.CurrentState is not DeathState)
+            if (ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().RemovedHealth >= targetHealth && ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not DeathState)
             {
-                ownerBattleBehaviour.TryRequestDeathState();
+                ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().TryRequestDeathState();
             }
         }
 
@@ -90,12 +86,12 @@ namespace Features.Unit.Scripts.Class
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
+        protected void SendAttack(UnitServiceProvider targetUnitServiceProvider, float attackValue)
         {
-            NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
+            NetworkedStatsBehaviour targetUnitStats = targetUnitServiceProvider.GetService<NetworkedStatsBehaviour>();
 
-            Attack_RaiseEvent(attackedUnitStats.photonView.ViewID, attackValue,
-                attackedUnitStats.GetFinalStat(StatType.Health), attackedNetworkedBattleBehaviour.UnitClassData);
+            Attack_RaiseEvent(targetUnitStats.photonView.ViewID, attackValue,
+                targetUnitStats.GetFinalStat(StatType.Health), targetUnitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData);
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using DataStructures.Event;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using UnityEngine;
@@ -13,16 +14,16 @@ namespace Features.Unit.Scripts.DamageAnimation
     
         private string _identifier;
     
-        public override void InstantiateDamageAnimation(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit,
+        public override void InstantiateDamageAnimation(UnitServiceProvider casterUnitServiceProvider, UnitServiceProvider targetUnitServiceProvider,
             Action onHitAction)
         {
             SlashDamageAnimationBehaviour instantiatedDamageAnimatorBehaviour = PhotonNetwork
-                .Instantiate(gameObject.name, targetUnit.transform.position, Quaternion.identity)
+                .Instantiate(gameObject.name, targetUnitServiceProvider.transform.position, Quaternion.identity)
                 .GetComponent<SlashDamageAnimationBehaviour>();
             instantiatedDamageAnimatorBehaviour.StartCoroutine(instantiatedDamageAnimatorBehaviour.DestroyOnAnimationEnd());
         
             onHitAction.Invoke();
-            string identifier = GetIdentifier(casterUnit.PhotonView);
+            string identifier = GetIdentifier(casterUnitServiceProvider.GetService<PhotonView>());
             instantiatedDamageAnimatorBehaviour._identifier = identifier;
             AddToLookup(identifier, instantiatedDamageAnimatorBehaviour);
         }

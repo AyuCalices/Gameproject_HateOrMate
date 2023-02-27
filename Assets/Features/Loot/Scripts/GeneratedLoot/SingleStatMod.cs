@@ -1,4 +1,5 @@
 using System;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Stats;
@@ -25,41 +26,41 @@ namespace Features.Loot.Scripts.GeneratedLoot
             _stageScaleValue = stageScaleValue;
         }
 
-        protected override void InternalAddMod(NetworkedStatsBehaviour moddedLocalStats, int slot)
+        protected override void InternalAddMod(UnitServiceProvider modifiedUnitServiceProvider, int slot)
         {
-            bool result = moddedLocalStats.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
             }
             else
             {
-                onRegister?.Invoke(moddedLocalStats, _statType, ScaleByStage(_baseValue), _scaleValue);
+                onRegister?.Invoke(modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>(), _statType, ScaleByStage(_baseValue), _scaleValue);
             }
         }
     
-        protected override void InternalRemoveMod(NetworkedStatsBehaviour moddedLocalStats)
+        protected override void InternalRemoveMod(UnitServiceProvider modifiedUnitServiceProvider)
         {
-            bool result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");
             }
             
-            result = moddedLocalStats.NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");
             }
             else
             {
-                onUnregister?.Invoke(moddedLocalStats, _statType, -ScaleByStage(_baseValue), -_scaleValue);
+                onUnregister?.Invoke(modifiedUnitServiceProvider.GetService<NetworkedStatsBehaviour>(), _statType, -ScaleByStage(_baseValue), -_scaleValue);
             }
         }
         

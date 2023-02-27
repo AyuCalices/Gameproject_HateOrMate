@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using DataStructures.StateLogic;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Stats;
 using UnityEngine;
@@ -10,39 +12,39 @@ public class ActiveBattleBehaviour : IBattleBehaviour
 {
     private readonly StateMachine _stateMachine;
     private readonly BattleData_SO _battleData;
-    private readonly NetworkedBattleBehaviour _networkedBattleBehaviour;
+    private readonly UnitServiceProvider _unitServiceProvider;
 
-    private KeyValuePair<NetworkedBattleBehaviour, float> _closestUnit;
+    private KeyValuePair<UnitServiceProvider, float> _closestUnit;
 
     public StateMachine StateMachine => _stateMachine;
     
-    public KeyValuePair<NetworkedBattleBehaviour, float> GetTarget => _closestUnit;
+    public KeyValuePair<UnitServiceProvider, float> GetTarget => _closestUnit;
     private IState CurrentState => _stateMachine.CurrentState;
     private bool HasTarget { get; set; }
-    private bool TargetInRange => _closestUnit.Value < _networkedBattleBehaviour.NetworkedStatsBehaviour.GetFinalStat(StatType.Range);
+    private bool TargetInRange => _closestUnit.Value < _unitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Range);
 
 
-    public ActiveBattleBehaviour(BattleData_SO battleData, NetworkedBattleBehaviour networkedBattleBehaviour)
+    public ActiveBattleBehaviour(BattleData_SO battleData, UnitServiceProvider unitServiceProvider)
     {
         _battleData = battleData;
-        _networkedBattleBehaviour = networkedBattleBehaviour;
+        _unitServiceProvider = unitServiceProvider;
 
         _stateMachine = new StateMachine();
-        _stateMachine.Initialize(new IdleState(_networkedBattleBehaviour));
+        _stateMachine.Initialize(new IdleState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
     }
 
     public void Update()
     {
         if (!_battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute)) return;
 
-        List<NetworkedBattleBehaviour> enemyUnits = _battleData.AllUnitsRuntimeSet.GetUnitsByTag(_networkedBattleBehaviour.OpponentTagType);
-        HasTarget = TryGetClosestTargetableByWorldPosition(enemyUnits, _networkedBattleBehaviour.transform.position, out _closestUnit);
+        List<UnitServiceProvider> enemyUnits = _battleData.AllUnitsRuntimeSet.GetUnitsByTag(_unitServiceProvider.GetService<NetworkedBattleBehaviour>().OpponentTagType);
+        HasTarget = TryGetClosestTargetableByWorldPosition(enemyUnits, _unitServiceProvider.transform.position, out _closestUnit);
 
         _stateMachine.Update();
     }
     
-    private bool TryGetClosestTargetableByWorldPosition(List<NetworkedBattleBehaviour> networkedUnitBehaviours, Vector3 worldPosition, 
-        out KeyValuePair<NetworkedBattleBehaviour, float> closestUnit)
+    private bool TryGetClosestTargetableByWorldPosition(List<UnitServiceProvider> networkedUnitBehaviours, Vector3 worldPosition, 
+        out KeyValuePair<UnitServiceProvider, float> closestUnit)
     {
         if (!ContainsTargetable(ref networkedUnitBehaviours))
         {
@@ -64,13 +66,17 @@ public class ActiveBattleBehaviour : IBattleBehaviour
             }
         }
 
-        closestUnit = new KeyValuePair<NetworkedBattleBehaviour, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
+        closestUnit = new KeyValuePair<UnitServiceProvider, float>(networkedUnitBehaviours[closestUnitIndex], closestDistance);
         return true;
     }
         
-    private bool ContainsTargetable(ref List<NetworkedBattleBehaviour> networkedUnitBehaviours)
+    private bool ContainsTargetable(ref List<UnitServiceProvider> networkedUnitBehaviours)
     {
-        networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState || e.CurrentState is BenchedState);
+        networkedUnitBehaviours.RemoveAll(e =>
+        {
+            NetworkedBattleBehaviour unitBattleBehaviour = e.GetService<NetworkedBattleBehaviour>();
+            return !unitBattleBehaviour.IsTargetable || unitBattleBehaviour.CurrentState is DeathState || unitBattleBehaviour.CurrentState is BenchedState;
+        });
 
         return networkedUnitBehaviours.Count > 0;
     }
@@ -82,17 +88,17 @@ public class ActiveBattleBehaviour : IBattleBehaviour
             ForceIdleState();
         }
 
-        _networkedBattleBehaviour.BattleClass.OnStageEnd();
+        _unitServiceProvider.GetService<NetworkedBattleBehaviour>().BattleClass.OnStageEnd();
     }
 
     public void ForceIdleState()
     {
-        _stateMachine.ChangeState(new IdleState(_networkedBattleBehaviour));
+        _stateMachine.ChangeState(new IdleState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
     }
 
     public void ForceBenchedState()
     {
-        _stateMachine.ChangeState(new BenchedState(_networkedBattleBehaviour));
+        _stateMachine.ChangeState(new BenchedState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
     }
 
     public bool TryRequestIdleState()
@@ -101,7 +107,7 @@ public class ActiveBattleBehaviour : IBattleBehaviour
             
         if (result)
         {
-            _stateMachine.ChangeState(new IdleState(_networkedBattleBehaviour));
+            _stateMachine.ChangeState(new IdleState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
         }
 
         return result;
@@ -114,7 +120,8 @@ public class ActiveBattleBehaviour : IBattleBehaviour
          
         if (result)
         {
-            _stateMachine.ChangeState(new AttackState(_networkedBattleBehaviour, _networkedBattleBehaviour.BattleClass));
+            NetworkedBattleBehaviour unitBattleBehaviour = _unitServiceProvider.GetService<NetworkedBattleBehaviour>();
+            _stateMachine.ChangeState(new AttackState(unitBattleBehaviour, unitBattleBehaviour.BattleClass));
         }
 
         return result;
@@ -122,14 +129,14 @@ public class ActiveBattleBehaviour : IBattleBehaviour
 
     public bool TryRequestMovementStateByClosestUnit()
     {
-        bool result = HasTarget && !TargetInRange && CurrentState is IdleState or AttackState && _networkedBattleBehaviour.MovementSpeed > 0;
+        bool result = HasTarget && !TargetInRange && CurrentState is IdleState or AttackState && _unitServiceProvider.GetService<NetworkedBattleBehaviour>().MovementSpeed > 0;
 
         if (result)
         {
-            NetworkedBattleBehaviour closestStats = GetTarget.Key;
+            UnitServiceProvider closestStats = GetTarget.Key;
             Vector3Int enemyPosition = _battleData.TileRuntimeDictionary.GetWorldToCellPosition(closestStats.transform.position);
             //TODO: magic number
-            _stateMachine.ChangeState(new MovementState( _networkedBattleBehaviour, enemyPosition, 1, _battleData.TileRuntimeDictionary));
+            _stateMachine.ChangeState(new MovementState( _unitServiceProvider.GetService<UnitServiceProvider>(), enemyPosition, 1, _battleData.TileRuntimeDictionary));
         }
 
         return result;
@@ -141,7 +148,7 @@ public class ActiveBattleBehaviour : IBattleBehaviour
             
         if (result)
         {
-            _stateMachine.ChangeState(new DeathState(_networkedBattleBehaviour));
+            _stateMachine.ChangeState(new DeathState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
         }
         else
         {

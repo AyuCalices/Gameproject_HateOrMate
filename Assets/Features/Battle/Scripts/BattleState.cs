@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
@@ -74,14 +75,14 @@ namespace Features.Battle.Scripts
             var aiUnits = battleData.AllUnitsRuntimeSet.GetUnitsByTag(TeamTagType.AI);
             for (int index = aiUnits.Count - 1; index >= 0; index--)
             {
-                NetworkedBattleBehaviour networkedBattleBehaviour = aiUnits[index];
-                networkedBattleBehaviour.Destroy();
+                UnitServiceProvider unitServiceProvider = aiUnits[index];
+                unitServiceProvider.GetService<NetworkedBattleBehaviour>().Destroy();
             }
             
-            foreach (NetworkedBattleBehaviour networkedUnitBehaviour in battleData.AllUnitsRuntimeSet.GetItems())
+            foreach (UnitServiceProvider unitServiceProvider in battleData.AllUnitsRuntimeSet.GetItems())
             {
-                networkedUnitBehaviour.OnStageEnd();
-                networkedUnitBehaviour.NetworkedStatsBehaviour.RemovedHealth = 0;
+                unitServiceProvider.GetService<NetworkedBattleBehaviour>().OnStageEnd();
+                unitServiceProvider.GetService<NetworkedStatsBehaviour>().RemovedHealth = 0;
             }
         }
 
@@ -113,7 +114,11 @@ namespace Features.Battle.Scripts
         private bool HasUnitAlive(params TeamTagType[] tagTypes)
         {
             return battleData.AllUnitsRuntimeSet.GetUnitsByTag(tagTypes)
-                .Any(e => e.CurrentState is not DeathState && e.IsTargetable && e.CurrentState is not BenchedState);
+                .Any(e =>
+                {
+                    NetworkedBattleBehaviour unitBattleBehaviour = e.GetService<NetworkedBattleBehaviour>();
+                    return unitBattleBehaviour.CurrentState is not DeathState && unitBattleBehaviour.IsTargetable && unitBattleBehaviour.CurrentState is not BenchedState;
+                });
         }
         
         //out
@@ -198,9 +203,9 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out UnitServiceProvider unitServiceProvider))
                     {
-                        networkedUnitBehaviour.BattleClass.AttackCallback((float) data[1], (float) data[2], (UnitClassData_SO) data[3]);
+                        unitServiceProvider.GetService<NetworkedBattleBehaviour>().BattleClass.AttackCallback((float) data[1], (float) data[2], (UnitClassData_SO) data[3]);
                     }
 
                     break;

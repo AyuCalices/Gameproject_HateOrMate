@@ -2,10 +2,10 @@ using System;
 using System.Globalization;
 using DataStructures.Event;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Loot.Scripts;
 using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
@@ -24,11 +24,10 @@ namespace Features.Unit.Scripts.Behaviours
         [SerializeField] private DamagePopup damagePopupPrefab;
         [SerializeField] private GameEvent onHit;
 
+        private UnitServiceProvider _unitServiceProvider;
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
-        public PhotonView PhotonView { get; private set; }
 
         private float _removedHealth;
-        public int Level { get; private set; }
         public float RemovedHealth
         {
             get => _removedHealth;
@@ -56,7 +55,7 @@ namespace Features.Unit.Scripts.Behaviours
 
         protected void Awake()
         {
-            PhotonView = GetComponent<PhotonView>();
+            _unitServiceProvider = GetComponent<UnitServiceProvider>();
             NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
             
             foreach (object value in Enum.GetValues(typeof(StatType)))
@@ -67,12 +66,12 @@ namespace Features.Unit.Scripts.Behaviours
                 NetworkedStatServiceLocator.Register(new BaseStat((StatType)value));
             }
 
-            if (photonView.ViewID != 0)
+            if (_unitServiceProvider.GetService<PhotonView>().ViewID != 0)
             {
                 foreach (object value in Enum.GetValues(typeof(StatType)))
                 {
                     LocalModificationStat selectedModificationStat = NetworkedStatServiceLocator.Get<LocalModificationStat>((StatType)value);
-                    PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
+                    _unitServiceProvider.GetService<PhotonView>().RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
                 }
             }
             else
@@ -110,7 +109,7 @@ namespace Features.Unit.Scripts.Behaviours
         {
             foreach (UnitViewBehaviour unitModBehaviour in unitViewRuntimeSet.GetItems())
             {
-                unitModBehaviour.UnitMods.ApplyToInstantiatedUnit(this);
+                unitModBehaviour.UnitMods.ApplyToInstantiatedUnit(_unitServiceProvider);
             }
         }
 
@@ -121,8 +120,6 @@ namespace Features.Unit.Scripts.Behaviours
 
         public void SetBaseStats(BaseStatsData_SO baseStatsData, int level)
         {
-            Level = level;
-            
             float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
             float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
 

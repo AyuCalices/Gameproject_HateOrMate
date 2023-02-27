@@ -1,10 +1,12 @@
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.DamageAnimation;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Class
@@ -13,14 +15,13 @@ namespace Features.Unit.Scripts.Class
     {
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float TotalStamina => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Stamina);
+        private float TotalStamina => ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Stamina);
         private float _currentStamina;
-        private float StaminaRefreshTime => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Speed);
+        private float StaminaRefreshTime => ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Speed);
         private float _staminaRefreshTimeDelta;
 
-        public TowerBattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, NetworkedBattleBehaviour ownerBattleBehaviour,
-            UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
-            base(ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+        public TowerBattleClass(UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
+            base(ownerUnitServiceProvider)
         {
             _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
         }
@@ -29,7 +30,7 @@ namespace Features.Unit.Scripts.Class
         {
             _currentStamina = TotalStamina;
             _staminaRefreshTimeDelta = StaminaRefreshTime;
-            ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_currentStamina, TotalStamina);
         }
 
         protected override void InternalUpdateBattleActions()
@@ -42,38 +43,38 @@ namespace Features.Unit.Scripts.Class
             if (_currentStamina <= TotalStamina)
             {
                 _currentStamina++;
-                ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
+                ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_currentStamina, TotalStamina);
             }
         }
 
         protected override void InternalOnPerformAction()
         {
-            if (ownerBattleBehaviour.CurrentState is not AttackState) return;
+            if (ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not AttackState) return;
             
             if (_currentStamina <= 0) return;
 
             _currentStamina--;
-            ownerUnitBattleView.SetStaminaSlider(_currentStamina, TotalStamina);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_currentStamina, TotalStamina);
 
-            if (ownerBattleBehaviour.BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            if (ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
             {
-                Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerBattleBehaviour.name} doesnt have an ActiveBattleBehaviour!");
+                Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerUnitServiceProvider.name} doesnt have an ActiveBattleBehaviour!");
                 return;
             }
 
-            NetworkedBattleBehaviour targetUnit = activeBattleBehaviour.GetTarget.Key;
+            UnitServiceProvider targetUnit = activeBattleBehaviour.GetTarget.Key;
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
-                ownerBattleBehaviour, targetUnit, () =>
+                ownerUnitServiceProvider, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Damage));
+                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Damage));
                 });
         }
         
         public override void OnStageEnd()
         {
-            ownerUnitBattleView.ResetStaminaSlider();
+            ownerUnitServiceProvider.GetService<UnitBattleView>().ResetStaminaSlider();
 
-            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerBattleBehaviour.PhotonView);
+            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerUnitServiceProvider.GetService<PhotonView>());
         }
     }
 }

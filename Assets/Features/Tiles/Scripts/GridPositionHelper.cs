@@ -1,4 +1,5 @@
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 
@@ -6,10 +7,10 @@ namespace Features.Tiles.Scripts
 {
     public static class GridPositionHelper
     {
-        public static void UpdateUnitOnRuntimeTiles(BattleData_SO battleData, NetworkedBattleBehaviour battleBehaviour, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
+        public static void UpdateUnitOnRuntimeTiles(BattleData_SO battleData, UnitServiceProvider unitServiceProvider, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
         {
             RuntimeTile targetTileContainer = battleData.TileRuntimeDictionary.GetContent(nextCellPosition);
-            targetTileContainer.AddUnit(battleBehaviour.gameObject);
+            targetTileContainer.AddUnit(unitServiceProvider.gameObject);
 
             if (battleData.TileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
             {

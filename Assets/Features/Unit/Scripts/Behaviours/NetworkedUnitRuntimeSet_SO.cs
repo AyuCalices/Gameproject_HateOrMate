@@ -2,31 +2,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.RuntimeSet;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Photon.Pun;
 using UnityEngine;
 
 namespace Features.Unit.Scripts.Behaviours
 {
     
     [CreateAssetMenu(fileName = "new NetworkedUnitRuntimeSet", menuName = "Unit/Networked RuntimeSet")]
-    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<NetworkedBattleBehaviour>
+    public class NetworkedUnitRuntimeSet_SO : RuntimeSet_SO<UnitServiceProvider>
     {
         private void OnEnable()
         {
             Restore();
         }
 
-        public List<NetworkedBattleBehaviour> GetUnitsByTag(params TeamTagType[] teamTagTypes)
+        public List<UnitServiceProvider> GetUnitsByTag(params TeamTagType[] teamTagTypes)
         {
-            List<NetworkedBattleBehaviour> foundUnits = new List<NetworkedBattleBehaviour>();
+            List<UnitServiceProvider> foundUnits = new List<UnitServiceProvider>();
 
-            foreach (NetworkedBattleBehaviour networkedBattleBehaviour in items)
+            foreach (UnitServiceProvider unitServiceProvider in items)
             {
                 foreach (var teamTagType in teamTagTypes)
                 {
-                    if (networkedBattleBehaviour.TeamTagTypes.Any(e => e == teamTagType))
+                    if (unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Any(e => e == teamTagType))
                     {
-                        foundUnits.Add(networkedBattleBehaviour);
+                        foundUnits.Add(unitServiceProvider);
                     }
                 }
             }
@@ -34,18 +36,18 @@ namespace Features.Unit.Scripts.Behaviours
             return foundUnits;
         }
 
-        public bool GetUnitByViewID(int requestedViewID, out NetworkedBattleBehaviour networkedStatsBehaviour)
+        public bool GetUnitByViewID(int requestedViewID, out UnitServiceProvider requestedUnitServiceProvider)
         {
-            foreach (NetworkedBattleBehaviour item in items)
+            foreach (UnitServiceProvider item in items)
             {
-                if (requestedViewID == item.PhotonView.ViewID)
+                if (requestedViewID == item.GetService<PhotonView>().ViewID)
                 {
-                    networkedStatsBehaviour = item;
+                    requestedUnitServiceProvider = item;
                     return true;
                 }
             }
 
-            networkedStatsBehaviour = default;
+            requestedUnitServiceProvider = default;
             return false;
         }
     }

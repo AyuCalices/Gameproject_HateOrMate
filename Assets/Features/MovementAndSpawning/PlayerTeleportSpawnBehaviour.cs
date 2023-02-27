@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.GeneratedLoot;
@@ -32,39 +33,39 @@ namespace Features.MovementAndSpawning
             UnitDragPlacementBehaviour.onPerformTeleport -= RequestTeleport;
         }
         
-        private void RequestTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition)
+        private void RequestTeleport(UnitServiceProvider unitServiceProvider, Vector3Int targetTileGridPosition)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                PerformGridTeleport(battleBehaviour, targetTileGridPosition);
+                PerformGridTeleport(unitServiceProvider, targetTileGridPosition);
             }
             else
             {
-                RequestTeleport_RaiseEvent(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition);
+                RequestTeleport_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetTileGridPosition);
             }
         }
 
         #region MasterClient Perform Methods
 
-        private void PerformGridTeleport(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition)
+        private void PerformGridTeleport(UnitServiceProvider unitServiceProvider, Vector3Int targetCellPosition)
         {
-            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, battleBehaviour.transform);
+            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
 
             if (!GridPositionHelper.IsViablePosition(battleData, targetCellPosition)) return;
             
-            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, battleBehaviour, currentCellPosition, targetCellPosition);
-            PerformGridTeleport_RaiseEvent(battleBehaviour, targetCellPosition);
+            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, targetCellPosition);
+            PerformGridTeleport_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetCellPosition);
         }
 
         #endregion
 
         #region RaiseEvents: MasterClient sends result to all
 
-        private void PerformGridTeleport_RaiseEvent(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetCellPosition)
+        private void PerformGridTeleport_RaiseEvent(PhotonView unitPhotonView, Vector3Int targetCellPosition)
         {
             object[] data = new object[]
             {
-                battleBehaviour.PhotonView.ViewID,
+                unitPhotonView.ViewID,
                 targetCellPosition
             };
 
@@ -112,10 +113,10 @@ namespace Features.MovementAndSpawning
 
         #region Helper Functions
         
-        private void TeleportObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition)
+        private void TeleportObjectToTarget(UnitServiceProvider unitServiceProvider, Vector3Int nextCellPosition)
         {
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
-            battleBehaviour.transform.position = targetPosition;
+            unitServiceProvider.transform.position = targetPosition;
         }
         
         #endregion
@@ -130,22 +131,22 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider))
                     {
                         Vector3Int nextCellPosition = (Vector3Int) data[1];
 
                         if (!PhotonNetwork.IsMasterClient)
                         {
-                            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, networkedUnitBehaviour.transform);
-                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
+                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, nextCellPosition);
                         }
                         
-                        if (networkedUnitBehaviour.CurrentState is BenchedState)
+                        if (unitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is BenchedState)
                         {
-                            networkedUnitBehaviour.ForceIdleState();
+                            unitServiceProvider.GetService<NetworkedBattleBehaviour>().ForceIdleState();
                         }
                     
-                        TeleportObjectToTarget(networkedUnitBehaviour, nextCellPosition);
+                        TeleportObjectToTarget(unitServiceProvider, nextCellPosition);
                     }
 
                     break;
@@ -155,10 +156,10 @@ namespace Features.MovementAndSpawning
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
 
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider))
                     {
                         Vector3Int targetCellPosition = (Vector3Int) data[1];
-                        PerformGridTeleport(networkedUnitBehaviour, targetCellPosition);
+                        PerformGridTeleport(unitServiceProvider, targetCellPosition);
                     }
 
                     break;

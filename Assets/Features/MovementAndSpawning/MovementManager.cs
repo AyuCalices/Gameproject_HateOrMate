@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Tiles.Scripts;
@@ -45,15 +46,15 @@ namespace Features.MovementAndSpawning
             MovementState.onPerformMovement -= RequestGridStep;
         }
 
-        private void RequestGridStep(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
+        private void RequestGridStep(UnitServiceProvider unitServiceProvider, Vector3Int targetTileGridPosition, int skipLastMovementsCount)
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                PerformGridStep(battleBehaviour, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                PerformGridStep(unitServiceProvider, targetTileGridPosition, skipLastMovementsCount, unitServiceProvider.GetService<NetworkedBattleBehaviour>().MovementSpeed);
             }
             else
             {
-                RequestGridStep_RaiseEvent(battleBehaviour.NetworkedStatsBehaviour.PhotonView, targetTileGridPosition, skipLastMovementsCount, battleBehaviour.MovementSpeed);
+                RequestGridStep_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetTileGridPosition, skipLastMovementsCount, unitServiceProvider.GetService<NetworkedBattleBehaviour>().MovementSpeed);
             }
         }
         
@@ -62,22 +63,22 @@ namespace Features.MovementAndSpawning
         /// <summary>
         /// Master Cast
         /// </summary>
-        /// <param name="battleBehaviour"></param>
+        /// <param name="unitServiceProvider"></param>
         /// <param name="targetTileGridPosition"></param>
         /// <param name="skipLastMovementsCount"></param>
         /// <param name="movementSpeed"></param>
-        private void PerformGridStep(NetworkedBattleBehaviour battleBehaviour, Vector3Int targetTileGridPosition, int skipLastMovementsCount, float movementSpeed)
+        private void PerformGridStep(UnitServiceProvider unitServiceProvider, Vector3Int targetTileGridPosition, int skipLastMovementsCount, float movementSpeed)
         {
-            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, battleBehaviour.transform);
+            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
             if (!TryGetNextPathfindingPosition(targetTileGridPosition, currentCellPosition, skipLastMovementsCount,
                 out Vector3Int nextCellPosition))
             {
-                EnterIdleState_RaiseEvent(battleBehaviour);
+                EnterIdleState_RaiseEvent(unitServiceProvider.GetService<PhotonView>());
                 return;
             }
                 
-            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, battleBehaviour, currentCellPosition, nextCellPosition);
-            PerformGridStep_RaiseEvent(battleBehaviour, nextCellPosition, movementSpeed);
+            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, nextCellPosition);
+            PerformGridStep_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), nextCellPosition, movementSpeed);
         }
         
         #endregion
@@ -112,11 +113,11 @@ namespace Features.MovementAndSpawning
 
         #region RaiseEvents: MasterClient sends result to all
 
-        private void PerformGridStep_RaiseEvent(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed)
+        private void PerformGridStep_RaiseEvent(PhotonView unitPhotonView, Vector3Int nextCellPosition, float movementSpeed)
         {
             object[] data = new object[]
             {
-                battleBehaviour.PhotonView.ViewID,
+                unitPhotonView.ViewID,
                 nextCellPosition,
                 movementSpeed
             };
@@ -135,11 +136,11 @@ namespace Features.MovementAndSpawning
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnPerformGridStep, data, raiseEventOptions, sendOptions);
         }
 
-        private void EnterIdleState_RaiseEvent(NetworkedBattleBehaviour battleBehaviour)
+        private void EnterIdleState_RaiseEvent(PhotonView unitPhotonView)
         {
             object[] data = new object[]
             {
-                battleBehaviour.PhotonView.ViewID,
+                unitPhotonView.ViewID,
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
@@ -173,7 +174,7 @@ namespace Features.MovementAndSpawning
             return false;
         }
 
-        private void MoveGameObjectToTarget(NetworkedBattleBehaviour battleBehaviour, Vector3Int nextCellPosition, float movementSpeed, Action onComplete)
+        private void MoveGameObjectToTarget(UnitServiceProvider battleBehaviour, Vector3Int nextCellPosition, float movementSpeed, Action onComplete)
         {
             Vector3 targetPosition = battleData.TileRuntimeDictionary.GetCellToWorldPosition(nextCellPosition);
             float time = Vector3.Distance(battleBehaviour.transform.position, targetPosition) / movementSpeed;
@@ -192,7 +193,7 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider))
                     {
                         Vector3Int nextCellPosition = (Vector3Int) data[1];
                         float movementSpeed = (float) data[2];
@@ -200,15 +201,16 @@ namespace Features.MovementAndSpawning
                         //the masterClient already locked the position to prevent race conditions
                         if (!PhotonNetwork.IsMasterClient)
                         {
-                            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, networkedUnitBehaviour.transform);
-                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, networkedUnitBehaviour, currentCellPosition, nextCellPosition);
+                            Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
+                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, nextCellPosition);
                         }
                     
-                        MoveGameObjectToTarget(networkedUnitBehaviour, nextCellPosition, movementSpeed, () =>
+                        MoveGameObjectToTarget(unitServiceProvider, nextCellPosition, movementSpeed, () =>
                         {
-                            if (!networkedUnitBehaviour.TryRequestAttackState() || !networkedUnitBehaviour.TryRequestMovementStateByClosestUnit() || networkedUnitBehaviour.CurrentState is not DeathState)
+                            NetworkedBattleBehaviour unitBattleBehaviour = unitServiceProvider.GetService<NetworkedBattleBehaviour>();
+                            if (!unitBattleBehaviour.TryRequestAttackState() || !unitBattleBehaviour.TryRequestMovementStateByClosestUnit() || unitBattleBehaviour.CurrentState is not DeathState)
                             {
-                                networkedUnitBehaviour.ForceIdleState();
+                                unitBattleBehaviour.ForceIdleState();
                             }
                         });
                     }
@@ -219,13 +221,13 @@ namespace Features.MovementAndSpawning
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out NetworkedBattleBehaviour networkedUnitBehaviour))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider))
                     {
                         Vector3Int targetCellPosition = (Vector3Int) data[1];
                         int skipLastMovementsCount = (int) data[2];
                         float movementSpeed = (float) data[3];
 
-                        PerformGridStep(networkedUnitBehaviour, targetCellPosition, skipLastMovementsCount, movementSpeed);
+                        PerformGridStep(unitServiceProvider, targetCellPosition, skipLastMovementsCount, movementSpeed);
                     }
 
                     break;
@@ -235,10 +237,10 @@ namespace Features.MovementAndSpawning
                     object[] data = (object[]) photonEvent.CustomData;
                     int viewID = (int) data[0];
 
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID,
-                        out NetworkedBattleBehaviour networkedUnitBehaviour) && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider) 
+                        && unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own))
                     {
-                        networkedUnitBehaviour.ForceIdleState();
+                        unitServiceProvider.GetService<NetworkedBattleBehaviour>().ForceIdleState();
                     }
 
                     break;

@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Features.Battle.Scripts;
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.Stats;
@@ -20,10 +21,10 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         [SerializeField] public BattleData_SO battleData;
         [SerializeField] protected SpriteRenderer unitSprite;
         
-        
+        public UnitServiceProvider UnitServiceProvider { get; private set; }
         public IBattleBehaviour BattleBehaviour { get; private set; }   //reset state when change
         public IState CurrentState => BattleBehaviour.StateMachine.CurrentState;
-        public float MovementSpeed => NetworkedStatsBehaviour.GetFinalStat(StatType.MovementSpeed);
+        public float MovementSpeed => UnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.MovementSpeed);
         
         private BattleClass _battleClass;
         public BattleClass BattleClass => _battleClass;
@@ -35,7 +36,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             set
             {
                 _unitClassData = value;
-                _battleClass = UnitClassData.battleClasses.Generate(value.baseDamageAnimationBehaviour, NetworkedStatsBehaviour, this, _unitBattleView);
+                _battleClass = UnitClassData.battleClasses.Generate(UnitServiceProvider, value.baseDamageAnimationBehaviour);
             }
         }
         
@@ -43,15 +44,6 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         public TeamTagType[] TeamTagTypes { get; private set; }
         public TeamTagType[] OpponentTagType { get; private set; }
 
-        public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
-        
-
-        private UnitDragPlacementBehaviour _unitDragPlacementBehaviour;
-        
-        
-        public PhotonView PhotonView { get; private set; }
-
-        private UnitBattleView _unitBattleView;
 
         private bool _isTargetable;
         public bool IsTargetable
@@ -60,7 +52,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             private set
             {
                 _isTargetable = value;
-                _unitBattleView.SetHealthActive(IsTargetable);
+                UnitServiceProvider.GetService<UnitBattleView>().SetHealthActive(IsTargetable);
             }
         }
 
@@ -69,11 +61,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             TeamTagTypes = teamTagType;
             OpponentTagType = opponentTagType;
 
-            _unitDragPlacementBehaviour.enabled = teamTagType.Contains(TeamTagType.Own);
+            UnitServiceProvider.GetService<UnitDragPlacementBehaviour>().enabled = teamTagType.Contains(TeamTagType.Own);
 
             if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.AI)))
             {
-                BattleBehaviour = new ActiveBattleBehaviour(battleData, this);
+                BattleBehaviour = new ActiveBattleBehaviour(battleData, UnitServiceProvider);
             }
             else
             {
@@ -83,20 +75,17 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void AddRuntimeSets()
         {
-            battleData.AllUnitsRuntimeSet.Add(this);
+            battleData.AllUnitsRuntimeSet.Add(UnitServiceProvider);
         }
         
         private void ClearRuntimeSets()
         {
-            battleData.AllUnitsRuntimeSet.Remove(this);
+            battleData.AllUnitsRuntimeSet.Remove(UnitServiceProvider);
         }
     
         protected virtual void Awake()
         {
-            PhotonView = GetComponent<PhotonView>();
-            _unitBattleView = GetComponent<UnitBattleView>();
-            NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
-            _unitDragPlacementBehaviour = GetComponent<UnitDragPlacementBehaviour>();
+            UnitServiceProvider = GetComponent<UnitServiceProvider>();
         }
 
         private void OnDestroy()
@@ -152,7 +141,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         private void OnMouseDown()
         {
-            Debug.Log(NetworkedStatsBehaviour.GetFinalStat(StatType.Health));
+            Debug.Log(UnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Health));
         }
 
         public void Destroy()
@@ -172,7 +161,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             bool isTargetable = (bool) instantiationData[5];
             bool isBenched = (bool) instantiationData[6];
             
-            TeamTagType[] teamTagType = PhotonView.IsMine ? ownerTeamTagTypes : ownerMateTagTypes;
+            TeamTagType[] teamTagType = UnitServiceProvider.GetService<PhotonView>().IsMine ? ownerTeamTagTypes : ownerMateTagTypes;
 
             SetTeamTagType(teamTagType, opponentTagTypes);
             
@@ -192,7 +181,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             unitSprite.sprite = unitClassData.sprite;
             IsTargetable = isTargetable;
             UnitClassData = unitClassData;
-            NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
+            UnitServiceProvider.GetService<NetworkedStatsBehaviour>().SetBaseStats(unitClassData.baseStatsData, level);
 
             AddRuntimeSets();
         }

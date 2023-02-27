@@ -1,3 +1,4 @@
+using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using UnityEngine;
@@ -19,22 +20,22 @@ namespace Features.Loot.Scripts.ModView
 
         private bool _isActive;
         public bool IsActive => _isActive;
-        private NetworkedStatsBehaviour _localStats;
+        private UnitServiceProvider _ownerUnitServiceProvider;
         private int _slot;
         
-        public void Initialize(NetworkedStatsBehaviour localStats, int slot)
+        public void Initialize(UnitServiceProvider localStats, int slot)
         {
-            _localStats = localStats;
+            _ownerUnitServiceProvider = localStats;
             _isActive = true;
             _slot = slot;
         }
         
-        public void ApplyToInstantiatedUnit(NetworkedStatsBehaviour instantiatedUnit)
+        public void ApplyToInstantiatedUnit(UnitServiceProvider instantiatedUnitServiceProvider)
         {
             if (!ContainsMod) return;
             if (!_isActive) return;
             
-            ContainedModBehaviour.ContainedMod.ApplyToInstantiatedUnit(instantiatedUnit);
+            ContainedModBehaviour.ContainedMod.ApplyToInstantiatedUnit(instantiatedUnitServiceProvider);
         }
         
         public void ApplyOnUnitViewInstantiated(UnitViewBehaviour instantiatedView)
@@ -51,7 +52,7 @@ namespace Features.Loot.Scripts.ModView
             eventData.pointerDrag.TryGetComponent(out ModBehaviour movingMod);
             if (movingMod == null) return;
 
-            if (!movingMod.ContainedMod.IsValidAddMod(_localStats, _slot, errorPopup, transform.root)) return;
+            if (!movingMod.ContainedMod.IsValidAddMod(_ownerUnitServiceProvider, _slot, errorPopup, transform.root)) return;
             
             ModHelper.AddOrExchangeMod(movingMod, ContainsMod ? ContainedModBehaviour : null,
                 movingMod.CurrentModContainer, this);
@@ -61,12 +62,12 @@ namespace Features.Loot.Scripts.ModView
         {
             ContainedModBehaviour = newModBehaviour;
             UpdateModColor();
-            if (_isActive) newModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
+            if (_isActive) newModBehaviour.ContainedMod.EnableMod(_ownerUnitServiceProvider, _slot);
         }
         
         public void RemoveMod(ModBehaviour removedModBehaviour)
         {
-            if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
+            if (_isActive) ContainedModBehaviour.ContainedMod.DisableMod(_ownerUnitServiceProvider);
             UpdateModColor();
             ContainedModBehaviour = null;
         }
@@ -78,7 +79,7 @@ namespace Features.Loot.Scripts.ModView
             UpdateSlotColor();
 
             if (!ContainsMod) return;
-            ContainedModBehaviour.ContainedMod.DisableMod(_localStats);
+            ContainedModBehaviour.ContainedMod.DisableMod(_ownerUnitServiceProvider);
             UpdateModColor();
         }
         
@@ -89,7 +90,7 @@ namespace Features.Loot.Scripts.ModView
             UpdateSlotColor();
 
             if (!ContainsMod) return;
-            ContainedModBehaviour.ContainedMod.EnableMod(_localStats, _slot);
+            ContainedModBehaviour.ContainedMod.EnableMod(_ownerUnitServiceProvider, _slot);
             UpdateModColor();
         }
         
