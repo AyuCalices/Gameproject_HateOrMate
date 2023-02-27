@@ -32,6 +32,41 @@ namespace Features.Unit.Scripts.Class
             this.ownerBattleBehaviour = ownerBattleBehaviour;
         }
         
+        protected void SendAttack_RaiseEvent(int targetID, float attackValue, float targetHealth, UnitClassData_SO attackerUnitClassData)
+        {
+            object[] data = new object[]
+            {
+                targetID,
+                attackValue,
+                targetHealth,
+                attackerUnitClassData
+            };
+
+            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+            {
+                Receivers = ReceiverGroup.All,
+                CachingOption = EventCaching.AddToRoomCache
+            };
+
+            SendOptions sendOptions = new SendOptions
+            {
+                Reliability = true
+            };
+
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSendFloatToTarget, data, raiseEventOptions, sendOptions);
+        }
+        
+        public void OnReceiveAttackCallback(float attackValue, float targetHealth, UnitClassData_SO unitClassData)
+        {
+            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
+            ownerNetworkingStatsBehaviour.RemovedHealth += attackValue;
+
+            if (ownerNetworkingStatsBehaviour.RemovedHealth >= targetHealth && ownerBattleBehaviour.CurrentState is not DeathState)
+            {
+                ownerBattleBehaviour.TryRequestDeathState();
+            }
+        }
+        
         /// <summary>
         /// Caster unit sends value to target. May be an attack or a heal.
         /// </summary>
@@ -59,11 +94,7 @@ namespace Features.Unit.Scripts.Class
 
             PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSendFloatToTarget, data, raiseEventOptions, sendOptions);
         }
-        
-        /// <summary>
-        /// Attacked Unit Receives an attack from the caster. May be an attack or heal.
-        /// </summary>
-        /// <param name="value"></param>
+
         public void OnReceiveFloatActionCallback(float value, UnitClassData_SO unitClassData)
         {
             ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);

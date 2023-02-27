@@ -70,7 +70,7 @@ public class ActiveBattleBehaviour : IBattleBehaviour
         
     private bool ContainsTargetable(ref List<NetworkedBattleBehaviour> networkedUnitBehaviours)
     {
-        networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState || e.IsSpawnedLocally);
+        networkedUnitBehaviours.RemoveAll(e => !e.IsTargetable || e.CurrentState is DeathState || e.CurrentState is BenchedState);
 
         return networkedUnitBehaviours.Count > 0;
     }
@@ -90,6 +90,11 @@ public class ActiveBattleBehaviour : IBattleBehaviour
         _stateMachine.ChangeState(new IdleState(_networkedBattleBehaviour));
     }
 
+    public void ForceBenchedState()
+    {
+        _stateMachine.ChangeState(new BenchedState(_networkedBattleBehaviour));
+    }
+
     public bool TryRequestIdleState()
     {
         bool result = !HasTarget && CurrentState is not DeathState;
@@ -104,7 +109,7 @@ public class ActiveBattleBehaviour : IBattleBehaviour
 
     public bool TryRequestAttackState()
     {
-        bool result = HasTarget && TargetInRange && !_networkedBattleBehaviour.IsSpawnedLocally && CurrentState is IdleState && 
+        bool result = HasTarget && TargetInRange && CurrentState is not BenchedState && CurrentState is IdleState && 
                       _battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
          
         if (result)

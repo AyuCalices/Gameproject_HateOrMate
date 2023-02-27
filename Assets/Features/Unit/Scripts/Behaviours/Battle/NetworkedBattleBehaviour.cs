@@ -1,15 +1,13 @@
 using System;
 using System.Linq;
-using DataStructures.StateLogic;
 using Features.Battle.Scripts;
-using Features.Battle.StateMachine;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Class;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using IState = DataStructures.StateLogic.IState;
 
 namespace Features.Unit.Scripts.Behaviours.Battle
 {
@@ -19,11 +17,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
     public class NetworkedBattleBehaviour : MonoBehaviour, IPunInstantiateMagicCallback
     {
         [Header("References")]
-        [SerializeField] protected BattleData_SO battleData;
+        [SerializeField] public BattleData_SO battleData;
         [SerializeField] protected SpriteRenderer unitSprite;
         
         
-        public IBattleBehaviour BattleBehaviour { get; set; }
+        public IBattleBehaviour BattleBehaviour { get; private set; }   //reset state when change
         public IState CurrentState => BattleBehaviour.StateMachine.CurrentState;
         public float MovementSpeed => NetworkedStatsBehaviour.GetFinalStat(StatType.MovementSpeed);
         
@@ -44,11 +42,11 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         
         public TeamTagType[] TeamTagTypes { get; private set; }
         public TeamTagType[] OpponentTagType { get; private set; }
-        public bool IsSpawnedLocally { get; set; }
-        public int SpawnerInstanceIndex { get; set; }
-        
+
         public NetworkedStatsBehaviour NetworkedStatsBehaviour { get; private set; }
         
+
+        private UnitDragPlacementBehaviour _unitDragPlacementBehaviour;
         
         
         public PhotonView PhotonView { get; private set; }
@@ -59,25 +57,20 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         public bool IsTargetable
         {
             get => _isTargetable;
-            set
+            private set
             {
                 _isTargetable = value;
                 _unitBattleView.SetHealthActive(IsTargetable);
             }
         }
 
-        public void SetSprite(Sprite sprite)
-        {
-            unitSprite.sprite = sprite;
-        }
-
-        public void SetTeamTagType(TeamTagType[] teamTagType, TeamTagType[] opponentTagType)
+        private void SetTeamTagType(TeamTagType[] teamTagType, TeamTagType[] opponentTagType)
         {
             TeamTagTypes = teamTagType;
             OpponentTagType = opponentTagType;
-            AddRuntimeSets();
 
-            //TODO: add movement to own Units
+            _unitDragPlacementBehaviour.enabled = teamTagType.Contains(TeamTagType.Own);
+
             if (teamTagType.Contains(TeamTagType.Own) || (PhotonNetwork.IsMasterClient && teamTagType.Contains(TeamTagType.AI)))
             {
                 BattleBehaviour = new ActiveBattleBehaviour(battleData, this);
@@ -103,6 +96,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             PhotonView = GetComponent<PhotonView>();
             _unitBattleView = GetComponent<UnitBattleView>();
             NetworkedStatsBehaviour = GetComponent<NetworkedStatsBehaviour>();
+            _unitDragPlacementBehaviour = GetComponent<UnitDragPlacementBehaviour>();
         }
 
         private void OnDestroy()
@@ -123,12 +117,17 @@ namespace Features.Unit.Scripts.Behaviours.Battle
 
         public void OnStageEnd()
         {
-            BattleBehaviour?.OnStageEnd();
+            BattleBehaviour.OnStageEnd();
         }
 
         internal void ForceIdleState()
         {
-            BattleBehaviour?.ForceIdleState();
+            BattleBehaviour.ForceIdleState();
+        }
+        
+        internal void ForceBenchedState()
+        {
+            BattleBehaviour.ForceBenchedState();
         }
         
         internal bool TryRequestIdleState()
@@ -165,34 +164,37 @@ namespace Features.Unit.Scripts.Behaviours.Battle
         {
             object[] instantiationData = info.photonView.InstantiationData;
             
-            int ownerActorNumber = (int)instantiationData[0];
-            UnitClassData_SO unitClassData = (UnitClassData_SO)instantiationData[1];
-            Vector3Int gridPosition = (Vector3Int)instantiationData[2];
-            int index = (int)instantiationData[3];
-            int level = (int)instantiationData[4];
-            TeamTagType[] ownerTeamTagTypes = Array.ConvertAll((int[]) instantiationData[5], value => (TeamTagType) value);
-            TeamTagType[] ownerMateTagTypes = Array.ConvertAll((int[]) instantiationData[6], value => (TeamTagType) value);
-            TeamTagType[] opponentTagTypes = Array.ConvertAll((int[]) instantiationData[7], value => (TeamTagType) value);
-            bool isTargetable = (bool) instantiationData[8];
+            UnitClassData_SO unitClassData = (UnitClassData_SO)instantiationData[0];
+            int level = (int)instantiationData[1];
+            TeamTagType[] ownerTeamTagTypes = Array.ConvertAll((int[]) instantiationData[2], value => (TeamTagType) value);
+            TeamTagType[] ownerMateTagTypes = Array.ConvertAll((int[]) instantiationData[3], value => (TeamTagType) value);
+            TeamTagType[] opponentTagTypes = Array.ConvertAll((int[]) instantiationData[4], value => (TeamTagType) value);
+            bool isTargetable = (bool) instantiationData[5];
+            bool isBenched = (bool) instantiationData[6];
             
-            bool isOwner = PhotonNetwork.LocalPlayer.ActorNumber == ownerActorNumber;
-            TeamTagType[] teamTagType = isOwner ? ownerTeamTagTypes : ownerMateTagTypes;
+            TeamTagType[] teamTagType = PhotonView.IsMine ? ownerTeamTagTypes : ownerMateTagTypes;
+
             SetTeamTagType(teamTagType, opponentTagTypes);
             
-            if (unitClassData.sprite != null)
+            if (isBenched)
             {
-                SetSprite(unitClassData.sprite);
+                ForceBenchedState();
+            }
+            else
+            {
+                Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+                if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
+                {
+                    tileBehaviour.AddUnit(gameObject);
+                }
             }
             
+            unitSprite.sprite = unitClassData.sprite;
             IsTargetable = isTargetable;
-            SpawnerInstanceIndex = index;
             UnitClassData = unitClassData;
             NetworkedStatsBehaviour.SetBaseStats(unitClassData.baseStatsData, level);
-            
-            if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
-            {
-                tileBehaviour.AddUnit(gameObject);
-            }
+
+            AddRuntimeSets();
         }
     }
 }

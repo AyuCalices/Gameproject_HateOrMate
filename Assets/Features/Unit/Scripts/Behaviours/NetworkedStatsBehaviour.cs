@@ -73,6 +73,25 @@ namespace Features.Unit.Scripts.Behaviours
                 NetworkedStatServiceLocator.Register(new LocalModificationStat((StatType)value, scalingStatIdentity, statIdentity));
                 NetworkedStatServiceLocator.Register(new BaseStat((StatType)value));
             }
+
+            if (photonView.ViewID != 0)
+            {
+                foreach (object value in Enum.GetValues(typeof(StatType)))
+                {
+                    LocalModificationStat selectedModificationStat = NetworkedStatServiceLocator.Get<LocalModificationStat>((StatType)value);
+                    PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
+                }
+            }
+            else
+            {
+                Debug.Log("View ID Not Allocated");
+            }
+        }
+        
+        [PunRPC, UsedImplicitly]
+        protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
+        {
+            NetworkedStatServiceLocator.Register(new NetworkModificationStat(statType, scalingStatIdentity, statIdentity));
         }
         
         public float GetFinalStat(StatType statType)
@@ -107,25 +126,6 @@ namespace Features.Unit.Scripts.Behaviours
             NetworkedStatServiceLocator.UnregisterAll();
         }
 
-        /// <summary>
-        /// When instantiating a Unit, call this after a PhotonView ViewId was allocated and the RaiseEvent Instantiation was done. (photon uses a queue)
-        /// If the Unit is already placed inside a scene it must be called in Awake
-        /// </summary>
-        public void OnPhotonViewIdAllocated()
-        {
-            foreach (object value in Enum.GetValues(typeof(StatType)))
-            {
-                LocalModificationStat selectedModificationStat = NetworkedStatServiceLocator.Get<LocalModificationStat>((StatType)value);
-                PhotonView.RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
-            }
-        }
-        
-        [PunRPC, UsedImplicitly]
-        protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
-        {
-            NetworkedStatServiceLocator.Register(new NetworkModificationStat(statType, scalingStatIdentity, statIdentity));
-        }
-        
         public void SetBaseStats(BaseStatsData_SO baseStatsData, int level)
         {
             Level = level;

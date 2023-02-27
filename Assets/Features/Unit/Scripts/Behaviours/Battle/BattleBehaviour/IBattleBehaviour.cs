@@ -12,6 +12,7 @@ public interface IBattleBehaviour
     void Update();
     
     void ForceIdleState();
+    void ForceBenchedState();
     bool TryRequestIdleState();
     bool TryRequestAttackState();
     bool TryRequestMovementStateByClosestUnit();

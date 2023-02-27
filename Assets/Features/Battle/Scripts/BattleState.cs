@@ -121,7 +121,7 @@ namespace Features.Battle.Scripts
         private bool HasUnitAlive(params TeamTagType[] tagTypes)
         {
             return battleData.AllUnitsRuntimeSet.GetUnitsByTag(tagTypes)
-                .Any(e => e.CurrentState is not DeathState && e.IsTargetable && !e.IsSpawnedLocally);
+                .Any(e => e.CurrentState is not DeathState && e.IsTargetable && e.CurrentState is not BenchedState);
         }
         
         //out
@@ -206,8 +206,7 @@ namespace Features.Battle.Scripts
                 {
                     object[] data = (object[]) photonEvent.CustomData;
                     
-                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour)
-                        && networkedUnitBehaviour.TeamTagTypes.Contains(TeamTagType.Own))
+                    if (battleData.AllUnitsRuntimeSet.GetUnitByViewID((int) data[0], out NetworkedBattleBehaviour networkedUnitBehaviour))
                     {
                         networkedUnitBehaviour.BattleClass.OnReceiveFloatActionCallback((float) data[1], (UnitClassData_SO) data[2]);
                     }

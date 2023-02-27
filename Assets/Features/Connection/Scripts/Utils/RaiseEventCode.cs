@@ -2,12 +2,11 @@ namespace Features.Connection.Scripts.Utils
 {
     public enum RaiseEventCode
     {
-        OnPerformUnitInstantiation = 1,
         OnRequestUnitInstantiation = 2,
         OnPerformGridStep = 3,
         OnRequestGridStep = 4,
         OnRequestSpawnThenTeleport = 5,
-        OnPerformSpawnThenTeleport = 6,
+        OnPerformGridTeleport = 6,
         OnRequestTeleport = 7,
         OnPerformTeleportThenSpawn = 8,
         OnSendFloatToTarget = 9,
@@ -15,7 +14,6 @@ namespace Features.Connection.Scripts.Utils
         OnRequestBattleState = 11,
         OnEnterUnitIdleState = 12,
         OnNextStage = 13,
-        OnPlayerSynchronizedDespawn = 14,
         OnRestartStage = 15,
         OnEndGame = 16
     }

@@ -40,6 +40,11 @@ public class PassiveBattleBehaviour : IBattleBehaviour
         _stateMachine.ChangeState(new IdleState(_networkedBattleBehaviour));
     }
 
+    public void ForceBenchedState()
+    {
+        _stateMachine.ChangeState(new BenchedState(_networkedBattleBehaviour));
+    }
+
     public bool TryRequestIdleState()
     {
         return false;

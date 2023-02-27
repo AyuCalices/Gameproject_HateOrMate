@@ -20,6 +20,7 @@ namespace Features.Tiles.Scripts
 
         public void Initialize(Tilemap tilemap, Action<Dictionary<Vector3Int, RuntimeTile>> populateRuntimeSet)
         {
+            Restore();
             _tilemap = tilemap;
             _pathfinder = new Pathfinder<Vector3Int>(DistanceFunc, ConnectionsAndCosts);
             populateRuntimeSet.Invoke(items);

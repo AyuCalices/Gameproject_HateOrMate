@@ -10,8 +10,8 @@ namespace Features.MovementAndSpawning
 {
     public static class SpawnHelper
     {
-        public static NetworkedBattleBehaviour PhotonSpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, 
-            UnitClassData_SO unitClassData, int level)
+        public static NetworkedBattleBehaviour PhotonSpawnUnit(List<SpawnerInstance> spawnerInstances, string spawnerReference, 
+            UnitClassData_SO unitClassData, int level, bool isBenched)
         {
             int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
             
@@ -19,32 +19,10 @@ namespace Features.MovementAndSpawning
                 .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return null;
 
             SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            return spawnerInstance.PhotonInstantiate(photonActorNumber, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex, level);
+            return spawnerInstance.PhotonInstantiate(unitClassData, tileKeyValuePair.Key, level, isBenched);
         }
-        
-        public static NetworkedBattleBehaviour SpawnUnit(List<SpawnerInstance> spawnerInstances, int photonActorNumber, string spawnerReference, 
-            UnitClassData_SO unitClassData, int level, Action<NetworkedBattleBehaviour, Vector3Int> onSpawnSuccessful)
-        {
-            int spawnerInstanceIndex = GetSpawnerInstanceIndex(spawnerInstances, spawnerReference);
-            
-            if (!spawnerInstances[spawnerInstanceIndex]
-                .TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)) return null;
 
-            SpawnerInstance spawnerInstance = spawnerInstances[spawnerInstanceIndex];
-            NetworkedBattleBehaviour player = spawnerInstance.InstantiateAndInitialize(photonActorNumber, unitClassData, tileKeyValuePair.Key, spawnerInstanceIndex, level);
-
-            if (PhotonNetwork.AllocateViewID(player.PhotonView))
-            {
-                onSpawnSuccessful.Invoke(player, tileKeyValuePair.Key);
-                return player;
-            }
-            
-            Debug.LogError("Failed to allocate a ViewId.");
-            player.Destroy();
-            return null;
-        }
-        
-        public static int GetSpawnerInstanceIndex(List<SpawnerInstance> spawnerInstances, string spawnerReference)
+        private static int GetSpawnerInstanceIndex(List<SpawnerInstance> spawnerInstances, string spawnerReference)
         {
             int spawnerInstanceIndex = spawnerInstances.FindIndex(x => x.reference == spawnerReference);
             if (spawnerInstanceIndex == -1)

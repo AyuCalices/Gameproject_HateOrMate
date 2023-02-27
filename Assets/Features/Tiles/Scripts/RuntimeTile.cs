@@ -46,6 +46,8 @@ namespace Features.Tiles.Scripts
 
         public void AddUnit(GameObject localUnitTilePlacementBehaviour)
         {
+            Debug.Log("o/");
+            
             if (ContainsUnit)
             {
                 Debug.LogWarning("Unit Has been overwritten!");

@@ -352,6 +352,7 @@ GameObject:
   - component: {fileID: 201570308}
   - component: {fileID: 201570307}
   - component: {fileID: 201570309}
+  - component: {fileID: 201570310}
   m_Layer: 0
   m_Name: UnitSpawner
   m_TagString: Untagged
@@ -371,8 +372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29256a6d9b6fb0a46bae5f6d21910dbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnerInstances:
-  - {fileID: 1088589964}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
 --- !u!4 &201570308
 Transform:
@@ -409,6 +408,20 @@ MonoBehaviour:
   - {fileID: 1333872271}
   - {fileID: 404567955}
   - {fileID: 402770388}
+--- !u!114 &201570310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201570306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9133253f621ee034aa3239b2bc3b657a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnerInstances:
+  - {fileID: 1088589964}
 --- !u!1 &308023118
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,9 +847,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiUnit
-  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -896,9 +907,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: Gate
-  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -1931,9 +1940,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 02000000
   reference: Player
-  localPlayerPrefab: {fileID: 7463803209756924334, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
   ownSpawnsTeamTagType: 00000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 01000000
   isTargetable: 1
   spawnPositions:
@@ -2601,9 +2608,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiTower
-  localPlayerPrefab: {fileID: 0}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 0}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 0
   spawnPositions:
@@ -5033,7 +5038,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 365237932807478090, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 311
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 486929791517998828, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6147,7 +6152,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 311
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6917578677737203262, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
