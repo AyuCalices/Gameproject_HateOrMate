@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
@@ -19,9 +18,9 @@ namespace Features.Unit.Scripts
 
             foreach (UnitServiceProvider battleBehaviour in towerBattleActions)
             {
-                if (!battleBehaviour.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own) || battleBehaviour.GetService<NetworkedBattleBehaviour>().CurrentState is not AttackState) continue;
+                if (!battleBehaviour.TeamTagTypes.Contains(TeamTagType.Own) || battleBehaviour.GetService<NetworkedBattleBehaviour>().CurrentState is not AttackState) continue;
                 
-                if (battleBehaviour.GetService<NetworkedBattleBehaviour>().UnitClassData == towerClassData)
+                if (battleBehaviour.UnitClassData == towerClassData)
                 {
                     battleBehaviour.GetService<NetworkedBattleBehaviour>().BattleClass.OnPerformAction();
                 }

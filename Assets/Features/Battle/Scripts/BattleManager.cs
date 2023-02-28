@@ -3,6 +3,7 @@ using ExitGames.Client.Photon;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts;
 using Features.Loot.Scripts.ModView;
+using Features.Music;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;

@@ -1,20 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
-using DataStructures.StateLogic;
-using UnityEngine;
-
-public interface IBattleBehaviour
+namespace Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour
 {
-    StateMachine StateMachine { get; }
-    
-    void OnStageEnd();
-
-    void Update();
-    
-    void ForceIdleState();
-    void ForceBenchedState();
-    bool TryRequestIdleState();
-    bool TryRequestAttackState();
-    bool TryRequestMovementStateByClosestUnit();
-    bool TryRequestDeathState();
+    public interface IBattleBehaviour
+    {
+        void OnStageEnd();
+        void Update();
+        void ForceIdleState();
+        void ForceBenchedState();
+        bool TryRequestIdleState();
+        bool TryRequestAttackState();
+        bool TryRequestMovementStateByClosestUnit();
+        bool TryRequestDeathState();
+    }
 }

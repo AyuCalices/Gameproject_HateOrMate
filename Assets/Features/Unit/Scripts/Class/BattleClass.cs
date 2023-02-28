@@ -1,20 +1,12 @@
 using System;
-using System.Globalization;
-using System.Linq;
 using ExitGames.Client.Photon;
-using ExitGames.Client.Photon.StructWrapping;
-using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
-using Features.Connection;
 using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 namespace Features.Unit.Scripts.Class
 {
@@ -54,10 +46,17 @@ namespace Features.Unit.Scripts.Class
         
         public void AttackCallback(float attackValue, float targetHealth, UnitClassData_SO unitClassData)
         {
-            ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
-            ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().RemovedHealth += attackValue;
+            NetworkedStatsBehaviour ownerUnitStatsBehaviour = ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>();
+            
+            ownerUnitServiceProvider.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
+            ownerUnitStatsBehaviour.RemovedHealth += attackValue;
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetHealthSlider(ownerUnitStatsBehaviour.RemovedHealth, targetHealth);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().InstantiateDamagePopup(attackValue);
+            
+            ownerUnitServiceProvider.onHitEvent.Raise();
 
-            if (ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().RemovedHealth >= targetHealth && ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not DeathState)
+            if (ownerUnitStatsBehaviour.RemovedHealth >= targetHealth && 
+                ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not DeathState)
             {
                 ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().TryRequestDeathState();
             }
@@ -91,7 +90,7 @@ namespace Features.Unit.Scripts.Class
             NetworkedStatsBehaviour targetUnitStats = targetUnitServiceProvider.GetService<NetworkedStatsBehaviour>();
 
             Attack_RaiseEvent(targetUnitStats.photonView.ViewID, attackValue,
-                targetUnitStats.GetFinalStat(StatType.Health), targetUnitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData);
+                targetUnitStats.GetFinalStat(StatType.Health), targetUnitServiceProvider.UnitClassData);
         }
     }
 }

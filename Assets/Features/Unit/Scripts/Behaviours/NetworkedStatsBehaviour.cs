@@ -1,14 +1,8 @@
 using System;
-using System.Globalization;
-using DataStructures.Event;
-using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
-using Features.Battle.StateMachine;
 using Features.Loot.Scripts;
-using Features.Loot.Scripts.ModView;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Behaviours.Mod;
 using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
 using JetBrains.Annotations;
 using Photon.Pun;
 using UnityEngine;
@@ -18,40 +12,14 @@ namespace Features.Unit.Scripts.Behaviours
     [RequireComponent(typeof(PhotonView))]
     public class NetworkedStatsBehaviour : MonoBehaviourPunCallbacks
     {
-        [SerializeField] private BattleData_SO battleData;
         [SerializeField] private UnitViewRuntimeSet_SO unitViewRuntimeSet;
-        [SerializeField] private CanvasFocus_SO canvasFocus;
-        [SerializeField] private DamagePopup damagePopupPrefab;
-        [SerializeField] private GameEvent onHit;
-
-        private UnitServiceProvider _unitServiceProvider;
+        
         public NetworkedStatServiceLocator NetworkedStatServiceLocator { get; private set; }
-
-        private float _removedHealth;
-        public float RemovedHealth
-        {
-            get => _removedHealth;
-            set
-            {
-                if (battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute))
-                {
-                    damagePopupPrefab.Create(
-                        canvasFocus.Get().transform, 
-                        Mathf.FloorToInt(value - _removedHealth).ToString(CultureInfo.CurrentCulture), 
-                        Color.yellow, 
-                        20, 
-                        transform.position);
-                    
-                    onHit.Raise();
-                }
-
-                _removedHealth = value;
-                if (TryGetComponent(out UnitBattleView unitView))
-                {
-                    unitView.SetHealthSlider(value, GetFinalStat(StatType.Health));
-                }
-            }
-        }
+        public float RemovedHealth { get; set; }
+        
+        
+        private UnitServiceProvider _unitServiceProvider;
+        
 
         protected void Awake()
         {
@@ -80,6 +48,7 @@ namespace Features.Unit.Scripts.Behaviours
             }
         }
         
+        //TODO: reduce RPC count
         [PunRPC, UsedImplicitly]
         protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
         {

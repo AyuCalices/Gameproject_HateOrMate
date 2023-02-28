@@ -1,5 +1,4 @@
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 

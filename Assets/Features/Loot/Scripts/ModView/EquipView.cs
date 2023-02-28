@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UniRx;
@@ -62,7 +61,7 @@ namespace Features.Loot.Scripts.ModView
         {
             foreach (UnitServiceProvider unitServiceProvider in unitRuntimeSet.GetItems())
             {
-                if (!unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own) || 
+                if (!unitServiceProvider.TeamTagTypes.Contains(TeamTagType.Own) || 
                     _unitViewLookup.ContainsKey(unitServiceProvider)) continue;
 
                 UnitViewBehaviour instantiatedView = Instantiate(unitViewPrefab, instantiationParent);

@@ -1,10 +1,9 @@
-using System;
 using DataStructures.Variables;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
 
-namespace Features.Audio_Namespace.Logic
+namespace Features.Music
 {
     public class AudioSettings : MonoBehaviour
     {

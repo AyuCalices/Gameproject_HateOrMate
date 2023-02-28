@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts;
 using Features.Connection.Scripts.Utils;
@@ -76,7 +75,7 @@ namespace Features.Battle.Scripts
             for (int index = aiUnits.Count - 1; index >= 0; index--)
             {
                 UnitServiceProvider unitServiceProvider = aiUnits[index];
-                unitServiceProvider.GetService<NetworkedBattleBehaviour>().Destroy();
+                unitServiceProvider.Destroy();
             }
             
             foreach (UnitServiceProvider unitServiceProvider in battleData.AllUnitsRuntimeSet.GetItems())
@@ -117,7 +116,7 @@ namespace Features.Battle.Scripts
                 .Any(e =>
                 {
                     NetworkedBattleBehaviour unitBattleBehaviour = e.GetService<NetworkedBattleBehaviour>();
-                    return unitBattleBehaviour.CurrentState is not DeathState && unitBattleBehaviour.IsTargetable && unitBattleBehaviour.CurrentState is not BenchedState;
+                    return unitBattleBehaviour.CurrentState is not DeathState && e.IsTargetable && unitBattleBehaviour.CurrentState is not BenchedState;
                 });
         }
         

@@ -1,78 +1,72 @@
-using System.Collections;
-using System.Collections.Generic;
-using DataStructures.StateLogic;
 using Features.Battle.Scripts;
 using Features.Battle.StateMachine;
-using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 
-public class PassiveBattleBehaviour : IBattleBehaviour
+namespace Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour
 {
-    private readonly StateMachine _stateMachine;
-    private readonly BattleData_SO _battleData;
-    private readonly NetworkedBattleBehaviour _networkedBattleBehaviour;
-
-    public StateMachine StateMachine => _stateMachine;
-    
-    private IState CurrentState => _stateMachine.CurrentState;
-    
-    public PassiveBattleBehaviour(BattleData_SO battleData, NetworkedBattleBehaviour networkedBattleBehaviour)
+    public class PassiveBattleBehaviour : IBattleBehaviour
     {
-        _battleData = battleData;
-        _networkedBattleBehaviour = networkedBattleBehaviour;
-
-        _stateMachine = new StateMachine();
-        _stateMachine.Initialize(new IdleState(_networkedBattleBehaviour));
-    }
-
-    public void OnStageEnd()
-    {
-        if (CurrentState is DeathState)
+        private readonly BattleData_SO _battleData;
+        private readonly UnitServiceProvider _unitServiceProvider;
+        private readonly NetworkedBattleBehaviour _networkedBattleBehaviour;
+    
+        
+        public PassiveBattleBehaviour(BattleData_SO battleData, UnitServiceProvider unitServiceProvider)
         {
-            ForceIdleState();
+            _battleData = battleData;
+            _unitServiceProvider = unitServiceProvider;
+            _networkedBattleBehaviour = _unitServiceProvider.GetService<NetworkedBattleBehaviour>();
         }
-    }
 
-    public void Update() { }
+        public void OnStageEnd()
+        {
+            if (_networkedBattleBehaviour.CurrentState is DeathState)
+            {
+                ForceIdleState();
+            }
+        }
 
-    public void ForceIdleState()
-    {
-        _stateMachine.ChangeState(new IdleState(_networkedBattleBehaviour));
-    }
+        public void Update() { }
 
-    public void ForceBenchedState()
-    {
-        _stateMachine.ChangeState(new BenchedState(_networkedBattleBehaviour));
-    }
+        public void ForceIdleState()
+        {
+            _networkedBattleBehaviour.StateMachine.ChangeState(new IdleState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
+        }
 
-    public bool TryRequestIdleState()
-    {
-        return false;
-    }
+        public void ForceBenchedState()
+        {
+            _networkedBattleBehaviour.StateMachine.ChangeState(new BenchedState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
+        }
 
-    public bool TryRequestAttackState()
-    {
-        return false;
-    }
+        public bool TryRequestIdleState()
+        {
+            return false;
+        }
 
-    public bool TryRequestMovementStateByClosestUnit()
-    {
-        return false;
-    }
+        public bool TryRequestAttackState()
+        {
+            return false;
+        }
 
-    public bool TryRequestDeathState()
-    {
-        bool result = _battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
+        public bool TryRequestMovementStateByClosestUnit()
+        {
+            return false;
+        }
+
+        public bool TryRequestDeathState()
+        {
+            bool result = _battleData.StateIsValid(typeof(BattleState), StateProgressType.Execute);
             
-        if (result)
-        {
-            _stateMachine.ChangeState(new DeathState(_networkedBattleBehaviour));
-        }
-        else
-        {
-            Debug.LogWarning("Requesting Death is only possible during Battle!");
-        }
+            if (result)
+            {
+                _networkedBattleBehaviour.StateMachine.ChangeState(new DeathState(_unitServiceProvider.GetService<NetworkedBattleBehaviour>()));
+            }
+            else
+            {
+                Debug.LogWarning("Requesting Death is only possible during Battle!");
+            }
 
-        return false;
+            return false;
+        }
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.RuntimeSet;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using UnityEngine;
@@ -26,7 +25,7 @@ namespace Features.Unit.Scripts.Behaviours
             {
                 foreach (var teamTagType in teamTagTypes)
                 {
-                    if (unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Any(e => e == teamTagType))
+                    if (unitServiceProvider.TeamTagTypes.Any(e => e == teamTagType))
                     {
                         foundUnits.Add(unitServiceProvider);
                     }

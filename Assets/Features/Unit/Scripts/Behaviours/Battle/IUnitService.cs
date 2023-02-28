@@ -1,4 +1,4 @@
-﻿namespace Features.Battle.Scripts.Unit.ServiceLocatorSystem
+﻿namespace Features.Unit.Scripts.Behaviours.Battle
 {
     public interface IUnitService
     {

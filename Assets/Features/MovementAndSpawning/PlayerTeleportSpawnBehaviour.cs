@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Loot.Scripts.GeneratedLoot;

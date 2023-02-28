@@ -1,7 +1,7 @@
 using System;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts;
 using Features.Loot.Scripts.ModView;
+using Features.Unit.Scripts.Behaviours.Battle;
 
 namespace Features.Unit.Scripts.Behaviours.Mod
 {

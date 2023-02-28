@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.Generator;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;

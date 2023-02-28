@@ -2,7 +2,6 @@ using System.Collections;
 using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts.StageProgression;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Connection.Scripts.Utils;
 using Features.Unit.Scripts.Behaviours;
@@ -43,13 +42,14 @@ namespace Features.Battle.Scripts
 
             if (!battleData.IsStageRestart)
             {
+                //TODO: unit leveling is not synchronized
                 battleData.Stage.Add(1);
 
                 foreach (UnitServiceProvider unitServiceProvider in battleData.AllUnitsRuntimeSet.GetItems())
                 {
-                    if (unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own) && unitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.levelUpOnStageClear)
+                    if (unitServiceProvider.TeamTagTypes.Contains(TeamTagType.Own) && unitServiceProvider.UnitClassData.levelUpOnStageClear)
                     {
-                        unitServiceProvider.GetService<NetworkedStatsBehaviour>().SetBaseStats(unitServiceProvider.GetService<NetworkedBattleBehaviour>().UnitClassData.baseStatsData, battleData.Stage.Get());
+                        unitServiceProvider.GetService<NetworkedStatsBehaviour>().SetBaseStats(unitServiceProvider.UnitClassData.baseStatsData, battleData.Stage.Get());
                     }
                 }
             }

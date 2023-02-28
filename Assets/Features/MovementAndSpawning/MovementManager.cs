@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection;
 using Features.Connection.Scripts.Utils;
 using Features.Tiles.Scripts;
+using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Stats;
 using Photon.Pun;
 using Photon.Realtime;
 using ThirdParty.LeanTween.Framework;
@@ -50,11 +51,13 @@ namespace Features.MovementAndSpawning
         {
             if (PhotonNetwork.IsMasterClient)
             {
-                PerformGridStep(unitServiceProvider, targetTileGridPosition, skipLastMovementsCount, unitServiceProvider.GetService<NetworkedBattleBehaviour>().MovementSpeed);
+                PerformGridStep(unitServiceProvider, targetTileGridPosition, skipLastMovementsCount, 
+                    unitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.MovementSpeed));
             }
             else
             {
-                RequestGridStep_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetTileGridPosition, skipLastMovementsCount, unitServiceProvider.GetService<NetworkedBattleBehaviour>().MovementSpeed);
+                RequestGridStep_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetTileGridPosition, skipLastMovementsCount, 
+                    unitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.MovementSpeed));
             }
         }
         
@@ -238,7 +241,7 @@ namespace Features.MovementAndSpawning
                     int viewID = (int) data[0];
 
                     if (battleData.AllUnitsRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider) 
-                        && unitServiceProvider.GetService<NetworkedBattleBehaviour>().TeamTagTypes.Contains(TeamTagType.Own))
+                        && unitServiceProvider.TeamTagTypes.Contains(TeamTagType.Own))
                     {
                         unitServiceProvider.GetService<NetworkedBattleBehaviour>().ForceIdleState();
                     }

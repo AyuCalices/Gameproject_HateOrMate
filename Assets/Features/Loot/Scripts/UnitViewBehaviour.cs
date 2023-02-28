@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.UI.Scripts;
 using Features.Unit.Scripts;
@@ -29,7 +28,6 @@ namespace Features.Loot.Scripts
         public UnitMods UnitMods { get; private set; }
     
         public UnitServiceProvider UnitServiceProvider { get; private set; }
-        private NetworkedBattleBehaviour _unitOwnerBattleBehaviour;
         private ModSlotBehaviour[] _modSlotBehaviour;
 
         private void Awake()
@@ -71,23 +69,22 @@ namespace Features.Loot.Scripts
             UnitMods = new UnitMods(unitServiceProvider, _modSlotBehaviour);
             
             UnitServiceProvider = unitServiceProvider;
-            _unitOwnerBattleBehaviour = unitServiceProvider.GetComponent<NetworkedBattleBehaviour>();
             
             UnitServiceProvider.GetService<NetworkedStatsBehaviour>().NetworkedStatServiceLocator.onUpdateStat += UpdateSingleStatText;
             
-            InitializeVisualization();
-            InitializeAllText();
+            InitializeVisualization(UnitServiceProvider.UnitClassData);
+            InitializeAllText(UnitServiceProvider.UnitClassData);
         }
 
-        private void InitializeVisualization()
+        private void InitializeVisualization(UnitClassData_SO unitClassData)
         {
-            unitSprite.sprite = _unitOwnerBattleBehaviour.UnitClassData.sprite;
-            nameText.text = _unitOwnerBattleBehaviour.UnitClassData.unitType.unitName;
+            unitSprite.sprite = unitClassData.sprite;
+            nameText.text = unitClassData.unitType.unitName;
         }
         
-        private void InitializeAllText()
+        private void InitializeAllText(UnitClassData_SO unitClassData)
         {
-            UnitType_SO unitType = _unitOwnerBattleBehaviour.UnitClassData.unitType;
+            UnitType_SO unitType = unitClassData.unitType;
             StatTextUpdateBehaviour staminaStatTextUpdateBehaviours = statTextUpdateBehaviours.Find(x => x.StatType == StatType.Stamina);
             staminaStatTextUpdateBehaviours.gameObject.SetActive(towerUnitType == unitType);
         }

@@ -1,8 +1,8 @@
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour;
 using Features.Unit.Scripts.DamageAnimation;
 using Features.Unit.Scripts.Stats;
 using Features.Unit.Scripts.View;

@@ -1,26 +1,28 @@
-using System;
 using DataStructures.ReactiveVariable;
 using TMPro;
 using UnityEngine;
 
-public class GameEndBehaviour : MonoBehaviour
+namespace Features
 {
-    [SerializeField] private IntReactiveVariable stageReactiveVariable;
-    [SerializeField] private IntReactiveVariable completedStageReactiveVariable;
-    [SerializeField] private GameObject objectToHide;
-    [SerializeField] private TMP_Text resultText;
-
-    private void OnEnable()
+    public class GameEndBehaviour : MonoBehaviour
     {
-        if (stageReactiveVariable.Get() >= completedStageReactiveVariable.Get())
+        [SerializeField] private IntReactiveVariable stageReactiveVariable;
+        [SerializeField] private IntReactiveVariable completedStageReactiveVariable;
+        [SerializeField] private GameObject objectToHide;
+        [SerializeField] private TMP_Text resultText;
+
+        private void OnEnable()
         {
-            objectToHide.SetActive(true);
-            resultText.text = "Game Completed!";
-        }
-        else
-        {
-            objectToHide.SetActive(false);
-            resultText.text = "Game Failed!";
+            if (stageReactiveVariable.Get() >= completedStageReactiveVariable.Get())
+            {
+                objectToHide.SetActive(true);
+                resultText.text = "Game Completed!";
+            }
+            else
+            {
+                objectToHide.SetActive(false);
+                resultText.text = "Game Failed!";
+            }
         }
     }
 }

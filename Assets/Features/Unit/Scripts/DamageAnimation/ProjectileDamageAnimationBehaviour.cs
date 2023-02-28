@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using DataStructures.Event;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using ThirdParty.LeanTween.Framework;

@@ -1,6 +1,5 @@
 using System;
 using Features.Battle.Scripts;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Battle.StateMachine;
 using Features.Camera.Scripts;
 using Features.Loot.Scripts.ModView;
@@ -30,9 +29,10 @@ namespace Features.Unit.Scripts.Behaviours
         private GameObject _instantiatedPrefab;
         private Vector3 _currentTileWorldPosition;
 
-        private void Awake()
+        public void Initialize(bool isEnabled)
         {
             _unitServiceProvider = GetComponent<UnitServiceProvider>();
+            enabled = isEnabled;
         }
 
         public void OnDisable()

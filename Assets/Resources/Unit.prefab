@@ -136,7 +136,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cbe1bee850ded744b93c11104315d61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleUnitRuntimeSet: {fileID: 0}
+  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
+  onHitEvent: {fileID: 11400000, guid: a73743ef6ec6bbb4fbd94ef5e0ffd03e, type: 2}
 --- !u!114 &6917733689108929931
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -149,11 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b5af6e1786ddd94593111fc2e023da4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   unitViewRuntimeSet: {fileID: 11400000, guid: b123533741e1f1f419800c4c7cb0467b, type: 2}
-  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
-  damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
-  onHit: {fileID: 11400000, guid: a73743ef6ec6bbb4fbd94ef5e0ffd03e, type: 2}
 --- !u!114 &7463803209756924334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,7 +164,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
-  unitSprite: {fileID: 5957523550392877198}
 --- !u!114 &3126989503899845422
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -198,6 +194,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3205f5a6a80413a46ad5b90368a19b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasFocus: {fileID: 11400000, guid: 8320bfaa690d26346988be4bdc22dcde, type: 2}
+  damagePopupPrefab: {fileID: 1917720957142483350, guid: 496e4872a5b52f14c8294c8e84a40c01, type: 3}
+  unitSprite: {fileID: 5957523550392877198}
   healthTransform: {fileID: 3188598305752239681}
   staminaTransform: {fileID: 4747223856104991055}
 --- !u!114 &2691383368057905019

@@ -1,7 +1,7 @@
 using System;
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Behaviours.Battle;
 using Features.Unit.Scripts.Stats;
 using UnityEngine;
 

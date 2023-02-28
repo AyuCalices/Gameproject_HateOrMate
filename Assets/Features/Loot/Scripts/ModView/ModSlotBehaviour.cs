@@ -1,6 +1,6 @@
-using Features.Battle.Scripts.Unit.ServiceLocatorSystem;
 using Features.Connection.Scripts;
 using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
