@@ -127,7 +127,8 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             }
 
             _unitBattleView.Initialize(UnitClassData.sprite, IsTargetable, true);
-            _networkedStatsBehaviour.SetBaseStats(UnitClassData.baseStatsData, level);
+            
+            _networkedStatsBehaviour.Initialize(this, UnitClassData.baseStatsData, level);
 
             AddRuntimeSets();
         }

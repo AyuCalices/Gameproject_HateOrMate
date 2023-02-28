@@ -20,39 +20,20 @@ namespace Features.Unit.Scripts.Behaviours
         
         private UnitServiceProvider _unitServiceProvider;
         
-
-        protected void Awake()
-        {
-            _unitServiceProvider = GetComponent<UnitServiceProvider>();
-            NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
-            
-            foreach (object value in Enum.GetValues(typeof(StatType)))
-            {
-                string scalingStatIdentity = Guid.NewGuid().ToString();
-                string statIdentity = Guid.NewGuid().ToString();
-                NetworkedStatServiceLocator.Register(new LocalModificationStat((StatType)value, scalingStatIdentity, statIdentity));
-                NetworkedStatServiceLocator.Register(new BaseStat((StatType)value));
-            }
-
-            if (_unitServiceProvider.GetService<PhotonView>().ViewID != 0)
-            {
-                foreach (object value in Enum.GetValues(typeof(StatType)))
-                {
-                    LocalModificationStat selectedModificationStat = NetworkedStatServiceLocator.Get<LocalModificationStat>((StatType)value);
-                    _unitServiceProvider.GetService<PhotonView>().RPC("SynchNetworkStat", RpcTarget.Others, selectedModificationStat.StatType, selectedModificationStat.MultiplierStatIdentity, selectedModificationStat.StatIdentity);
-                }
-            }
-            else
-            {
-                Debug.Log("View ID Not Allocated");
-            }
-        }
         
-        //TODO: reduce RPC count
-        [PunRPC, UsedImplicitly]
-        protected void SynchNetworkStat(StatType statType, string scalingStatIdentity, string statIdentity)
+        public void Initialize(UnitServiceProvider unitServiceProvider, BaseStatsData_SO baseStatsData, int level)
         {
-            NetworkedStatServiceLocator.Register(new NetworkModificationStat(statType, scalingStatIdentity, statIdentity));
+            _unitServiceProvider = unitServiceProvider;
+            NetworkedStatServiceLocator = new NetworkedStatServiceLocator();
+
+            InitializeStatsForClients();
+            SetBaseStats(baseStatsData, level);
+            ApplyModToInstantiatedUnit();
+        }
+
+        private void OnDestroy()
+        {
+            NetworkedStatServiceLocator.UnregisterAll();
         }
         
         public float GetFinalStat(StatType statType)
@@ -69,29 +50,12 @@ namespace Features.Unit.Scripts.Behaviours
             return totalBaseValue;
         }
         
-        private void Start()
-        {
-            ApplyModToInstantiatedUnit();
-        }
-        
-        private void ApplyModToInstantiatedUnit()
-        {
-            foreach (UnitViewBehaviour unitModBehaviour in unitViewRuntimeSet.GetItems())
-            {
-                unitModBehaviour.UnitMods.ApplyToInstantiatedUnit(_unitServiceProvider);
-            }
-        }
-
-        private void OnDestroy()
-        {
-            NetworkedStatServiceLocator.UnregisterAll();
-        }
-
         public void SetBaseStats(BaseStatsData_SO baseStatsData, int level)
         {
             float finalAttack = baseStatsData.attackBaseValue * Mathf.Pow(baseStatsData.attackLevelScaling, level);
             float finalHealth = baseStatsData.healthBaseValue * Mathf.Pow(baseStatsData.healthLevelScaling, level);
 
+            //TODO: find different system
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.Stat, finalAttack);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.ScalingStat, baseStatsData.attackMultiplierValue);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Damage, StatValueType.MinStat, baseStatsData.attackMinValue);
@@ -113,6 +77,56 @@ namespace Features.Unit.Scripts.Behaviours
             
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Stamina, StatValueType.Stat, baseStatsData.staminaValue);
             NetworkedStatServiceLocator.TrySetStatValue<BaseStat>(StatType.Stamina, StatValueType.MinStat, baseStatsData.staminaMinValue);
+        }
+        
+        private void ApplyModToInstantiatedUnit()
+        {
+            foreach (UnitViewBehaviour unitModBehaviour in unitViewRuntimeSet.GetItems())
+            {
+                unitModBehaviour.UnitMods.ApplyToInstantiatedUnit(_unitServiceProvider);
+            }
+        }
+        
+        private void InitializeStatsForClients()
+        {
+            Array statTypeValues = Enum.GetValues(typeof(StatType));
+
+            int[] enumValues = new int[statTypeValues.Length];
+            string[] scalingStatIdentities = new string[statTypeValues.Length];
+            string[] statIdentities = new string[statTypeValues.Length];
+
+            int index = 0;
+            foreach (object value in statTypeValues)
+            {
+                string scalingStatIdentity = Guid.NewGuid().ToString();
+                string statIdentity = Guid.NewGuid().ToString();
+                NetworkedStatServiceLocator.Register(new LocalModificationStat((StatType)value, scalingStatIdentity, statIdentity));
+                NetworkedStatServiceLocator.Register(new BaseStat((StatType)value));
+
+                enumValues[index] = (int) value;
+                scalingStatIdentities[index] = scalingStatIdentity;
+                statIdentities[index] = statIdentity;
+                index++;
+                
+            }
+
+            if (_unitServiceProvider.GetService<PhotonView>().ViewID != 0 && PhotonNetwork.IsMasterClient)
+            {
+                _unitServiceProvider.GetService<PhotonView>().RPC("SynchNetworkStat", RpcTarget.Others, enumValues, scalingStatIdentities, statIdentities);
+            }
+            else
+            {
+                Debug.LogError("View ID Not Allocated");
+            }
+        }
+        
+        [PunRPC, UsedImplicitly]
+        protected void SynchNetworkStat(int[] statType, string[] scalingStatIdentity, string[] statIdentity)
+        {
+            for (var i = 0; i < statType.Length; i++)
+            {
+                NetworkedStatServiceLocator.Register(new NetworkModificationStat((StatType)statType[i], scalingStatIdentity[i], statIdentity[i]));
+            }
         }
     }
 }
