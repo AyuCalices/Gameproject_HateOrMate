@@ -49,7 +49,7 @@ namespace Features.Unit.Scripts.Stats
             bool found = false;
             foreach (var player in PhotonNetwork.PlayerList)
             {
-                if (player == PhotonNetwork.LocalPlayer) continue;
+                if (Equals(player, PhotonNetwork.LocalPlayer)) continue;
                 
                 if (player.CustomProperties.ContainsKey(StatIdentity))
                 {

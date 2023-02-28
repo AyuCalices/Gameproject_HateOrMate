@@ -16,20 +16,22 @@ namespace Features.Unit.Scripts.Behaviours.Battle
     {
         [SerializeField] private BattleData_SO battleData;
         public GameEvent onHitEvent; //TODO: swap to different onHit sound system
-        
-        private readonly ServiceLocatorObject<MonoBehaviour> _unitServiceController = new ServiceLocatorObject<MonoBehaviour>();
-        private bool _isInitialized;
-
-        private NetworkedStatsBehaviour _networkedStatsBehaviour;
-        private NetworkedBattleBehaviour _networkedBattleBehaviour;
-        private UnitDragPlacementBehaviour _unitDragPlacementBehaviour;
-        private UnitBattleView _unitBattleView;
-        private PhotonView _photonView;
 
         public bool IsTargetable { get; private set; }
         public UnitClassData_SO UnitClassData { get; private set; }
         public TeamTagType[] TeamTagTypes { get; private set; }
         public TeamTagType[] OpponentTagType { get; private set; }
+
+        public T GetService<T>() where T : MonoBehaviour => _unitServiceController.Get<T>();
+        
+        
+        private ServiceLocatorObject<MonoBehaviour> _unitServiceController;
+        private NetworkedStatsBehaviour _networkedStatsBehaviour;
+        private NetworkedBattleBehaviour _networkedBattleBehaviour;
+        private UnitDragPlacementBehaviour _unitDragPlacementBehaviour;
+        private UnitBattleView _unitBattleView;
+        private PhotonView _photonView;
+        
 
         private void Awake()
         {
@@ -39,17 +41,7 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             _unitBattleView = GetComponent<UnitBattleView>();
             _photonView = GetComponent<PhotonView>();
 
-            Initialize();
-        }
-        
-        private void OnDestroy()
-        {
-            ClearRuntimeSets();
-        }
-
-        private void Initialize()
-        {
-            _isInitialized = true;
+            _unitServiceController = new ServiceLocatorObject<MonoBehaviour>();
             _unitServiceController.Register(this);
             _unitServiceController.Register(_networkedStatsBehaviour);
             _unitServiceController.Register(_networkedBattleBehaviour);
@@ -57,42 +49,10 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             _unitServiceController.Register(_unitBattleView);
             _unitServiceController.Register(_photonView);
         }
-
-        public T GetService<T>() where T : MonoBehaviour
-        {
-            if (!_isInitialized)
-            {
-                Debug.LogError("The Service Provider has not been initialized yet!");
-            }
-            
-            return _unitServiceController.Get<T>();
-        }
-
-        public bool TryGetService<T>(out T service) where T : MonoBehaviour
-        {
-            if (!_isInitialized)
-            {
-                Debug.LogError("The Service Provider has not been initialized yet!");
-            }
-
-            if (_unitServiceController.TryGetService(out T requestedService))
-            {
-                service = requestedService;
-                return true;
-            }
-
-            service = default;
-            return false;
-        }
         
-        private void AddRuntimeSets()
+        private void OnDestroy()
         {
-            battleData.AllUnitsRuntimeSet.Add(this);
-        }
-        
-        private void ClearRuntimeSets()
-        {
-            battleData.AllUnitsRuntimeSet.Remove(this);
+            ClearRuntimeSets();
         }
         
         public void Destroy()
@@ -113,23 +73,10 @@ namespace Features.Unit.Scripts.Behaviours.Battle
             IsTargetable = (bool) instantiationData[5];
             bool isBenched = (bool) instantiationData[6];
             
-            
             _unitDragPlacementBehaviour.Initialize(TeamTagTypes.Contains(TeamTagType.Own));
-
             InitializeBattleBehaviour(isBenched);
-            if (!isBenched)
-            {
-                Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
-                if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
-                {
-                    tileBehaviour.AddUnit(gameObject);
-                }
-            }
-
             _unitBattleView.Initialize(UnitClassData.sprite, IsTargetable, true);
-            
             _networkedStatsBehaviour.Initialize(this, UnitClassData.baseStatsData, level);
-
             AddRuntimeSets();
         }
 
@@ -141,6 +88,25 @@ namespace Features.Unit.Scripts.Behaviours.Battle
                 : new PassiveBattleBehaviour(battleData, this);
             BattleClass battleClass = UnitClassData.battleClasses.Generate(this, UnitClassData.baseDamageAnimationBehaviour);
             _networkedBattleBehaviour.Initialize(this, battleClass, battleBehaviour, entryState);
+            
+            if (!isBenched)
+            {
+                Vector3Int gridPosition = battleData.TileRuntimeDictionary.GetWorldToCellPosition(transform.position);
+                if (battleData.TileRuntimeDictionary.TryGetByGridPosition(gridPosition, out RuntimeTile tileBehaviour))
+                {
+                    tileBehaviour.AddUnit(gameObject);
+                }
+            }
+        }
+        
+        private void AddRuntimeSets()
+        {
+            battleData.AllUnitsRuntimeSet.Add(this);
+        }
+        
+        private void ClearRuntimeSets()
+        {
+            battleData.AllUnitsRuntimeSet.Remove(this);
         }
     }
 }

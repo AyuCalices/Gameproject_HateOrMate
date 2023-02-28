@@ -110,7 +110,7 @@ namespace Features.Unit.Scripts.Behaviours
                 
             }
 
-            if (_unitServiceProvider.GetService<PhotonView>().ViewID != 0 && PhotonNetwork.IsMasterClient)
+            if (_unitServiceProvider.GetService<PhotonView>().ViewID != 0)
             {
                 _unitServiceProvider.GetService<PhotonView>().RPC("SynchNetworkStat", RpcTarget.Others, enumValues, scalingStatIdentities, statIdentities);
             }
