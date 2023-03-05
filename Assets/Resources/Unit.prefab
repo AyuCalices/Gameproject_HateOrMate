@@ -300,7 +300,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1947839642249812967, guid: 46becebd8e6fb82498b3ef2adbc0e6d5, type: 3}
       propertyPath: m_Name
-      value: UnitView
+      value: UnitBattleView
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46becebd8e6fb82498b3ef2adbc0e6d5, type: 3}

@@ -3475,7 +3475,7 @@ GameObject:
   - component: {fileID: 2123303280180745889}
   - component: {fileID: 3662384365860615502}
   m_Layer: 31
-  m_Name: gameScenePalette
+  m_Name: GameScenePalette
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
