@@ -46,7 +46,7 @@ namespace Features.Unit.Scripts.Class
         
         public void AttackCallback(float attackValue, float targetHealth, UnitClassData_SO unitClassData)
         {
-            NetworkedStatsBehaviour ownerUnitStatsBehaviour = ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>();
+            UnitStatsBehaviour ownerUnitStatsBehaviour = ownerUnitServiceProvider.GetService<UnitStatsBehaviour>();
             
             ownerUnitServiceProvider.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
             ownerUnitStatsBehaviour.RemovedHealth += attackValue;
@@ -56,9 +56,9 @@ namespace Features.Unit.Scripts.Class
             ownerUnitServiceProvider.onHitEvent.Raise();
 
             if (ownerUnitStatsBehaviour.RemovedHealth >= targetHealth && 
-                ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not DeathState)
+                ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().CurrentState is not DeathState)
             {
-                ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().TryRequestDeathState();
+                ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().TryRequestDeathState();
             }
         }
 
@@ -87,7 +87,7 @@ namespace Features.Unit.Scripts.Class
 
         protected void SendAttack(UnitServiceProvider targetUnitServiceProvider, float attackValue)
         {
-            NetworkedStatsBehaviour targetUnitStats = targetUnitServiceProvider.GetService<NetworkedStatsBehaviour>();
+            UnitStatsBehaviour targetUnitStats = targetUnitServiceProvider.GetService<UnitStatsBehaviour>();
 
             Attack_RaiseEvent(targetUnitStats.photonView.ViewID, attackValue,
                 targetUnitStats.GetFinalStat(StatType.Health), targetUnitServiceProvider.UnitClassData);

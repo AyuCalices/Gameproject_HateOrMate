@@ -16,7 +16,7 @@ namespace Features.Battle.Scripts
 {
     public class BattleManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
-        public static Func<string, UnitClassData_SO, int, NetworkedBattleBehaviour> onLocalSpawnUnit;
+        public static Func<string, UnitClassData_SO, int, UnitBattleBehaviour> onLocalSpawnUnit;
         
         [SerializeField] private UnitClassData_SO towerClass;
         [SerializeField] private BattleData_SO battleData;

@@ -15,9 +15,9 @@ namespace Features.Unit.Scripts.Class
     {
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float TotalStamina => ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Stamina);
+        private float TotalStamina => ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Stamina);
         private float _currentStamina;
-        private float StaminaRefreshTime => ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Speed);
+        private float StaminaRefreshTime => ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Speed);
         private float _staminaRefreshTimeDelta;
 
         public TowerBattleClass(UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : 
@@ -49,14 +49,14 @@ namespace Features.Unit.Scripts.Class
 
         protected override void InternalOnPerformAction()
         {
-            if (ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().CurrentState is not AttackState) return;
+            if (ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().CurrentState is not AttackState) return;
             
             if (_currentStamina <= 0) return;
 
             _currentStamina--;
             ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_currentStamina, TotalStamina);
 
-            if (ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            if (ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
             {
                 Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerUnitServiceProvider.name} doesnt have an ActiveBattleBehaviour!");
                 return;
@@ -66,7 +66,7 @@ namespace Features.Unit.Scripts.Class
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerUnitServiceProvider, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Damage));
+                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Damage));
                 });
         }
         

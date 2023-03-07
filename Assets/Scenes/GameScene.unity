@@ -5298,7 +5298,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1793653488596165880, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_Name
-      value: Panel_Character
+      value: Panel_CharacterView
       objectReference: {fileID: 0}
     - target: {fileID: 1793653488596165881, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_Pivot.x
@@ -5766,7 +5766,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.2078
+      value: 1065.052
       objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6136,7 +6136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960.2078
+      value: 1065.052
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y

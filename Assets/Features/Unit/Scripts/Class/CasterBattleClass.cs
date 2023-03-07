@@ -14,7 +14,7 @@ namespace Features.Unit.Scripts.Class
         private readonly bool _isAi;
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float AttackSpeed => ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Speed);
+        private float AttackSpeed => ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
         public CasterBattleClass(bool isAi, UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
@@ -49,7 +49,7 @@ namespace Features.Unit.Scripts.Class
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            if (ownerUnitServiceProvider.GetService<NetworkedBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            if (ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
             {
                 Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerUnitServiceProvider.name} doesnt have an ActiveBattleBehaviour!");
                 return;
@@ -59,7 +59,7 @@ namespace Features.Unit.Scripts.Class
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
                 ownerUnitServiceProvider, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<NetworkedStatsBehaviour>().GetFinalStat(StatType.Damage));
+                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Damage));
                 });
         }
 

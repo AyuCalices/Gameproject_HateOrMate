@@ -11,6 +11,7 @@ using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Behaviours;
 using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Features.Battle.Scripts
 {
@@ -20,8 +21,8 @@ namespace Features.Battle.Scripts
     [CreateAssetMenu]
     public class BattleData_SO : ScriptableObject
     {
-        public NetworkedUnitRuntimeSet_SO AllUnitsRuntimeSet => allUnitsRuntimeSet;
-        [SerializeField] private NetworkedUnitRuntimeSet_SO allUnitsRuntimeSet;
+        public UnitServiceProviderRuntimeSet_SO UnitsServiceProviderRuntimeSet => unitServiceProviderRuntimeSet;
+        [FormerlySerializedAs("allUnitsRuntimeSet")] [SerializeField] private UnitServiceProviderRuntimeSet_SO unitServiceProviderRuntimeSet;
         
         public TileRuntimeDictionary_SO TileRuntimeDictionary => tileRuntimeDictionary;
         [SerializeField] private TileRuntimeDictionary_SO tileRuntimeDictionary;
