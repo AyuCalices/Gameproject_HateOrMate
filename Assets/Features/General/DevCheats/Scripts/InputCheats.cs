@@ -4,7 +4,7 @@ using DataStructures.ReactiveVariable;
 using Features.Loot.Scripts;
 using UnityEngine;
 
-namespace Features.DevCheats
+namespace Features.General.DevCheats.Scripts
 {
     public class InputCheats : MonoBehaviour
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Features.UI.Scripts
+namespace Features.General.UI.Scripts
 {
     [CreateAssetMenu]
     public class MenuType_SO : ScriptableObject

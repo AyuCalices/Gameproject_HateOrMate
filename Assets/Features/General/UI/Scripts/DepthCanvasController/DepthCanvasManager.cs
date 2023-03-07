@@ -3,7 +3,7 @@ using System.Linq;
 using Unity.Collections;
 using UnityEngine;
 
-namespace Features.UI.Scripts.DepthCanvasController
+namespace Features.General.UI.Scripts.DepthCanvasController
 {
     public class DepthCanvasManager : MonoBehaviour
     {

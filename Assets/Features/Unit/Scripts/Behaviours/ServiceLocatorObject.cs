@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours
 {
     public class ServiceLocatorObject<ServiceLocatorType>
     {

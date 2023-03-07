@@ -1,8 +1,8 @@
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.Tiles.Scripts;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     public class SpawnPosition : MonoBehaviour
     {

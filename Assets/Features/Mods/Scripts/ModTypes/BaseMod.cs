@@ -1,15 +1,14 @@
 using System;
-using Features.Connection.Scripts;
-using Features.Loot.Scripts.ModView;
+using Features.General.UI.Scripts;
+using Features.Mods.Scripts.View;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
 using UnityEngine;
 
-namespace Features.Loot.Scripts.GeneratedLoot
+namespace Features.Mods.Scripts.ModTypes
 {
     public abstract class BaseMod
     {
-        public static Action<ModBehaviour, BaseMod> onModInstantiated;
+        public static Action<ModViewBehaviour, BaseMod> onModInstantiated;
 
         public GameObject SpritePrefab { get; }
         public string Description { get; }
@@ -17,11 +16,11 @@ namespace Features.Loot.Scripts.GeneratedLoot
         
         //make sure a mod can't be added twice
         private bool _isEnabled;
-        private readonly ModBehaviour _modBehaviourPrefab;
+        private readonly ModViewBehaviour _modViewBehaviourPrefab;
 
-        protected BaseMod(GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab)
+        protected BaseMod(GameObject spritePrefab, string description, int level, ModViewBehaviour modViewBehaviourPrefab)
         {
-            _modBehaviourPrefab = modBehaviourPrefab;
+            _modViewBehaviourPrefab = modViewBehaviourPrefab;
             SpritePrefab = spritePrefab;
             Description = description;
             _isEnabled = false;
@@ -30,7 +29,7 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         public void RaiseOnModInstantiated()
         {
-            onModInstantiated?.Invoke(_modBehaviourPrefab, this);
+            onModInstantiated?.Invoke(_modViewBehaviourPrefab, this);
         }
 
         public void EnableMod(UnitServiceProvider modifiedUnitServiceProvider, int slot)

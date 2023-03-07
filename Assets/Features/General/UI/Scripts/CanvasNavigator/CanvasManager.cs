@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace Features.UI.Scripts.CanvasNavigator
+namespace Features.General.UI.Scripts.CanvasNavigator
 {
     public class CanvasManager : MonoBehaviour
     {

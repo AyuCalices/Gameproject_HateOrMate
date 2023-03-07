@@ -1,14 +1,14 @@
 using System.Collections;
 using DataStructures.Event;
-using Features.Connection.Scripts.Utils;
-using Features.Music;
+using Features.General.Photon.Scripts;
+using Features.Music.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Features.Connection.Scripts.View
+namespace Features.ConnectionScene.Scripts.View
 {
     public class RoomViewBehaviour : MonoBehaviourPunCallbacks
     {

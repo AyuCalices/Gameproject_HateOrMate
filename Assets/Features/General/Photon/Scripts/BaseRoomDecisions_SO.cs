@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     public abstract class BaseRoomDecisions_SO<T> : ScriptableObject
     {

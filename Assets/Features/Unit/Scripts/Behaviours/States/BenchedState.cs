@@ -1,9 +1,10 @@
 using DataStructures.StateLogic;
 using Features.Tiles.Scripts;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours.States
 {
     public class BenchedState : IState
     {

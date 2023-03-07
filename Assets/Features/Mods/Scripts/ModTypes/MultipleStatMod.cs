@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.Loot.Scripts.Generator;
-using Features.Loot.Scripts.ModView;
+using Features.Mods.Scripts.View;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Stats;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats.StatTypes;
 using UnityEngine;
 
-namespace Features.Loot.Scripts.GeneratedLoot
+namespace Features.Mods.Scripts.ModTypes
 {
     public class MultipleStatMod : BaseMod
     {
@@ -20,8 +21,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly BattleData_SO _battleData;
 
         public MultipleStatMod(List<MultipleStatModTarget> multipleStatModTargets, BattleData_SO battleData, 
-            GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, level, modBehaviourPrefab)
+            GameObject spritePrefab, string description, int level, ModViewBehaviour modViewBehaviourPrefab) 
+            : base(spritePrefab, description, level, modViewBehaviourPrefab)
         {
             _multipleStatModTargets = multipleStatModTargets;
             _battleData = battleData;
@@ -79,13 +80,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private void Add(UnitServiceProvider modifiedUnitServiceProvider, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
             }
         
-            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TrySetStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding baseValue from Mod Failed!");
@@ -94,13 +95,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private void Remove(UnitServiceProvider modifiedUnitServiceProvider, StatType statType, float baseValue, float scaleValue, float stageScaleValue)
         {
-            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
+            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.Stat, ScaleByStage(baseValue, stageScaleValue));
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");
             }
         
-            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
+            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TryRemoveStatValue<LocalModificationStat>(statType, StatValueType.ScalingStat, scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing baseValue from Mod Failed!");

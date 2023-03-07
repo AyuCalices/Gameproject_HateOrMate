@@ -1,14 +1,15 @@
 using System;
-using Features.Battle.Scripts;
-using Features.Battle.StateMachine;
-using Features.Camera.Scripts;
-using Features.Loot.Scripts.ModView;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.BattleScene.Scripts;
+using Features.BattleScene.Scripts.StateMachine;
+using Features.BattleScene.Scripts.States;
+using Features.General.Camera.Scripts;
+using Features.General.UI.Scripts.CanvasFocus;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Features.Unit.Scripts.Behaviours
+namespace Features.Unit.Scripts.Behaviours.Services
 {
     [RequireComponent(typeof(UnitBattleBehaviour))]
     public class UnitDragPlacementBehaviour : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler

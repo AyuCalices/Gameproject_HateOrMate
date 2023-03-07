@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Features.Music
+namespace Features.Music.Scripts
 {
     public class MusicBehaviour : MonoBehaviour
     {

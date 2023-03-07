@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using DataStructures.Event;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours;
 using Photon.Pun;
 using ThirdParty.LeanTween.Framework;
 using UnityEngine;

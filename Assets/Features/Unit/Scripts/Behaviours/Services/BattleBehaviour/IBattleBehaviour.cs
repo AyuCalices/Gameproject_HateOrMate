@@ -1,4 +1,4 @@
-namespace Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour
+namespace Features.Unit.Scripts.Behaviours.Services.BattleBehaviour
 {
     public interface IBattleBehaviour
     {

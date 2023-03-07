@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Features.UI.Scripts.DepthCanvasController
+namespace Features.General.UI.Scripts.DepthCanvasController
 {
     [System.Serializable]
     public class DepthCanvasController : MonoBehaviour

@@ -1,10 +1,11 @@
 using System;
 using ExitGames.Client.Photon;
-using Features.Connection.Scripts.Utils;
+using Features.General.Photon.Scripts;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using Photon.Pun;
 using Photon.Realtime;
 

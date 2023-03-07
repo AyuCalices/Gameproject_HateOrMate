@@ -1,9 +1,9 @@
 using System.Globalization;
-using Features.Battle.Scripts;
-using Features.Loot.Scripts.ModView;
+using Features.BattleScene.Scripts;
+using Features.General.UI.Scripts.CanvasFocus;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.View
+namespace Features.Unit.Scripts.Behaviours.Services
 {
     public class UnitBattleView : MonoBehaviour
     {

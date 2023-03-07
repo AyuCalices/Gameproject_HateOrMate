@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours;
 using Photon.Pun;
 using UnityEngine;
 

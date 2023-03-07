@@ -1,6 +1,7 @@
 using DataStructures.StateLogic;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours.States
 {
     public class IdleState : IState
     {

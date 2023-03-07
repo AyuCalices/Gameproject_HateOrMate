@@ -1,18 +1,16 @@
-using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts;
-using Features.Connection;
-using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts.GeneratedLoot;
+using Features.BattleScene.Scripts;
+using Features.General.Photon.Scripts;
 using Features.Tiles.Scripts;
-using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.States;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     public class PlayerTeleportSpawnBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {

@@ -1,9 +1,10 @@
 using System;
 using DataStructures.StateLogic;
 using Features.Tiles.Scripts;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours.States
 {
     public class MovementState : IState
     {

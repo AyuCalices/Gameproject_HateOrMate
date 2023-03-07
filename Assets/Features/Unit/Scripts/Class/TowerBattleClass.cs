@@ -1,11 +1,9 @@
-using Features.Battle.Scripts;
-using Features.Loot.Scripts.ModView;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using Features.Unit.Scripts.DamageAnimation;
-using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
 

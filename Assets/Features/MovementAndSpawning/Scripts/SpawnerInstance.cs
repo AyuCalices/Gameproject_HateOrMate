@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     public class SpawnerInstance : MonoBehaviour
     {

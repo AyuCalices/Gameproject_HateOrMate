@@ -9,7 +9,7 @@ using UnityEngine;
 
 #endif
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     public class ScriptableObjectWithId : ScriptableObject, ISerializationCallbackReceiver
     {

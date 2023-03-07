@@ -1,7 +1,7 @@
 using System.Text;
 using UnityEngine;
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     public static class UniqueCustomTypeByte
     {

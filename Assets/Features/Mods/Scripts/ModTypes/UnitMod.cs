@@ -1,14 +1,13 @@
 using System;
-using Features.Connection.Scripts;
-using Features.Loot.Scripts.ModView;
+using Features.General.UI.Scripts;
+using Features.Mods.Scripts.View;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Behaviours.Mod;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Loot.Scripts.GeneratedLoot
+namespace Features.Mods.Scripts.ModTypes
 {
     public class UnitMod : BaseMod
     {
@@ -21,8 +20,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         private UnitServiceProvider _currentUnit;
 
-        public UnitMod(UnitClassData_SO classData, UnitDisplayRuntimeSet_SO unitDisplayRuntimeSet, GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, level, modBehaviourPrefab)
+        public UnitMod(UnitClassData_SO classData, UnitDisplayRuntimeSet_SO unitDisplayRuntimeSet, GameObject spritePrefab, string description, int level, ModViewBehaviour modViewBehaviourPrefab) 
+            : base(spritePrefab, description, level, modViewBehaviourPrefab)
         {
             _classData = classData;
             _unitDisplayRuntimeSet = unitDisplayRuntimeSet;

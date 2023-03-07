@@ -1,11 +1,11 @@
 using System;
-using Features.Loot.Scripts.ModView;
+using Features.Mods.Scripts.View;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Stats;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats.StatTypes;
 using UnityEngine;
 
-namespace Features.Loot.Scripts.GeneratedLoot
+namespace Features.Mods.Scripts.ModTypes
 {
     public class SingleStatMod : BaseMod
     {
@@ -17,8 +17,8 @@ namespace Features.Loot.Scripts.GeneratedLoot
         private readonly float _scaleValue;
         private readonly float _stageScaleValue;
 
-        public SingleStatMod(StatType statType, float baseValue, float scaleValue, float stageScaleValue, GameObject spritePrefab, string description, int level, ModBehaviour modBehaviourPrefab) 
-            : base(spritePrefab, description, level, modBehaviourPrefab)
+        public SingleStatMod(StatType statType, float baseValue, float scaleValue, float stageScaleValue, GameObject spritePrefab, string description, int level, ModViewBehaviour modViewBehaviourPrefab) 
+            : base(spritePrefab, description, level, modViewBehaviourPrefab)
         {
             _statType = statType;
             _baseValue = baseValue;
@@ -28,13 +28,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
 
         protected override void InternalAddMod(UnitServiceProvider modifiedUnitServiceProvider, int slot)
         {
-            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
             }
             
-            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TrySetStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Adding value from Mod Failed!");
@@ -47,13 +47,13 @@ namespace Features.Loot.Scripts.GeneratedLoot
     
         protected override void InternalRemoveMod(UnitServiceProvider modifiedUnitServiceProvider)
         {
-            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
+            bool result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.Stat, ScaleByStage(_baseValue));
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");
             }
             
-            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().NetworkedStatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
+            result = modifiedUnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.TryRemoveStatValue<LocalModificationStat>(_statType, StatValueType.ScalingStat, _scaleValue);
             if (!result)
             {
                 Debug.LogWarning("Removing value from Mod Failed!");

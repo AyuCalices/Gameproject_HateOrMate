@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Features.UI.Scripts.CanvasNavigator
+namespace Features.General.UI.Scripts.CanvasNavigator
 {
     public class CanvasController : MonoBehaviour
     {

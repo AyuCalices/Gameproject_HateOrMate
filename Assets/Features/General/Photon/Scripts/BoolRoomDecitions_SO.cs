@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     [CreateAssetMenu]
     public class BoolRoomDecitions_SO : BaseRoomDecisions_SO<bool>

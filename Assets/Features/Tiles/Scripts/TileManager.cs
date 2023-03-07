@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.MovementAndSpawning;
+using Features.MovementAndSpawning.Scripts;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 

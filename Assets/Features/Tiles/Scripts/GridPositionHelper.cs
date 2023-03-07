@@ -1,5 +1,5 @@
-using Features.Battle.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.BattleScene.Scripts;
+using Features.Unit.Scripts.Behaviours;
 using UnityEngine;
 
 namespace Features.Tiles.Scripts

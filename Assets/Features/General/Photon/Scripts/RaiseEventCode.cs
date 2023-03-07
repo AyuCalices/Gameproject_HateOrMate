@@ -1,4 +1,4 @@
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     public enum RaiseEventCode
     {

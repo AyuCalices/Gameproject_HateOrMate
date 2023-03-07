@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Features.Connection.Scripts
+namespace Features.General.UI.Scripts
 {
     public class ErrorPopup : MonoBehaviour
     {

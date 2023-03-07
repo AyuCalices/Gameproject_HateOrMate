@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DataStructures.RuntimeSet;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Photon.Pun;
 using UnityEngine;
 

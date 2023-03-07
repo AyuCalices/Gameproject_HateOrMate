@@ -1,7 +1,8 @@
 using DataStructures.StateLogic;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Features.Unit.Scripts.Class;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours.States
 {
     public class AttackState : IState
     {

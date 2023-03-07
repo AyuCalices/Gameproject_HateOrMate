@@ -3,7 +3,7 @@ using ThirdParty.LeanTween.Framework;
 using TMPro;
 using UnityEngine;
 
-namespace Features.Connection.Scripts
+namespace Features.General.UI.Scripts
 {
     [RequireComponent(typeof(CanvasGroup))]
     public class NotePopup : MonoBehaviour

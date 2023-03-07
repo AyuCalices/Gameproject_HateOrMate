@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Photon.Pun;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     public static class SpawnHelper
     {

@@ -2,19 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts;
-using Features.Connection;
-using Features.Connection.Scripts.Utils;
+using Features.BattleScene.Scripts;
+using Features.General.Photon.Scripts;
 using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Stats;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using Photon.Pun;
 using Photon.Realtime;
 using ThirdParty.LeanTween.Framework;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     /// <summary>
     /// In order to prevent, that two Players can place a Unit at the same GridPosition at the same

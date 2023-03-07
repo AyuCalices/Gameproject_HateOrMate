@@ -1,6 +1,6 @@
 using System;
-using Features.Connection.Scripts.Utils;
-using Features.Music;
+using Features.General.UI.Scripts;
+using Features.Music.Scripts;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
-namespace Features.Connection.Scripts.View
+namespace Features.ConnectionScene.Scripts.View
 {
     public enum JoinType { KeyJoin = 0, CreateRoom = 1, QuickJoin = 2 }
     public class ConnectionViewBehaviour : MonoBehaviourPunCallbacks

@@ -1,14 +1,12 @@
 using DataStructures.StateLogic;
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.Tiles.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
 using Features.Unit.Scripts.Class;
-using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
 using UnityEngine;
 using IState = DataStructures.StateLogic.IState;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours.Services.BattleBehaviour
 {
     public enum TeamTagType {Own, Mate, AI}
 

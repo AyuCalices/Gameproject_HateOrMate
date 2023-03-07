@@ -2,15 +2,17 @@
 using System.Linq;
 using DataStructures.Event;
 using DataStructures.StateLogic;
-using Features.Battle.Scripts;
+using Features.BattleScene.Scripts;
 using Features.Tiles.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using Features.Unit.Scripts.Class;
-using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Battle
+namespace Features.Unit.Scripts.Behaviours
 {
     public class UnitServiceProvider : MonoBehaviour, IPunInstantiateMagicCallback
     {

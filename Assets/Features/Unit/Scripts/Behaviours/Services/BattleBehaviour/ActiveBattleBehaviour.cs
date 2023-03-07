@@ -1,10 +1,12 @@
 using System.Collections.Generic;
-using Features.Battle.Scripts;
-using Features.Battle.StateMachine;
-using Features.Unit.Scripts.Stats;
+using Features.BattleScene.Scripts;
+using Features.BattleScene.Scripts.StateMachine;
+using Features.BattleScene.Scripts.States;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using UnityEngine;
 
-namespace Features.Unit.Scripts.Behaviours.Battle.BattleBehaviour
+namespace Features.Unit.Scripts.Behaviours.Services.BattleBehaviour
 {
     public class ActiveBattleBehaviour : IBattleBehaviour
     {

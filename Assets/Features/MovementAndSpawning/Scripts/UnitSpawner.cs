@@ -1,16 +1,13 @@
 using System.Collections.Generic;
 using ExitGames.Client.Photon;
-using Features.Battle.Scripts;
-using Features.Battle.Scripts.StageProgression;
-using Features.Connection;
-using Features.Connection.Scripts.Utils;
+using Features.BattleScene.Scripts.StageProgression;
+using Features.General.Photon.Scripts;
 using Features.Unit.Scripts;
-using Features.Unit.Scripts.Behaviours.Battle;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine;
 
-namespace Features.MovementAndSpawning
+namespace Features.MovementAndSpawning.Scripts
 {
     public class UnitSpawner : MonoBehaviourPunCallbacks, IOnEventCallback
     {

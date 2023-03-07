@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.ConnectionScene.Scripts
 {
     public class LobbyRoomNameRandomizer
     {

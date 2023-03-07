@@ -1,12 +1,10 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Photon.Pun;
 using Photon.Realtime;
 using TMPro;
 using UnityEngine;
 
-namespace Features.Connection.Scripts
+namespace Features.ConnectionScene.Scripts
 {
     public class PlayerRoomUnitInstanceBehaviour : MonoBehaviour
     {

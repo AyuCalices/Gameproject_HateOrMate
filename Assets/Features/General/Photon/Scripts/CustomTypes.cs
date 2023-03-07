@@ -1,7 +1,7 @@
 using ExitGames.Client.Photon;
 using UnityEngine;
 
-namespace Features.Connection.Scripts.Utils
+namespace Features.General.Photon.Scripts
 {
     internal static class CustomTypesGame
     {
