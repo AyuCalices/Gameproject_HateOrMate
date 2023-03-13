@@ -11,7 +11,7 @@ namespace Features.Unit.Scripts.Behaviours.Services.UnitStats
     [RequireComponent(typeof(PhotonView))]
     public class UnitStatsBehaviour : MonoBehaviourPunCallbacks
     {
-        [FormerlySerializedAs("unitViewRuntimeSet")] [SerializeField] private UnitDisplayRuntimeSet_SO unitDisplayRuntimeSet;
+        [SerializeField] private UnitDisplayRuntimeSet_SO unitDisplayRuntimeSet;
         
         public StatServiceLocator StatServiceLocator { get; private set; }
         public float RemovedHealth { get; set; }

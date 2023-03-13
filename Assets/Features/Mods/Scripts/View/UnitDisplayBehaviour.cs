@@ -55,10 +55,7 @@ namespace Features.Mods.Scripts.View
         {
             if (Equals(targetPlayer, PhotonNetwork.LocalPlayer)) return;
 
-            foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours)
-            {
-                UpdateSingleStatText(statTextUpdateBehaviour.StatType);
-            }
+            SetAllStatText();
         }
 
         public void Initialize(UnitServiceProvider unitServiceProvider)
@@ -68,9 +65,18 @@ namespace Features.Mods.Scripts.View
             UnitServiceProvider = unitServiceProvider;
             
             UnitServiceProvider.GetService<UnitStatsBehaviour>().StatServiceLocator.onUpdateStat += UpdateSingleStatText;
-            
+
+            SetAllStatText();
             InitializeVisualization(UnitServiceProvider.UnitClassData);
             InitializeAllText(UnitServiceProvider.UnitClassData);
+        }
+
+        private void SetAllStatText()
+        {
+            foreach (StatTextUpdateBehaviour statTextUpdateBehaviour in statTextUpdateBehaviours)
+            {
+                UpdateSingleStatText(statTextUpdateBehaviour.StatType);
+            }
         }
 
         private void InitializeVisualization(UnitClassData_SO unitClassData)

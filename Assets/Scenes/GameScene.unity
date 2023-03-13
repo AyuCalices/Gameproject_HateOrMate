@@ -2131,7 +2131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -2139,7 +2139,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6689996247219602202, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -5038,7 +5038,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 365237932807478090, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 311
       objectReference: {fileID: 0}
     - target: {fileID: 486929791517998828, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5766,7 +5766,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1065.052
+      value: 998.42395
       objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5954,7 +5954,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -5962,7 +5962,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9098381991977502276, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6136,7 +6136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1065.052
+      value: 998.42395
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6152,7 +6152,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0
+      value: 311
       objectReference: {fileID: 0}
     - target: {fileID: 6917578677737203262, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -6311,7 +6311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -6319,7 +6319,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 2399c2016924c0640b9878fd2bec4120, type: 2}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550233131443255, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6375,7 +6375,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -6383,7 +6383,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 49e8e994a46c7e343a3ad1d2eac7b974, type: 2}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234411283544, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_Pivot.x
