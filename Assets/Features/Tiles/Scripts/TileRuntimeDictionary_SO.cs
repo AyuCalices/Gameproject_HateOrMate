@@ -59,36 +59,6 @@ namespace Features.Tiles.Scripts
             return _tilemap.WorldToCell(worldPosition);
         }
         
-        private Dictionary<Vector3Int, RuntimeTile> GetPlaceableTileBehaviours()
-        {
-            Dictionary<Vector3Int, RuntimeTile> placeableDictionary = new Dictionary<Vector3Int, RuntimeTile>();
-
-            foreach (var item in items)
-            {
-                if (item.Value.IsPlaceable)
-                {
-                    placeableDictionary.Add(item.Key, item.Value);
-                }
-            }
-
-            return placeableDictionary;
-        }
-
-        public bool TryGetRandomPlaceableTileBehaviour(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
-        {
-            Dictionary<Vector3Int, RuntimeTile> placeableDictionary = GetPlaceableTileBehaviours();
-            
-            if (placeableDictionary.Count == 0)
-            {
-                tileKeyValuePair = default;
-                return false;
-            }
-
-            int randomElement = Random.Range(0, placeableDictionary.Count);
-            tileKeyValuePair = placeableDictionary.ElementAt(randomElement);
-            return true;
-        }
-
         public bool ContainsGridPosition(Vector3Int gridPosition)
         {
             return items.ContainsKey(gridPosition);

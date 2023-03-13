@@ -11,8 +11,7 @@ namespace Features.Tiles.Scripts
         public float movementCost;
         
         public bool ContainsUnit => _containedUnitTilePlacementBehaviour != null;
-        public bool ContainsSpawner => _containedSpawnerInstance != null;
-        public bool IsPlaceable => !ContainsSpawner && !ContainsUnit;
+        public bool IsPlaceable => _containedSpawnerInstance == null && !ContainsUnit;
 
         private GameObject _containedUnitTilePlacementBehaviour;
         private GameObject _containedSpawnerInstance;
@@ -25,7 +24,7 @@ namespace Features.Tiles.Scripts
         
         public void AddSpawnerInstance(GameObject spawnerInstance)
         {
-            if (ContainsSpawner)
+            if (_containedSpawnerInstance != null)
             {
                 Debug.LogWarning("Unit Has been overwritten!");
             }
@@ -35,7 +34,7 @@ namespace Features.Tiles.Scripts
 
         public void RemoveSpawnerInstance()
         {
-            if (!ContainsSpawner)
+            if (_containedSpawnerInstance == null)
             {
                 Debug.LogWarning("No Unit to be Removed!");
                 return;
