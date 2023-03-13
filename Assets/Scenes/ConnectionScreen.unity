@@ -164,13 +164,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: ae5d56f58d2c1bd4b9f53968abb85586, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -205,13 +206,14 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: ae5d56f58d2c1bd4b9f53968abb85586, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -246,13 +248,14 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: a539af92f55d2c544bc7f833ff5b3502, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -287,13 +290,14 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: a539af92f55d2c544bc7f833ff5b3502, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -328,13 +332,14 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: a539af92f55d2c544bc7f833ff5b3502, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1398,13 +1403,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: ae5d56f58d2c1bd4b9f53968abb85586, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -1427,13 +1433,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 394050864}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: da4b324fdea8d4849bf6efb6c64a201e, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
