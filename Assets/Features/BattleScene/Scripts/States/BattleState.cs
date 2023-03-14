@@ -8,6 +8,7 @@ using Features.General.UI.Scripts.CanvasFocus;
 using Features.Loot.Scripts.Generator;
 using Features.Unit.Scripts;
 using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Behaviours.Services;
 using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Features.Unit.Scripts.Behaviours.Services.UnitStats;
 using Features.Unit.Scripts.Behaviours.States;
@@ -71,17 +72,22 @@ namespace Features.BattleScene.Scripts.States
                 yield return notePopupPrefab.Instantiate(canvasFocus.Get().transform, "Stage Failed!");
             }
 
-            var aiUnits = battleData.UnitsServiceProviderRuntimeSet.GetUnitsByTag(TeamTagType.AI);
-            for (int index = aiUnits.Count - 1; index >= 0; index--)
+            if (PhotonNetwork.IsMasterClient)
             {
-                UnitServiceProvider unitServiceProvider = aiUnits[index];
-                unitServiceProvider.Destroy();
+                var aiUnits = battleData.UnitsServiceProviderRuntimeSet.GetUnitsByTag(TeamTagType.AI);
+                for (int index = aiUnits.Count - 1; index >= 0; index--)
+                {
+                    UnitServiceProvider unitServiceProvider = aiUnits[index];
+                    PhotonNetwork.Destroy(unitServiceProvider.gameObject);
+                }
             }
-            
+
             foreach (UnitServiceProvider unitServiceProvider in battleData.UnitsServiceProviderRuntimeSet.GetItems())
             {
+                UnitStatsBehaviour unitStats = unitServiceProvider.GetService<UnitStatsBehaviour>();
                 unitServiceProvider.GetService<UnitBattleBehaviour>().OnStageEnd();
-                unitServiceProvider.GetService<UnitStatsBehaviour>().RemovedHealth = 0;
+                unitStats.RemovedHealth = 0;
+                unitServiceProvider.GetService<UnitBattleView>().SetHealthSlider(unitStats.RemovedHealth, unitStats.GetFinalStat(StatType.Health));
             }
         }
 

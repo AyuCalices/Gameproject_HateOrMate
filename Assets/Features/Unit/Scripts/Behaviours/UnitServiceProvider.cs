@@ -54,12 +54,8 @@ namespace Features.Unit.Scripts.Behaviours
         
         private void OnDestroy()
         {
+            Debug.Log("Destroy");
             ClearRuntimeSets();
-        }
-        
-        public void Destroy()
-        {
-            Destroy(gameObject);
         }
 
         public void OnPhotonInstantiate(PhotonMessageInfo info)
@@ -75,9 +71,10 @@ namespace Features.Unit.Scripts.Behaviours
             IsTargetable = (bool) instantiationData[5];
             bool isBenched = (bool) instantiationData[6];
             
+            Debug.Log("instantiate");
             _unitDragPlacementBehaviour.Initialize(TeamTagTypes.Contains(TeamTagType.Own));
             InitializeBattleBehaviour(isBenched);
-            _unitBattleView.Initialize(UnitClassData.sprite, IsTargetable, true);
+            _unitBattleView.Initialize(UnitClassData.sprite, IsTargetable, TeamTagTypes.Contains(TeamTagType.Own));
             _unitStatsBehaviour.Initialize(this, UnitClassData.baseStatsData, level);
             AddRuntimeSets();
         }

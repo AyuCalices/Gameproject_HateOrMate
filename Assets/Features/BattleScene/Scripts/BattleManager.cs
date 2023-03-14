@@ -37,6 +37,7 @@ namespace Features.BattleScene.Scripts
             _stageStateMachine = new CoroutineStateMachine();
             battleData.Initialize(this);
             musicBehaviour.Enable();
+            Screen.sleepTimeout = SleepTimeout.NeverSleep;
         }
 
         private void Start()

@@ -16,8 +16,8 @@ MonoBehaviour:
   createdAtTicks: 638060290837827866
   spritePrefab: {fileID: 252780237247306845, guid: f3d4476c0353009439533881b495f4f1, type: 3}
   description: Increases Damage for a single Unit of your Team
-  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  modViewBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   statType: 0
   baseValue: 24
   scaleValue: 0
-  stageScaleValue: 1.09
+  stageScaleValue: 1.1

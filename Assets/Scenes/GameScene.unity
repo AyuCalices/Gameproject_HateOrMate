@@ -1413,7 +1413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &803132166
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1535,7 +1535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821026a6df513594984122c0f088c980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
+  towerClass: {fileID: 11400000, guid: 301d5c9033904f74b80dc195ae2135b2, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   placementState: {fileID: 11400000, guid: 1bf57903ed1c10547ac4b928f504d0e6, type: 2}
   lootingState: {fileID: 11400000, guid: f027b7031648550449fbf807e1d27fcc, type: 2}
@@ -2293,13 +2293,14 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 553c19901f79dee4db911ab77cd210d2, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2350,13 +2351,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2407,13 +2409,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 68a293be7cc8bcb43941f7fb809f361c, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -5766,7 +5769,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 998.42395
+      value: 1082.8824
       objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6136,7 +6139,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 998.42395
+      value: 1082.8824
       objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y

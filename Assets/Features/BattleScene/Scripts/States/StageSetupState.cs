@@ -56,34 +56,9 @@ namespace Features.BattleScene.Scripts.States
             if (PhotonNetwork.IsMasterClient)
             {
                 stageRandomizer.GenerateUnits();
-                RequestBattleStateByRaiseEvent();
             }
-        }
-
-        public override void OnEvent(EventData photonEvent)
-        {
-            if (!_battleManager.StateIsValid(typeof(StageSetupState), StateProgressType.Execute)) return;
             
-            if (photonEvent.Code == (int)RaiseEventCode.OnRequestBattleState)
-            {
-                _battleManager.RequestBattleState();
-            }
-        }
-
-        private void RequestBattleStateByRaiseEvent()
-        {
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.All,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-            
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnRequestBattleState, null, raiseEventOptions, sendOptions);
+            _battleManager.RequestBattleState();
         }
     }
 }

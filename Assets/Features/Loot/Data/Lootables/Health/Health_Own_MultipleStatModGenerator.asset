@@ -16,11 +16,11 @@ MonoBehaviour:
   createdAtTicks: 638085624425413899
   spritePrefab: {fileID: 4062215846119053302, guid: 41f89bf13929685439197d8b958f0993, type: 3}
   description: Increases Health for your entire Team
-  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  modViewBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   multipleStatModTargets:
   - teamTagType: 00000000
     statType: 1
     baseValue: 40
     scaleValue: 0
-    stageScaleValue: 1.09
+    stageScaleValue: 1.1
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

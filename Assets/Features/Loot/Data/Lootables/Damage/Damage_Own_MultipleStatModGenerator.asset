@@ -16,11 +16,11 @@ MonoBehaviour:
   createdAtTicks: 638085608075319554
   spritePrefab: {fileID: 252780237247306845, guid: f3d4476c0353009439533881b495f4f1, type: 3}
   description: Increases Damage for your entire Team
-  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  modViewBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   multipleStatModTargets:
   - teamTagType: 00000000
     statType: 0
     baseValue: 8
     scaleValue: 0
-    stageScaleValue: 1.09
+    stageScaleValue: 1.1
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}

@@ -21,7 +21,6 @@ namespace Features.MovementAndSpawning.Scripts
 
         public List<SpawnPosition> spawnPositions;
 
-
         public bool TryGetSpawnPosition(out KeyValuePair<Vector3Int, RuntimeTile> tileKeyValuePair)
         {
             foreach (SpawnPosition spawnPosition in spawnPositions)

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe34167fff8acae4383c89df432971ca, type: 3}
-  m_Name: Mage_Stats
+  m_Name: AI_Mage_Stats
   m_EditorClassIdentifier: 
   attackBaseValue: 32
   attackMinValue: 32

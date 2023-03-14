@@ -16,8 +16,8 @@ MonoBehaviour:
   createdAtTicks: 638085624428563229
   spritePrefab: {fileID: 4062215846119053302, guid: 41f89bf13929685439197d8b958f0993, type: 3}
   description: Increases Health for a single Unit of your Team
-  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  modViewBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
   statType: 1
   baseValue: 120
   scaleValue: 0
-  stageScaleValue: 1.09
+  stageScaleValue: 1.1
