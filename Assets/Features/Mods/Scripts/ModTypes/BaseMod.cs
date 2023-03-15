@@ -43,7 +43,6 @@ namespace Features.Mods.Scripts.ModTypes
         public void DisableMod(UnitServiceProvider moddedLocalStats)
         {
             if (!_isEnabled) return;
-
             InternalRemoveMod(moddedLocalStats);
             _isEnabled = false;
         }

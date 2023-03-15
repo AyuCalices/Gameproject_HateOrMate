@@ -18,8 +18,6 @@ namespace Features.Mods.Scripts.ModTypes
         private UnitBattleBehaviour _instantiatedUnit;
         private int _slot;
 
-        private UnitServiceProvider _currentUnit;
-
         public UnitMod(UnitClassData_SO classData, UnitDisplayRuntimeSet_SO unitDisplayRuntimeSet, GameObject spritePrefab, string description, int level, ModViewBehaviour modViewBehaviourPrefab) 
             : base(spritePrefab, description, level, modViewBehaviourPrefab)
         {
@@ -70,7 +68,6 @@ namespace Features.Mods.Scripts.ModTypes
         private void AddBlockedSlots(UnitServiceProvider modifiedUnitServiceProvider, int slot)
         {
             _slot = slot;
-            _currentUnit = modifiedUnitServiceProvider;
             foreach (UnitDisplayBehaviour unitViewBehaviour in _unitDisplayRuntimeSet.GetItems())
             {
                 if (unitViewBehaviour.UnitServiceProvider.gameObject.GetInstanceID() == modifiedUnitServiceProvider.gameObject.GetInstanceID()) continue;
@@ -81,17 +78,11 @@ namespace Features.Mods.Scripts.ModTypes
 
         private void RemoveBlockedSlots()
         {
-            var list = _unitDisplayRuntimeSet.GetItems();
-            foreach (UnitDisplayBehaviour unitViewBehaviour in list)
+            foreach (UnitDisplayBehaviour unitViewBehaviour in _unitDisplayRuntimeSet.GetItems())
             {
-                if (_currentUnit == null) return;
-                if (unitViewBehaviour.UnitServiceProvider.gameObject.GetInstanceID() == _currentUnit.gameObject.GetInstanceID()) continue;
-
                 unitViewBehaviour.UnitDisplayMods.EnableSlot(_slot);
             }
-
             _slot = -1;
-            _currentUnit = null;
         }
     }
 }

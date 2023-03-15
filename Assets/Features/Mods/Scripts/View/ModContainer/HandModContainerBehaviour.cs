@@ -65,7 +65,6 @@ namespace Features.Mods.Scripts.View.ModContainer
         private void MoveToHandOnDestroyUnit(ModViewBehaviour newModViewBehaviour)
         {
             AddMod(newModViewBehaviour);
-            newModViewBehaviour.UpdateColor(Color.white);
             newModViewBehaviour.InitializeNewOrigin(this);
         }
     }

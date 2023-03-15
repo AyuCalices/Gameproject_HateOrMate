@@ -1,6 +1,7 @@
 using System;
 using Features.Mods.Scripts.View.ModContainer;
 using Features.Unit.Scripts.Behaviours;
+using UnityEngine;
 
 namespace Features.Mods.Scripts.View
 {
@@ -8,21 +9,21 @@ namespace Features.Mods.Scripts.View
     {
         public static Action<ModViewBehaviour> onDestroyUnit;
         
-        private readonly UnitModContainerBehaviour[] _modSlotBehaviours;
+        private readonly UnitModContainerBehaviour[] _modContainerBehaviours;
 
-        public UnitDisplayMods(UnitServiceProvider instantiatedUnitServiceProvider, UnitModContainerBehaviour[] modSlotBehaviours)
+        public UnitDisplayMods(UnitServiceProvider instantiatedUnitServiceProvider, UnitModContainerBehaviour[] modContainerBehaviours)
         {
-            _modSlotBehaviours = modSlotBehaviours;
+            _modContainerBehaviours = modContainerBehaviours;
             
-            for (int i = 0; i < modSlotBehaviours.Length; i++)
+            for (int i = 0; i < modContainerBehaviours.Length; i++)
             {
-                modSlotBehaviours[i].Initialize(instantiatedUnitServiceProvider, i);
+                modContainerBehaviours[i].Initialize(instantiatedUnitServiceProvider, i);
             }
         }
 
         public void ApplyToInstantiatedUnit(UnitServiceProvider instantiatedUnitServiceProvider)
         {
-            foreach (UnitModContainerBehaviour modSlotBehaviour in _modSlotBehaviours)
+            foreach (UnitModContainerBehaviour modSlotBehaviour in _modContainerBehaviours)
             {
                 modSlotBehaviour.ApplyToInstantiatedUnit(instantiatedUnitServiceProvider);
             }
@@ -30,7 +31,7 @@ namespace Features.Mods.Scripts.View
         
         public void ApplyOnUnitViewInstantiated(UnitDisplayBehaviour unitDisplayBehaviour)
         {
-            foreach (UnitModContainerBehaviour modSlotBehaviour in _modSlotBehaviours)
+            foreach (UnitModContainerBehaviour modSlotBehaviour in _modContainerBehaviours)
             {
                 modSlotBehaviour.ApplyOnUnitViewInstantiated(unitDisplayBehaviour);
             }
@@ -38,24 +39,24 @@ namespace Features.Mods.Scripts.View
 
         public bool SlotIsEnabled(int index)
         {
-            return _modSlotBehaviours[index].IsActive;
+            return _modContainerBehaviours[index].IsActive;
         }
 
         public void DisableSlot(int index)
         {
-            _modSlotBehaviours[index].DisableSlot();
+            _modContainerBehaviours[index].DisableSlot();
         }
         
         public void EnableSlot(int index)
         {
-            _modSlotBehaviours[index].EnableSlot();
+            _modContainerBehaviours[index].EnableSlot();
         }
 
         public void OnDestroy()
         {
-            for (int index = _modSlotBehaviours.Length - 1; index >= 0; index--)
+            for (int index = _modContainerBehaviours.Length - 1; index >= 0; index--)
             {
-                UnitModContainerBehaviour unitModContainerBehaviour = _modSlotBehaviours[index];
+                UnitModContainerBehaviour unitModContainerBehaviour = _modContainerBehaviours[index];
 
                 if (unitModContainerBehaviour.ContainsMod)
                 {
