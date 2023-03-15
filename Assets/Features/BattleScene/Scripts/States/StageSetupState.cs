@@ -1,12 +1,12 @@
 using System.Collections;
-using ExitGames.Client.Photon;
+using System.Linq;
 using Features.BattleScene.Scripts.StageProgression;
 using Features.BattleScene.Scripts.StateMachine;
-using Features.General.Photon.Scripts;
+using Features.Tiles.Scripts;
 using Features.Unit.Scripts.Behaviours;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
 using Features.Unit.Scripts.Behaviours.Services.UnitStats;
 using Photon.Pun;
-using Photon.Realtime;
 using UnityEngine;
 
 namespace Features.BattleScene.Scripts.States
@@ -52,6 +52,17 @@ namespace Features.BattleScene.Scripts.States
                     }
                 }
             }
+            
+            foreach (UnitServiceProvider unitServiceProvider in battleData.UnitsServiceProviderRuntimeSet.GetItems())
+            {
+                if (unitServiceProvider.TeamTagTypes.Contains(TeamTagType.Own) || unitServiceProvider.TeamTagTypes.Contains(TeamTagType.Mate))
+                {
+                    Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
+                    GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, unitServiceProvider.TeleportGridPosition);
+                    unitServiceProvider.transform.position = battleData.TileRuntimeDictionary.GetCellToWorldPosition(unitServiceProvider.TeleportGridPosition);
+                }
+            }
+            
 
             if (PhotonNetwork.IsMasterClient)
             {

@@ -12,7 +12,7 @@ using UnityEngine;
 
 namespace Features.MovementAndSpawning.Scripts
 {
-    public class PlayerTeleportSpawnBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
+    public class PlayerTeleportBehaviour : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [SerializeField] private BattleData_SO battleData;
         
@@ -50,6 +50,7 @@ namespace Features.MovementAndSpawning.Scripts
 
             if (!GridPositionHelper.IsViablePosition(battleData, targetCellPosition)) return;
             
+            unitServiceProvider.TeleportGridPosition = targetCellPosition;
             GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, targetCellPosition);
             PerformGridTeleport_RaiseEvent(unitServiceProvider.GetService<PhotonView>(), targetCellPosition);
         }
@@ -130,12 +131,13 @@ namespace Features.MovementAndSpawning.Scripts
                     int viewID = (int) data[0];
                     if (battleData.UnitsServiceProviderRuntimeSet.GetUnitByViewID(viewID, out UnitServiceProvider unitServiceProvider))
                     {
-                        Vector3Int nextCellPosition = (Vector3Int) data[1];
+                        Vector3Int targetCellPosition = (Vector3Int) data[1];
 
                         if (!PhotonNetwork.IsMasterClient)
                         {
+                            unitServiceProvider.TeleportGridPosition = targetCellPosition;
                             Vector3Int currentCellPosition = GridPositionHelper.GetCurrentCellPosition(battleData, unitServiceProvider.transform);
-                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, nextCellPosition);
+                            GridPositionHelper.UpdateUnitOnRuntimeTiles(battleData, unitServiceProvider, currentCellPosition, targetCellPosition);
                         }
                         
                         if (unitServiceProvider.GetService<UnitBattleBehaviour>().CurrentState is BenchedState)
@@ -143,7 +145,7 @@ namespace Features.MovementAndSpawning.Scripts
                             unitServiceProvider.GetService<UnitBattleBehaviour>().ForceIdleState();
                         }
                     
-                        TeleportObjectToTarget(unitServiceProvider, nextCellPosition);
+                        TeleportObjectToTarget(unitServiceProvider, targetCellPosition);
                     }
 
                     break;

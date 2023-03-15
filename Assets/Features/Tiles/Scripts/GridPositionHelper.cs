@@ -8,12 +8,21 @@ namespace Features.Tiles.Scripts
     {
         public static void UpdateUnitOnRuntimeTiles(BattleData_SO battleData, UnitServiceProvider unitServiceProvider, Vector3Int currentCellPosition, Vector3Int nextCellPosition)
         {
+            AddUnitOnRuntimeTiles(battleData, unitServiceProvider, nextCellPosition);
+            RemoveUnitFromRuntimeTiles(battleData, currentCellPosition);
+        }
+
+        private static void AddUnitOnRuntimeTiles(BattleData_SO battleData, UnitServiceProvider unitServiceProvider, Vector3Int nextCellPosition)
+        {
             RuntimeTile targetTileContainer = battleData.TileRuntimeDictionary.GetContent(nextCellPosition);
             targetTileContainer.AddUnit(unitServiceProvider.gameObject);
-
-            if (battleData.TileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile previousTileBehaviour))
+        }
+        
+        public static void RemoveUnitFromRuntimeTiles(BattleData_SO battleData, Vector3Int currentCellPosition)
+        {
+            if (battleData.TileRuntimeDictionary.TryGetContent(currentCellPosition, out RuntimeTile currentTileBehaviour))
             {
-                previousTileBehaviour.RemoveUnit();
+                currentTileBehaviour.RemoveUnit();
             }
         }
         

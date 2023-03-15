@@ -23,6 +23,7 @@ namespace Features.Unit.Scripts.Behaviours
         public UnitClassData_SO UnitClassData { get; private set; }
         public TeamTagType[] TeamTagTypes { get; private set; }
         public TeamTagType[] OpponentTagType { get; private set; }
+        public Vector3Int TeleportGridPosition { get; set; }
 
         public T GetService<T>() where T : MonoBehaviour => _unitServiceController.Get<T>();
         
@@ -54,7 +55,6 @@ namespace Features.Unit.Scripts.Behaviours
         
         private void OnDestroy()
         {
-            Debug.Log("Destroy");
             ClearRuntimeSets();
         }
 
@@ -71,7 +71,6 @@ namespace Features.Unit.Scripts.Behaviours
             IsTargetable = (bool) instantiationData[5];
             bool isBenched = (bool) instantiationData[6];
             
-            Debug.Log("instantiate");
             _unitDragPlacementBehaviour.Initialize(TeamTagTypes.Contains(TeamTagType.Own));
             InitializeBattleBehaviour(isBenched);
             _unitBattleView.Initialize(UnitClassData.sprite, IsTargetable, TeamTagTypes.Contains(TeamTagType.Own));

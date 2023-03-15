@@ -8,7 +8,6 @@ namespace Features.General.Photon.Scripts
         OnPerformGridTeleport = 4,
         OnRequestTeleport = 5,
         OnAttack = 6,
-        OnRequestBattleState = 7,
         OnEnterUnitIdleState = 8,
         OnNextStage = 9,
         OnRestartStage = 10,

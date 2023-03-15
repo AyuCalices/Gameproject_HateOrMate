@@ -61,7 +61,7 @@ namespace Features.Unit.Scripts.Behaviours.Services.BattleBehaviour
             
             if (result)
             {
-                _unitBattleBehaviour.StateMachine.ChangeState(new DeathState(_unitServiceProvider.GetService<UnitBattleBehaviour>()));
+                _unitBattleBehaviour.StateMachine.ChangeState(new DeathState(_unitServiceProvider.GetService<UnitBattleBehaviour>(), _battleData));
             }
             else
             {
