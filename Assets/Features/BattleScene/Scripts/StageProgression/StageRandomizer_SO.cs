@@ -32,7 +32,7 @@ namespace Features.BattleScene.Scripts.StageProgression
 
         private void SpawnUnits(StageRange stageRange)
         {
-            List<UnitDefinition> generatedUnits = stageRange.GetUnitPool();
+            List<UnitDefinition> generatedUnits = stageRange.stageRandomizeData.GetUnitPool();
 
             foreach (UnitDefinition generatedUnit in generatedUnits)
             {
@@ -45,32 +45,6 @@ namespace Features.BattleScene.Scripts.StageProgression
     public class StageRange
     {
         public int stageCount;
-        public List<StageRandomizeData> stageRandomizeData;
-        
-        public List<UnitDefinition> GetUnitPool()
-        {
-            int count = stageRandomizeData.Sum(stageRandomizeData => stageRandomizeData.frequency);
-
-            int selection = UnityEngine.Random.Range(0, count);
-
-            int selectionCount = 0;
-            foreach (StageRandomizeData stageRandomizeData in stageRandomizeData)
-            {
-                selectionCount += stageRandomizeData.frequency;
-                if (selectionCount >= selection)
-                {
-                    return stageRandomizeData.stageRandomizeData.GetUnits();
-                }
-            }
-
-            return stageRandomizeData[0].stageRandomizeData.unitPool;
-        }
-    }
-
-    [Serializable]
-    public class StageRandomizeData
-    {
         public StageRandomizeData_SO stageRandomizeData;
-        public int frequency;
     }
 }

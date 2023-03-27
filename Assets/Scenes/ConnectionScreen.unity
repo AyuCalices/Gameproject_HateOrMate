@@ -1379,7 +1379,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   onJoinedRoom: {fileID: 11400000, guid: 54e892576db47e946ad020c33f68bcea, type: 2}
   onLeftRoom: {fileID: 11400000, guid: 6b541f8201065f1479805bccb5a9251d, type: 2}
-  expectedPlayerCount: 1
+  expectedPlayerCount: 2
   playerRoomUnitInstanceBehaviourPrefab: {fileID: 2346917667219226988, guid: 073aa8cbe1f0f8f4783e23ebb6a2a783, type: 3}
   playerRoomBehaviourParent: {fileID: 7614211766554729698}
   roomName: {fileID: 309650938}

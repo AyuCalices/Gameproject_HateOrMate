@@ -10,14 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ff9b4d163b3a2a44e861312494eed9db, type: 3}
-  m_Name: 11-30_1_StageRandomizeData
+  m_Name: 0-5_StageRandomizeData
   m_EditorClassIdentifier: 
-  unitPool:
+  staticUnits:
   - spawnerReference: Gate
     unitClassData: {fileID: 11400000, guid: 80c38e6641e6cfc41bcbe2318c7b03e6, type: 2}
-    spawnChance: 100
-    tries: 1
-  - spawnerReference: AiUnit
-    unitClassData: {fileID: 11400000, guid: 4ec0a94b1b565f04d9094d5f9dc35908, type: 2}
-    spawnChance: 100
-    tries: 2
+  randomizedUnitsCount: 0
+  randomUnitsPool: []

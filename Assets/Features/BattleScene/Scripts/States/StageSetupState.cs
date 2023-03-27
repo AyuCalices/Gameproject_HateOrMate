@@ -41,7 +41,6 @@ namespace Features.BattleScene.Scripts.States
 
             if (!battleData.IsStageRestart)
             {
-                //TODO: unit leveling is not synchronized
                 battleData.Stage.Add(1);
 
                 foreach (UnitServiceProvider unitServiceProvider in battleData.UnitsServiceProviderRuntimeSet.GetItems())
