@@ -11,11 +11,19 @@ namespace Features.General.Photon.Scripts
         [field: SerializeField] private string identifier;
         [field: SerializeField] private bool triggerIfOneChose;
 
-        public string Identifier(Player player) => identifier + player.ActorNumber;
+        public string UsageIdentifier(Player player) => identifier + player.ActorNumber + _usageIdentifier;
+
+        private string Identifier(Player player) => identifier + player.ActorNumber + _usageIdentifier;
+        private int _usageIdentifier;
+
+        private void OnEnable()
+        {
+            _usageIdentifier = 0;
+        }
 
         public bool TryGetDecisionValue(Player player, out T value)
         {
-            string identifier = Identifier(player);
+            string identifier = UsageIdentifier(player);
 
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(identifier))
             {
@@ -31,7 +39,7 @@ namespace Features.General.Photon.Scripts
         {
             Player localPlayer = PhotonNetwork.LocalPlayer;
             
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable(){{Identifier(localPlayer), value}});
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new Hashtable(){{UsageIdentifier(localPlayer), value}});
         }
         
         public bool IsValidDecision(Action onValidDecision = null, Predicate<T> predicate = null)
@@ -46,7 +54,10 @@ namespace Features.General.Photon.Scripts
             }
             
             onValidDecision?.Invoke();
-            ResetDecisions();
+
+            ResetPreviousDecision();
+            IncreaseUsageIdentifier();
+
             return true;
         }
         
@@ -56,9 +67,9 @@ namespace Features.General.Photon.Scripts
             
             foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
+                if (!roomCustomProperties.ContainsKey(UsageIdentifier(currentRoomPlayer))) continue;
 
-                return predicate == null || predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer)]);
+                return predicate == null || predicate.Invoke((T)roomCustomProperties[UsageIdentifier(currentRoomPlayer)]);
             }
 
             return false;
@@ -70,12 +81,12 @@ namespace Features.General.Photon.Scripts
             
             foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer)))
+                if (!roomCustomProperties.ContainsKey(UsageIdentifier(currentRoomPlayer)))
                 {
                     return false;
                 }
                 
-                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[Identifier(currentRoomPlayer)]))
+                if (predicate != null && !predicate.Invoke((T)roomCustomProperties[UsageIdentifier(currentRoomPlayer)]))
                 {
                     return false;
                 }
@@ -84,14 +95,19 @@ namespace Features.General.Photon.Scripts
             return true;
         }
 
-        public void ResetDecisions()
+        private void IncreaseUsageIdentifier()
+        {
+            _usageIdentifier++;
+        }
+
+        private void ResetPreviousDecision()
         {
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             
             foreach (Player currentRoomPlayer in PhotonNetwork.PlayerList)
             {
-                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer))) continue;
-                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer));
+                if (!roomCustomProperties.ContainsKey(Identifier(currentRoomPlayer) + (_usageIdentifier - 1))) continue;
+                PhotonNetwork.CurrentRoom.CustomProperties.Remove(Identifier(currentRoomPlayer) + (_usageIdentifier - 1));
             }
         }
     }

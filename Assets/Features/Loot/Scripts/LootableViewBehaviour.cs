@@ -92,7 +92,7 @@ namespace Features.Loot.Scripts
             {
                 if (Equals(player.Value, PhotonNetwork.LocalPlayer)) continue;
 
-                int lootableIdentifier = (int) roomCustomProperties[lootIndexRoomDecision.Identifier(player.Value)];
+                int lootableIdentifier = (int) roomCustomProperties[lootIndexRoomDecision.UsageIdentifier(player.Value)];
                 RemoveFromLootSlots(GetLootableIndex(lootableIdentifier));
             }
         }
@@ -107,9 +107,9 @@ namespace Features.Loot.Scripts
             Hashtable roomCustomProperties = PhotonNetwork.CurrentRoom.CustomProperties;
             Player localPlayer = PhotonNetwork.LocalPlayer;
         
-            if (!roomCustomProperties.ContainsKey(lootIndexRoomDecision.Identifier(localPlayer))) return;
+            if (!roomCustomProperties.ContainsKey(lootIndexRoomDecision.UsageIdentifier(localPlayer))) return;
             
-            int lootableIdentifier = (int)roomCustomProperties[lootIndexRoomDecision.Identifier(localPlayer)];
+            int lootableIdentifier = (int)roomCustomProperties[lootIndexRoomDecision.UsageIdentifier(localPlayer)];
             if (lootableIdentifier < 0) return;
             int ownDecisionIndex = GetLootableIndex(lootableIdentifier);
             if (ownDecisionIndex < 0) return;

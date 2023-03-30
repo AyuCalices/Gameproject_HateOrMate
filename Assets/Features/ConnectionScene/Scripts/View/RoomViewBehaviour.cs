@@ -56,7 +56,8 @@ namespace Features.ConnectionScene.Scripts.View
         {
             foreach (Player player in PhotonNetwork.PlayerList)
             {
-                string identifier = readyCheckRoomDecision.Identifier(player);
+                string identifier = readyCheckRoomDecision.UsageIdentifier(player);
+                Debug.Log(identifier);
 
                 if (!PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey(identifier))
                 {
