@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours;
 using Photon.Pun;
 using UnityEngine;
 
@@ -12,7 +12,7 @@ namespace Features.Unit.Scripts.DamageAnimation
 
         private static readonly Dictionary<string, List<BaseDamageAnimationBehaviour>> _damageAnimationLookup = new Dictionary<string, List<BaseDamageAnimationBehaviour>>();
         
-        public abstract void InstantiateDamageAnimation(NetworkedBattleBehaviour casterUnit, NetworkedBattleBehaviour targetUnit, Action onHitAction);
+        public abstract void InstantiateDamageAnimation(UnitServiceProvider casterUnitServiceProvider, UnitServiceProvider targetUnitServiceProvider, Action onHitAction);
 
         public string GetIdentifier(PhotonView ownerPhotonView) => ownerPhotonView.ViewID + gameObject.name;
 

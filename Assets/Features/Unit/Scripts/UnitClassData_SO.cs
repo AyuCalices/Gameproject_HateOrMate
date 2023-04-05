@@ -1,8 +1,7 @@
-using Features.Battle.Scripts.StageProgression;
-using Features.Connection.Scripts.Utils;
+using Features.General.Photon.Scripts;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
 using Features.Unit.Scripts.ClassGenerator;
 using Features.Unit.Scripts.DamageAnimation;
-using Features.Unit.Scripts.Stats;
 using UnityEngine;
 
 namespace Features.Unit.Scripts

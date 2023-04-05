@@ -1,5 +1,4 @@
-using Features.Connection;
-using Features.Connection.Scripts.Utils;
+using Features.General.Photon.Scripts;
 using UnityEngine;
 
 namespace Features.Loot.Scripts.Generator

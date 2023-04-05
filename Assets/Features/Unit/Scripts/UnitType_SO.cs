@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Features.Connection.Scripts.Utils;
 using UnityEngine;
 
 namespace Features.Unit.Scripts

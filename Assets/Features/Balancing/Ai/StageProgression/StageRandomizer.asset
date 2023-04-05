@@ -15,24 +15,12 @@ MonoBehaviour:
   currentStage: {fileID: 11400000, guid: 24634d0b56ff7b9488d4de8755a05fc6, type: 2}
   stageRangeList:
   - stageCount: 10
-    stageRandomizeData:
-    - stageRandomizeData: {fileID: 11400000, guid: fd6ebc8c5cfe5d64c984adb36d960002, type: 2}
-      frequency: 10
-  - stageCount: 20
-    stageRandomizeData:
-    - stageRandomizeData: {fileID: 11400000, guid: e1e4aa1f925c25e428c1acc14ad85cd2, type: 2}
-      frequency: 10
-    - stageRandomizeData: {fileID: 11400000, guid: 44a3d2d7aa351b046b7f2afc6040bd62, type: 2}
-      frequency: 10
-    - stageRandomizeData: {fileID: 11400000, guid: b45145e4348088b4394ae962f2d5ae62, type: 2}
-      frequency: 10
-    - stageRandomizeData: {fileID: 11400000, guid: 8a4777b8f792f994191b545bf93137d0, type: 2}
-      frequency: 10
-  - stageCount: 30
-    stageRandomizeData:
-    - stageRandomizeData: {fileID: 11400000, guid: 15f53c693d64a4042b233929e57b1598, type: 2}
-      frequency: 10
-    - stageRandomizeData: {fileID: 11400000, guid: 8f6e43700c48faf4e85e72c92820ef38, type: 2}
-      frequency: 10
-    - stageRandomizeData: {fileID: 11400000, guid: 3651e3f8327d13640b6bfeb152817500, type: 2}
-      frequency: 10
+    stageRandomizeData: {fileID: 11400000, guid: fd6ebc8c5cfe5d64c984adb36d960002, type: 2}
+  - stageCount: 10
+    stageRandomizeData: {fileID: 11400000, guid: efcdedb752b29454abb815e9e4dd204f, type: 2}
+  - stageCount: 15
+    stageRandomizeData: {fileID: 11400000, guid: 3492147298c1209498a3d3ce412748f3, type: 2}
+  - stageCount: 15
+    stageRandomizeData: {fileID: 11400000, guid: b158342cf2ba3cc4fa8a5a4922422411, type: 2}
+  - stageCount: 10
+    stageRandomizeData: {fileID: 11400000, guid: 79aca00fc66f1c64aaa64d458f066151, type: 2}

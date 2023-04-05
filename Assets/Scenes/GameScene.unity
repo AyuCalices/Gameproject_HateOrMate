@@ -352,6 +352,7 @@ GameObject:
   - component: {fileID: 201570308}
   - component: {fileID: 201570307}
   - component: {fileID: 201570309}
+  - component: {fileID: 201570310}
   m_Layer: 0
   m_Name: UnitSpawner
   m_TagString: Untagged
@@ -371,8 +372,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29256a6d9b6fb0a46bae5f6d21910dbf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnerInstances:
-  - {fileID: 1088589964}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
 --- !u!4 &201570308
 Transform:
@@ -409,6 +408,20 @@ MonoBehaviour:
   - {fileID: 1333872271}
   - {fileID: 404567955}
   - {fileID: 402770388}
+--- !u!114 &201570310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 201570306}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9133253f621ee034aa3239b2bc3b657a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnerInstances:
+  - {fileID: 1088589964}
 --- !u!1 &308023118
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,9 +847,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiUnit
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -896,9 +907,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: Gate
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 1
   spawnPositions:
@@ -1526,7 +1535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821026a6df513594984122c0f088c980, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  towerClass: {fileID: 11400000, guid: f9f0a7b8fc2e9ad4cb4935748c85c5c2, type: 2}
+  towerClass: {fileID: 11400000, guid: 301d5c9033904f74b80dc195ae2135b2, type: 2}
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   placementState: {fileID: 11400000, guid: 1bf57903ed1c10547ac4b928f504d0e6, type: 2}
   lootingState: {fileID: 11400000, guid: f027b7031648550449fbf807e1d27fcc, type: 2}
@@ -1931,9 +1940,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 02000000
   reference: Player
-  localPlayerPrefab: {fileID: 2996986347998787957, guid: 5e31e52b7b13e6a469f7e5bfad70db43, type: 3}
   ownSpawnsTeamTagType: 00000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 01000000
   isTargetable: 1
   spawnPositions:
@@ -2124,7 +2131,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -2132,7 +2139,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
     - target: {fileID: 6115736208322838217, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6689996247219602202, guid: 06cf6896352704a9cb7a5391147c1af8, type: 3}
       propertyPath: m_AnchorMax.x
@@ -2286,13 +2293,14 @@ MonoBehaviour:
           m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 553c19901f79dee4db911ab77cd210d2, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2343,13 +2351,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2400,13 +2409,14 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 969196827}
-        m_TargetAssemblyTypeName: Features.UI.Scripts.CanvasNavigator.CanvasManager,
+        m_TargetAssemblyTypeName: Features.General.UI.Scripts.CanvasNavigator.CanvasManager,
           Assembly-CSharp
         m_MethodName: SwitchCanvas
         m_Mode: 2
         m_Arguments:
           m_ObjectArgument: {fileID: 11400000, guid: 68a293be7cc8bcb43941f7fb809f361c, type: 2}
-          m_ObjectArgumentAssemblyTypeName: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+          m_ObjectArgumentAssemblyTypeName: Features.General.UI.Scripts.MenuType_SO,
+            Assembly-CSharp
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -2428,7 +2438,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1221129562
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2601,9 +2611,7 @@ MonoBehaviour:
   battleData: {fileID: 11400000, guid: bcbba23859421594ea7cd1a6a882df61, type: 2}
   opponentTagType: 0000000001000000
   reference: AiTower
-  localPlayerPrefab: {fileID: 4585056453339632491, guid: 94e793a75fe0c064bbb1d58d3977019e, type: 3}
   ownSpawnsTeamTagType: 02000000
-  networkedPlayerPrefab: {fileID: 4613841340793331561, guid: 896fca2b9b2f196419860c65413ef351, type: 3}
   mateSpawnsTeamTagType: 02000000
   isTargetable: 0
   spawnPositions:
@@ -5293,7 +5301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1793653488596165880, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_Name
-      value: Panel_Character
+      value: Panel_CharacterView
       objectReference: {fileID: 0}
     - target: {fileID: 1793653488596165881, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_Pivot.x
@@ -5759,6 +5767,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5493139467476443675, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1082.8824
+      objectReference: {fileID: 0}
     - target: {fileID: 5673357687053063926, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -5945,7 +5957,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -5953,7 +5965,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 353ba8e511440bd4db8d3f944d82df4d, type: 2}
     - target: {fileID: 8836525031968800878, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 9098381991977502276, guid: e9eb878e8d2d9ac4ea807a468a160be2, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6125,6 +6137,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4889184657926200005, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1082.8824
+      objectReference: {fileID: 0}
     - target: {fileID: 5836452446014216021, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -6143,7 +6159,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6917578677737203262, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -203.00034
+      value: -203.00037
       objectReference: {fileID: 0}
     - target: {fileID: 6955829026627516783, guid: cee5b41faccb1ba4ebde0144e7535d6d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6298,7 +6314,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -6306,7 +6322,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 2399c2016924c0640b9878fd2bec4120, type: 2}
     - target: {fileID: 1963003226279010770, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550233131443255, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_AnchorMax.y
@@ -6362,7 +6378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
-      value: Features.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
+      value: Features.General.UI.Scripts.CanvasNavigator.CanvasManager, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgument
@@ -6370,7 +6386,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 49e8e994a46c7e343a3ad1d2eac7b974, type: 2}
     - target: {fileID: 6379550234159796826, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: Features.UI.Scripts.MenuType_SO, Assembly-CSharp
+      value: Features.General.UI.Scripts.MenuType_SO, Assembly-CSharp
       objectReference: {fileID: 0}
     - target: {fileID: 6379550234411283544, guid: b0bebc0bfc8e3da46ab6026f0441125a, type: 3}
       propertyPath: m_Pivot.x

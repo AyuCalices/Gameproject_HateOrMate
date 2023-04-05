@@ -1,8 +1,8 @@
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
 using Features.Unit.Scripts.DamageAnimation;
-using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
 using Photon.Pun;
 using UnityEngine;
 
@@ -13,12 +13,11 @@ namespace Features.Unit.Scripts.Class
         private readonly bool _isAi;
         private readonly BaseDamageAnimationBehaviour _baseDamageAnimationPrefab;
         
-        private float AttackSpeed => ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Speed);
+        private float AttackSpeed => ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Speed);
         private float _attackSpeedDeltaTime;
 
-        public CasterBattleClass(bool isAi, NetworkedStatsBehaviour ownerNetworkingStatsBehaviour,
-            BattleBehaviour ownerBattleBehaviour, UnitBattleView ownerUnitBattleView, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
-            ownerNetworkingStatsBehaviour, ownerBattleBehaviour, ownerUnitBattleView)
+        public CasterBattleClass(bool isAi, UnitServiceProvider ownerUnitServiceProvider, BaseDamageAnimationBehaviour baseDamageAnimationPrefab) : base(
+            ownerUnitServiceProvider)
         {
             _isAi = isAi;
             _baseDamageAnimationPrefab = baseDamageAnimationPrefab;
@@ -27,7 +26,7 @@ namespace Features.Unit.Scripts.Class
         protected override void InternalInitializeBattleActions()
         {
             _attackSpeedDeltaTime = AttackSpeed;
-            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
         }
 
         protected override void InternalUpdateBattleActions()
@@ -42,18 +41,24 @@ namespace Features.Unit.Scripts.Class
                 InternalOnPerformAction();
             }
             
-            ownerUnitBattleView.SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetStaminaSlider(_attackSpeedDeltaTime, AttackSpeed);
         }
 
         protected override void InternalOnPerformAction()
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            NetworkedBattleBehaviour targetUnit = ownerBattleBehaviour.GetTarget.Key;
+            if (ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().BattleBehaviour is not ActiveBattleBehaviour activeBattleBehaviour) 
+            {
+                Debug.LogWarning($"OnPerformAction failed, because this Unit {ownerUnitServiceProvider.name} doesnt have an ActiveBattleBehaviour!");
+                return;
+            }
+            
+            UnitServiceProvider targetUnit = activeBattleBehaviour.GetTarget.Key;
             _baseDamageAnimationPrefab.InstantiateDamageAnimation(
-                ownerBattleBehaviour, targetUnit, () =>
+                ownerUnitServiceProvider, targetUnit, () =>
                 {
-                    SendAttack(targetUnit, ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Damage));
+                    SendAttack(targetUnit, ownerUnitServiceProvider.GetService<UnitStatsBehaviour>().GetFinalStat(StatType.Damage));
                 });
         }
 
@@ -61,7 +66,7 @@ namespace Features.Unit.Scripts.Class
         {
             if (_isAi && !PhotonNetwork.IsMasterClient) return;
             
-            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerBattleBehaviour.PhotonView);
+            BaseDamageAnimationBehaviour.DestroyAllByPrefabReference(_baseDamageAnimationPrefab, ownerUnitServiceProvider.GetService<PhotonView>());
         }
     }
 }

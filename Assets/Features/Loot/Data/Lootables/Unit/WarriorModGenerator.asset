@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4c6b1ceeaabe3c449689ceca74bb274, type: 3}
+  m_Name: WarriorModGenerator
+  m_EditorClassIdentifier: 
+  internalId: 6c49574e-bea9-4058-a7da-b4fad32fdfdc
+  createdAtTicks: 638085630100187159
+  spritePrefab: {fileID: 1586659559990814354, guid: 5c9b8f09cbcb40a42bb7a8ddd40c94e3, type: 3}
+  description: Adds a Warrior to your Team  (+ Archer, - Mage)
+  modBehaviourPrefab: {fileID: 8844548089254311232, guid: c282706d60309d14b8f5ace9fbfc1b3c, type: 3}
+  classData: {fileID: 11400000, guid: adfb55cda4de81f4998a6eae892763e6, type: 2}
+  unitViewRuntimeSet: {fileID: 11400000, guid: b123533741e1f1f419800c4c7cb0467b, type: 2}

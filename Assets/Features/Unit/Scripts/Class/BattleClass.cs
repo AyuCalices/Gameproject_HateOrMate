@@ -1,53 +1,39 @@
 using System;
-using System.Globalization;
 using ExitGames.Client.Photon;
-using ExitGames.Client.Photon.StructWrapping;
-using Features.Battle.Scripts;
-using Features.Connection;
-using Features.Connection.Scripts.Utils;
-using Features.Loot.Scripts.ModView;
+using Features.General.Photon.Scripts;
 using Features.Unit.Scripts.Behaviours;
-using Features.Unit.Scripts.Behaviours.Battle;
-using Features.Unit.Scripts.Stats;
-using Features.Unit.Scripts.View;
+using Features.Unit.Scripts.Behaviours.Services;
+using Features.Unit.Scripts.Behaviours.Services.BattleBehaviour;
+using Features.Unit.Scripts.Behaviours.Services.UnitStats;
+using Features.Unit.Scripts.Behaviours.States;
 using Photon.Pun;
 using Photon.Realtime;
-using UnityEngine;
 
 namespace Features.Unit.Scripts.Class
 {
     [Serializable]
     public abstract class BattleClass
     {
-        protected readonly NetworkedStatsBehaviour ownerNetworkingStatsBehaviour;
-        protected readonly BattleBehaviour ownerBattleBehaviour;
-        protected readonly UnitBattleView ownerUnitBattleView;
+        protected readonly UnitServiceProvider ownerUnitServiceProvider;
 
-        protected BattleClass(NetworkedStatsBehaviour ownerNetworkingStatsBehaviour, BattleBehaviour ownerBattleBehaviour, 
-            UnitBattleView ownerUnitBattleView)
+        protected BattleClass(UnitServiceProvider ownerUnitServiceProvider)
         {
-            this.ownerNetworkingStatsBehaviour = ownerNetworkingStatsBehaviour;
-            this.ownerUnitBattleView = ownerUnitBattleView;
-            this.ownerBattleBehaviour = ownerBattleBehaviour;
+            this.ownerUnitServiceProvider = ownerUnitServiceProvider;
         }
         
-        /// <summary>
-        /// Caster unit sends value to target. May be an attack or a heal.
-        /// </summary>
-        /// <param name="targetID"></param>
-        /// <param name="value"></param>
-        protected void SendFloatToTargetRaiseEvent(int targetID, float value, UnitClassData_SO attackerUnitClassData)
+        protected void Attack_RaiseEvent(int targetID, float attackValue, float targetHealth, UnitClassData_SO attackerUnitClassData)
         {
             object[] data = new object[]
             {
                 targetID,
-                value,
+                attackValue,
+                targetHealth,
                 attackerUnitClassData
             };
 
             RaiseEventOptions raiseEventOptions = new RaiseEventOptions
             {
-                Receivers = ReceiverGroup.Others,
+                Receivers = ReceiverGroup.All,
                 CachingOption = EventCaching.AddToRoomCache
             };
 
@@ -56,55 +42,25 @@ namespace Features.Unit.Scripts.Class
                 Reliability = true
             };
 
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnSendFloatToTarget, data, raiseEventOptions, sendOptions);
+            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnAttack, data, raiseEventOptions, sendOptions);
         }
         
-        /// <summary>
-        /// Attacked Unit Receives an attack from the caster. May be an attack or heal.
-        /// </summary>
-        /// <param name="value"></param>
-        public void OnReceiveFloatActionCallback(float value, UnitClassData_SO unitClassData)
+        public void AttackCallback(float attackValue, float targetHealth, UnitClassData_SO unitClassData)
         {
-            ownerBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref value);
-            ownerNetworkingStatsBehaviour.RemovedHealth += value;
+            UnitStatsBehaviour ownerUnitStatsBehaviour = ownerUnitServiceProvider.GetService<UnitStatsBehaviour>();
+            
+            ownerUnitServiceProvider.UnitClassData.unitType.GetDamageByUnitRelations(unitClassData.unitType, ref attackValue);
+            ownerUnitStatsBehaviour.RemovedHealth += attackValue;
+            ownerUnitServiceProvider.GetService<UnitBattleView>().SetHealthSlider(ownerUnitStatsBehaviour.RemovedHealth, targetHealth);
+            ownerUnitServiceProvider.GetService<UnitBattleView>().InstantiateDamagePopup(attackValue);
+            
+            ownerUnitServiceProvider.onHitEvent.Raise();
 
-            float totalHealth = ownerNetworkingStatsBehaviour.GetFinalStat(StatType.Health);
-            ownerNetworkingStatsBehaviour.RaiseDamageGained(ownerBattleBehaviour, ownerNetworkingStatsBehaviour.RemovedHealth, totalHealth);
-                
-            UpdateAllClientsHealthRaiseEvent(
-                ownerBattleBehaviour.PhotonView.ViewID,
-                ownerBattleBehaviour.NetworkedStatsBehaviour.RemovedHealth,
-                totalHealth
-            );
-        }
-        
-        /// <summary>
-        /// Attacked Unit sends new Health value to all players.
-        /// </summary>
-        /// <param name="updateUnitID"></param>
-        /// <param name="newCurrentHealth"></param>
-        /// <param name="totalHealth"></param>
-        private void UpdateAllClientsHealthRaiseEvent(int updateUnitID, float newCurrentHealth, float totalHealth)
-        {
-            object[] data = new object[]
+            if (ownerUnitStatsBehaviour.RemovedHealth >= targetHealth && 
+                ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().CurrentState is not DeathState)
             {
-                updateUnitID,
-                newCurrentHealth,
-                totalHealth
-            };
-
-            RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-            {
-                Receivers = ReceiverGroup.Others,
-                CachingOption = EventCaching.AddToRoomCache
-            };
-
-            SendOptions sendOptions = new SendOptions
-            {
-                Reliability = true
-            };
-
-            PhotonNetwork.RaiseEvent((int)RaiseEventCode.OnUpdateAllClientsHealth, data, raiseEventOptions, sendOptions);
+                ownerUnitServiceProvider.GetService<UnitBattleBehaviour>().TryRequestDeathState();
+            }
         }
 
         public void InitializeBattleActions()
@@ -130,31 +86,12 @@ namespace Features.Unit.Scripts.Class
         }
         protected abstract void InternalOnPerformAction();
 
-        protected void SendAttack(NetworkedBattleBehaviour attackedNetworkedBattleBehaviour, float attackValue)
+        protected void SendAttack(UnitServiceProvider targetUnitServiceProvider, float attackValue)
         {
-            NetworkedStatsBehaviour attackedUnitStats = attackedNetworkedBattleBehaviour.NetworkedStatsBehaviour;
-            if (attackedNetworkedBattleBehaviour is BattleBehaviour attackedBattleBehaviour)
-            {
-                attackedBattleBehaviour.UnitClassData.unitType.GetDamageByUnitRelations(ownerBattleBehaviour.UnitClassData.unitType, ref attackValue);
-                attackedUnitStats.RemovedHealth += attackValue;
-                
-                float totalHealth = attackedUnitStats.GetFinalStat(StatType.Health);
-                ownerNetworkingStatsBehaviour.RaiseDamageGained(attackedNetworkedBattleBehaviour, attackedUnitStats.RemovedHealth, totalHealth);
-                
-                UpdateAllClientsHealthRaiseEvent(
-                    attackedBattleBehaviour.PhotonView.ViewID,
-                    attackedUnitStats.RemovedHealth,
-                    totalHealth
-                );
-            }
-            else
-            {
-                SendFloatToTargetRaiseEvent(
-                    attackedNetworkedBattleBehaviour.PhotonView.ViewID,
-                    attackValue,
-                    ownerBattleBehaviour.UnitClassData
-                );
-            }
+            UnitStatsBehaviour targetUnitStats = targetUnitServiceProvider.GetService<UnitStatsBehaviour>();
+
+            Attack_RaiseEvent(targetUnitStats.photonView.ViewID, attackValue,
+                targetUnitStats.GetFinalStat(StatType.Health), targetUnitServiceProvider.UnitClassData);
         }
     }
 }
